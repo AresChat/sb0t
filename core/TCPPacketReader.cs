@@ -80,13 +80,37 @@ namespace core
             return new IPAddress(tmp);
         }
 
+        public byte[] ReadBytes(int count)
+        {
+            byte[] tmp = new byte[count];
+            Array.Copy(this.Data.ToArray(), this.Position, tmp, 0, tmp.Length);
+            this.Position += tmp.Length;
+            return tmp;
+        }
+
         public String ReadString(AresClient client)
         {
-            int split = this.Data.IndexOf(0, this.Position);
-            byte[] tmp = new byte[split > -1 ? (split - this.Position) : (this.Data.Count - this.Position)];
-            Array.Copy(this.Data.ToArray(), this.Position, tmp, 0, tmp.Length);
-            this.Position = split > -1 ? (split + 1) : this.Data.Count;
-            String str = Encoding.UTF8.GetString(tmp);
+            String str = String.Empty;
+
+            if (client.Encryption)
+            {
+                ushort size = this;
+                byte[] data = this.ReadBytes(size);
+                data = Crypto.Decrypt(data, client.EncryptionKey, client.EncryptionIV);
+                str = Encoding.UTF8.GetString(data);
+
+                if (this.Position < this.Data.Count)
+                    if (this.Data[this.Position] == 0)
+                        this.Position++;
+            }
+            else
+            {
+                int split = this.Data.IndexOf(0, this.Position);
+                byte[] tmp = new byte[split > -1 ? (split - this.Position) : (this.Data.Count - this.Position)];
+                Array.Copy(this.Data.ToArray(), this.Position, tmp, 0, tmp.Length);
+                this.Position = split > -1 ? (split + 1) : this.Data.Count;
+                str = Encoding.UTF8.GetString(tmp);
+            }
 
             String[] bad_chars = new String[] // skiddy
             {

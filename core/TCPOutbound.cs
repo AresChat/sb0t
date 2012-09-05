@@ -25,12 +25,12 @@ namespace core
         public static byte[] Join(AresClient client, AresClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteInt16(target.FileCount);
-            packet.WriteInt32(0);
+            packet.WriteUInt16(target.FileCount);
+            packet.WriteUInt32(0);
             packet.WriteIP(target.ExternalIP);
-            packet.WriteInt16(target.DataPort);
+            packet.WriteUInt16(target.DataPort);
             packet.WriteIP(target.NodeIP);
-            packet.WriteInt16(target.NodePort);
+            packet.WriteUInt16(target.NodePort);
             packet.WriteByte(0);
             packet.WriteString(client, target.Name);
             packet.WriteIP(target.LocalIP);
@@ -53,12 +53,12 @@ namespace core
         public static byte[] Userlist(AresClient client, AresClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteInt16(target.FileCount);
-            packet.WriteInt32(0);
+            packet.WriteUInt16(target.FileCount);
+            packet.WriteUInt32(0);
             packet.WriteIP(target.ExternalIP);
-            packet.WriteInt16(target.DataPort);
+            packet.WriteUInt16(target.DataPort);
             packet.WriteIP(target.NodeIP);
-            packet.WriteInt16(target.NodePort);
+            packet.WriteUInt16(target.NodePort);
             packet.WriteByte(0);
             packet.WriteString(client, target.Name);
             packet.WriteIP(target.LocalIP);
@@ -74,12 +74,12 @@ namespace core
         public static byte[] UserlistBot(AresClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteInt16(0);
-            packet.WriteInt32(0);
+            packet.WriteUInt16(0);
+            packet.WriteUInt32(0);
             packet.WriteIP("0.0.0.0");
-            packet.WriteInt16(0);
+            packet.WriteUInt16(0);
             packet.WriteIP("0.0.0.0");
-            packet.WriteInt16(0);
+            packet.WriteUInt16(0);
             packet.WriteByte(0);
             packet.WriteString(client, Settings.Get<String>("bot"));
             packet.WriteIP("0.0.0.0");
@@ -121,7 +121,7 @@ namespace core
             packet.WriteByte((byte)(client.Browsable ? 7 : 3));
             packet.WriteByte(63);
             packet.WriteByte(Settings.Get<byte>("language"));
-            packet.WriteInt32(client.Cookie);
+            packet.WriteUInt32(client.Cookie);
             packet.WriteByte(1);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_MYFEATURES);
         }
@@ -168,6 +168,23 @@ namespace core
         public static byte[] FastPing()
         {
             return new TCPPacketWriter().ToAresPacket(TCPMsg.MSG_CHAT_SERVER_FASTPING);
+        }
+
+        public static byte[] CryptoKey(AresClient client)
+        {
+            byte[] guid = client.Guid.ToByteArray();
+            byte[] key = client.EncryptionIV.Concat(client.EncryptionKey).ToArray();
+
+            for (int i = 0; i < guid.Length; i += 2)
+                key = Crypto.e67(key, BitConverter.ToUInt16(guid, i));
+
+            // for (var i = (arr.length - 2); i > -1; i -= 2) print(arr[i]); // reverse
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteBytes(key);
+            byte[] data = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CRYPTO_KEY);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(data);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
         }
     }
 }

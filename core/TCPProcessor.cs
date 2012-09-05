@@ -92,7 +92,12 @@ namespace core
             client.Region = packet.ReadString(client);
             client.Encryption = crypto == 250;
 
-            if (client.Encryption) { /* send encryption handshake */ }
+            if (client.Encryption)
+            {
+                client.EncryptionKey = Crypto.CreateKey;
+                client.EncryptionIV = Crypto.CreateIV;
+                client.SendPacket(TCPOutbound.CryptoKey(client));
+            }
 
             if (UserPool.AUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count > 3)
             {

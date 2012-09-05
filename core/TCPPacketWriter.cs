@@ -30,17 +30,17 @@ namespace core
             this.Data.AddRange(g.ToByteArray());
         }
 
-        public void WriteInt16(ushort i)
+        public void WriteUInt16(ushort i)
         {
             this.Data.AddRange(BitConverter.GetBytes(i));
         }
 
-        public void WriteInt32(uint i)
+        public void WriteUInt32(uint i)
         {
             this.Data.AddRange(BitConverter.GetBytes(i));
         }
 
-        public void WriteInt64(ulong i)
+        public void WriteUInt64(ulong i)
         {
             this.Data.AddRange(BitConverter.GetBytes(i));
         }
@@ -76,7 +76,14 @@ namespace core
 
         public void WriteString(AresClient client, String text, bool null_terminated)
         {
-            this.Data.AddRange(Encoding.UTF8.GetBytes(text.Replace("", "")));
+            if (client.Encryption)
+            {
+                byte[] data = Encoding.UTF8.GetBytes(text);
+                data = Crypto.Encrypt(data, client.EncryptionKey, client.EncryptionIV);
+                this.WriteUInt16((ushort)data.Length);
+                this.WriteBytes(data);
+            }
+            else this.Data.AddRange(Encoding.UTF8.GetBytes(text));
 
             if (null_terminated)
                 this.Data.Add(0);

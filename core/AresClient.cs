@@ -34,6 +34,8 @@ namespace core
         public byte Country { get; set; }
         public String Region { get; set; }
         public bool Encryption { get; set; }
+        public byte[] EncryptionKey { get; set; }
+        public byte[] EncryptionIV { get; set; }
         public bool FastPing { get; set; }
         public Level Level { get; set; }
         public ushort Vroom { get; set; }
