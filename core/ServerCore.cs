@@ -121,7 +121,7 @@ namespace core
                             catch (Exception e)
                             {
                                 client.Disconnect();
-                                Log("packet read fail from " + client.ID, e);
+                                Log("packet read fail from " + client.ID + " " + packet.Msg, e);
                                 break;
                             }
 

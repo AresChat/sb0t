@@ -58,7 +58,8 @@ namespace core
 
             if (!client.Avatar.SequenceEqual(avatar))
                 if (Events.AvatarReceived(client))
-                    client.Avatar = avatar;
+                    if (avatar.Length < 4064)
+                        client.Avatar = avatar;
         }
 
         private static void Login(AresClient client, TCPPacketReader packet, ulong time, bool relogin)
