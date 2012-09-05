@@ -22,7 +22,7 @@ namespace core
             AUsers = null;
         }
 
-        public static void CreateAresClient(Socket sock, uint time)
+        public static void CreateAresClient(Socket sock, ulong time)
         {
             for (ushort u = 0; u < ushort.MaxValue; u++)
             {

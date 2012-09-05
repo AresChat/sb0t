@@ -9,6 +9,8 @@ namespace core
 {
     class Settings
     {
+        public const String VERSION = "sb0t 5.00";
+
         private static Type[] AcceptableTypes = 
         {
             typeof(byte),

@@ -45,10 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminSystem.cs" />
     <Compile Include="AresClient.cs" />
+    <Compile Include="BanPool.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="Level.cs" />
+    <Compile Include="PartedClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RejectedMsg.cs" />
     <Compile Include="ServerCore.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TCPMsg.cs" />
@@ -58,6 +64,7 @@
     <Compile Include="TCPPacketWriter.cs" />
     <Compile Include="TCPProcessor.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="UserHistory.cs" />
     <Compile Include="UserPool.cs" />
     <Compile Include="Zip.cs" />
   </ItemGroup>

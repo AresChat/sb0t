@@ -22,9 +22,9 @@ namespace core
             sw.Start();
         }
 
-        public static uint Now
+        public static ulong Now
         {
-            get { return (uint)sw.ElapsedMilliseconds; }
+            get { return (ulong)sw.ElapsedMilliseconds; }
         }
     }
 }

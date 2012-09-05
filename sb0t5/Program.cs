@@ -16,13 +16,7 @@ namespace sb0t5
 
             ServerCore.LogUpdate += LogUpdate;
 
-            if (!server.Open(new ServerCredentials
-            {
-                Name = "sb0t5 test room",
-                Topic = "welcome to my room",
-                Port = 54321,
-                Bot = "sb0t"
-            }))
+            if (!server.Open())
             {
                 Console.WriteLine("Press any key to exit");
                 Console.ReadKey();

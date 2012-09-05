@@ -27,12 +27,15 @@ namespace core
             LogUpdate(null, new ServerLogEventArgs { Message = message, Error = e });
         }
         
-        public bool Open(ServerCredentials credentials)
+        public bool Open()
         {
-            Settings.Set("port", credentials.Port);
-            Settings.Set("name", credentials.Name);
-            Settings.Set("topic", credentials.Topic);
-            Settings.Set("bot", credentials.Bot);
+            Settings.Set("port", (ushort)54321);
+            Settings.Set("name", "sb0t 5 test room");
+            Settings.Set("topic", "sb5 :: welcome to my room");
+            Settings.Set("bot", "sb0t");
+            Settings.Set("language", (byte)10);
+            Settings.Set("text", "google", "url");
+            Settings.Set("link", "http://www.google.com/", "url");
 
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
             
@@ -70,33 +73,44 @@ namespace core
             UserPool.Build();
             Time.Reset();
             Captcha.Initialize();
+            UserHistory.Initialize();
+            ulong fast_ping_timer = Time.Now;
 
             while (true)
             {
                 if (this.terminate)
                     break;
 
-                uint time = Time.Now;
+                ulong time = Time.Now;
+
+                if (time > (fast_ping_timer + 2000))
+                {
+                    fast_ping_timer = time;
+
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.FastPing()),
+                        x => x.LoggedIn && x.FastPing);
+                }
+
                 this.CheckTCPListener(time);
                 this.ServiceSockets(time);
                 Thread.Sleep(25);
             }
         }
 
-        private void CheckTCPListener(uint time)
+        private void CheckTCPListener(ulong time)
         {
             while (this.tcp.Pending())
                 UserPool.CreateAresClient(this.tcp.AcceptSocket(), time);
         }
 
-        private void ServiceSockets(uint time)
+        private void ServiceSockets(ulong time)
         {
             foreach (AresClient client in UserPool.AUsers)
                 if (!String.IsNullOrEmpty(client.DNS))
                 {
                     TCPPacket packet = null;
 
-                    while ((packet = client.NextReceivedPacket) != null)
+                    while ((packet = client.NextReceivedPacket) != null && client.SocketConnected)
                         if (packet.Msg == TCPMsg.MSG_CHAT_CLIENTCOMPRESSED)
                             client.InsertUnzippedData(Zip.Decompress(packet.Packet.ToArray()));
                         else
@@ -118,14 +132,6 @@ namespace core
             UserPool.AUsers.FindAll(x => !x.SocketConnected).ForEach(x => x.Disconnect());
             UserPool.AUsers.RemoveAll(x => !x.SocketConnected);
         }
-    }
-
-    public class ServerCredentials
-    {
-        public String Name { get; set; }
-        public String Topic { get; set; }
-        public ushort Port { get; set; }
-        public String Bot { get; set; }
     }
 
     public class ServerLogEventArgs : EventArgs

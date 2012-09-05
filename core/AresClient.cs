@@ -14,13 +14,14 @@ namespace core
         public IPAddress ExternalIP { get; set; }
         public String DNS { get; set; }
         public bool LoggedIn { get; set; }
-        public uint Time { get; set; }
+        public ulong Time { get; set; }
         public Guid Guid { get; set; }
         public ushort FileCount { get; set; }
         public ushort DataPort { get; set; }
         public IPAddress NodeIP { get; set; }
         public ushort NodePort { get; set; }
         public String Name { get; set; }
+        public String OrgName { get; set; }
         public String Version { get; set; }
         public IPAddress LocalIP { get; set; }
         public bool Browsable { get; set; }
@@ -32,20 +33,31 @@ namespace core
         public byte Sex { get; set; }
         public byte Country { get; set; }
         public String Region { get; set; }
+        public bool Encryption { get; set; }
+        public bool FastPing { get; set; }
+        public Level Level { get; set; }
+        public ushort Vroom { get; set; }
+        public bool Ghosting { get; set; }
+        public uint Cookie { get; set; }
 
 
         private Socket Sock { get; set; }
         private List<byte> data_in = new List<byte>();
         private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
         private int socket_health = 0;
+        private byte[] avatar = new byte[] { };
+        private String personal_message = String.Empty;
 
-        public AresClient(Socket sock, uint time, ushort id)
+        public AresClient(Socket sock, ulong time, ushort id)
         {
             this.ID = id;
             this.Sock = sock;
             this.Sock.Blocking = false;
             this.Time = time;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
+            this.Level = core.Level.Regular;
+            this.Vroom = 0;
+            this.Cookie = AdminSystem.NextCookie;
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
             ServerCore.Log(this.ID + " connects");
         }
@@ -56,16 +68,50 @@ namespace core
             {
                 IPHostEntry i = Dns.EndGetHostEntry(result);
                 this.DNS = i.HostName;
-                this.SendPacket(TCPOutbound.NoSuch("\x000302Hostname: " + this.DNS));
+                this.SendPacket(TCPOutbound.NoSuch(this, "\x000302Hostname: " + this.DNS));
             }
             catch
             {
                 try
                 {
                     this.DNS = this.ExternalIP.ToString();
-                    this.SendPacket(TCPOutbound.NoSuch("\x000302Hostname: " + this.DNS));
+                    this.SendPacket(TCPOutbound.NoSuch(this, "\x000302Hostname: " + this.DNS));
                 }
                 catch { }
+            }
+        }
+
+        public byte[] Avatar
+        {
+            get { return this.avatar; }
+            set
+            {
+                if (value.Length < 10)
+                {
+                    this.avatar = new byte[] { };
+
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.AvatarCleared(x, this)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                }
+                else
+                {
+                    this.avatar = value;
+
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, this)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                }
+            }
+        }
+
+        public String PersonalMessage
+        {
+            get { return this.personal_message; }
+            set
+            {
+                this.personal_message = value;
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom);
             }
         }
 
@@ -110,7 +156,7 @@ namespace core
             }
         }
 
-        public void EnforceRules(uint time)
+        public void EnforceRules(ulong time)
         {
             if ((!this.LoggedIn && time > (this.Time + 15000)) ||
                 (this.LoggedIn && time > (this.Time + 240000)))
@@ -121,6 +167,11 @@ namespace core
         }
 
         public void Disconnect()
+        {
+            this.Disconnect(false);
+        }
+
+        public void Disconnect(bool ghost)
         {
             while (this.data_out.Count > 0)
             {
@@ -143,7 +194,24 @@ namespace core
 
             this.SocketConnected = false;
 
+            if (!ghost)
+                this.SendDepart();
+
             ServerCore.Log(this.ID + " disconnects");
+        }
+
+        public void SendDepart()
+        {
+            if (this.LoggedIn)
+            {
+                this.LoggedIn = false;
+                Events.Parting(this);
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                Events.Parted(this);
+            }
         }
 
         public TCPPacket NextReceivedPacket
