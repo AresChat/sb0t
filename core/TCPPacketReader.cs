@@ -92,11 +92,11 @@ namespace core
         {
             String str = String.Empty;
 
-            if (client.Encryption)
+            if (client.Encryption.Mode == EncryptionMode.Encrypted)
             {
                 ushort size = this;
                 byte[] data = this.ReadBytes(size);
-                data = Crypto.Decrypt(data, client.EncryptionKey, client.EncryptionIV);
+                data = Crypto.Decrypt(data, client.Encryption.Key, client.Encryption.IV);
                 str = Encoding.UTF8.GetString(data);
 
                 if (this.Position < this.Data.Count)

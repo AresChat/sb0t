@@ -14,8 +14,8 @@ namespace core
             byte[] result;
 
             using (MemoryStream ms = new MemoryStream())
-            using (TripleDESCryptoServiceProvider des = new TripleDESCryptoServiceProvider())
-            using (ICryptoTransform enc = des.CreateEncryptor(key, iv))
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+            using (ICryptoTransform enc = aes.CreateEncryptor(key, iv))
             using (CryptoStream cs = new CryptoStream(ms, enc, CryptoStreamMode.Write))
             {
                 cs.Write(data, 0, data.Length);
@@ -31,8 +31,8 @@ namespace core
             byte[] result;
 
             using (MemoryStream ms = new MemoryStream(data))
-            using (TripleDESCryptoServiceProvider des = new TripleDESCryptoServiceProvider())
-            using (ICryptoTransform enc = des.CreateDecryptor(key, iv))
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+            using (ICryptoTransform enc = aes.CreateDecryptor(key, iv))
             using (CryptoStream cs = new CryptoStream(ms, enc, CryptoStreamMode.Read))
             {
                 result = new byte[data.Length];
@@ -49,8 +49,8 @@ namespace core
             {
                 byte[] result;
 
-                using (TripleDESCryptoServiceProvider des = new TripleDESCryptoServiceProvider())
-                    result = des.Key;
+                using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+                    result = aes.Key;
 
                 return result;
             }
@@ -62,8 +62,8 @@ namespace core
             {
                 byte[] result;
 
-                using (TripleDESCryptoServiceProvider des = new TripleDESCryptoServiceProvider())
-                    result = des.IV;
+                using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider())
+                    result = aes.IV;
 
                 return result;
             }
@@ -95,5 +95,18 @@ namespace core
 
             return buffer;
         }
+    }
+
+    enum EncryptionMode
+    {
+        Encrypted,
+        Unencrypted
+    }
+
+    class Encryption
+    {
+        public EncryptionMode Mode { get; set; }
+        public byte[] Key { get; set; }
+        public byte[] IV { get; set; }
     }
 }

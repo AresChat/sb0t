@@ -173,12 +173,11 @@ namespace core
         public static byte[] CryptoKey(AresClient client)
         {
             byte[] guid = client.Guid.ToByteArray();
-            byte[] key = client.EncryptionIV.Concat(client.EncryptionKey).ToArray();
+            byte[] key = client.Encryption.IV.Concat(client.Encryption.Key).ToArray();
 
             for (int i = 0; i < guid.Length; i += 2)
                 key = Crypto.e67(key, BitConverter.ToUInt16(guid, i));
 
-            // for (var i = (arr.length - 2); i > -1; i -= 2) print(arr[i]); // reverse
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteBytes(key);
             byte[] data = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CRYPTO_KEY);

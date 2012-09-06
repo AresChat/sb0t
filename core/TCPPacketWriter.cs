@@ -70,16 +70,15 @@ namespace core
 
         public void WriteString(AresClient client, String text)
         {
-            this.Data.AddRange(Encoding.UTF8.GetBytes(text));
-            this.Data.Add(0);
+            this.WriteString(client, text, true);
         }
 
         public void WriteString(AresClient client, String text, bool null_terminated)
         {
-            if (client.Encryption)
+            if (client.Encryption.Mode == EncryptionMode.Encrypted)
             {
                 byte[] data = Encoding.UTF8.GetBytes(text);
-                data = Crypto.Encrypt(data, client.EncryptionKey, client.EncryptionIV);
+                data = Crypto.Encrypt(data, client.Encryption.Key, client.Encryption.IV);
                 this.WriteUInt16((ushort)data.Length);
                 this.WriteBytes(data);
             }

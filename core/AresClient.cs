@@ -33,9 +33,7 @@ namespace core
         public byte Sex { get; set; }
         public byte Country { get; set; }
         public String Region { get; set; }
-        public bool Encryption { get; set; }
-        public byte[] EncryptionKey { get; set; }
-        public byte[] EncryptionIV { get; set; }
+        public Encryption Encryption { get; set; }
         public bool FastPing { get; set; }
         public Level Level { get; set; }
         public ushort Vroom { get; set; }
@@ -60,6 +58,7 @@ namespace core
             this.Level = core.Level.Regular;
             this.Vroom = 0;
             this.Cookie = AdminSystem.NextCookie;
+            this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
             ServerCore.Log(this.ID + " connects");
         }

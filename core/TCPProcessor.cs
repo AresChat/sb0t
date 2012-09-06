@@ -91,12 +91,12 @@ namespace core
             client.Sex = packet;
             client.Country = packet;
             client.Region = packet.ReadString(client);
-            client.Encryption = crypto == 250;
+            client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
 
-            if (client.Encryption)
+            if (client.Encryption.Mode == EncryptionMode.Encrypted)
             {
-                client.EncryptionKey = Crypto.CreateKey;
-                client.EncryptionIV = Crypto.CreateIV;
+                client.Encryption.Key = Crypto.CreateKey;
+                client.Encryption.IV = Crypto.CreateIV;
                 client.SendPacket(TCPOutbound.CryptoKey(client));
             }
 
