@@ -51,13 +51,16 @@
     <Compile Include="Crypto.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Font.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="PartedClient.cs" />
+    <Compile Include="PMEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RejectedMsg.cs" />
     <Compile Include="ServerCore.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TCPAdvancedProcessor.cs" />
     <Compile Include="TCPMsg.cs" />
     <Compile Include="TCPOutbound.cs" />
     <Compile Include="TCPPacket.cs" />

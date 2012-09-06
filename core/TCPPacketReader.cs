@@ -18,6 +18,11 @@ namespace core
             this.Data.AddRange(bytes);
         }
 
+        public int Remaining
+        {
+            get { return this.Data.Count - this.Position; }
+        }
+
         public void SkipByte()
         {
             this.Position++;

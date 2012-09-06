@@ -39,6 +39,9 @@ namespace core
         public ushort Vroom { get; set; }
         public bool Ghosting { get; set; }
         public uint Cookie { get; set; }
+        public List<ushort> Ignores { get; set; }
+        public Font Font { get; set; }
+        public bool CustomClient { get; set; }
 
 
         private Socket Sock { get; set; }
@@ -59,6 +62,9 @@ namespace core
             this.Vroom = 0;
             this.Cookie = AdminSystem.NextCookie;
             this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };
+            this.Name = String.Empty;
+            this.Ignores = new List<ushort>();
+            this.Font = new core.Font();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
             ServerCore.Log(this.ID + " connects");
         }

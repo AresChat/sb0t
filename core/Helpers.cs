@@ -25,5 +25,17 @@ namespace core
             if (client.OrgName.Length < 2)
                 client.OrgName = "anon " + client.Cookie;
         }
+
+        public static void PopulateCommand(Command cmd)
+        {
+
+        }
+    }
+
+    class Command
+    {
+        public String Text { get; set; }
+        public AresClient Target { get; set; }
+        public String Args { get; set; }
     }
 }

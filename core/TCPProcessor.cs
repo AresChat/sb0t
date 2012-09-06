@@ -11,6 +11,9 @@ namespace core
         {
             Events.PacketReceived(client, packet.Msg, packet.Packet.ToArray());
 
+            if (!client.LoggedIn && packet.Msg > TCPMsg.MSG_CHAT_CLIENT_LOGIN)
+                throw new Exception("unordered login routine");
+
             switch (packet.Msg)
             {
                 case TCPMsg.MSG_CHAT_CLIENT_LOGIN:
@@ -34,10 +37,157 @@ namespace core
                     client.FastPing = true;
                     break;
 
+                case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_DATA:
+                    CustomData(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_DATA_ALL:
+                    CustomDataAll(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL:
+                    TCPAdvancedProcessor.Eval(client, packet, time);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_PUBLIC:
+                    Public(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_EMOTE:
+                    Emote(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_COMMAND:
+                    Command(client, packet.Packet.ReadString(client));
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_PVT:
+                    Private(client, packet.Packet);
+                    break;
+
                 default:
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, client.ID + " : " + packet.Msg)), x => x.LoggedIn);
                     break;
             }
+        }
+
+        private static void Command(AresClient client, String text)
+        {
+            Command cmd = new Command { Text = text };
+            Events.Command(client, text, cmd.Target, cmd.Args);
+        }
+
+        private static void Private(AresClient client, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(client);
+            String text = packet.ReadString(client);
+            PMEventArgs args = new PMEventArgs { Cancel = false, Text = text };
+
+            if (name == Settings.Get<String>("bot"))
+            {
+                if (text.StartsWith("#login") || text.StartsWith("#register"))
+                {
+                    Command(client, text.Substring(1));
+                    return;
+                }
+                else
+                {
+                    Events.BotPrivateSending(client, args);
+
+                    if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
+                    {
+                        Events.BotPrivateSent(client, args.Text);
+
+                        if (text.StartsWith("#"))
+                            Command(client, text.Substring(1));
+                    }
+                }
+            }
+            else
+            {
+                AresClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn);
+
+                if (target == null)
+                    client.SendPacket(TCPOutbound.OfflineUser(client, name));
+                else if (target.Ignores.Contains(client.ID))
+                    client.SendPacket(TCPOutbound.IsIgnoringYou(client, name));
+                else
+                {
+                    Events.PrivateSending(client, target, args);
+
+                    if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
+                    {
+                        target.SendPacket(TCPOutbound.Private(target, client.Name, args.Text));
+                        Events.PrivateSent(client, target, args.Text);
+                    }
+                }
+            }
+        }
+
+        private static void Public(AresClient client, TCPPacketReader packet)
+        {
+            String text = packet.ReadString(client);
+
+            if (text.StartsWith("#login") || text.StartsWith("#register"))
+            {
+                Command(client, text.Substring(1));
+                return;
+            }
+
+            Events.TextReceived(client, text);
+
+            if (client.SocketConnected)
+            {
+                text = Events.TextSending(client, text);
+
+                if (!String.IsNullOrEmpty(text) && client.SocketConnected)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Public(x, client.Name, text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Ignores.Contains(client.ID));
+
+                    Events.TextSent(client, text);
+                }
+            }
+        }
+
+        private static void Emote(AresClient client, TCPPacketReader packet)
+        {
+            String text = packet.ReadString(client);
+            Events.EmoteReceived(client, text);
+
+            if (client.SocketConnected)
+            {
+                text = Events.EmoteSending(client, text);
+
+                if (!String.IsNullOrEmpty(text) && client.SocketConnected)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Ignores.Contains(client.ID));
+
+                    Events.EmoteSent(client, text);
+                }
+            }
+        }
+
+        
+        private static void CustomDataAll(AresClient client, TCPPacketReader packet)
+        {
+            String ident = packet.ReadString(client);
+            byte[] data = packet;
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, client.Name, ident, data)),
+                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+        }
+
+        private static void CustomData(AresClient client, TCPPacketReader packet)
+        {
+            String ident = packet.ReadString(client);
+            String name = packet.ReadString(client);
+            byte[] data = packet;
+            AresClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn && x.CustomClient);
+
+            if (target != null)
+                target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
         }
 
         private static void PersonalMessage(AresClient client, TCPPacketReader packet)
@@ -79,6 +229,7 @@ namespace core
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
+            client.CustomClient = !client.Version.StartsWith("Ares 2.");
             client.LocalIP = packet;
             packet.SkipBytes(4);
             byte flag = packet;
@@ -167,6 +318,9 @@ namespace core
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0);
+
+            UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
+                x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
             
             Events.Joined(client);
         }

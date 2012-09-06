@@ -34,7 +34,7 @@ namespace core
             packet.WriteByte(0);
             packet.WriteString(client, target.Name);
             packet.WriteIP(target.LocalIP);
-            packet.WriteByte(target.Browsable ? (byte)1 : (byte)0);
+            packet.WriteByte((byte)(target.Browsable ? 1 : 0));
             packet.WriteByte((byte)target.Level);
             packet.WriteByte(target.Age);
             packet.WriteByte(target.Sex);
@@ -62,7 +62,7 @@ namespace core
             packet.WriteByte(0);
             packet.WriteString(client, target.Name);
             packet.WriteIP(target.LocalIP);
-            packet.WriteByte(target.Browsable ? (byte)1 : (byte)0);
+            packet.WriteByte((byte)(target.Browsable ? 1 : 0));
             packet.WriteByte((byte)target.Level);
             packet.WriteByte(target.Age);
             packet.WriteByte(target.Sex);
@@ -109,7 +109,7 @@ namespace core
         public static byte[] OpChange(AresClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteByte(client.Level > 0 ? (byte)1 : (byte)0);
+            packet.WriteByte((byte)(client.Level > 0 ? 1 : 0));
             packet.WriteByte(0);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_OPCHANGE);
         }
@@ -184,6 +184,92 @@ namespace core
             packet = new TCPPacketWriter();
             packet.WriteBytes(data);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] CustomData(AresClient client, String sender, String ident, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, ident);
+            packet.WriteString(client, sender);
+            packet.WriteBytes(data);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_DATA);
+        }
+
+        public static byte[] Public(AresClient client, String username, String text)
+        {
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
+
+            while (Encoding.UTF8.GetByteCount(text) > 300)
+                text = text.Substring(0, text.Length - 1);
+
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, username);
+            packet.WriteString(client, text, false);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_PUBLIC);
+        }
+
+        public static byte[] Emote(AresClient client, String username, String text)
+        {
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
+
+            while (Encoding.UTF8.GetByteCount(text) > 300)
+                text = text.Substring(0, text.Length - 1);
+
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, username);
+            packet.WriteString(client, text, false);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_EMOTE);
+        }
+
+        public static byte[] CustomFont(AresClient client, AresClient target)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, target.Name); // user's name + null
+            packet.WriteByte(target.Font.Size); // limited to between 8 to 16
+            packet.WriteString(client, target.Font.Family); // null terminated
+            packet.WriteByte(target.Font.NameColor);
+            packet.WriteByte(target.Font.TextColor);
+
+            if (target.Font.NameColorNew != null && target.Font.TextColorNew != null)
+            {
+                packet.WriteBytes(target.Font.NameColorNew);
+                packet.WriteBytes(target.Font.TextColorNew);
+            }
+
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_FONT); // id = 204
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] Private(AresClient client, String username, String text)
+        {
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
+
+            while (Encoding.UTF8.GetByteCount(text) > 300)
+                text = text.Substring(0, text.Length - 1);
+
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, username);
+            packet.WriteString(client, text, false);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_PVT);
+        }
+
+        public static byte[] IsIgnoringYou(AresClient client, String name)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, name);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_ISIGNORINGYOU);
+        }
+
+        public static byte[] OfflineUser(AresClient client, String name)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, name);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_OFFLINEUSER);
         }
     }
 }

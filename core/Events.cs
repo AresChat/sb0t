@@ -22,5 +22,29 @@ namespace core
         public static bool AvatarReceived(AresClient client) { return true; }
 
         public static bool PersonalMessageReceived(AresClient client, String text) { return true; }
+
+        public static void TextReceived(AresClient client, String text) { }
+
+        public static String TextSending(AresClient client, String text) { return text; }
+
+        public static void TextSent(AresClient client, String text) { }
+
+        public static void EmoteReceived(AresClient client, String text) { }
+
+        public static String EmoteSending(AresClient client, String text) { return text; }
+
+        public static void EmoteSent(AresClient client, String text) { }
+
+        public static void PrivateSending(AresClient client, AresClient target, PMEventArgs e) { }
+
+        public static void PrivateSent(AresClient client, AresClient target, String text) { }
+
+        public static void BotPrivateSending(AresClient client, PMEventArgs e) { }
+
+        public static void BotPrivateSent(AresClient client, String text) { }
+
+        public static void Command(AresClient client, String command, AresClient target, String args) { }
+
+        
     }
 }
