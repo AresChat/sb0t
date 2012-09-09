@@ -83,15 +83,77 @@ namespace core
                     FileBrowseProcessor.Search(client, packet.Packet);
                     break;
 
-                default:
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, client.ID + " : " + packet.Msg)), x => x.LoggedIn);
+                case TCPMsg.MSG_CHAT_CLIENT_AUTHLOGIN:
                     break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_AUTHREGISTER:
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_AUTOLOGIN:
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_DUMMY:
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH:
+                    DirChatPush(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_SEND_SUPERNODES:
+                    client.SendPacket(TCPOutbound.SuperNodes());
+                    break;
+
+                default:
+                    Events.UnhandledProtocol(client, packet.Msg, packet.Packet, time);
+                    break;
+            }
+        }
+
+        private static void DirChatPush(AresClient client, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(client);
+
+            if (Encoding.UTF8.GetByteCount(name) < 2)
+                client.SendPacket(new byte[] { 1, 0, (byte)TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH, 4 });
+            else if (packet.Remaining != 16)
+                client.SendPacket(new byte[] { 1, 0, (byte)TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH, 3 });
+            else
+            {
+                byte[] cookie = packet.ReadBytes(packet.Remaining);
+                AresClient target = UserPool.AUsers.Find(x => x.Name == name);
+
+                if (target == null)
+                    client.SendPacket(new byte[] { 1, 0, (byte)TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH, 1 });
+                else if (target.IgnoreList.Contains(client.Name))
+                    client.SendPacket(new byte[] { 1, 0, (byte)TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH, 2 });
+                else
+                {
+                    client.SendPacket(new byte[] { 1, 0, (byte)TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH, 0 });
+                    target.SendPacket(TCPOutbound.DirectChatPush(target, client, cookie));
+                }
             }
         }
 
         private static void IgnoreList(AresClient client, TCPPacketReader packet)
         {
+            bool ignore = (byte)packet != 0;
+            String name = packet.ReadString(client);
+            AresClient target = UserPool.AUsers.Find(x => x.Name == name);
 
+            if (target != null)
+                if (!ignore)
+                {
+                    client.IgnoreList.RemoveAll(x => x == name);
+                    Events.IgnoredStateChanged(client, target, ignore);
+                }
+                else if (Events.Ignoring(client, target))
+                    if (client.SocketConnected && target.SocketConnected)
+                    {
+                        if (!client.IgnoreList.Contains(name))
+                            client.IgnoreList.Add(name);
+
+                        Events.IgnoredStateChanged(client, target, ignore);
+                    }
         }
 
         private static void Command(AresClient client, String text)
@@ -133,7 +195,7 @@ namespace core
 
                 if (target == null)
                     client.SendPacket(TCPOutbound.OfflineUser(client, name));
-                else if (target.Ignores.Contains(client.ID))
+                else if (target.IgnoreList.Contains(client.Name))
                     client.SendPacket(TCPOutbound.IsIgnoringYou(client, name));
                 else
                 {
@@ -171,7 +233,7 @@ namespace core
                 if (!String.IsNullOrEmpty(text) && client.SocketConnected)
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Public(x, client.Name, text)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Ignores.Contains(client.ID));
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
 
                     Events.TextSent(client, text);
                 }
@@ -190,7 +252,7 @@ namespace core
                 if (!String.IsNullOrEmpty(text) && client.SocketConnected)
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Ignores.Contains(client.ID));
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
 
                     Events.EmoteSent(client, text);
                 }

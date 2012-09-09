@@ -19,7 +19,7 @@ namespace core
                     break;
 
                 default:
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, client.ID + " : " + msg)), x => x.LoggedIn);
+                    Events.UnhandledProtocol(client, packet.Msg, packet.Packet, time);
                     break;
             }
         }

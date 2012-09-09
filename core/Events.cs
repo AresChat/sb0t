@@ -7,6 +7,12 @@ namespace core
 {
     class Events
     {
+        public static void UnhandledProtocol(AresClient client, TCPMsg msg, TCPPacketReader packet, ulong tick)
+        {
+            UserPool.AUsers.ForEachWhere(x =>
+                x.SendPacket(TCPOutbound.NoSuch(x, "Unhandled : " + client.Name + " : " + msg)), x => x.LoggedIn);
+        }
+
         public static bool Joining(AresClient client) { return true; }
 
         public static void Joined(AresClient client) { }
@@ -41,18 +47,13 @@ namespace core
 
         public static void BotPrivateSent(AresClient client, String text) { }
 
-        public static void Command(AresClient client, String command, AresClient target, String args)
-        {
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, client.Name)), x => x.LoggedIn);
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, command)), x => x.LoggedIn);
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, (target == null).ToString())), x => x.LoggedIn);
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, args)), x => x.LoggedIn);
-        }
+        public static void Command(AresClient client, String command, AresClient target, String args) { }
 
-        public static void FileReceived(AresClient client, SharedFile file)
-        {
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, file.FileName + " -> " + file.Title)), x => x.LoggedIn);
-        }
+        public static void FileReceived(AresClient client, SharedFile file)        {        }
+
+        public static bool Ignoring(AresClient client, AresClient target) { return true; }
+
+        public static void IgnoredStateChanged(AresClient client, AresClient target, bool ignored) { }
 
 
     }

@@ -38,7 +38,7 @@ namespace core
         public ushort Vroom { get; set; }
         public bool Ghosting { get; set; }
         public uint Cookie { get; set; }
-        public List<ushort> Ignores { get; set; }
+        public List<String> IgnoreList { get; set; }
         public Font Font { get; set; }
         public bool CustomClient { get; set; }
         public List<SharedFile> SharedFiles { get; set; }
@@ -63,7 +63,8 @@ namespace core
             this.Cookie = AdminSystem.NextCookie;
             this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };
             this.Name = String.Empty;
-            this.Ignores = new List<ushort>();
+            this.Version = String.Empty;
+            this.IgnoreList = new List<String>();
             this.Font = new core.Font();
             this.SharedFiles = new List<SharedFile>();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);

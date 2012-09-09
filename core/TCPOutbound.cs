@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
 
 namespace core
 {
@@ -336,6 +337,43 @@ namespace core
             packet.WriteUInt16(id);
             packet.WriteUInt16(count);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_STARTOFBROWSE);
+        }
+
+        public static byte[] SuperNodes()
+        {
+            var linq = from x in UserPool.AUsers
+                       where x.NodePort > 0 && x.Version.StartsWith("Ares 2.")
+                       select new IPEndPoint(x.ExternalIP, x.DataPort);
+
+            TCPPacketWriter packet = new TCPPacketWriter();
+
+            if (linq.Count() > 0)
+            {
+                List<IPEndPoint> nodes = linq.ToList();
+                nodes.Randomize();
+
+                if (nodes.Count > 20)
+                    nodes = nodes.GetRange(0, 20);
+
+                foreach (IPEndPoint n in nodes)
+                {
+                    packet.WriteIP(n.Address);
+                    packet.WriteUInt16((ushort)n.Port);
+                }
+            }
+
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_HERE_SUPERNODES);
+        }
+
+        public static byte[] DirectChatPush(AresClient client, AresClient target, byte[] cookie)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, target.Name);
+            packet.WriteIP(target.ExternalIP);
+            packet.WriteUInt16(target.DataPort);
+            packet.WriteIP(target.LocalIP);
+            packet.WriteBytes(cookie);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH);
         }
     }
 }
