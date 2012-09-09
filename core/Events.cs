@@ -43,7 +43,13 @@ namespace core
 
         public static void BotPrivateSent(AresClient client, String text) { }
 
-        public static void Command(AresClient client, String command, AresClient target, String args) { }
+        public static void Command(AresClient client, String command, AresClient target, String args)
+        {
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, client.Name)), x => x.LoggedIn);
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, command)), x => x.LoggedIn);
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, (target == null).ToString())), x => x.LoggedIn);
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, args)), x => x.LoggedIn);
+        }
 
         
     }

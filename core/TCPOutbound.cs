@@ -118,7 +118,7 @@ namespace core
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, Settings.VERSION);
-            packet.WriteByte((byte)(client.Browsable ? 7 : 3));
+            packet.WriteByte(7);
             packet.WriteByte(63);
             packet.WriteByte(Settings.Get<byte>("language"));
             packet.WriteUInt32(client.Cookie);

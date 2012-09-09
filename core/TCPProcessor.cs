@@ -65,15 +65,25 @@ namespace core
                     Private(client, packet.Packet);
                     break;
 
+                case TCPMsg.MSG_CHAT_CLIENT_IGNORELIST:
+                    IgnoreList(client, packet.Packet);
+                    break;
+
                 default:
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, client.ID + " : " + packet.Msg)), x => x.LoggedIn);
                     break;
             }
         }
 
+        private static void IgnoreList(AresClient client, TCPPacketReader packet)
+        {
+
+        }
+
         private static void Command(AresClient client, String text)
         {
-            Command cmd = new Command { Text = text };
+            Command cmd = new Command { Text = text, Args = String.Empty };
+            Helpers.PopulateCommand(cmd);
             Events.Command(client, text, cmd.Target, cmd.Args);
         }
 
@@ -134,9 +144,13 @@ namespace core
                 return;
             }
 
-            Events.TextReceived(client, text);
+            if (text.StartsWith("#"))
+                Command(client, text.Substring(1));
 
-            if (client.SocketConnected)
+            if (client.SocketConnected) // connected after Command?
+                Events.TextReceived(client, text);
+
+            if (client.SocketConnected) // connected after TextReceived?
             {
                 text = Events.TextSending(client, text);
 
@@ -199,7 +213,8 @@ namespace core
 
             if (client.PersonalMessage != text)
                 if (Events.PersonalMessageReceived(client, text))
-                    client.PersonalMessage = text;
+                    if (client.SocketConnected)
+                        client.PersonalMessage = text;
         }
 
         private static void Avatar(AresClient client, TCPPacketReader packet)
@@ -209,7 +224,8 @@ namespace core
             if (!client.Avatar.SequenceEqual(avatar))
                 if (Events.AvatarReceived(client))
                     if (avatar.Length < 4064)
-                        client.Avatar = avatar;
+                        if (client.SocketConnected)
+                            client.Avatar = avatar;
         }
 
         private static void Login(AresClient client, TCPPacketReader packet, ulong time, bool relogin)
@@ -232,9 +248,7 @@ namespace core
             client.CustomClient = !client.Version.StartsWith("Ares 2.");
             client.LocalIP = packet;
             packet.SkipBytes(4);
-            byte flag = packet;
-            client.Browsable = flag > 2;
-            client.Compression = flag > 3;
+            client.Browsable = packet > 2;
             client.CurrentUploads = packet;
             client.MaxUploads = packet;
             client.CurrentQueued = packet;

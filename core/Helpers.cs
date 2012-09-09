@@ -28,7 +28,42 @@ namespace core
 
         public static void PopulateCommand(Command cmd)
         {
+            String str = cmd.Text;
+            int space = str.IndexOf(" ");
+            ushort id;
 
+            if (space == -1)
+                return;
+
+            str = str.Substring(str.IndexOf(" ") + 1);
+            cmd.Target = UserPool.AUsers.Find(x => x.Name == str);
+
+            if (cmd.Target == null && str.Length > 0)
+                if (str.StartsWith("\"") && str.LastIndexOf("\"") > str.IndexOf("\""))
+                {
+                    str = str.Substring(1);
+                    cmd.Target = UserPool.AUsers.Find(x => x.Name == str.Substring(0, str.IndexOf("\"")));
+
+                    if (cmd.Target == null)
+                        cmd.Target = UserPool.AUsers.Find(x => x.Name.StartsWith(str.Substring(0, str.IndexOf("\""))));
+
+                    str = str.Substring(str.IndexOf("\"") + 1);
+
+                    if (str.StartsWith(" "))
+                        str = str.Substring(1);
+
+                    cmd.Args = str;
+                }
+                else if (str.IndexOf(" ") > 0)
+                {
+                    String id_str = str.Substring(0, str.IndexOf(" "));
+                    cmd.Args = str.Substring(str.IndexOf(" ") + 1);
+
+                    if (ushort.TryParse(id_str, out id))
+                        cmd.Target = UserPool.AUsers.Find(x => x.ID == id);
+                }
+                else if (ushort.TryParse(str, out id))
+                    cmd.Target = UserPool.AUsers.Find(x => x.ID == id);
         }
     }
 

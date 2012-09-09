@@ -25,7 +25,6 @@ namespace core
         public String Version { get; set; }
         public IPAddress LocalIP { get; set; }
         public bool Browsable { get; set; }
-        public bool Compression { get; set; }
         public byte CurrentUploads { get; set; }
         public byte MaxUploads { get; set; }
         public byte CurrentQueued { get; set; }
