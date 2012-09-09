@@ -7,8 +7,6 @@ namespace core
 {
     class Events
     {
-        public static void PacketReceived(AresClient client, TCPMsg msg, byte[] packet) { }
-
         public static bool Joining(AresClient client) { return true; }
 
         public static void Joined(AresClient client) { }
@@ -51,6 +49,11 @@ namespace core
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, args)), x => x.LoggedIn);
         }
 
-        
+        public static void FileReceived(AresClient client, SharedFile file)
+        {
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, file.FileName + " -> " + file.Title)), x => x.LoggedIn);
+        }
+
+
     }
 }

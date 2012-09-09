@@ -9,8 +9,6 @@ namespace core
     {
         public static void Eval(AresClient client, TCPPacket packet, ulong time)
         {
-            Events.PacketReceived(client, packet.Msg, packet.Packet.ToArray());
-
             if (!client.LoggedIn && packet.Msg > TCPMsg.MSG_CHAT_CLIENT_LOGIN)
                 throw new Exception("unordered login routine");
 
@@ -67,6 +65,22 @@ namespace core
 
                 case TCPMsg.MSG_CHAT_CLIENT_IGNORELIST:
                     IgnoreList(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_ADDSHARE:
+                    FileBrowseProcessor.AddShare(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_REMSHARE:
+                    FileBrowseProcessor.RemShare(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_BROWSE:
+                    FileBrowseProcessor.Browse(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_SEARCH:
+                    FileBrowseProcessor.Search(client, packet.Packet);
                     break;
 
                 default:

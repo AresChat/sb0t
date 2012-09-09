@@ -116,7 +116,7 @@ namespace core
                         else
                             try
                             {
-                                TCPProcessor.Eval(client, packet, time);
+                                TCPProcessor.Eval(client, packet, time);            
                             }
                             catch (Exception e)
                             {
@@ -124,7 +124,7 @@ namespace core
                                 Log("packet read fail from " + client.ID + " " + packet.Msg, e);
                                 break;
                             }
-
+                    
                     client.SendReceive();
                     client.EnforceRules(time);
                 }

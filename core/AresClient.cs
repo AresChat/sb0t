@@ -41,6 +41,7 @@ namespace core
         public List<ushort> Ignores { get; set; }
         public Font Font { get; set; }
         public bool CustomClient { get; set; }
+        public List<SharedFile> SharedFiles { get; set; }
 
 
         private Socket Sock { get; set; }
@@ -64,6 +65,7 @@ namespace core
             this.Name = String.Empty;
             this.Ignores = new List<ushort>();
             this.Font = new core.Font();
+            this.SharedFiles = new List<SharedFile>();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
             ServerCore.Log(this.ID + " connects");
         }

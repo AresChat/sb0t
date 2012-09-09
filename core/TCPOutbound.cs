@@ -271,5 +271,71 @@ namespace core
             packet.WriteString(client, name);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_OFFLINEUSER);
         }
+
+        public static byte[] SearchHit(AresClient client, ushort id, AresClient target, SharedFile file)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(id);
+            packet.WriteByte((byte)file.Mime);
+            packet.WriteUInt32(file.Size);
+            packet.WriteBytes(file.Data);
+            packet.WriteString(client, target.Name);
+            packet.WriteIP(target.ExternalIP);
+            packet.WriteUInt16(target.DataPort);
+            packet.WriteIP(target.NodeIP);
+            packet.WriteUInt16(target.NodePort);
+            packet.WriteIP(target.LocalIP);
+            packet.WriteByte(target.CurrentUploads);
+            packet.WriteByte(target.MaxUploads);
+            packet.WriteByte(target.CurrentQueued);
+            packet.WriteByte(1);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_SEARCHHIT);
+        }
+
+        public static byte[] EndOfSearch(ushort id)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(id);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_ENDOFSEARCH);
+        }
+
+        public static byte[] ClientCompressed(byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteBytes(Zip.Compress(data));
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_CLIENTCOMPRESSED);
+        }
+
+        public static byte[] EndOfBrowse(ushort id)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(id);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_ENDOFBROWSE);
+        }
+
+        public static byte[] BrowseError(ushort id)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(id);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_BROWSEERROR);
+        }
+
+        public static byte[] BrowseItem(ushort id, SharedFile file)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(id);
+            packet.WriteByte((byte)file.Mime);
+            packet.WriteUInt32(file.Size);
+            packet.WriteBytes(file.Data);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_BROWSEITEM);
+        }
+
+        public static byte[] StartOfBrowse(ushort id, ushort count)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(id);
+            packet.WriteUInt16(count);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_STARTOFBROWSE);
+        }
     }
 }
