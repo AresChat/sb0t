@@ -119,7 +119,7 @@ namespace core
                 client.SendPacket(new byte[] { 1, 0, (byte)TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH, 3 });
             else
             {
-                byte[] cookie = packet.ReadBytes(packet.Remaining);
+                byte[] cookie = packet;
                 AresClient target = UserPool.AUsers.Find(x => x.Name == name);
 
                 if (target == null)
@@ -400,8 +400,12 @@ namespace core
 
             client.SendPacket(TCPOutbound.UserListEnd());
             client.SendPacket(TCPOutbound.OpChange(client));
+            client.SendPacket(TCPOutbound.SupportsVoiceClips());
             client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
             client.SendPacket(TCPOutbound.PersonalMessageBot(client));
+
+            UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
+                x => x.VoiceChatPrivate || x.VoiceChatPublic);
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);

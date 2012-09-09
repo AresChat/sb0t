@@ -42,6 +42,10 @@ namespace core
         public Font Font { get; set; }
         public bool CustomClient { get; set; }
         public List<SharedFile> SharedFiles { get; set; }
+        public List<String> CustomClientTags { get; set; }
+        public bool VoiceChatPublic { get; set; }
+        public bool VoiceChatPrivate { get; set; }
+        public List<String> VoiceChatIgnoreList { get; set; }
 
 
         private Socket Sock { get; set; }
@@ -67,6 +71,8 @@ namespace core
             this.IgnoreList = new List<String>();
             this.Font = new core.Font();
             this.SharedFiles = new List<SharedFile>();
+            this.CustomClientTags = new List<String>();
+            this.VoiceChatIgnoreList = new List<String>();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
             ServerCore.Log(this.ID + " connects");
         }

@@ -375,5 +375,92 @@ namespace core
             packet.WriteBytes(cookie);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH);
         }
+
+        public static byte[] SupportsVoiceClips()
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteByte((byte)(Settings.Get<bool>("voice") ? 1 : 0));
+            packet.WriteByte(0);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_SUPPORTED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] VoiceChatUserSupport(AresClient client, AresClient target)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, target.Name);
+            packet.WriteByte((byte)(target.VoiceChatPublic ? 1 : 0));
+            packet.WriteByte((byte)(target.VoiceChatPrivate ? 1 : 0));
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_USER_SUPPORTED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] VoiceChatFirst(AresClient client, String sender, byte[] buffer)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, sender);
+            packet.WriteBytes(buffer);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_FIRST);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] VoiceChatFirstTo(AresClient client, String sender, byte[] buffer)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, sender);
+            packet.WriteBytes(buffer);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_FIRST_FROM);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] VoiceChatIgnored(AresClient client, String sender)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, sender);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_IGNORE);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] VoiceChatNoPrivate(AresClient client, String sender)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, sender);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_NOPVT);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] VoiceChatChunk(AresClient client, String sender, byte[] buffer)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, sender);
+            packet.WriteBytes(buffer);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_CHUNK);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] VoiceChatChunkTo(AresClient client, String sender, byte[] buffer)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, sender);
+            packet.WriteBytes(buffer);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_CHUNK_FROM);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
     }
 }
