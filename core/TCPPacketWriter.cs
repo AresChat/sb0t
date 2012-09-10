@@ -68,12 +68,12 @@ namespace core
             this.Data.AddRange(ip_object.GetAddressBytes());
         }
 
-        public void WriteString(AresClient client, String text)
+        public void WriteString(IClient client, String text)
         {
             this.WriteString(client, text, true);
         }
 
-        public void WriteString(AresClient client, String text, bool null_terminated)
+        public void WriteString(IClient client, String text, bool null_terminated)
         {
             if (client.Encryption.Mode == EncryptionMode.Encrypted)
             {

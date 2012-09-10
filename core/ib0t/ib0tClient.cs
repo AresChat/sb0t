@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Net.Sockets;
 
 namespace core.ib0t
 {
@@ -35,5 +37,316 @@ namespace core.ib0t
         public List<String> CustomClientTags { get; set; }
         public bool Muzzled { get; set; }
         public String CustomName { get; set; }
+        public bool WebClient { get; private set; }
+        public bool Owner { get; set; }
+        public Encryption Encryption { get; set; }
+
+        public Html5RequestEventArgs WebCredentials { get; set; }
+        public Socket Sock { get; set; }
+        public ulong Time { get; set; }
+        public bool ProtoConnected { get; set; }
+        public bool LoggedIn { get; set; }
+        public bool CanScribble { get; set; }
+
+        private int socket_health = 0;
+        private List<byte> data_in = new List<byte>();
+        private List<byte[]> data_out = new List<byte[]>();
+
+        public ib0tClient(AresClient client, ulong time, ushort id)
+        {
+            this.WebClient = true;
+            this.WebCredentials = new Html5RequestEventArgs();
+            this.ID = id;
+            this.Sock = client.Sock;
+            this.WebCredentials.Key = String.Empty;
+            this.data_in.AddRange(client.ReceiveDump);
+            this.WebCredentials.Key1 = String.Empty;
+            this.WebCredentials.Key2 = String.Empty;
+            this.WebCredentials.KeyData = new byte[] { };
+            this.WebCredentials.OldProto = false;
+            this.WebCredentials.Host = String.Empty;
+            this.WebCredentials.Origin = String.Empty;
+            this.Time = time;
+            this.ProtoConnected = false;
+            this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
+            this.Level = core.Level.Regular;
+            this.Vroom = 0;
+            this.Name = String.Empty;
+            this.Version = String.Empty;
+            this.IgnoreList = new List<String>();
+            this.Font = new core.Font();
+            this.CustomClientTags = new List<String>();
+            this.Encryption = new Encryption { Mode = EncryptionMode.Unencrypted };
+            this.DNS = client.DNS;
+        }
+
+        public String PersonalMessage
+        {
+            get { return "ib0t web user"; }
+            set { }
+        }
+
+        public byte[] Avatar
+        {
+            get { return Resource1.web; }
+            set { }
+        }
+
+        public void BinaryWrite(byte[] data)
+        {
+            this.QueuePacket(data);
+        }
+
+        public void Disconnect()
+        {
+            while (this.data_out.Count > 0)
+            {
+                try
+                {
+                    this.Sock.Send(this.data_out[0]);
+                    this.data_out.RemoveAt(0);
+                }
+                catch { break; }
+            }
+
+            try { this.Sock.Disconnect(false); }
+            catch { }
+            try { this.Sock.Shutdown(SocketShutdown.Both); }
+            catch { }
+            try { this.Sock.Close(); }
+            catch { }
+
+            this.SocketConnected = false;
+            this.SendDepart();
+        }
+
+        public void SendDepart()
+        {
+            if (this.LoggedIn)
+            {
+                this.LoggedIn = false;
+                Events.Parting(this);
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                Events.Parted(this);
+            }
+        }
+
+        public void QueuePacket(byte[] data)
+        {
+            this.data_out.Add(data);
+        }
+
+        public bool SocketConnected
+        {
+            get { Console.WriteLine(this.socket_health); return this.socket_health < 10; }
+            set { this.socket_health = value ? 0 : 10; }
+        }
+
+        public void SendReceive()
+        {
+            while (this.data_out.Count > 0)
+            {
+                try
+                {
+                    this.Sock.Send(this.data_out[0]);
+                    this.data_out.RemoveAt(0);
+                    Console.WriteLine("sent");
+                }
+                catch { break; }
+            }
+
+            byte[] buffer = new byte[8192];
+            int received = 0;
+            SocketError e = SocketError.Success;
+
+            try { received = this.Sock.Receive(buffer, 0, this.Sock.Available, SocketFlags.None, out e); }
+            catch { }
+
+            if (received == 0)
+                this.socket_health = e == SocketError.WouldBlock ? 0 : (this.socket_health + 1);
+            else
+            {
+                this.socket_health = 0;
+                this.data_in.AddRange(buffer.Take(received));
+                Console.WriteLine("received");
+            }
+        }
+
+        private bool pending_keydata = false;
+
+        internal bool LoadProtocol()
+        {
+            if (this.pending_keydata)
+            {
+                if (this.data_in.Count >= 8)
+                {
+                    this.WebCredentials.KeyData = this.data_in.GetRange(0, 8).ToArray();
+                    this.data_in.RemoveRange(0, 8);
+                    return true;
+                }
+            }
+            else
+            {
+                while (this.data_in.CanTakeLine())
+                {
+                    String str = this.data_in.TakeLine();
+                    String up = str.ToUpper();
+
+                    if (up.StartsWith("SEC-WEBSOCKET-KEY:"))
+                    {
+                        str = str.Substring(18);
+
+                        if (str.StartsWith(" "))
+                            str = str.Substring(1);
+
+                        this.WebCredentials.Key = str;
+                    }
+                    else if (up.StartsWith("SEC-WEBSOCKET-KEY1:"))
+                    {
+                        str = str.Substring(19);
+
+                        if (str.StartsWith(" "))
+                            str = str.Substring(1);
+
+                        this.WebCredentials.Key1 = str;
+                    }
+                    else if (up.StartsWith("SEC-WEBSOCKET-KEY2:"))
+                    {
+                        str = str.Substring(19);
+
+                        if (str.StartsWith(" "))
+                            str = str.Substring(1);
+
+                        this.WebCredentials.Key2 = str;
+                    }
+                    else if (up.StartsWith("HOST:"))
+                    {
+                        str = str.Substring(5);
+
+                        if (str.StartsWith(" "))
+                            str = str.Substring(1);
+
+                        this.WebCredentials.Host = str;
+                    }
+                    else if (up.StartsWith("ORIGIN:"))
+                    {
+                        str = str.Substring(7);
+
+                        if (str.StartsWith(" "))
+                            str = str.Substring(1);
+
+                        this.WebCredentials.Origin = str;
+                    }
+                    else if (String.IsNullOrEmpty(str.Trim()))
+                        if (this.WebCredentials.Key1.Length > 0)
+                        {
+                            this.pending_keydata = true;
+                            this.WebCredentials.OldProto = true;
+                        }
+                        else return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal String NextMessage
+        {
+            get { return this.WebCredentials.OldProto ? this.CheckPacketOld() : this.CheckPacketNew(); }
+        }
+
+        private String CheckPacketOld()
+        {
+            if (this.data_in.Count >= 2)
+            {
+                int index = this.data_in.IndexOf(255);
+
+                if (index > 0)
+                {
+                    byte[] buffer = this.data_in.GetRange(1, (index - 1)).ToArray();
+                    this.data_in.RemoveRange(0, (index + 1));
+                    return Encoding.UTF8.GetString(buffer);
+                }
+            }
+
+            return null;
+        }
+
+        private String CheckPacketNew()
+        {
+            if (this.data_in.Count >= 6)
+            {
+                int max_size = this.data_in.Count;
+                byte msg = this.data_in[0];
+                int len = (this.data_in[1] & 127);
+                byte[] buffer;
+
+                if (len == 126)
+                {
+                    if (max_size < 8)
+                        return null;
+
+                    buffer = this.data_in.GetRange(2, 2).ToArray();
+                    Array.Reverse(buffer);
+                    len = (int)BitConverter.ToUInt16(buffer, 0);
+
+                    if (max_size < (8 + len))
+                        return null;
+
+                    this.data_in.RemoveRange(0, 4);
+                }
+                else if (len == 127)
+                {
+                    if (max_size < 14)
+                        return null;
+
+                    buffer = this.data_in.GetRange(2, 8).ToArray();
+                    Array.Reverse(buffer);
+                    len = (int)BitConverter.ToUInt64(buffer, 0);
+
+                    if (max_size < (14 + len))
+                        return null;
+
+                    this.data_in.RemoveRange(0, 10);
+                }
+                else
+                {
+                    if (max_size < (6 + len))
+                        return null;
+
+                    this.data_in.RemoveRange(0, 2);
+                }
+                if (this.data_in.Count >= (len + 4))
+                {
+                    byte[] key = this.data_in.GetRange(0, 4).ToArray();
+                    byte[] text = this.data_in.GetRange(4, len).ToArray();
+                    this.data_in.RemoveRange(0, (len + 4));
+
+                    for (int i = 0; i < text.Length; i++)
+                        text[i] ^= key[i % 4];
+
+                    switch (msg)
+                    {
+                        case 136:
+                            this.SocketConnected = true;
+                            return null;
+
+                        case 129:
+                            return Encoding.UTF8.GetString(text);
+
+                        default:
+                            return null;
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -138,7 +138,10 @@ namespace core
         {
             bool ignore = (byte)packet != 0;
             String name = packet.ReadString(client);
-            AresClient target = UserPool.AUsers.Find(x => x.Name == name);
+            IClient target = UserPool.AUsers.Find(x => x.Name == name);
+
+            if (target == null)
+                target = UserPool.WUsers.Find(x => x.Name == name);
 
             if (target != null)
                 if (!ignore)
@@ -147,7 +150,7 @@ namespace core
                     Events.IgnoredStateChanged(client, target, ignore);
                 }
                 else if (Events.Ignoring(client, target))
-                    if (client.SocketConnected && target.SocketConnected)
+                    if (client.SocketConnected)
                     {
                         if (!client.IgnoreList.Contains(name))
                             client.IgnoreList.Add(name);
@@ -191,7 +194,10 @@ namespace core
             }
             else
             {
-                AresClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn);
+                IClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn);
+
+                if (target == null)
+                    target = UserPool.WUsers.Find(x => x.Name == name && x.LoggedIn);
 
                 if (target == null)
                     client.SendPacket(TCPOutbound.OfflineUser(client, name));
@@ -203,7 +209,9 @@ namespace core
 
                     if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
                     {
-                        target.SendPacket(TCPOutbound.Private(target, client.Name, args.Text));
+                        if (target is AresClient)
+                            target.BinaryWrite(TCPOutbound.Private(target, client.Name, args.Text));
+
                         Events.PrivateSent(client, target, args.Text);
                     }
                 }
@@ -236,6 +244,10 @@ namespace core
                         TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
 
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
+                        ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
                     Events.TextSent(client, text);
                 }
             }
@@ -255,11 +267,13 @@ namespace core
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
 
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
                     Events.EmoteSent(client, text);
                 }
             }
         }
-
         
         private static void CustomDataAll(AresClient client, TCPPacketReader packet)
         {
@@ -342,7 +356,8 @@ namespace core
                 client.SendPacket(TCPOutbound.CryptoKey(client));
             }
 
-            if (UserPool.AUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count > 3)
+            if ((UserPool.AUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count +
+                 UserPool.WUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count) > 3)
             {
                 Events.Rejected(client, RejectedMsg.TooManyClients);
                 throw new Exception("too many clients from this ip");
@@ -354,24 +369,33 @@ namespace core
                 throw new Exception("joined too quickly");
             }
 
-            AresClient hijack = UserPool.AUsers.Find(x => (x.Name == client.Name ||
+            IClient hijack = UserPool.AUsers.Find(x => (x.Name == client.Name ||
                 x.OrgName == client.OrgName) && x.ID != client.ID);
+
+            if (hijack == null)
+                hijack = UserPool.WUsers.Find(x => (x.Name == client.Name ||
+                    x.OrgName == client.OrgName) && x.ID != client.ID);
 
             if (hijack != null)
                 if (hijack.ExternalIP.Equals(client.ExternalIP))
-                    hijack.Disconnect(true);
+                {
+                    if (hijack is AresClient)
+                        ((AresClient)hijack).Disconnect(true);
+                    else
+                        ((ib0t.ib0tClient)hijack).Disconnect();
+                }
                 else
                 {
                     Events.Rejected(client, RejectedMsg.NameInUse);
                     throw new Exception("name in use");
                 }
 
-            UserHistory.AddUser(client);
+            UserHistory.AddUser(client, time);
 
             if (BanPool.IsBanned(client))
             {
-                if (hijack != null)
-                    hijack.SendDepart();
+                if (hijack != null && hijack is AresClient)
+                    ((AresClient)hijack).SendDepart();
 
                 Events.Rejected(client, RejectedMsg.Banned);
                 throw new Exception("banned user");
@@ -379,16 +403,21 @@ namespace core
 
             if (!Events.Joining(client))
             {
-                if (hijack != null)
-                    hijack.SendDepart();
+                if (hijack != null && hijack is AresClient)
+                    ((AresClient)hijack).SendDepart();
 
                 Events.Rejected(client, RejectedMsg.UserDefined);
                 throw new Exception("user defined rejection");
             }
 
-            if (hijack == null)
+            if (hijack == null || !(hijack is AresClient))
+            {
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+            }
 
             client.LoggedIn = true;
             client.SendPacket(TCPOutbound.Ack(client));
@@ -397,6 +426,9 @@ namespace core
             client.SendPacket(TCPOutbound.UserlistBot(client));
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom);
 
             client.SendPacket(TCPOutbound.UserListEnd());
@@ -419,8 +451,14 @@ namespace core
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);
 
+            UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0);
+
+            UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);

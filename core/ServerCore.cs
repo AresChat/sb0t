@@ -38,6 +38,8 @@ namespace core
             Settings.Set("link", "http://www.google.com/", "url");
             Settings.Set("voice", true);
             Settings.Set("emotes", true);
+            Settings.Set("enabled", true, "web");
+            Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
 
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
             
@@ -77,6 +79,8 @@ namespace core
             Captcha.Initialize();
             UserHistory.Initialize();
             ulong fast_ping_timer = Time.Now;
+            ulong channel_push_timer = (Time.Now - 1200000);
+            bool can_web_chat = Settings.Get<bool>("enabled", "web");
 
             while (true)
             {
@@ -94,8 +98,20 @@ namespace core
                 }
 
                 this.CheckTCPListener(time);
-                this.ServiceSockets(time);
-                Thread.Sleep(25);
+                this.ServiceAresSockets(time);
+
+                if (can_web_chat)
+                {
+                    this.ServiceWebSockets(time);
+
+                    if (time > (channel_push_timer + 1200000))
+                    {
+                        channel_push_timer = time;
+                        ib0t.ChannelPusher.Push();
+                    }
+                }
+
+                Thread.Sleep(35);
             }
         }
 
@@ -105,11 +121,97 @@ namespace core
                 UserPool.CreateAresClient(this.tcp.AcceptSocket(), time);
         }
 
-        private void ServiceSockets(ulong time)
+        private void ServiceWebSockets(ulong time)
+        {
+            foreach (ib0t.ib0tClient client in UserPool.WUsers)
+            {
+                client.SendReceive();
+
+                if (!client.ProtoConnected)
+                {
+                    if (client.LoadProtocol())
+                    {
+                        try
+                        {
+                            byte[] packet = ib0t.WebSockets.Html5HandshakeReplyPacket(client.WebCredentials);
+                            client.QueuePacket(packet);
+                            client.ProtoConnected = true;
+                            client.Time = time;
+                            continue;
+                        }
+                        catch { client.SocketConnected = false; }
+                    }
+
+                    if (client.SocketConnected || (client.Time + 10000) < time)
+                        client.Disconnect();
+                }
+                else
+                {
+                    if (!client.LoggedIn)
+                        if (!client.SocketConnected || (client.Time + 15000) < time)
+                        {
+                            Console.WriteLine("test3");
+                            Console.WriteLine(client.SocketConnected);
+                            client.Disconnect();
+                            continue;
+                        }
+                    Console.WriteLine("service");
+                    String message;
+
+                    while ((message = client.NextMessage) != null && client.SocketConnected)
+                    {
+                        int i = message.IndexOf(":");
+
+                        if (i == -1)
+                        {
+                            Log("bad protocol from " + client.ID);
+                            client.Disconnect();
+                            break;
+                        }
+
+                        String ident = message.Substring(0, i);
+                        String args = message.Substring(i + 1);
+
+                        try
+                        {
+                            Console.WriteLine("eval " + ident);
+                            ib0t.WebProcessor.Evaluate(client, ident, args, time);
+                        }
+                        catch (Exception e)
+                        {
+                            client.Disconnect();
+                            Log("packet read fail from " + client.ID + " " + ident, e);
+                            break;
+                        }
+                    }
+
+                    if (!client.SocketConnected || (client.Time + 120000) < time)
+                    {
+                        Console.WriteLine("test4");
+                        Console.WriteLine(client.SocketConnected);
+                        client.Disconnect();
+                    }
+                }
+            }
+
+            UserPool.WUsers.FindAll(x => !x.SocketConnected).ForEach(x => x.Disconnect());
+            UserPool.WUsers.RemoveAll(x => !x.SocketConnected);
+        }
+
+        private void ServiceAresSockets(ulong time)
         {
             foreach (AresClient client in UserPool.AUsers)
                 if (!String.IsNullOrEmpty(client.DNS))
                 {
+                    if (client.IsHTML)
+                    {
+                        if (Settings.Get<bool>("enabled", "web"))
+                            UserPool.CreateIb0tClient(client, time);
+                        else
+                            client.Disconnect();
+                        break;
+                    }
+
                     TCPPacket packet = null;
 
                     while ((packet = client.NextReceivedPacket) != null && client.SocketConnected)
@@ -118,7 +220,7 @@ namespace core
                         else
                             try
                             {
-                                TCPProcessor.Eval(client, packet, time);            
+                                TCPProcessor.Eval(client, packet, time);
                             }
                             catch (Exception e)
                             {
@@ -126,7 +228,7 @@ namespace core
                                 Log("packet read fail from " + client.ID + " " + packet.Msg, e);
                                 break;
                             }
-                    
+
                     client.SendReceive();
                     client.EnforceRules(time);
                 }

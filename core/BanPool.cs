@@ -7,7 +7,7 @@ namespace core
 {
     class BanPool
     {
-        public static bool IsBanned(AresClient client)
+        public static bool IsBanned(IClient client)
         {
             return false;
         }

@@ -93,7 +93,7 @@ namespace core
             return tmp;
         }
 
-        public String ReadString(AresClient client)
+        public String ReadString(IClient client)
         {
             String str = String.Empty;
 

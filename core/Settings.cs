@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
 using System.Diagnostics;
 using Microsoft.Win32;
 
@@ -101,6 +102,18 @@ namespace core
 
             key.Close();
             return false;
+        }
+
+        public static IPAddress LocalIP
+        {
+            get
+            {
+                foreach (IPAddress ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                        return ip;
+
+                return IPAddress.Loopback;
+            }
         }
     }
 }

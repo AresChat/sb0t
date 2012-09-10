@@ -55,7 +55,12 @@
     <Compile Include="FileBrowseProcessor.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="ib0t\ChannelPusher.cs" />
+    <Compile Include="ib0t\Html5RequestEventArgs.cs" />
     <Compile Include="ib0t\ib0tClient.cs" />
+    <Compile Include="ib0t\WebOutbound.cs" />
+    <Compile Include="ib0t\WebProcessor.cs" />
+    <Compile Include="ib0t\WebSockets.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MimeType.cs" />
@@ -63,6 +68,11 @@
     <Compile Include="PMEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RejectedMsg.cs" />
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Include="ServerCore.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SharedFile.cs" />
@@ -88,11 +98,21 @@
       <Name>commands</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Libraries\ICSharpCode.SharpZipLib.dll" />
     <Content Include="Libraries\System.Data.SQLite.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ib0t\WebOutbound.cd" />
+    <None Include="Resources\web.dat" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>copy "$(SolutionDir)core\Libraries\*.dll" "$(TargetDir)"</PreBuildEvent>

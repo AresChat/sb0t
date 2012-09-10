@@ -14,7 +14,7 @@ namespace core
             list = new List<PartedClient>();
         }
 
-        public static void AddUser(AresClient client)
+        public static void AddUser(IClient client, ulong time)
         {
             list.RemoveAll(i => i.ExternalIP.Equals(client.ExternalIP) && i.Name == client.Name);
             
@@ -22,11 +22,11 @@ namespace core
             {
                 ExternalIP = client.ExternalIP,
                 Name = client.Name,
-                Time = client.Time
+                Time = time
             });
         }
 
-        public static bool IsJoinFlooding(AresClient client, ulong time)
+        public static bool IsJoinFlooding(IClient client, ulong time)
         {
             return (from x in list
                     where x.ExternalIP.Equals(client.ExternalIP)

@@ -30,5 +30,34 @@ namespace core
             }
         }
 
+        public static int NextEndLine(this List<byte> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+                if (i < (list.Count - 1))
+                    if (list[i] == 13)
+                        if (list[i + 1] == 10)
+                            return i;
+
+            return -1;
+        }
+
+        public static bool CanTakeLine(this List<byte> list)
+        {
+            return list.NextEndLine() > -1;
+        }
+
+        public static String TakeLine(this List<byte> list)
+        {
+            int index = list.NextEndLine();
+
+            if (index > -1)
+            {
+                String str = Encoding.Default.GetString(list.ToArray(), 0, index);
+                list.RemoveRange(0, (index + 2));
+                return str;
+            }
+
+            return String.Empty;
+        }
     }
 }

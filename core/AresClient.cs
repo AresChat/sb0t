@@ -50,9 +50,12 @@ namespace core
         public String CustomName { get; set; }
         public bool CustomEmoticons { get; set; }
         public List<CustomEmoticon> EmoticonList { get; set; }
+        public bool WebClient { get; private set; }
+        public bool Owner { get; set; }
+        public bool IsHTML { get; private set; }
 
 
-        private Socket Sock { get; set; }
+        public Socket Sock { get; set; }
         private List<byte> data_in = new List<byte>();
         private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
         private int socket_health = 0;
@@ -79,7 +82,11 @@ namespace core
             this.VoiceChatIgnoreList = new List<String>();
             this.EmoticonList = new List<CustomEmoticon>();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
-            ServerCore.Log(this.ID + " connects");
+        }
+
+        public void BinaryWrite(byte[] data)
+        {
+            this.SendPacket(data);
         }
 
         private void DnsReceived(IAsyncResult result)
@@ -174,6 +181,10 @@ namespace core
                 this.socket_health = 0;
                 this.data_in.AddRange(buffer.Take(received));
             }
+
+            if (!this.LoggedIn)
+                if (!this.IsHTML)
+                    this.IsHTML = Encoding.Default.GetString(this.data_in.ToArray(), 0, 3).ToUpper() == "GET";
         }
 
         public void EnforceRules(ulong time)
@@ -216,8 +227,6 @@ namespace core
 
             if (!ghost)
                 this.SendDepart();
-
-            ServerCore.Log(this.ID + " disconnects");
         }
 
         public void SendDepart()
@@ -228,6 +237,9 @@ namespace core
                 Events.Parting(this);
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
                     x => x.LoggedIn && x.Vroom == this.Vroom);
 
                 Events.Parted(this);
@@ -260,6 +272,11 @@ namespace core
         public void InsertUnzippedData(byte[] data)
         {
             this.data_in.InsertRange(0, data);
+        }
+
+        public byte[] ReceiveDump
+        {
+            get { return this.data_in.ToArray(); }
         }
     }
 }

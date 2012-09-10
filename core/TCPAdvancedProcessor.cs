@@ -226,6 +226,9 @@ namespace core
 
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+            
+            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.FontTo(x, client.Name, client.Font.NameColor, client.Font.TextColor)),
+                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
         }
 
     }

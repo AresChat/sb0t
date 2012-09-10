@@ -23,7 +23,7 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_NOSUCH);
         }
 
-        public static byte[] Join(AresClient client, AresClient target)
+        public static byte[] Join(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteUInt16(target.FileCount);
@@ -44,14 +44,14 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_JOIN);
         }
 
-        public static byte[] Part(AresClient client, AresClient target)
+        public static byte[] Part(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, target.Name);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_PART);
         }
 
-        public static byte[] Userlist(AresClient client, AresClient target)
+        public static byte[] Userlist(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteUInt16(target.FileCount);
@@ -135,14 +135,14 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_URL);
         }
 
-        public static byte[] AvatarCleared(AresClient client, AresClient target)
+        public static byte[] AvatarCleared(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, target.Name);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_AVATAR);
         }
 
-        public static byte[] Avatar(AresClient client, AresClient target)
+        public static byte[] Avatar(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, target.Name);
@@ -150,7 +150,7 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_AVATAR);
         }
 
-        public static byte[] PersonalMessage(AresClient client, AresClient target)
+        public static byte[] PersonalMessage(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, target.Name);
@@ -224,7 +224,7 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_EMOTE);
         }
 
-        public static byte[] CustomFont(AresClient client, AresClient target)
+        public static byte[] CustomFont(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, target.Name); // user's name + null
@@ -245,7 +245,7 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
         }
 
-        public static byte[] Private(AresClient client, String username, String text)
+        public static byte[] Private(IClient client, String username, String text)
         {
             if (text.Length > 300)
                 text = text.Substring(0, 300);
@@ -365,7 +365,7 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_HERE_SUPERNODES);
         }
 
-        public static byte[] DirectChatPush(AresClient client, AresClient target, byte[] cookie)
+        public static byte[] DirectChatPush(AresClient client, IClient target, byte[] cookie)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, target.Name);
