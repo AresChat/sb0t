@@ -55,6 +55,7 @@
     <Compile Include="FileBrowseProcessor.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="ib0t\ib0tClient.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MimeType.cs" />
