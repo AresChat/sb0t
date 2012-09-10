@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace core
 {
-    class AresClient
+    class AresClient : IClient
     {
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
@@ -46,6 +46,10 @@ namespace core
         public bool VoiceChatPublic { get; set; }
         public bool VoiceChatPrivate { get; set; }
         public List<String> VoiceChatIgnoreList { get; set; }
+        public bool Muzzled { get; set; }
+        public String CustomName { get; set; }
+        public bool CustomEmoticons { get; set; }
+        public List<CustomEmoticon> EmoticonList { get; set; }
 
 
         private Socket Sock { get; set; }
@@ -73,6 +77,7 @@ namespace core
             this.SharedFiles = new List<SharedFile>();
             this.CustomClientTags = new List<String>();
             this.VoiceChatIgnoreList = new List<String>();
+            this.EmoticonList = new List<CustomEmoticon>();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
             ServerCore.Log(this.ID + " connects");
         }

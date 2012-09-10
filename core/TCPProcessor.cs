@@ -195,7 +195,7 @@ namespace core
 
                 if (target == null)
                     client.SendPacket(TCPOutbound.OfflineUser(client, name));
-                else if (target.IgnoreList.Contains(client.Name))
+                else if (target.IgnoreList.Contains(client.Name) || client.Muzzled)
                     client.SendPacket(TCPOutbound.IsIgnoringYou(client, name));
                 else
                 {
@@ -223,16 +223,17 @@ namespace core
             if (text.StartsWith("#"))
                 Command(client, text.Substring(1));
 
-            if (client.SocketConnected) // connected after Command?
+            if (client.SocketConnected)
                 Events.TextReceived(client, text);
 
-            if (client.SocketConnected) // connected after TextReceived?
+            if (client.SocketConnected)
             {
                 text = Events.TextSending(client, text);
 
-                if (!String.IsNullOrEmpty(text) && client.SocketConnected)
+                if (!String.IsNullOrEmpty(text) && client.SocketConnected && !client.Muzzled)
                 {
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Public(x, client.Name, text)),
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
+                        TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
 
                     Events.TextSent(client, text);
@@ -249,7 +250,7 @@ namespace core
             {
                 text = Events.EmoteSending(client, text);
 
-                if (!String.IsNullOrEmpty(text) && client.SocketConnected)
+                if (!String.IsNullOrEmpty(text) && client.SocketConnected && !client.Muzzled)
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
@@ -401,11 +402,19 @@ namespace core
             client.SendPacket(TCPOutbound.UserListEnd());
             client.SendPacket(TCPOutbound.OpChange(client));
             client.SendPacket(TCPOutbound.SupportsVoiceClips());
+            client.SendPacket(TCPOutbound.SupportsCustomEmotes());
             client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
             client.SendPacket(TCPOutbound.PersonalMessageBot(client));
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
                 x => x.VoiceChatPrivate || x.VoiceChatPublic);
+
+            UserPool.AUsers.ForEachWhere(x =>
+            {
+                foreach (CustomEmoticon c in x.EmoticonList)
+                    client.SendPacket(TCPOutbound.CustomEmoteItem(client, x, c));
+            },
+            x => x.Vroom == client.Vroom && x.CustomEmoticons);
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);

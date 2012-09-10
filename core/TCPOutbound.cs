@@ -462,5 +462,39 @@ namespace core
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
         }
+
+        public static byte[] SupportsCustomEmotes()
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteByte(16);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_SUPPORTS_CUSTOM_EMOTES);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] CustomEmoteItem(AresClient client, AresClient target, CustomEmoticon item)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, target.Name);
+            packet.WriteString(client, item.Shortcut);
+            packet.WriteByte(item.Size);
+            packet.WriteBytes(item.Image);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_EMOTES_ITEM);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
+        public static byte[] CustomEmoteDelete(AresClient client, AresClient target, String shortcut)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, target.Name);
+            packet.WriteString(client, shortcut);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_EMOTE_DELETE);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
     }
 }

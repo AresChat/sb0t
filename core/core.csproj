@@ -49,11 +49,13 @@
     <Compile Include="AresClient.cs" />
     <Compile Include="BanPool.cs" />
     <Compile Include="Crypto.cs" />
+    <Compile Include="CustomEmoticon.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FileBrowseProcessor.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="IClient.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="MimeType.cs" />
     <Compile Include="PartedClient.cs" />

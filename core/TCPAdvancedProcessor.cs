@@ -51,17 +51,65 @@ namespace core
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_SUPPORTS_CUSTOM_EMOTES:
+                    SupportsCustomEmotes(client);
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_EMOTES_UPLOAD_ITEM:
+                    CustomEmotesUploadItem(client, packet.Packet);
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_EMOTE_DELETE:
+                    CustomEmotesDelete(client, packet.Packet);
                     break;
 
                 default:
                     Events.UnhandledProtocol(client, packet.Msg, packet.Packet, time);
                     break;
+            }
+        }
+
+        private static void SupportsCustomEmotes(AresClient client)
+        {
+            if (Settings.Get<bool>("emotes") && !client.CustomEmoticons)
+            {
+                client.CustomEmoticons = true;
+                client.EmoticonList.Clear();
+
+                UserPool.AUsers.ForEachWhere(x =>
+                {
+                    foreach (CustomEmoticon c in x.EmoticonList)
+                        client.SendPacket(TCPOutbound.CustomEmoteItem(client, x, c));
+                },
+                x => x.CustomEmoticons);
+            }
+        }
+
+        private static void CustomEmotesUploadItem(AresClient client, TCPPacketReader packet)
+        {
+            if (Settings.Get<bool>("emotes"))
+            {
+                SupportsCustomEmotes(client);
+
+                CustomEmoticon c = new CustomEmoticon();
+                c.Shortcut = packet.ReadString(client);
+                c.Size = packet;
+                c.Image = packet;
+                client.EmoticonList.Add(c);
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, c)),
+                    x => x.Vroom == client.Vroom && x.CustomEmoticons);
+            }
+        }
+
+        private static void CustomEmotesDelete(AresClient client, TCPPacketReader packet)
+        {
+            if (Settings.Get<bool>("emotes"))
+            {
+                String shortcut = packet.ReadString(client);
+                client.EmoticonList.RemoveAll(x => x.Shortcut == shortcut);
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteDelete(x, client, shortcut)),
+                    x => x.Vroom == client.Vroom && x.CustomEmoticons);
             }
         }
 

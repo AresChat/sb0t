@@ -37,6 +37,7 @@ namespace core
             Settings.Set("text", "google", "url");
             Settings.Set("link", "http://www.google.com/", "url");
             Settings.Set("voice", true);
+            Settings.Set("emotes", true);
 
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
             
