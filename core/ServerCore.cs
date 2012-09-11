@@ -150,12 +150,10 @@ namespace core
                     if (!client.LoggedIn)
                         if (!client.SocketConnected || (client.Time + 15000) < time)
                         {
-                            Console.WriteLine("test3");
-                            Console.WriteLine(client.SocketConnected);
                             client.Disconnect();
                             continue;
                         }
-                    Console.WriteLine("service");
+
                     String message;
 
                     while ((message = client.NextMessage) != null && client.SocketConnected)
@@ -174,7 +172,6 @@ namespace core
 
                         try
                         {
-                            Console.WriteLine("eval " + ident);
                             ib0t.WebProcessor.Evaluate(client, ident, args, time);
                         }
                         catch (Exception e)
@@ -186,11 +183,7 @@ namespace core
                     }
 
                     if (!client.SocketConnected || (client.Time + 120000) < time)
-                    {
-                        Console.WriteLine("test4");
-                        Console.WriteLine(client.SocketConnected);
                         client.Disconnect();
-                    }
                 }
             }
 

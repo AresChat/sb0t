@@ -20,19 +20,19 @@ namespace core.ib0t
             switch (ident)
             {
                 case "LOGIN":
-                    ProcessLogin(client, args, time);
+                    Login(client, args, time);
                     break;
 
                 case "PUBLIC":
-                    ProcessText(client, args, time);
+                    Text(client, args, time);
                     break;
 
                 case "EMOTE":
-                    ProcessEmote(client, args, time);
+                    Emote(client, args, time);
                     break;
 
                 case "COMMAND":
-                    ProcessCommand(client, args, time);
+                    Command(client, args);
                     break;
 
                 case "PING":
@@ -44,7 +44,7 @@ namespace core.ib0t
             }
         }
 
-        private static void ProcessLogin(ib0tClient client, String args, ulong time)
+        private static void Login(ib0tClient client, String args, ulong time)
         {
             byte[] g = new byte[16];
 
@@ -150,22 +150,77 @@ namespace core.ib0t
             UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
 
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+
             Events.Joined(client);
         }
 
-        private static void ProcessText(ib0tClient userobj, String args, ulong time)
+        private static void Text(ib0tClient client, String args, ulong time)
         {
+            String text = args;
 
+            if (text.StartsWith("#login") || text.StartsWith("#register"))
+            {
+                Command(client, text.Substring(1));
+                return;
+            }
+
+            if (text.StartsWith("#"))
+                Command(client, text.Substring(1));
+
+            if (client.SocketConnected)
+                Events.TextReceived(client, text);
+
+            if (client.SocketConnected)
+            {
+                text = Events.TextSending(client, text);
+
+                if (!String.IsNullOrEmpty(text) && client.SocketConnected && !client.Muzzled)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
+                        TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
+                        ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
+                    Events.TextSent(client, text);
+                }
+            }
         }
 
-        private static void ProcessEmote(ib0tClient userobj, String args, ulong time)
+        private static void Emote(ib0tClient client, String args, ulong time)
         {
+            String text = args;
+            Events.EmoteReceived(client, text);
 
+            if (client.SocketConnected)
+            {
+                text = Events.EmoteSending(client, text);
+
+                if (!String.IsNullOrEmpty(text) && client.SocketConnected && !client.Muzzled)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
+                    Events.EmoteSent(client, text);
+                }
+            }
         }
 
-        private static void ProcessCommand(ib0tClient userobj, String args, ulong time)
+        private static void Command(ib0tClient client, String args)
         {
-
+            Command cmd = new Command { Text = args, Args = String.Empty };
+            Helpers.PopulateCommand(cmd);
+            Events.Command(client, args, cmd.Target, cmd.Args);
         }
     }
 }

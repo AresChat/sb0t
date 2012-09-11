@@ -144,7 +144,7 @@ namespace core.ib0t
 
         public bool SocketConnected
         {
-            get { Console.WriteLine(this.socket_health); return this.socket_health < 10; }
+            get { return this.socket_health < 10; }
             set { this.socket_health = value ? 0 : 10; }
         }
 
@@ -156,7 +156,6 @@ namespace core.ib0t
                 {
                     this.Sock.Send(this.data_out[0]);
                     this.data_out.RemoveAt(0);
-                    Console.WriteLine("sent");
                 }
                 catch { break; }
             }
@@ -174,7 +173,6 @@ namespace core.ib0t
             {
                 this.socket_health = 0;
                 this.data_in.AddRange(buffer.Take(received));
-                Console.WriteLine("received");
             }
         }
 

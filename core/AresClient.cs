@@ -95,14 +95,12 @@ namespace core
             {
                 IPHostEntry i = Dns.EndGetHostEntry(result);
                 this.DNS = i.HostName;
-                this.SendPacket(TCPOutbound.NoSuch(this, "\x000302Hostname: " + this.DNS));
             }
             catch
             {
                 try
                 {
                     this.DNS = this.ExternalIP.ToString();
-                    this.SendPacket(TCPOutbound.NoSuch(this, "\x000302Hostname: " + this.DNS));
                 }
                 catch { }
             }
@@ -184,7 +182,8 @@ namespace core
 
             if (!this.LoggedIn)
                 if (!this.IsHTML)
-                    this.IsHTML = Encoding.Default.GetString(this.data_in.ToArray(), 0, 3).ToUpper() == "GET";
+                    if (this.data_in.Count >= 3)
+                        this.IsHTML = Encoding.Default.GetString(this.data_in.ToArray(), 0, 3).ToUpper() == "GET";
         }
 
         public void EnforceRules(ulong time)
