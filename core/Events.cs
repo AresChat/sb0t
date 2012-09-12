@@ -43,11 +43,78 @@ namespace core
 
         public static void PrivateSent(IClient client, IClient target, String text) { }
 
-        public static void BotPrivateSending(IClient client, PMEventArgs e) { }
-
         public static void BotPrivateSent(IClient client, String text) { }
 
-        public static void Command(IClient client, String command, IClient target, String args) { }
+        public static void Command(IClient client, String command, IClient target, String args)
+        {
+            if (command == "help")
+            {
+                Help(client);
+                return;
+            }
+
+            if (!client.Registered)
+            {
+                if (command.StartsWith("register "))
+                {
+                    AccountManager.Register(client, command.Substring(9));
+                    return;
+                }
+                else if (command.StartsWith("login "))
+                {
+                    AccountManager.Login(client, command.Substring(6));
+                    return;
+                }
+            }
+            else
+            {
+                if (command.StartsWith("nick "))
+                {
+                    if (NickChanging(client, command.Substring(5)))
+                    {
+
+                    }
+
+                    return;
+                }
+
+                if (command.StartsWith("setlevel "))
+                {
+                    if (target != null && client.Owner)
+                        if (target.Registered)
+                        {
+                            byte level;
+
+                            if (byte.TryParse(args, out level))
+                                if (level <= 3)
+                                {
+                                    target.Level = (Level)level;
+                                    AccountManager.UpdateAccount(target);
+                                }
+                        }
+
+                    return;
+                }
+            }
+        }
+
+        private static bool NickChanging(IClient client, String name) { return true; }
+
+        private static void Help(IClient client)
+        {
+            if (!client.Registered)
+            {
+                client.Print("/register <password>");
+                client.Print("/login <password>");
+            }
+            else
+            {
+                client.Print("/nick <name>");
+
+                if (client.Owner)
+                    client.Print("/setlevel <user> <level>");
+            }
+        }
 
         public static void FileReceived(IClient client, SharedFile file) { }
 
@@ -55,6 +122,14 @@ namespace core
 
         public static void IgnoredStateChanged(IClient client, IClient target, bool ignored) { }
 
+        public static void InvalidLoginAttempt(IClient client) { }
 
+        public static void LoginGranted(IClient client) { }
+
+        public static void AdminLevelChanged(IClient client) { }
+
+        public static bool Registering(IClient client) { return true; }
+
+        public static void Registered(IClient client) { }
     }
 }

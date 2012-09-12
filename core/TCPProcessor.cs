@@ -84,12 +84,15 @@ namespace core
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_AUTHLOGIN:
+                    Command(client, "login " + packet.Packet.ReadString(client));
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_AUTHREGISTER:
+                    Command(client, "register " + packet.Packet.ReadString(client));
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_AUTOLOGIN:
+                    SecureLogin(client, packet.Packet);
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_DUMMY:
@@ -106,6 +109,15 @@ namespace core
                 default:
                     Events.UnhandledProtocol(client, packet.Msg, packet.Packet, time);
                     break;
+            }
+        }
+
+        private static void SecureLogin(AresClient client, TCPPacketReader packet)
+        {
+            if (!client.HasSecureLoginAttempted)
+            {
+                client.HasSecureLoginAttempted = true;
+                AccountManager.SecureLogin(client, packet);
             }
         }
 
@@ -181,15 +193,10 @@ namespace core
                 }
                 else
                 {
-                    Events.BotPrivateSending(client, args);
+                    if (text.StartsWith("#"))
+                        Command(client, text.Substring(1));
 
-                    if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
-                    {
-                        Events.BotPrivateSent(client, args.Text);
-
-                        if (text.StartsWith("#"))
-                            Command(client, text.Substring(1));
-                    }
+                    Events.BotPrivateSent(client, args.Text);
                 }
             }
             else

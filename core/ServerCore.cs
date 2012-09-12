@@ -40,6 +40,9 @@ namespace core
             Settings.Set("emotes", true);
             Settings.Set("enabled", true, "web");
             Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
+            Settings.Set("owner", "testing");
+
+            
 
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
             
@@ -78,6 +81,8 @@ namespace core
             Time.Reset();
             Captcha.Initialize();
             UserHistory.Initialize();
+            AccountManager.LoadPasswords();
+
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);
             bool can_web_chat = Settings.Get<bool>("enabled", "web");

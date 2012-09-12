@@ -496,5 +496,22 @@ namespace core
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
         }
+
+        public static byte[] UpdateUserStatus(AresClient client, IClient target)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, target.Name);
+            packet.WriteUInt16(target.FileCount);
+            packet.WriteByte((byte)(target.Browsable ? 1 : 0));
+            packet.WriteIP(target.NodeIP);
+            packet.WriteUInt16(target.NodePort);
+            packet.WriteIP(target.ExternalIP);
+            packet.WriteByte((byte)target.Level);
+            packet.WriteByte(target.Age);
+            packet.WriteByte(target.Sex);
+            packet.WriteByte(target.Country);
+            packet.WriteString(client, target.Region);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_UPDATE_USER_STATUS);
+        }
     }
 }

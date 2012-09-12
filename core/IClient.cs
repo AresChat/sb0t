@@ -65,13 +65,23 @@ namespace core
         /// <summary>Web Client Flag</summary>
         bool WebClient { get; }
         /// <summary>Room Owner Flag</summary>
-        bool Owner { get; }
+        bool Owner { get; set; }
         /// <summary>Avatar</summary>
         byte[] Avatar { get; set; }
         /// <summary>Personal Message</summary>
         String PersonalMessage { get; set; }
+        /// <summary>Encryption Credentials</summary>
         Encryption Encryption { get; set; }
+        /// <summary>Capture Test Flag</summary>
+        bool Captcha { get; set; }
+        /// <summary>Logged In Flag</summary>
+        bool Registered { get; set; }
+        /// <summary>Secure Login Cookie</summary>
+        uint Cookie { get; set; }
 
+        /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);
+        /// <summary>Print to this client</summary>
+        void Print(object text);
     }
 }

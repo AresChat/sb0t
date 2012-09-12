@@ -28,7 +28,6 @@ namespace core.ib0t
         public byte Country { get; set; }
         public String Region { get; set; }
         public bool FastPing { get; set; }
-        public Level Level { get; set; }
         public ushort Vroom { get; set; }
         public bool Ghosting { get; set; }
         public List<String> IgnoreList { get; set; }
@@ -40,6 +39,9 @@ namespace core.ib0t
         public bool WebClient { get; private set; }
         public bool Owner { get; set; }
         public Encryption Encryption { get; set; }
+        public bool Captcha { get; set; }
+        public bool Registered { get; set; }
+        public uint Cookie { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }
@@ -51,6 +53,7 @@ namespace core.ib0t
         private int socket_health = 0;
         private List<byte> data_in = new List<byte>();
         private List<byte[]> data_out = new List<byte[]>();
+        private Level _level = core.Level.Regular;
 
         public ib0tClient(AresClient client, ulong time, ushort id)
         {
@@ -69,7 +72,6 @@ namespace core.ib0t
             this.Time = time;
             this.ProtoConnected = false;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
-            this.Level = core.Level.Regular;
             this.Vroom = 0;
             this.Name = String.Empty;
             this.Version = String.Empty;
@@ -78,6 +80,29 @@ namespace core.ib0t
             this.CustomClientTags = new List<String>();
             this.Encryption = new Encryption { Mode = EncryptionMode.Unencrypted };
             this.DNS = client.DNS;
+        }
+
+        public Level Level
+        {
+            get { return this._level; }
+            set
+            {
+                this._level = value;
+
+                if (this.LoggedIn)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.UpdateTo(x, this.Name, this._level)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                }
+            }
+        }
+
+        public void Print(object text)
+        {
+            this.QueuePacket(WebOutbound.NoSuchTo(this, text.ToString()));
         }
 
         public String PersonalMessage

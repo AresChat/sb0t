@@ -34,7 +34,6 @@ namespace core
         public String Region { get; set; }
         public Encryption Encryption { get; set; }
         public bool FastPing { get; set; }
-        public Level Level { get; set; }
         public ushort Vroom { get; set; }
         public bool Ghosting { get; set; }
         public uint Cookie { get; set; }
@@ -53,14 +52,19 @@ namespace core
         public bool WebClient { get; private set; }
         public bool Owner { get; set; }
         public bool IsHTML { get; private set; }
+        public bool Captcha { get; set; }
+        public bool Registered { get; set; }
 
 
         public Socket Sock { get; set; }
+        public bool HasSecureLoginAttempted { get; set; }
+
         private List<byte> data_in = new List<byte>();
         private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
         private int socket_health = 0;
         private byte[] avatar = new byte[] { };
         private String personal_message = String.Empty;
+        private Level _level = core.Level.Regular;
 
         public AresClient(Socket sock, ulong time, ushort id)
         {
@@ -69,9 +73,8 @@ namespace core
             this.Sock.Blocking = false;
             this.Time = time;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
-            this.Level = core.Level.Regular;
             this.Vroom = 0;
-            this.Cookie = AdminSystem.NextCookie;
+            this.Cookie = AccountManager.NextCookie;
             this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };
             this.Name = String.Empty;
             this.Version = String.Empty;
@@ -82,6 +85,29 @@ namespace core
             this.VoiceChatIgnoreList = new List<String>();
             this.EmoticonList = new List<CustomEmoticon>();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+        }
+
+        public Level Level
+        {
+            get { return this._level; }
+            set
+            {
+                this._level = value;
+
+                if (this.LoggedIn)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.UpdateTo(x, this.Name, this._level)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                }
+            }
+        }
+
+        public void Print(object text)
+        {
+            this.SendPacket(TCPOutbound.NoSuch(this, text.ToString()));
         }
 
         public void BinaryWrite(byte[] data)

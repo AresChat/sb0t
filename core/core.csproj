@@ -45,7 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminSystem.cs" />
+    <Compile Include="Account.cs" />
+    <Compile Include="AccountManager.cs" />
     <Compile Include="AresClient.cs" />
     <Compile Include="BanPool.cs" />
     <Compile Include="Crypto.cs" />
