@@ -97,6 +97,8 @@ namespace core.ib0t
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.UpdateTo(x, this.Name, this._level)),
                         x => x.LoggedIn && x.Vroom == this.Vroom);
                 }
+
+                Events.AdminLevelChanged(this);
             }
         }
 

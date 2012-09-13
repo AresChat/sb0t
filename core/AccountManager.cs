@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Security.Cryptography;
+using System.IO;
+using System.Data;
+using System.Data.SQLite;
 
 namespace core
 {
@@ -11,10 +14,59 @@ namespace core
     {
         private static Random rnd;
         private static List<Account> list;
+        private static String DataPath { get; set; }
 
         public static void LoadPasswords()
         {
+            DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Accounts";
+
+            if (!Directory.Exists(DataPath))
+                Directory.CreateDirectory(DataPath);
+
+            DataPath += "\\accounts.dat";
+
+            if (!File.Exists(DataPath))
+                CreateDatabase();
+
             list = new List<Account>();
+
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand("select * from accounts", connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
+                        list.Add(new Account
+                        {
+                            Name = (String)reader["name"],
+                            Level = (Level)(byte)(int)reader["level"],
+                            Guid = new Guid((String)reader["guid"]),
+                            Password = (byte[])reader["password"]
+                        });
+            }
+        }
+
+        private static void CreateDatabase()
+        {
+            SQLiteConnection.CreateFile(DataPath);
+
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                String query = @"create table accounts
+                                 (
+                                     name text not null,
+                                     level int not null,
+                                     guid text not null,
+                                     password blob not null
+                                 )";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    command.ExecuteNonQuery();
+            }
         }
 
         public static uint NextCookie
@@ -30,6 +82,7 @@ namespace core
 
         public static void SecureLogin(IClient client, byte[] password)
         {
+            // option to not match guids
             List<IPAddress> addresses = new List<IPAddress>();
             byte[] ext_ip = Settings.Get<byte[]>("ip");
             addresses.Add(IPAddress.Loopback);
@@ -72,7 +125,7 @@ namespace core
                         if (pwd.SequenceEqual(password))
                         {
                             client.Registered = true;
-                            client.Captcha = a.Captcha;
+                            client.Captcha = true;
                             Events.LoginGranted(client);
                             client.Level = a.Level;
                             ServerCore.Log(client.Name + " logged in with " + a.Name + "'s password");
@@ -93,6 +146,7 @@ namespace core
 
         public static void Login(IClient client, String password)
         {
+            // option to not match guids
             String owner = Settings.Get<String>("owner");
 
             if (!String.IsNullOrEmpty(owner))
@@ -117,7 +171,7 @@ namespace core
                 else
                 {
                     client.Registered = true;
-                    client.Captcha = a.Captcha;
+                    client.Captcha = true;
                     Events.LoginGranted(client);
                     client.Level = a.Level;
                     ServerCore.Log(client.Name + " logged in with " + a.Name + "'s password");
@@ -130,23 +184,60 @@ namespace core
 
         public static void Register(IClient client, String password)
         {
+            if (password.Length < 3)
+                return;
+
             if (Events.Registering(client))
             {
-                if (list.RemoveAll(x => x.Guid.Equals(client.Guid)) > 0)
+                list.RemoveAll(x => x.Guid.Equals(client.Guid));
+
+                using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+                {
+                    connection.Open();
+
+                    using (SQLiteCommand command = new SQLiteCommand("delete from accounts where guid=@guid", connection))
+                    {
+                        command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                if (client.Level != Level.Regular)
                     client.Level = Level.Regular;
 
+                byte[] pwd;
+
                 using (SHA1 sha1 = SHA1.Create())
+                {
+                    pwd = sha1.ComputeHash(Encoding.UTF8.GetBytes(password));
+
                     list.Add(new Account
                     {
-                        Captcha = client.Captcha,
                         Guid = client.Guid,
                         Level = Level.Regular,
                         Name = client.Name,
                         Owner = false,
-                        Password = sha1.ComputeHash(Encoding.UTF8.GetBytes(password))
+                        Password = pwd
                     });
+                }
 
-                SaveAccounts();
+                using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+                {
+                    connection.Open();
+
+                    String query = @"insert into accounts (name, level, guid, password) 
+                                     values (@name, @level, @guid, @password)";
+
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.Add(new SQLiteParameter("@name", client.Name));
+                        command.Parameters.Add(new SQLiteParameter("@level", (int)(byte)client.Level));
+                        command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
+                        command.Parameters.Add(new SQLiteParameter("@password", pwd));
+                        command.ExecuteNonQuery();
+                    }
+                }
+
                 Events.Registered(client);
                 client.Registered = true;
                 Events.LoginGranted(client);
@@ -154,21 +245,57 @@ namespace core
             }
         }
 
+        public static void Unregister(IClient client)
+        {
+            if (!client.Registered || client.Owner)
+                return;
+
+            list.RemoveAll(x => x.Guid.Equals(client.Guid));
+            client.Level = Level.Regular;
+            client.Registered = false;
+
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                String query = @"delete from accounts
+                                 where guid=@guid";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.Add(new SQLiteParameter("@level", (int)(byte)client.Level));
+                    command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static void UpdateAccount(IClient client)
         {
+            if (!client.Registered)
+                return;
+
             Account a = list.Find(x => x.Guid.Equals(client.Guid));
 
             if (a != null)
             {
-                a.Captcha = client.Captcha;
                 a.Level = client.Level;
-                SaveAccounts();
+
+                using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+                {
+                    connection.Open();
+
+                    String query = @"update accounts set level=@level
+                                     where guid=@guid";
+
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.Add(new SQLiteParameter("@level", (int)(byte)client.Level));
+                        command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
-        }
-
-        private static void SaveAccounts()
-        {
-
         }
 
     }

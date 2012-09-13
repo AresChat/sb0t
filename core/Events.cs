@@ -53,6 +53,10 @@ namespace core
                 return;
             }
 
+            if (!client.Captcha)
+                if (!command.StartsWith("login "))
+                    return;
+
             if (!client.Registered)
             {
                 if (command.StartsWith("register "))
@@ -68,6 +72,12 @@ namespace core
             }
             else
             {
+                if (command == "unregister" && !client.Owner)
+                {
+                    AccountManager.Unregister(client);
+                    return;
+                }
+
                 if (command.StartsWith("nick "))
                 {
                     if (NickChanging(client, command.Substring(5)))
@@ -104,11 +114,16 @@ namespace core
         {
             if (!client.Registered)
             {
-                client.Print("/register <password>");
+                if (client.Captcha)
+                    client.Print("/register <password>");
+
                 client.Print("/login <password>");
             }
             else
             {
+                if (!client.Owner)
+                    client.Print("#unregister");
+
                 client.Print("/nick <name>");
 
                 if (client.Owner)

@@ -102,6 +102,8 @@ namespace core
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.UpdateTo(x, this.Name, this._level)),
                         x => x.LoggedIn && x.Vroom == this.Vroom);
                 }
+
+                Events.AdminLevelChanged(this);
             }
         }
 
@@ -117,19 +119,20 @@ namespace core
 
         private void DnsReceived(IAsyncResult result)
         {
-            try
-            {
-                IPHostEntry i = Dns.EndGetHostEntry(result);
-                this.DNS = i.HostName;
-            }
-            catch
-            {
+            if (this.SocketConnected)
                 try
                 {
-                    this.DNS = this.ExternalIP.ToString();
+                    IPHostEntry i = Dns.EndGetHostEntry(result);
+                    this.DNS = i.HostName;
                 }
-                catch { }
-            }
+                catch
+                {
+                    try
+                    {
+                        this.DNS = this.ExternalIP.ToString();
+                    }
+                    catch { }
+                }
         }
 
         public byte[] Avatar

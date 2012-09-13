@@ -332,6 +332,7 @@ namespace core
                 return;
 
             client.FastPing = relogin;
+
             client.Guid = packet;
             client.FileCount = packet;
             byte crypto = packet;

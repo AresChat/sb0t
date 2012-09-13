@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using System.Net;
+using System.Security.Cryptography;
 
 namespace core.ib0t
 {
@@ -52,7 +53,10 @@ namespace core.ib0t
                 g[i] = byte.Parse(args.Substring((i * 2), 2), NumberStyles.HexNumber);
 
             client.CanScribble = g[0] == 0xff;
-            client.Guid = new Guid(g);
+
+            using (MD5 md5 = MD5.Create())
+                client.Guid = new Guid(md5.ComputeHash(g));
+
             client.OrgName = args.Substring(32);
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;

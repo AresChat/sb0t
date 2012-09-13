@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Security.Cryptography;
 
 namespace core
 {
@@ -53,6 +54,10 @@ namespace core
             byte[] tmp = new byte[16];
             Array.Copy(p.Data.ToArray(), p.Position, tmp, 0, tmp.Length);
             p.Position += 16;
+
+            using (MD5 md5 = MD5.Create())
+                tmp = md5.ComputeHash(tmp);
+
             return new Guid(tmp);
         }
 
