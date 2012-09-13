@@ -250,23 +250,31 @@ namespace core
             if (!client.Registered || client.Owner)
                 return;
 
-            list.RemoveAll(x => x.Guid.Equals(client.Guid));
-            client.Level = Level.Regular;
-            client.Registered = false;
+            Account a = list.Find(x => x.Guid.Equals(client.Guid));
 
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            if (a != null)
             {
-                connection.Open();
+                list.RemoveAll(x => x.Guid.Equals(client.Guid));
+                client.Level = Level.Regular;
+                client.Registered = false;
 
-                String query = @"delete from accounts
+                using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+                {
+                    connection.Open();
+
+                    String query = @"delete from accounts
                                  where guid=@guid";
 
-                using (SQLiteCommand command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.Add(new SQLiteParameter("@level", (int)(byte)client.Level));
-                    command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
-                    command.ExecuteNonQuery();
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.Add(new SQLiteParameter("@level", (int)(byte)client.Level));
+                        command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
+                        command.ExecuteNonQuery();
+                    }
                 }
+
+                Events.Unregistered(client);
+                ServerCore.Log(client.Name + " has unregistered " + a.Name + "'s account");
             }
         }
 

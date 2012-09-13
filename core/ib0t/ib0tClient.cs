@@ -42,6 +42,7 @@ namespace core.ib0t
         public bool Captcha { get; set; }
         public bool Registered { get; set; }
         public uint Cookie { get; set; }
+        public String CaptchaWord { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }
@@ -79,6 +80,7 @@ namespace core.ib0t
             this.Font = new core.Font();
             this.CustomClientTags = new List<String>();
             this.Encryption = new Encryption { Mode = EncryptionMode.Unencrypted };
+            this.CaptchaWord = String.Empty;
             this.DNS = client.DNS;
         }
 

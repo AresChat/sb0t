@@ -54,6 +54,7 @@ namespace core
         public bool IsHTML { get; private set; }
         public bool Captcha { get; set; }
         public bool Registered { get; set; }
+        public String CaptchaWord { get; set; }
 
 
         public Socket Sock { get; set; }
@@ -84,6 +85,7 @@ namespace core
             this.CustomClientTags = new List<String>();
             this.VoiceChatIgnoreList = new List<String>();
             this.EmoticonList = new List<CustomEmoticon>();
+            this.CaptchaWord = String.Empty;
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 

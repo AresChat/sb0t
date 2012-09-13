@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using captcha;
 
 namespace core
 {
@@ -180,6 +181,9 @@ namespace core
 
         private static void Private(AresClient client, TCPPacketReader packet)
         {
+            if (!client.Captcha)
+                return;
+
             String name = packet.ReadString(client);
             String text = packet.ReadString(client);
             PMEventArgs args = new PMEventArgs { Cancel = false, Text = text };
@@ -235,11 +239,42 @@ namespace core
                 return;
             }
 
-            if (text.StartsWith("#"))
+            if (text.StartsWith("#") && client.SocketConnected)
                 Command(client, text.Substring(1));
 
             if (client.SocketConnected)
-                Events.TextReceived(client, text);
+            {
+                if (!client.Captcha)
+                {
+                    if (String.IsNullOrEmpty(client.CaptchaWord) || (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != text.ToUpper()))
+                    {
+                        if (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != text.ToUpper())
+                        {
+                            Events.CaptchaReply(client, text);
+
+                            if (!client.SocketConnected)
+                                return;
+                        }
+
+                        CaptchaItem cap = Captcha.Create();
+                        client.CaptchaWord = cap.Word;
+                        Events.CaptchaSending(client);
+
+                        foreach (String str in cap.Lines)
+                            client.SendPacket(TCPOutbound.NoSuch(client, str));
+
+                        return;
+                    }
+                    else
+                    {
+                        client.Captcha = true;
+                        Events.CaptchaReply(client, text);
+                        return;
+                    }
+                }
+                else Events.TextReceived(client, text);
+            }
+            else return;
 
             if (client.SocketConnected)
             {
@@ -262,6 +297,9 @@ namespace core
 
         private static void Emote(AresClient client, TCPPacketReader packet)
         {
+            if (!client.Captcha)
+                return;
+
             String text = packet.ReadString(client);
             Events.EmoteReceived(client, text);
 

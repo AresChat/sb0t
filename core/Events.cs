@@ -122,7 +122,7 @@ namespace core
             else
             {
                 if (!client.Owner)
-                    client.Print("#unregister");
+                    client.Print("/unregister");
 
                 client.Print("/nick <name>");
 
@@ -146,5 +146,15 @@ namespace core
         public static bool Registering(IClient client) { return true; }
 
         public static void Registered(IClient client) { }
+
+        public static void Unregistered(IClient client) { }
+
+        public static void CaptchaSending(IClient client) { }
+
+        public static void CaptchaReply(IClient client, String reply) { }
+
+        public static void VroomChanging(IClient client, ushort vroom) { }
+
+        public static void VroomChanged(IClient client) { }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Globalization;
 using System.Net;
 using System.Security.Cryptography;
-
+using captcha;
 namespace core.ib0t
 {
     class WebProcessor
@@ -173,11 +173,42 @@ namespace core.ib0t
                 return;
             }
 
-            if (text.StartsWith("#"))
+            if (text.StartsWith("#") && client.SocketConnected)
                 Command(client, text.Substring(1));
 
             if (client.SocketConnected)
-                Events.TextReceived(client, text);
+            {
+                if (!client.Captcha)
+                {
+                    if (String.IsNullOrEmpty(client.CaptchaWord) || (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != text.ToUpper()))
+                    {
+                        if (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != text.ToUpper())
+                        {
+                            Events.CaptchaReply(client, text);
+
+                            if (!client.SocketConnected)
+                                return;
+                        }
+
+                        CaptchaItem cap = Captcha.Create();
+                        client.CaptchaWord = cap.Word;
+                        Events.CaptchaSending(client);
+
+                        foreach (String str in cap.Lines)
+                            client.QueuePacket(WebOutbound.NoSuchTo(client, str));
+
+                        return;
+                    }
+                    else
+                    {
+                        client.Captcha = true;
+                        Events.CaptchaReply(client, text);
+                        return;
+                    }
+                }
+                else Events.TextReceived(client, text);
+            }
+            else return;
 
             if (client.SocketConnected)
             {
@@ -200,7 +231,11 @@ namespace core.ib0t
 
         private static void Emote(ib0tClient client, String args, ulong time)
         {
+            if (!client.Captcha)
+                return;
+
             String text = args;
+
             Events.EmoteReceived(client, text);
 
             if (client.SocketConnected)

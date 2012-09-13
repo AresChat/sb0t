@@ -78,6 +78,8 @@ namespace core
         bool Registered { get; set; }
         /// <summary>Secure Login Cookie</summary>
         uint Cookie { get; set; }
+        /// <summary>Captcha Word</summary>
+        String CaptchaWord { get; set; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);
