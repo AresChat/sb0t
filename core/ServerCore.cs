@@ -41,6 +41,7 @@ namespace core
             Settings.Set("enabled", true, "web");
             Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
             Settings.Set("owner", "testing");
+            Settings.Set("captcha", true);
 
             
 

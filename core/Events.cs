@@ -80,10 +80,11 @@ namespace core
 
                 if (command.StartsWith("nick "))
                 {
-                    if (NickChanging(client, command.Substring(5)))
-                    {
+                    if (!Helpers.NameAvailable(client, command.Substring(5)) || command.Substring(5).Length < 2)
+                        return;
 
-                    }
+                    if (NickChanging(client, command.Substring(5)))
+                        client.Name = command.Substring(5);
 
                     return;
                 }
@@ -153,7 +154,7 @@ namespace core
 
         public static void CaptchaReply(IClient client, String reply) { }
 
-        public static void VroomChanging(IClient client, ushort vroom) { }
+        public static bool VroomChanging(IClient client, ushort vroom) { return true; }
 
         public static void VroomChanged(IClient client) { }
     }

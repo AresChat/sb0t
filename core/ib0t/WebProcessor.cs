@@ -193,10 +193,12 @@ namespace core.ib0t
                         CaptchaItem cap = Captcha.Create();
                         client.CaptchaWord = cap.Word;
                         Events.CaptchaSending(client);
+                        client.QueuePacket(WebOutbound.NoSuchTo(client, String.Empty));
 
                         foreach (String str in cap.Lines)
                             client.QueuePacket(WebOutbound.NoSuchTo(client, str));
 
+                        client.QueuePacket(WebOutbound.NoSuchTo(client, String.Empty));
                         return;
                     }
                     else

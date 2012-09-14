@@ -18,7 +18,6 @@ namespace core.ib0t
         public ushort DataPort { get; set; }
         public IPAddress NodeIP { get; set; }
         public ushort NodePort { get; set; }
-        public String Name { get; set; }
         public String OrgName { get; set; }
         public String Version { get; set; }
         public IPAddress LocalIP { get; set; }
@@ -28,7 +27,6 @@ namespace core.ib0t
         public byte Country { get; set; }
         public String Region { get; set; }
         public bool FastPing { get; set; }
-        public ushort Vroom { get; set; }
         public bool Ghosting { get; set; }
         public List<String> IgnoreList { get; set; }
         public Font Font { get; set; }
@@ -55,6 +53,8 @@ namespace core.ib0t
         private List<byte> data_in = new List<byte>();
         private List<byte[]> data_out = new List<byte[]>();
         private Level _level = core.Level.Regular;
+        private String _name = String.Empty;
+        private ushort _vroom = 0;
 
         public ib0tClient(AresClient client, ulong time, ushort id)
         {
@@ -81,7 +81,61 @@ namespace core.ib0t
             this.CustomClientTags = new List<String>();
             this.Encryption = new Encryption { Mode = EncryptionMode.Unencrypted };
             this.CaptchaWord = String.Empty;
+            this.Captcha = !Settings.Get<bool>("captcha");
             this.DNS = client.DNS;
+        }
+
+        public String Name
+        {
+            get { return this._name; }
+            set
+            {
+                if (this.SocketConnected && Helpers.NameAvailable(this, value))
+                    if (!this.LoggedIn)
+                        this._name = value;
+                    else
+                    {
+                        this.LoggedIn = false;
+
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                        this._name = value;
+                        Helpers.FakeRejoinSequence(this);
+                    }
+            }
+        }
+
+        public ushort Vroom
+        {
+            get { return this._vroom; }
+            set
+            {
+                if (this.SocketConnected)
+                    if (Events.VroomChanging(this, value))
+                    {
+                        if (!this.LoggedIn)
+                            this._vroom = value;
+                        else
+                        {
+                            this.LoggedIn = false;
+
+                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                                x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                                x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                            this._vroom = value;
+                            Helpers.FakeRejoinSequence(this);
+                        }
+
+                        Events.VroomChanged(this);
+                    }
+            }
         }
 
         public Level Level

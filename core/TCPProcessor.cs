@@ -259,10 +259,12 @@ namespace core
                         CaptchaItem cap = Captcha.Create();
                         client.CaptchaWord = cap.Word;
                         Events.CaptchaSending(client);
+                        client.SendPacket(TCPOutbound.NoSuch(client, String.Empty));
 
                         foreach (String str in cap.Lines)
                             client.SendPacket(TCPOutbound.NoSuch(client, str));
 
+                        client.SendPacket(TCPOutbound.NoSuch(client, String.Empty));
                         return;
                     }
                     else
@@ -483,16 +485,11 @@ namespace core
             client.SendPacket(TCPOutbound.SupportsCustomEmotes());
             client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
             client.SendPacket(TCPOutbound.PersonalMessageBot(client));
+            // send bot avatar
 
-            UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
-                x => x.VoiceChatPrivate || x.VoiceChatPublic);
-
-            UserPool.AUsers.ForEachWhere(x =>
-            {
-                foreach (CustomEmoticon c in x.EmoticonList)
-                    client.SendPacket(TCPOutbound.CustomEmoteItem(client, x, c));
-            },
-            x => x.Vroom == client.Vroom && x.CustomEmoticons);
+            if (client.CustomClient)
+                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
+                    x => x.VoiceChatPrivate || x.VoiceChatPublic);
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);
@@ -506,8 +503,9 @@ namespace core
             UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom);
 
-            UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
+            if (client.CustomClient)
+                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
             
             Events.Joined(client);
         }
