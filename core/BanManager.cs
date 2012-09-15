@@ -17,7 +17,7 @@ namespace core
         public static bool IsBanned(IClient client)
         {
             return list.Find(x => x.ExternalIP.Equals(client.ExternalIP) ||
-                x.Guid.Equals(client.Guid)) == null;
+                x.Guid.Equals(client.Guid)) != null;
         }
 
         public static void AddBan(IClient client)
