@@ -440,7 +440,7 @@ namespace core
 
             UserHistory.AddUser(client, time);
 
-            if (BanPool.IsBanned(client))
+            if (BanManager.IsBanned(client))
             {
                 if (hijack != null && hijack is AresClient)
                     ((AresClient)hijack).SendDepart();

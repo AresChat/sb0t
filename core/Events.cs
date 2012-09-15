@@ -83,7 +83,7 @@ namespace core
                     if (!Helpers.NameAvailable(client, command.Substring(5)) || command.Substring(5).Length < 2)
                         return;
 
-                    if (NickChanging(client, command.Substring(5)))
+                    if (Nick(client, command.Substring(5)))
                         client.Name = command.Substring(5);
 
                     return;
@@ -109,7 +109,7 @@ namespace core
             }
         }
 
-        private static bool NickChanging(IClient client, String name) { return true; }
+        private static bool Nick(IClient client, String name) { return true; }
 
         private static void Help(IClient client)
         {

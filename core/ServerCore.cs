@@ -83,6 +83,7 @@ namespace core
             Captcha.Initialize();
             UserHistory.Initialize();
             AccountManager.LoadPasswords();
+            BanManager.LoadBans();
 
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);

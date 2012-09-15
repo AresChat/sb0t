@@ -19,7 +19,7 @@ namespace core
         public static void LoadPasswords()
         {
             DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Accounts";
+                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Dat";
 
             if (!Directory.Exists(DataPath))
                 Directory.CreateDirectory(DataPath);
@@ -263,7 +263,7 @@ namespace core
                     connection.Open();
 
                     String query = @"delete from accounts
-                                 where guid=@guid";
+                                     where guid=@guid";
 
                     using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
