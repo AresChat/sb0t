@@ -96,8 +96,9 @@ namespace core
                 c.Image = packet;
                 client.EmoticonList.Add(c);
 
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, c)),
-                    x => x.Vroom == client.Vroom && x.CustomEmoticons);
+                if (!client.Cloaked)
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, c)),
+                        x => x.Vroom == client.Vroom && x.CustomEmoticons);
             }
         }
 
@@ -108,8 +109,9 @@ namespace core
                 String shortcut = packet.ReadString(client);
                 client.EmoticonList.RemoveAll(x => x.Shortcut == shortcut);
 
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteDelete(x, client, shortcut)),
-                    x => x.Vroom == client.Vroom && x.CustomEmoticons);
+                if (!client.Cloaked)
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteDelete(x, client, shortcut)),
+                        x => x.Vroom == client.Vroom && x.CustomEmoticons);
             }
         }
 
@@ -224,11 +226,14 @@ namespace core
             client.Font.NameColorNew = packet;
             client.Font.TextColorNew = packet;
 
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
-            
-            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.FontTo(x, client.Name, client.Font.NameColor, client.Font.TextColor)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+            if (!client.Cloaked)
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.FontTo(x, client.Name, client.Font.NameColor, client.Font.TextColor)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+            }
         }
 
     }

@@ -85,6 +85,12 @@ namespace core.ib0t
             this.DNS = client.DNS;
         }
 
+        public bool Cloaked
+        {
+            get { return false; }
+            set { }
+        }
+
         public String Name
         {
             get { return this._name; }

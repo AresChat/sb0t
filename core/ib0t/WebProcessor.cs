@@ -110,7 +110,7 @@ namespace core.ib0t
 
             UserHistory.AddUser(client, time);
 
-            if (BanManager.IsBanned(client))
+            if (BanSystem.IsBanned(client))
             {
                 if (hijack != null && hijack is AresClient)
                     ((AresClient)hijack).SendDepart();

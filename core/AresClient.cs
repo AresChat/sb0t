@@ -66,6 +66,7 @@ namespace core
         private Level _level = core.Level.Regular;
         private String _name = String.Empty;
         private ushort _vroom = 0;
+        private bool _cloaked = false;
 
         public AresClient(Socket sock, ulong time, ushort id)
         {
@@ -89,6 +90,32 @@ namespace core
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 
+        public bool Cloaked
+        {
+            get { return this._cloaked; }
+            set
+            {
+                if (value)
+                    if (!this.LoggedIn)
+                        return;
+
+                if (value == this._cloaked)
+                    return;
+
+                this._cloaked = value;
+
+                if (value)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                }
+                else Helpers.UncloakedSequence(this);
+            }
+        }
+
         public String Name
         {
             get { return this._name; }
@@ -101,11 +128,14 @@ namespace core
                     {
                         this.LoggedIn = false;
 
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
-                            x => x.LoggedIn && x.Vroom == this.Vroom);
+                        if (!this.Cloaked)
+                        {
+                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                                x => x.LoggedIn && x.Vroom == this.Vroom);
 
-                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
-                            x => x.LoggedIn && x.Vroom == this.Vroom);
+                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                                x => x.LoggedIn && x.Vroom == this.Vroom);
+                        }
 
                         this._name = value;
                         Helpers.FakeRejoinSequence(this);
@@ -127,11 +157,14 @@ namespace core
                         {
                             this.LoggedIn = false;
 
-                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
-                                x => x.LoggedIn && x.Vroom == this.Vroom);
+                            if (!this.Cloaked)
+                            {
+                                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                                    x => x.LoggedIn && x.Vroom == this.Vroom);
 
-                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
-                                x => x.LoggedIn && x.Vroom == this.Vroom);
+                                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                                    x => x.LoggedIn && x.Vroom == this.Vroom);
+                            }
 
                             this._vroom = value;
                             Helpers.FakeRejoinSequence(this);
@@ -149,7 +182,7 @@ namespace core
             {
                 this._level = value;
 
-                if (this.LoggedIn)
+                if (this.LoggedIn && !this.Cloaked)
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
                         x => x.LoggedIn && x.Vroom == this.Vroom);
@@ -199,15 +232,17 @@ namespace core
                 {
                     this.avatar = new byte[] { };
 
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.AvatarCleared(x, this)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                    if (!this.Cloaked)
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.AvatarCleared(x, this)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom);
                 }
                 else
                 {
                     this.avatar = value;
 
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, this)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                    if (!this.Cloaked)
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, this)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom);
                 }
             }
         }
@@ -219,8 +254,9 @@ namespace core
             {
                 this.personal_message = value;
 
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom);
+                if (!this.Cloaked)
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
             }
         }
 
@@ -319,11 +355,14 @@ namespace core
                 this.LoggedIn = false;
                 Events.Parting(this);
 
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom);
+                if (!this.Cloaked)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
 
-                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom);
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                }
 
                 Events.Parted(this);
             }

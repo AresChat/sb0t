@@ -216,6 +216,12 @@ namespace core
                     client.SendPacket(TCPOutbound.IsIgnoringYou(client, name));
                 else
                 {
+                    if (target.Cloaked)
+                    {
+                        client.SendPacket(TCPOutbound.OfflineUser(client, name));
+                        return;
+                    }
+
                     Events.PrivateSending(client, target, args);
 
                     if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
@@ -440,7 +446,7 @@ namespace core
 
             UserHistory.AddUser(client, time);
 
-            if (BanManager.IsBanned(client))
+            if (BanSystem.IsBanned(client))
             {
                 if (hijack != null && hijack is AresClient)
                     ((AresClient)hijack).SendDepart();
@@ -457,6 +463,10 @@ namespace core
                 Events.Rejected(client, RejectedMsg.UserDefined);
                 throw new Exception("user defined rejection");
             }
+
+            if (hijack != null)
+                if (hijack.Cloaked)
+                    hijack = null;
 
             if (hijack == null || !(hijack is AresClient))
             {

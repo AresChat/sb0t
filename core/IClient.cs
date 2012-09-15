@@ -80,6 +80,8 @@ namespace core
         uint Cookie { get; set; }
         /// <summary>Captcha Word</summary>
         String CaptchaWord { get; set; }
+        /// <summary>Cloaked</summary>
+        bool Cloaked { get; set; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);

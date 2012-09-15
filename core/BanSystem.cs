@@ -9,7 +9,7 @@ using System.Net;
 
 namespace core
 {
-    class BanManager
+    class BanSystem
     {
         private static List<Ban> list;
         private static String DataPath { get; set; }

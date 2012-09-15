@@ -114,13 +114,65 @@ namespace core
                 }
         }
 
-        public static void FakeRejoinSequence(AresClient client)
+        public static void UncloakedSequence(AresClient client)
         {
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom);
+                x => x.LoggedIn && x.Vroom == client.Vroom);
 
             UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
                 x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            if (client.Avatar.Length > 0)
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            if (client.PersonalMessage.Length > 0)
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            if (client.Font.HasFont)
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.FontTo(x, client.Name, client.Font.NameColor, client.Font.TextColor)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+            }
+
+            if (client.VoiceChatPrivate || client.VoiceChatPublic)
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatUserSupport(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && (x.VoiceChatPrivate || x.VoiceChatPublic));
+
+            foreach (CustomEmoticon em in client.EmoticonList)
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, em)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomEmoticons);
+        }
+
+        public static void UncloakedSequence(ib0t.ib0tClient client)
+        {
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
+                x => x.LoggedIn && x.Vroom == client.Vroom);
+        }
+
+        public static void FakeRejoinSequence(AresClient client)
+        {
+            if (!client.Cloaked)
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+            }
 
             client.LoggedIn = true;
             client.CustomEmoticons = false;
@@ -129,10 +181,10 @@ namespace core
             client.SendPacket(TCPOutbound.UserlistBot(client));
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked);
 
             UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked);
 
             client.SendPacket(TCPOutbound.UserListEnd());
             client.SendPacket(TCPOutbound.OpChange(client));
@@ -142,48 +194,51 @@ namespace core
 
             if (client.CustomClient)
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
-                    x => x.VoiceChatPrivate || x.VoiceChatPublic);
+                    x => (x.VoiceChatPrivate || x.VoiceChatPublic) && !x.Cloaked);
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);
+                x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0 && !x.Cloaked);
 
             UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked);
 
             UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0);
+                x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0 && !x.Cloaked);
 
             UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked);
 
             if (client.CustomClient)
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked);
         }
 
         public static void FakeRejoinSequence(ib0t.ib0tClient client)
         {
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom);
+            if (!client.Cloaked)
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                                x => x.LoggedIn && x.Vroom == client.Vroom);
 
-            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+            }
 
             client.LoggedIn = true;
             client.QueuePacket(WebOutbound.AckTo(client, client.Name));
             client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), Level.Host));
 
             UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked);
 
             UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked);
 
             client.QueuePacket(WebOutbound.UserlistEndTo(client));
 
             if (client.CustomClient)
                 UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked);
         }
     }
 
