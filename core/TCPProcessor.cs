@@ -393,7 +393,7 @@ namespace core
             client.CustomClient = !client.Version.StartsWith("Ares 2.");
             client.LocalIP = packet;
             packet.SkipBytes(4);
-            client.Browsable = packet > 2;
+            client.Browsable = packet > 2 && Settings.Get<bool>("files");
             client.CurrentUploads = packet;
             client.MaxUploads = packet;
             client.CurrentQueued = packet;
@@ -402,6 +402,7 @@ namespace core
             client.Country = packet;
             client.Region = packet.ReadString(client);
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
+            client.Captcha = !Settings.Get<bool>("captcha");
 
             if (client.Encryption.Mode == EncryptionMode.Encrypted)
             {

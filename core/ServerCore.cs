@@ -17,6 +17,8 @@ namespace core
         private Thread thread;
         private bool terminate = false;
 
+        public bool Running { get; private set; }
+
         public static void Log(String message)
         {
             LogUpdate(null, new ServerLogEventArgs { Message = message });
@@ -29,19 +31,12 @@ namespace core
         
         public bool Open()
         {
-            Settings.Set("port", (ushort)54321);
-            Settings.Set("name", "sb0t 5 test room");
-            Settings.Set("topic", "sb5 :: welcome to my room");
-            Settings.Set("bot", "sb0t");
+            Settings.Set("topic", "welcome to my room");
             Settings.Set("language", (byte)10);
             Settings.Set("text", "google", "url");
             Settings.Set("link", "http://www.google.com/", "url");
-            Settings.Set("voice", true);
-            Settings.Set("emotes", true);
-            Settings.Set("enabled", true, "web");
             Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
             Settings.Set("owner", "testing");
-            Settings.Set("captcha", true);
 
             
 
@@ -60,6 +55,7 @@ namespace core
             LogUpdate(this, new ServerLogEventArgs { Message = "Server initialized" });
             this.thread = new Thread(new ThreadStart(this.ServerThread));
             this.thread.Start();
+            this.Running = true;
 
             return true;
         }
@@ -72,6 +68,7 @@ namespace core
             catch { }
 
             UserPool.Destroy();
+            this.Running = false;
         }
 
         private void ServerThread()

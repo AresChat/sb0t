@@ -73,6 +73,7 @@ namespace core.ib0t
             client.Sex = 0;
             client.Country = 0;
             client.Region = String.Empty;
+            client.Captcha = !Settings.Get<bool>("captcha");
 
             if ((UserPool.AUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count +
                  UserPool.WUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count) > 3)

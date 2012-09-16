@@ -8,7 +8,7 @@ using Microsoft.Win32;
 
 namespace core
 {
-    class Settings
+    public class Settings
     {
         public const String VERSION = "sb0t 5.00";
 
@@ -42,11 +42,26 @@ namespace core
                 for (int i = 0; i < AcceptableTypes.Length; i++)
                     if (AcceptableTypes[i].Equals(type))
                         if (i <= 4 || i == 6)
-                            return (T)Convert.ChangeType(value, typeof(T));
+                        {
+                            if (value != null)
+                                return (T)Convert.ChangeType(value, typeof(T));
+                            else
+                                return (T)Convert.ChangeType(0, typeof(T));
+                        }
                         else if (i == 5)
-                            return (T)Convert.ChangeType(Encoding.UTF8.GetString((byte[])value), typeof(T));
+                        {
+                            if (value != null)
+                                return (T)Convert.ChangeType(Encoding.UTF8.GetString((byte[])value), typeof(T));
+                            else
+                                return (T)Convert.ChangeType(String.Empty, typeof(T));
+                        }
                         else if (i == 7)
-                            return (T)Convert.ChangeType(((int)value == 1), typeof(T));
+                        {
+                            if (value != null)
+                                return (T)Convert.ChangeType(((int)value == 1), typeof(T));
+                            else
+                                return (T)Convert.ChangeType(false, typeof(T));
+                        }
             }
 
             throw new Exception("Registry value not found or invalid casting");
