@@ -51,5 +51,10 @@ namespace gui
         {
             Aero.HideTitleInfo(this, Aero.WTNCA.NODRAWICON | Aero.WTNCA.NODRAWCAPTION);
         }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

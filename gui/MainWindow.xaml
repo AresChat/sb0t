@@ -1,7 +1,7 @@
 ﻿<Window x:Class="gui.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="sb0t" Height="410" Width="600" MinHeight="410" MinWidth="600" MaxHeight="410" MaxWidth="600" Loaded="Window_Loaded" Background="Transparent" Icon="/gui;component/Images/test2.ico" ResizeMode="CanMinimize" SourceInitialized="Window_SourceInitialized">
+        Title="sb0t" Height="410" Width="600" Loaded="Window_Loaded" Background="Transparent" Icon="/gui;component/Images/test2.ico" ResizeMode="CanMinimize" SourceInitialized="Window_SourceInitialized">
     <Grid Background="Transparent">
         <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch" Margin="5,0,5,5" Background="Transparent" BorderBrush="Transparent" Padding="-1,0,-1,0">
             <TabItem Name="main">
@@ -17,7 +17,28 @@
                 </TabItem.Header>
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
-                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White"></Canvas>
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Image Height="128" Width="128" Canvas.Left="65" Canvas.Top="8" Source="Images/chat-bubble-icon.png" />
+                            <Label Canvas.Left="65" Canvas.Top="57" Content="sb0t 5.00" Height="27" Name="label1" Width="128" HorizontalContentAlignment="Center" Foreground="#FFF80000" FontFamily="Comic Sans MS" FontWeight="Bold" />
+                            <TextBox Canvas.Left="35" Canvas.Top="172" Height="23" Name="textBox1" Width="188" />
+                            <TextBox Canvas.Left="35" Canvas.Top="219" Height="23" Name="textBox2" Width="188" />
+                            <TextBox Canvas.Left="35" Canvas.Top="266" Height="23" Name="textBox3" Width="188" />
+                            <Label Canvas.Left="35" Canvas.Top="150" Content="Room name:" Height="28" Name="label2" />
+                            <Label Canvas.Left="35" Canvas.Top="197" Content="Room port:" Height="28" Name="label3" />
+                            <Label Canvas.Left="35" Canvas.Top="244" Content="Bot name:" Height="28" Name="label4" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="40" Content="Chat loggin enabled" Height="16" Name="checkBox1" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="60" Content="Custom emoticons enabled" Height="16" Name="checkBox2" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="80" Content="Start server when sb0t starts" Height="16" Name="checkBox3" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="100" Content="Load sb0t when windows starts" Height="16" Name="checkBox4" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="120" Content="Show room on the channel list" Height="16" Name="checkBox5" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="140" Content="Support voice chat" Height="16" Name="checkBox6" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="160" Content="Allow file browsing" Height="16" Name="checkBox7" />
+                            <Button Focusable="False" Background="Silver" Canvas.Left="341" Canvas.Top="216" Content="Start server" Height="23" Name="button1" Width="193" Click="button1_Click" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="247" Content="Open data folder" Height="23" Name="button2" Width="193" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="273" Content="Ares join" Height="23" Name="button3" Width="95" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="439" Canvas.Top="273" Content="cb0t join" Height="23" Name="button4" Width="95" />
+                            <Label Canvas.Left="4" Canvas.Bottom="4" Content="Status:  Server stopped." Height="28" Name="statusLabel" FontWeight="Bold" />
+                        </Canvas>
                     </Border>
                 </Grid>
             </TabItem>
