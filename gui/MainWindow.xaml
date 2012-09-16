@@ -1,8 +1,102 @@
 ﻿<Window x:Class="gui.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="sb0t" Height="410" Width="600" MinHeight="410" MinWidth="600" MaxHeight="410" MaxWidth="600" Loaded="Window_Loaded" Background="Transparent" Icon="/gui;component/Images/test2.ico" ResizeMode="CanMinimize" SourceInitialized="Window_SourceInitialized">
+    <Grid Background="Transparent">
+        <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch" Margin="5,0,5,5" Background="Transparent" BorderBrush="Transparent" Padding="-1,0,-1,0">
+            <TabItem Name="main">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="24">
+                            <Image.Source>
+                                <BitmapImage UriSource="Images/Main-icon.png" />
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="Main" Margin="2,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White"></Canvas>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Name="admin">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="24">
+                            <Image.Source>
+                                <BitmapImage UriSource="Images/Admin-icon.png" />
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="Admin" Margin="2,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Label Canvas.Left="10" Canvas.Top="10" Content="admin tab" Height="28" />
+                        </Canvas>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Name="linking">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="24">
+                            <Image.Source>
+                                <BitmapImage UriSource="Images/Link-icon.png" />
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="Linking" Margin="2,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Label Canvas.Left="10" Canvas.Top="10" Content="linking tab" Height="28" />
+                        </Canvas>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Name="advanced">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="24">
+                            <Image.Source>
+                                <BitmapImage UriSource="Images/Advanced-icon.png" />
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="Advanced" Margin="2,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Label Canvas.Left="10" Canvas.Top="10" Content="advanced tab" Height="28" />
+                        </Canvas>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Name="avatars">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Height="24">
+                            <Image.Source>
+                                <BitmapImage UriSource="Images/Avatar-icon.png" />
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="Avatars" Margin="2,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Label Canvas.Left="10" Canvas.Top="10" Content="avatars tab" Height="28" />
+                        </Canvas>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
