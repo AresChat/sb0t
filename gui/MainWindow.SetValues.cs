@@ -56,6 +56,32 @@ namespace gui
             this.checkBox8.IsChecked = Settings.Get<bool>("captcha");
             //ib0t
             this.checkBox9.IsChecked = Settings.Get<bool>("enabled", "web");
+            //title
+            this.label1.Content = Settings.VERSION;
+            //owner
+            str = Settings.Get<String>("owner");
+
+            if (str.Length == 0)
+                str = this.RandomPassword;
+
+            this.textBox4.Text = str;
+            //command levels
+            this.AdminCommandSetup();
+        }
+
+        private String RandomPassword
+        {
+            get
+            {
+                String result = String.Empty;
+                Random rnd = new Random();
+                char[] letters = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
+
+                for (int i = 0; i < 20; i++)
+                    result += letters[(int)Math.Floor(rnd.NextDouble() * letters.Length)];
+
+                return result;
+            }
         }
     }
 }

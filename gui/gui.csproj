@@ -65,6 +65,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Command.cs" />
+    <Compile Include="CommandManager.cs" />
+    <Compile Include="MainWindow.Admin.cs" />
     <Compile Include="MainWindow.SetValues.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

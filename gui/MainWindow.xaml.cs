@@ -21,11 +21,14 @@ namespace gui
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static bool SETTING_UP { get; set; }
+
         private bool do_once = true;
         private ServerCore server { get; set; }
 
         public MainWindow()
         {
+            SETTING_UP = true;
             this.InitializeComponent();
             this.server = new ServerCore();
             ServerCore.LogUpdate += this.LogUpdate;
@@ -54,6 +57,7 @@ namespace gui
                 }
 
                 this.SetupValues();
+                SETTING_UP = false;
             }
         }
 
@@ -130,6 +134,8 @@ namespace gui
             }
             else if (tb.Name == "textBox3")
                 Settings.Set("bot", this.textBox3.Text);
+            else if (tb.Name == "textBox4" && textBox4.Text.Length > 0)
+                Settings.Set("owner", this.textBox4.Text);
         }
 
         private void CheckBoxChecked(object sender, RoutedEventArgs e)
@@ -156,6 +162,11 @@ namespace gui
                 Settings.Set("captcha", this.checkBox8.IsChecked);
             else if (cb.Name == "checkBox9")
                 Settings.Set("enabled", this.checkBox9.IsChecked, "web");
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            
         }
     }
 }

@@ -19,14 +19,14 @@
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
                             <Image Height="128" Width="128" Canvas.Left="65" Canvas.Top="8" Source="Images/chat-bubble-icon.png" />
-                            <Label Canvas.Left="65" Canvas.Top="57" Content="sb0t 5.00" Height="27" Name="label1" Width="128" HorizontalContentAlignment="Center" Foreground="#FFF80000" FontFamily="Comic Sans MS" FontWeight="Bold" />
+                            <Label Canvas.Left="65" Canvas.Top="57" Height="27" Name="label1" Width="128" HorizontalContentAlignment="Center" Foreground="#FFF80000" FontFamily="Comic Sans MS" FontWeight="Bold" />
                             <TextBox Canvas.Left="35" Canvas.Top="172" Height="23" Name="textBox1" Width="188" TextChanged="TextBoxTextChanged" />
                             <TextBox Canvas.Left="35" Canvas.Top="219" Height="23" Name="textBox2" Width="188" TextChanged="TextBoxTextChanged" />
                             <TextBox Canvas.Left="35" Canvas.Top="266" Height="23" Name="textBox3" Width="188" TextChanged="TextBoxTextChanged" />
                             <Label Canvas.Left="35" Canvas.Top="150" Content="Room name:" Height="28" Name="label2" />
                             <Label Canvas.Left="35" Canvas.Top="197" Content="Room port:" Height="28" Name="label3" />
                             <Label Canvas.Left="35" Canvas.Top="244" Content="Bot name:" Height="28" Name="label4" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="22" Content="Chat loggin enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="22" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="341" Canvas.Top="42" Content="Custom emoticons enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="341" Canvas.Top="62" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="341" Canvas.Top="82" Content="Load sb0t when windows starts" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
@@ -58,7 +58,22 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
-                            <Label Canvas.Left="10" Canvas.Top="10" Content="admin tab" Height="28" />
+                            <TextBox Canvas.Left="372" Canvas.Top="303" Height="23" Name="textBox4" Width="188" TextChanged="TextBoxTextChanged" />
+                            <Label Canvas.Left="372" Canvas.Top="281" Content="Owner password:" Height="28" Name="label5" />
+                            <ListView Canvas.Left="19" Canvas.Top="21" Height="254" Name="listView1" Width="543">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Command name"  Width="350" DisplayMemberBinding="{Binding Path=Name}" />
+                                        <GridViewColumn Header="Command level" Width="165">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox Width="150" ItemsSource="{Binding Path=Options}" SelectedItem="{Binding Path=Level}" SelectionChanged="ComboBox_SelectionChanged" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
                         </Canvas>
                     </Border>
                 </Grid>

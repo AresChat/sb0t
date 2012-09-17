@@ -36,9 +36,6 @@ namespace core
             Settings.Set("text", "google", "url");
             Settings.Set("link", "http://www.google.com/", "url");
             Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
-            Settings.Set("owner", "testing");
-
-            
 
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
             
