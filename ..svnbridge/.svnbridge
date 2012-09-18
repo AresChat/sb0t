@@ -5,4 +5,12 @@
 ipch
 *.user
 _ReSharper.*
+</Value></Property><Property><Name>svn:ignore</Name><Value>*.suo
+*.ncb
+*.sdf
+*.opensdf
+ipch
+*.user
+_ReSharper.*
+controller.cs
 </Value></Property></Properties></ItemProperties>

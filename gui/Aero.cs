@@ -23,6 +23,9 @@ namespace gui
         {
             get
             {
+                if (Environment.Version.Major < 6)
+                    return false;
+
                 bool success = false;
                 DwmIsCompositionEnabled(ref success);
                 return success;

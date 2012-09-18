@@ -67,6 +67,10 @@ namespace gui
             this.textBox4.Text = str;
             //command levels
             this.AdminCommandSetup();
+            //built in admin commands
+            this.checkBox10.IsChecked = Settings.Get<bool>("commands");
+            this.listView1.IsEnabled = (bool)this.checkBox10.IsChecked;
+
         }
 
         private String RandomPassword

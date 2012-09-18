@@ -162,11 +162,11 @@ namespace gui
                 Settings.Set("captcha", this.checkBox8.IsChecked);
             else if (cb.Name == "checkBox9")
                 Settings.Set("enabled", this.checkBox9.IsChecked, "web");
-        }
-
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
+            else if (cb.Name == "checkBox10")
+            {
+                Settings.Set("commands", this.checkBox10.IsChecked);
+                this.listView1.IsEnabled = (bool)this.checkBox10.IsChecked;
+            }
         }
     }
 }

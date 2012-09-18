@@ -9,7 +9,7 @@ namespace gui
     {
         public static void UpdateCommand(String name, String level)
         {
-
+            
         }
     }
 }

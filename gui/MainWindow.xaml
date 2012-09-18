@@ -67,13 +67,14 @@
                                         <GridViewColumn Header="Command level" Width="165">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <ComboBox Width="150" ItemsSource="{Binding Path=Options}" SelectedItem="{Binding Path=Level}" SelectionChanged="ComboBox_SelectionChanged" />
+                                                    <ComboBox Width="150" ItemsSource="{Binding Path=Options}" SelectedItem="{Binding Path=Level}" />
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                     </GridView>
                                 </ListView.View>
                             </ListView>
+                            <CheckBox Content="Enable built in commands" Height="16" Name="checkBox10" Canvas.Left="19" Canvas.Top="286" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
                     </Border>
                 </Grid>
@@ -143,7 +144,7 @@
                                 <BitmapImage UriSource="Images/Plugin-icon.png" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="Plugins" Margin="2,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Extensions" Margin="2,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>
