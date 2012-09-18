@@ -9,7 +9,7 @@ namespace iconnect
     {
         void ServerStarted();
         void CycleTick();
-        void UnhandledProtocol(IUser client, byte msg, byte[] packet);
+        void UnhandledProtocol(IUser client, bool custom, byte msg, byte[] packet);
         bool Joining(IUser client);
         void Joined(IUser client);
         void Rejected(IUser client, RejectedMsg msg);

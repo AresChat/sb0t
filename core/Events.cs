@@ -24,13 +24,13 @@ namespace core
                 commands.CycleTick();
         }
 
-        public static void UnhandledProtocol(IClient client, TCPMsg msg, TCPPacketReader packet, ulong tick)
+        public static void UnhandledProtocol(IClient client, bool custom, TCPMsg msg, TCPPacketReader packet, ulong tick)
         {
             UserPool.AUsers.ForEachWhere(x =>
                 x.SendPacket(TCPOutbound.NoSuch(x, "Unhandled : " + client.Name + " : " + msg)), x => x.LoggedIn);
 
             if (DefaultCommands)
-                commands.UnhandledProtocol(client.IUser, (byte)msg, packet.ToArray());
+                commands.UnhandledProtocol(client.IUser, custom, (byte)msg, packet.ToArray());
         }
 
         public static bool Joining(IClient client)

@@ -13,4 +13,13 @@ ipch
 *.user
 _ReSharper.*
 controller.cs
+</Value></Property><Property><Name>svn:ignore</Name><Value>*.suo
+*.ncb
+*.sdf
+*.opensdf
+ipch
+*.user
+_ReSharper.*
+controller.cs
+sb0t5
 </Value></Property></Properties></ItemProperties>

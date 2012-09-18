@@ -109,7 +109,7 @@ namespace core
                     break;
 
                 default:
-                    Events.UnhandledProtocol(client, packet.Msg, packet.Packet, time);
+                    Events.UnhandledProtocol(client, false, packet.Msg, packet.Packet, time);
                     break;
             }
         }

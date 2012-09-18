@@ -43,7 +43,9 @@
     <Compile Include="IExtension.cs" />
     <Compile Include="IFont.cs" />
     <Compile Include="ILevel.cs" />
+    <Compile Include="IPool.cs" />
     <Compile Include="IPrivateMsg.cs" />
+    <Compile Include="ITypePool.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="MimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
