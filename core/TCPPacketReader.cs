@@ -139,6 +139,32 @@ namespace core
             return str;
         }
 
+        public String ReadString()
+        {
+            String str = String.Empty;
+            int split = this.Data.IndexOf(0, this.Position);
+            byte[] tmp = new byte[split > -1 ? (split - this.Position) : (this.Data.Count - this.Position)];
+            Array.Copy(this.Data.ToArray(), this.Position, tmp, 0, tmp.Length);
+            this.Position = split > -1 ? (split + 1) : this.Data.Count;
+            str = Encoding.UTF8.GetString(tmp);
+
+            String[] bad_chars = new String[] // skiddy
+            {
+                "\r\n",
+                "\r",
+                "\n",
+                "",
+                "",
+                "\x00cc\x00b8",
+                "͋"
+            };
+
+            foreach (String c in bad_chars)
+                str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
+
+            return str;
+        }
+
         public byte[] ToArray()
         {
             return this.Data.ToArray();

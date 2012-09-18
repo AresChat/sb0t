@@ -10,6 +10,8 @@ namespace commands
     {
         public void ServerStarted() { }
 
+        public void CycleTick() { }
+
         public void UnhandledProtocol(IUser client, byte msg, byte[] packet) { }
 
         public bool Joining(IUser client) { return true; }
@@ -50,7 +52,7 @@ namespace commands
 
         public void Help(IUser client) { }
 
-        public void FileReceived(IUser client, String name, MimeType type) { }
+        public void FileReceived(IUser client, String filename, String title, MimeType type) { }
 
         public bool Ignoring(IUser client, IUser target) { return true; }
 
@@ -76,8 +78,10 @@ namespace commands
 
         public void VroomChanged(IUser client) { }
 
-        public bool Flooding(IUser client, byte msg) { return true; }
+        public bool Flooding(IUser client, byte msg) { return true; } // to do
 
-        public void Flooded(IUser client) { }
+        public void Flooded(IUser client) { } // to do
+
+        public bool ProxyDetected(IUser client) { return true; } // to do
     }
 }

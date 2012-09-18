@@ -54,6 +54,7 @@ namespace core
         public bool Captcha { get; set; }
         public bool Registered { get; set; }
         public String CaptchaWord { get; set; }
+        public byte[] OrgAvatar { get; set; }
 
 
         public Socket Sock { get; set; }
@@ -71,6 +72,7 @@ namespace core
 
         public AresClient(Socket sock, ulong time, ushort id)
         {
+            this.OrgAvatar = new byte[] { };
             this.ID = id;
             this.Sock = sock;
             this.Sock.Blocking = false;
@@ -89,6 +91,96 @@ namespace core
             this.CaptchaWord = String.Empty;
             this.Captcha = !Settings.Get<bool>("captcha");
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+        }
+
+        public void Ban()
+        {
+            if (!this.Owner)
+                BanSystem.AddBan(this);
+        }
+
+        public void PM(String sender, String text)
+        {
+            int len = Encoding.UTF8.GetByteCount(sender);
+
+            if (len >= 2 && len <= 20)
+            {
+                len = Encoding.UTF8.GetByteCount(text);
+
+                if (len > 0 && len <= 300)
+                    this.SendPacket(TCPOutbound.Private(this, sender, text));
+            }
+        }
+
+        public void Redirect(String hashlink)
+        {
+            Room room = Hashlink.DecodeHashlink(hashlink);
+
+            if (room != null && this.Level == ILevel.Regular)
+            {
+                byte[] buf;
+
+                while (this.data_out.Count > 0)
+                    if (!this.data_out.TryDequeue(out buf))
+                        break;
+
+                this.SendPacket(TCPOutbound.Redirect(this, room));
+                this.Disconnect();
+            }
+        }
+
+        public void RestoreAvatar()
+        {
+            this.Avatar = this.OrgAvatar;
+        }
+
+        public void SendEmote(String text)
+        {
+            if (!String.IsNullOrEmpty(text))
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, this.Name, text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, this.Name, text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+            }
+        }
+
+        public void SendText(String text)
+        {
+            if (!String.IsNullOrEmpty(text))
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(this.CustomName) ?
+                    TCPOutbound.Public(x, this.Name, text) : TCPOutbound.NoSuch(x, this.CustomName + text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(this.CustomName) ?
+                    ib0t.WebOutbound.PublicTo(x, this.Name, text) : ib0t.WebOutbound.NoSuchTo(x, this.CustomName + text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+            }
+        }
+
+        public void Topic(String text)
+        {
+            if (text != null)
+                if (Encoding.UTF8.GetByteCount(text) <= 180)
+                    this.SendPacket(TCPOutbound.TopicFirst(this, text));
+        }
+
+        public void URL(String address, String text)
+        {
+            if (address != null && text != null)
+                this.SendPacket(TCPOutbound.Url(this, address, text));
+        }
+
+        public IUser IUser
+        {
+            get { return this; }
+        }
+
+        public bool Connected
+        {
+            get { return this.SocketConnected; }
         }
 
         public bool Encrypted

@@ -78,10 +78,30 @@ namespace iconnect
         bool Registered { get; }
         /// <summary>Cloaked</summary>
         bool Cloaked { get; set; }
+        /// <summary>Connected</summary>
+        bool Connected { get; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);
         /// <summary>Print to this client</summary>
         void Print(object text);
+        /// <summary>Ban user from the chatroom</summary>
+        void Ban();
+        /// <summary>Disconnect user from the chatroom</summary>
+        void Disconnect();
+        /// <summary>Redirect the user to a different chatroom</summary>
+        void Redirect(String hashlink);
+        /// <summary>Clone the user</summary>
+        void SendText(String text);
+        /// <summary>Clone the user</summary>
+        void SendEmote(String text);
+        /// <summary>Send a fake PM to this user</summary>
+        void PM(String sender, String text);
+        /// <summary>Set a virtual topic for the user</summary>
+        void Topic(String text);
+        /// <summary>Restore user's avatar</summary>
+        void RestoreAvatar();
+        /// <summary>Set a URL tag for the user</summary>
+        void URL(String address, String text);
     }
 }

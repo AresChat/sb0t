@@ -52,7 +52,7 @@ namespace core.ib0t
 
         private int socket_health = 0;
         private List<byte> data_in = new List<byte>();
-        private List<byte[]> data_out = new List<byte[]>();
+        private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
         private ILevel _level = ILevel.Regular;
         private String _name = String.Empty;
         private ushort _vroom = 0;
@@ -84,6 +84,65 @@ namespace core.ib0t
             this.CaptchaWord = String.Empty;
             this.Captcha = !Settings.Get<bool>("captcha");
             this.DNS = client.DNS;
+        }
+
+        public void Ban()
+        {
+            if (!this.Owner)
+                BanSystem.AddBan(this);
+        }
+
+        public void PM(String sender, String text) { }
+        public void Redirect(String hashlink) { }
+        public void RestoreAvatar() { }
+
+        public void SendEmote(String text)
+        {
+            if (!String.IsNullOrEmpty(text))
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, this.Name, text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, this.Name, text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+            }
+        }
+
+        public void SendText(String text)
+        {
+            if (!String.IsNullOrEmpty(text))
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(this.CustomName) ?
+                    TCPOutbound.Public(x, this.Name, text) : TCPOutbound.NoSuch(x, this.CustomName + text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(this.CustomName) ?
+                    ib0t.WebOutbound.PublicTo(x, this.Name, text) : ib0t.WebOutbound.NoSuchTo(x, this.CustomName + text)),
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+            }
+        }
+
+        public void Topic(String text)
+        {
+            if (text != null)
+                if (Encoding.UTF8.GetByteCount(text) <= 180)
+                    this.QueuePacket(WebOutbound.TopicTo(this, text));
+        }
+
+        public void URL(String address, String text)
+        {
+            if (address != null && text != null)
+                this.QueuePacket(WebOutbound.UrlTo(this, address, text));
+        }
+
+        public IUser IUser
+        {
+            get { return this; }
+        }
+
+        public bool Connected
+        {
+            get { return this.SocketConnected; }
         }
 
         public bool Encrypted
@@ -198,8 +257,10 @@ namespace core.ib0t
             {
                 try
                 {
-                    this.Sock.Send(this.data_out[0]);
-                    this.data_out.RemoveAt(0);
+                    byte[] packet;
+                    this.data_out.TryPeek(out packet);
+                    this.Sock.Send(packet);
+                    this.data_out.TryDequeue(out packet);
                 }
                 catch { break; }
             }
@@ -234,7 +295,7 @@ namespace core.ib0t
 
         public void QueuePacket(byte[] data)
         {
-            this.data_out.Add(data);
+            this.data_out.Enqueue(data);
         }
 
         public bool SocketConnected
@@ -249,8 +310,10 @@ namespace core.ib0t
             {
                 try
                 {
-                    this.Sock.Send(this.data_out[0]);
-                    this.data_out.RemoveAt(0);
+                    byte[] packet;
+                    this.data_out.TryPeek(out packet);
+                    this.Sock.Send(packet);
+                    this.data_out.TryDequeue(out packet);
                 }
                 catch { break; }
             }

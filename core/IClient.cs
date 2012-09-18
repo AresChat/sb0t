@@ -83,6 +83,10 @@ namespace core
         String CaptchaWord { get; set; }
         /// <summary>Cloaked</summary>
         bool Cloaked { get; set; }
+        /// <summary>IUser</summary>
+        IUser IUser { get; }
+        /// <summary>Connected</summary>
+        bool Connected { get; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);

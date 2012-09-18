@@ -113,6 +113,7 @@ namespace core
                     }
                 }
 
+                Events.CycleTick();
                 Thread.Sleep(35);
             }
         }

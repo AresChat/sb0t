@@ -75,6 +75,7 @@ namespace gui
             this.checkBox7.IsEnabled = !running;
             this.checkBox8.IsEnabled = !running;
             this.checkBox9.IsEnabled = !running;
+            this.checkBox10.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)

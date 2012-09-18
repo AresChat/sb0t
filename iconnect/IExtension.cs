@@ -8,6 +8,7 @@ namespace iconnect
     public interface IExtension
     {
         void ServerStarted();
+        void CycleTick();
         void UnhandledProtocol(IUser client, byte msg, byte[] packet);
         bool Joining(IUser client);
         void Joined(IUser client);
@@ -28,7 +29,7 @@ namespace iconnect
         void Command(IUser client, String command, IUser target, String args);
         bool Nick(IUser client, String name);
         void Help(IUser client);
-        void FileReceived(IUser client, String name, MimeType type);
+        void FileReceived(IUser client, String filename, String title, MimeType type);
         bool Ignoring(IUser client, IUser target);
         void IgnoredStateChanged(IUser client, IUser target, bool ignored);
         void InvalidLoginAttempt(IUser client);
@@ -43,5 +44,6 @@ namespace iconnect
         void VroomChanged(IUser client);
         bool Flooding(IUser client, byte msg);
         void Flooded(IUser client);
+        bool ProxyDetected(IUser client);
     }
 }

@@ -370,7 +370,10 @@ namespace core
                 if (Events.AvatarReceived(client))
                     if (avatar.Length < 4064)
                         if (client.SocketConnected)
+                        {
+                            client.OrgAvatar = avatar;
                             client.Avatar = avatar;
+                        }
         }
 
         private static void Login(AresClient client, TCPPacketReader packet, ulong time, bool relogin)

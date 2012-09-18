@@ -513,5 +513,16 @@ namespace core
             packet.WriteString(client, target.Region);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_UPDATE_USER_STATUS);
         }
+
+        public static byte[] Redirect(AresClient client, Room room)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteIP(room.IP);
+            packet.WriteUInt16(room.Port);
+            packet.WriteIP(room.IP);
+            packet.WriteString(client, room.Name);
+            packet.WriteString(client, "Redirecting...");
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_REDIRECT);
+        }
     }
 }
