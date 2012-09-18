@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Net;
 using System.Security.Cryptography;
 using captcha;
+using iconnect;
+
 namespace core.ib0t
 {
     class WebProcessor
@@ -141,7 +143,7 @@ namespace core.ib0t
             client.LoggedIn = true;
             client.QueuePacket(WebOutbound.AckTo(client, client.Name));
             client.QueuePacket(WebOutbound.TopicFirstTo(client, Settings.Get<String>("topic")));
-            client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), Level.Host));
+            client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), ILevel.Host));
 
             UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
                 x => x.LoggedIn && x.Vroom == client.Vroom);

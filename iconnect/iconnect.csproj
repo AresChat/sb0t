@@ -40,7 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IExtension.cs" />
+    <Compile Include="IFont.cs" />
+    <Compile Include="ILevel.cs" />
+    <Compile Include="IPrivateMsg.cs" />
+    <Compile Include="IUser.cs" />
+    <Compile Include="MimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RejectedMsg.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

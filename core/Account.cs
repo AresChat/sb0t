@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iconnect;
 
 namespace core
 {
     class Account
     {
         public String Name { get; set; }
-        public Level Level { get; set; }
+        public ILevel Level { get; set; }
         public Guid Guid { get; set; }
         public bool Owner { get; set; }
         public byte[] Password { get; set; }

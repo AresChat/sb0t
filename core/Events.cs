@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iconnect;
 
 namespace core
 {
     class Events
     {
+        public static void ServerStarted() { }
+
         public static void UnhandledProtocol(IClient client, TCPMsg msg, TCPPacketReader packet, ulong tick)
         {
             UserPool.AUsers.ForEachWhere(x =>
@@ -99,7 +102,7 @@ namespace core
                             if (byte.TryParse(args, out level))
                                 if (level <= 3)
                                 {
-                                    target.Level = (Level)level;
+                                    target.Level = (ILevel)level;
                                     AccountManager.UpdateAccount(target);
                                 }
                         }

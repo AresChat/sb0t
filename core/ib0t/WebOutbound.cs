@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iconnect;
 
 namespace core.ib0t
 {
@@ -52,12 +53,12 @@ namespace core.ib0t
             return WebSockets.Html5TextPacket("SCRIBBLE_BLOCK:" + text, userobj.WebCredentials.OldProto);
         }
 
-        public static byte[] UpdateTo(ib0tClient userobj, String name, Level level)
+        public static byte[] UpdateTo(ib0tClient userobj, String name, ILevel level)
         {
             return WebSockets.Html5TextPacket("UPDATE:" + name.Length + ",1:" + name + ((byte)level), userobj.WebCredentials.OldProto);
         }
 
-        public static byte[] UserlistItemTo(ib0tClient userobj, String name, Level level)
+        public static byte[] UserlistItemTo(ib0tClient userobj, String name, ILevel level)
         {
             return WebSockets.Html5TextPacket("USERLIST:" + name.Length + ",1:" + name + ((byte)level), userobj.WebCredentials.OldProto);
         }
@@ -67,7 +68,7 @@ namespace core.ib0t
             return WebSockets.Html5TextPacket("USERLIST_END:", userobj.WebCredentials.OldProto);
         }
 
-        public static byte[] JoinTo(ib0tClient userobj, String name, Level level)
+        public static byte[] JoinTo(ib0tClient userobj, String name, ILevel level)
         {
             return WebSockets.Html5TextPacket("JOIN:" + name.Length + ",1:" + name + ((byte)level), userobj.WebCredentials.OldProto);
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using core.ib0t;
+using iconnect;
 
 namespace core
 {
@@ -226,7 +227,7 @@ namespace core
 
             client.LoggedIn = true;
             client.QueuePacket(WebOutbound.AckTo(client, client.Name));
-            client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), Level.Host));
+            client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), ILevel.Host));
 
             UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked);

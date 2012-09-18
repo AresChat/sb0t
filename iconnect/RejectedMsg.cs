@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace core
+namespace iconnect
 {
-    enum RejectedMsg
+    public enum RejectedMsg
     {
         TooManyClients,
         TooSoon,

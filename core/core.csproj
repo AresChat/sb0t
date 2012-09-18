@@ -68,12 +68,9 @@
     <Compile Include="ib0t\WebProcessor.cs" />
     <Compile Include="ib0t\WebSockets.cs" />
     <Compile Include="IClient.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="MimeType.cs" />
     <Compile Include="PartedClient.cs" />
     <Compile Include="PMEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RejectedMsg.cs" />
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -102,6 +99,10 @@
     <ProjectReference Include="..\commands\commands.csproj">
       <Project>{91C83351-DFBC-4089-A416-0F42B7A65163}</Project>
       <Name>commands</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\iconnect\iconnect.csproj">
+      <Project>{FDEBC3D9-56AA-4D35-93DC-5F7F0E9023B1}</Project>
+      <Name>iconnect</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

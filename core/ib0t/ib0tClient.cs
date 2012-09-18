@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using iconnect;
 
 namespace core.ib0t
 {
-    class ib0tClient : IClient
+    class ib0tClient : IClient, IUser
     {
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
@@ -29,7 +30,7 @@ namespace core.ib0t
         public bool FastPing { get; set; }
         public bool Ghosting { get; set; }
         public List<String> IgnoreList { get; set; }
-        public Font Font { get; set; }
+        public IFont Font { get; set; }
         public bool CustomClient { get; set; }
         public List<String> CustomClientTags { get; set; }
         public bool Muzzled { get; set; }
@@ -52,7 +53,7 @@ namespace core.ib0t
         private int socket_health = 0;
         private List<byte> data_in = new List<byte>();
         private List<byte[]> data_out = new List<byte[]>();
-        private Level _level = core.Level.Regular;
+        private ILevel _level = ILevel.Regular;
         private String _name = String.Empty;
         private ushort _vroom = 0;
 
@@ -83,6 +84,11 @@ namespace core.ib0t
             this.CaptchaWord = String.Empty;
             this.Captcha = !Settings.Get<bool>("captcha");
             this.DNS = client.DNS;
+        }
+
+        public bool Encrypted
+        {
+            get { return false; }
         }
 
         public bool Cloaked
@@ -144,7 +150,7 @@ namespace core.ib0t
             }
         }
 
-        public Level Level
+        public ILevel Level
         {
             get { return this._level; }
             set

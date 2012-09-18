@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace core
+namespace iconnect
 {
-    enum Level : byte
+    public enum ILevel : byte
     {
         Regular = 0,
         Moderator = 1,

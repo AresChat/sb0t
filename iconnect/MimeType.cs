@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace core
+namespace iconnect
 {
-    enum MimeType : byte
+    public enum MimeType : byte
     {
         ARES_MIME_OTHER = 0,
         ARES_MIME_MP3 = 1,

@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Data;
 using System.Data.SQLite;
+using iconnect;
 
 namespace core
 {
@@ -41,7 +42,7 @@ namespace core
                         list.Add(new Account
                         {
                             Name = (String)reader["name"],
-                            Level = (Level)(byte)(int)reader["level"],
+                            Level = (ILevel)(byte)(int)reader["level"],
                             Guid = new Guid((String)reader["guid"]),
                             Password = (byte[])reader["password"]
                         });
@@ -107,7 +108,7 @@ namespace core
                             client.Captcha = true;
                             client.Owner = true;
                             Events.LoginGranted(client);
-                            client.Level = Level.Host;
+                            client.Level = ILevel.Host;
                             ServerCore.Log(client.Name + " logged in with the room owner password");
                             return;
                         }
@@ -156,7 +157,7 @@ namespace core
                     client.Captcha = true;
                     client.Owner = true;
                     Events.LoginGranted(client);
-                    client.Level = Level.Host;
+                    client.Level = ILevel.Host;
                     ServerCore.Log(client.Name + " logged in with the room owner password");
                     return;
                 }
@@ -202,8 +203,8 @@ namespace core
                     }
                 }
 
-                if (client.Level != Level.Regular)
-                    client.Level = Level.Regular;
+                if (client.Level != ILevel.Regular)
+                    client.Level = ILevel.Regular;
 
                 byte[] pwd;
 
@@ -214,7 +215,7 @@ namespace core
                     list.Add(new Account
                     {
                         Guid = client.Guid,
-                        Level = Level.Regular,
+                        Level = ILevel.Regular,
                         Name = client.Name,
                         Owner = false,
                         Password = pwd
@@ -255,7 +256,7 @@ namespace core
             if (a != null)
             {
                 list.RemoveAll(x => x.Guid.Equals(client.Guid));
-                client.Level = Level.Regular;
+                client.Level = ILevel.Regular;
                 client.Registered = false;
 
                 using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))

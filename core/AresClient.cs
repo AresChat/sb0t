@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using iconnect;
 
 namespace core
 {
-    class AresClient : IClient
+    class AresClient : IClient, IUser
     {
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
@@ -36,7 +37,7 @@ namespace core
         public bool Ghosting { get; set; }
         public uint Cookie { get; set; }
         public List<String> IgnoreList { get; set; }
-        public Font Font { get; set; }
+        public IFont Font { get; set; }
         public bool CustomClient { get; set; }
         public List<SharedFile> SharedFiles { get; set; }
         public List<String> CustomClientTags { get; set; }
@@ -63,7 +64,7 @@ namespace core
         private int socket_health = 0;
         private byte[] avatar = new byte[] { };
         private String personal_message = String.Empty;
-        private Level _level = core.Level.Regular;
+        private ILevel _level = ILevel.Regular;
         private String _name = String.Empty;
         private ushort _vroom = 0;
         private bool _cloaked = false;
@@ -88,6 +89,11 @@ namespace core
             this.CaptchaWord = String.Empty;
             this.Captcha = !Settings.Get<bool>("captcha");
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+        }
+
+        public bool Encrypted
+        {
+            get { return this.Encryption.Mode == EncryptionMode.Encrypted; }
         }
 
         public bool Cloaked
@@ -175,7 +181,7 @@ namespace core
             }
         }
 
-        public Level Level
+        public ILevel Level
         {
             get { return this._level; }
             set

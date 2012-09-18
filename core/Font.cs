@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iconnect;
 
 namespace core
 {
-    class Font
+    class Font : IFont
     {
         public String Family { get; set; }
         public byte Size { get; set; }

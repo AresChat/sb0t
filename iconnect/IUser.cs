@@ -3,60 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
-using iconnect;
 
-namespace core
+namespace iconnect
 {
-    interface IClient
+    public interface IUser
     {
         /// <summary>Session identity</summary>
         ushort ID { get; }
         /// <summary>External IP Address</summary>
         IPAddress ExternalIP { get; set; }
         /// <summary>DNS Host Name</summary>
-        String DNS { get; set; }
+        String DNS { get; }
         /// <summary>16 byte GUID</summary>
-        Guid Guid { get; set; }
+        Guid Guid { get; }
         /// <summary>File Count</summary>
-        ushort FileCount { get; set; }
+        ushort FileCount { get; }
         /// <summary>Data Port</summary>
-        ushort DataPort { get; set; }
+        ushort DataPort { get; }
         /// <summary>Super Node IP Address</summary>
-        IPAddress NodeIP { get; set; }
+        IPAddress NodeIP { get; }
         /// <summary>Super Node Port</summary>
-        ushort NodePort { get; set; }
+        ushort NodePort { get; }
         /// <summary>Current User Name</summary>
         String Name { get; set; }
         /// <summary>Original User Name</summary>
-        String OrgName { get; set; }
+        String OrgName { get; }
         /// <summary>Client Version</summary>
         String Version { get; }
         /// <summary>Local IP Address</summary>
-        IPAddress LocalIP { get; set; }
+        IPAddress LocalIP { get; }
         /// <summary>Browse Flag</summary>
-        bool Browsable { get; set; }
+        bool Browsable { get; }
         /// <summary>Age</summary>
-        byte Age { get; set; }
+        byte Age { get; }
         /// <summary>Gender</summary>
-        byte Sex { get; set; }
+        byte Sex { get; }
         /// <summary>Country Code</summary>
-        byte Country { get; set; }
+        byte Country { get; }
         /// <summary>Regional Location</summary>
-        String Region { get; set; }
+        String Region { get; }
         /// <summary>Keep Alive Protocol Flag</summary>
-        bool FastPing { get; set; }
+        bool FastPing { get; }
         /// <summary>Admin Level</summary>
-        ILevel Level { get; set; }
+        ILevel Level { get; }
         /// <summary>Current Virtual Room</summary>
         ushort Vroom { get; set; }
         /// <summary>Ghosting Flag</summary>
-        bool Ghosting { get; set; }
+        bool Ghosting { get; }
         /// <summary>Ignore List</summary>
         List<String> IgnoreList { get; set; }
         /// <summary>Custom Font</summary>
-        IFont Font { get; set; }
+        IFont Font { get; }
         /// <summary>Third Party Client Flag</summary>
-        bool CustomClient { get; set; }
+        bool CustomClient { get; }
         /// <summary>Tag Data</summary>
         List<String> CustomClientTags { get; set; }
         /// <summary>Muzzle Status</summary>
@@ -66,21 +65,17 @@ namespace core
         /// <summary>Web Client Flag</summary>
         bool WebClient { get; }
         /// <summary>Room Owner Flag</summary>
-        bool Owner { get; set; }
+        bool Owner { get; }
         /// <summary>Avatar</summary>
         byte[] Avatar { get; set; }
         /// <summary>Personal Message</summary>
         String PersonalMessage { get; set; }
         /// <summary>Encryption Credentials</summary>
-        Encryption Encryption { get; set; }
+        bool Encrypted { get; }
         /// <summary>Capture Test Flag</summary>
-        bool Captcha { get; set; }
+        bool Captcha { get; }
         /// <summary>Logged In Flag</summary>
-        bool Registered { get; set; }
-        /// <summary>Secure Login Cookie</summary>
-        uint Cookie { get; set; }
-        /// <summary>Captcha Word</summary>
-        String CaptchaWord { get; set; }
+        bool Registered { get; }
         /// <summary>Cloaked</summary>
         bool Cloaked { get; set; }
 

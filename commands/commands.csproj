@@ -43,6 +43,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerEvents.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\iconnect\iconnect.csproj">
+      <Project>{FDEBC3D9-56AA-4D35-93DC-5F7F0E9023B1}</Project>
+      <Name>iconnect</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

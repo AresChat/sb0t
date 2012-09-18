@@ -78,6 +78,7 @@ namespace core
             UserHistory.Initialize();
             AccountManager.LoadPasswords();
             BanSystem.LoadBans();
+            Events.ServerStarted();
 
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);
