@@ -8,7 +8,12 @@ namespace commands
 {
     public class ServerEvents : IExtension
     {
-        public ServerEvents(IHostApp callback) { Server.SetCallback(callback); }
+        #region constructor
+        public ServerEvents(IHostApp callback)
+        {
+            Server.SetCallback(callback);
+        }
+        #endregion
 
         public void ServerStarted() { }
 

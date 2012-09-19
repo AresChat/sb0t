@@ -71,6 +71,7 @@ namespace core
         {
             this.terminate = false;
 
+            Extensions.ExtensionManager.Setup();
             Stats.Reset();
             UserPool.Build();
             Time.Reset();

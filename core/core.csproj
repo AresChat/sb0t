@@ -59,8 +59,10 @@
     <Compile Include="Events.cs" />
     <Compile Include="Extensions\ExCompression.cs" />
     <Compile Include="Extensions\ExHashlink.cs" />
+    <Compile Include="Extensions\ExPlugin.cs" />
     <Compile Include="Extensions\ExRoom.cs" />
     <Compile Include="Extensions\ExStats.cs" />
+    <Compile Include="Extensions\ExtensionManager.cs" />
     <Compile Include="Prototypes.cs" />
     <Compile Include="Extensions\ExHost.cs" />
     <Compile Include="Extensions\ExUsers.cs" />

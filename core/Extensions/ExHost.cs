@@ -9,7 +9,7 @@ namespace core.Extensions
 {
     class ExHost : IHostApp
     {
-        public ExHost(String name)
+        public ExHost()
         {
             this.Users = new ExUsers();
             this.Room = new ExRoom();

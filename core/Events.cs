@@ -17,7 +17,7 @@ namespace core
             DefaultCommands = Settings.Get<bool>("commands");
 
             if (commands == null)
-                commands = new commands.ServerEvents(new ExHost(String.Empty));
+                commands = new commands.ServerEvents(new ExHost());
 
             if (DefaultCommands)
                 commands.ServerStarted();
