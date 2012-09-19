@@ -34,7 +34,6 @@ namespace core.ib0t
         public bool CustomClient { get; set; }
         public List<String> CustomClientTags { get; set; }
         public bool Muzzled { get; set; }
-        public String CustomName { get; set; }
         public bool WebClient { get; private set; }
         public bool Owner { get; set; }
         public Encryption Encryption { get; set; }
@@ -56,6 +55,7 @@ namespace core.ib0t
         private ILevel _level = ILevel.Regular;
         private String _name = String.Empty;
         private ushort _vroom = 0;
+        private String _customname = null;
 
         public ib0tClient(AresClient client, ulong time, ushort id)
         {
@@ -86,10 +86,24 @@ namespace core.ib0t
             this.DNS = client.DNS;
         }
 
+        public String CustomName
+        {
+            get
+            {
+                if (!Settings.Get<bool>("customnames"))
+                    return null;
+
+                return this._customname;
+            }
+            set { this._customname = value; }
+        }
+
         public void Ban()
         {
             if (!this.Owner)
                 BanSystem.AddBan(this);
+
+            this.Disconnect();
         }
 
         public void PM(String sender, String text) { }
@@ -126,7 +140,7 @@ namespace core.ib0t
         {
             if (text != null)
                 if (Encoding.UTF8.GetByteCount(text) <= 180)
-                    this.QueuePacket(WebOutbound.TopicTo(this, text));
+                    this.QueuePacket(WebOutbound.TopicFirstTo(this, text));
         }
 
         public void URL(String address, String text)
@@ -260,6 +274,7 @@ namespace core.ib0t
                     byte[] packet;
                     this.data_out.TryPeek(out packet);
                     this.Sock.Send(packet);
+                    Stats.DataSent += (ulong)packet.Length;
                     this.data_out.TryDequeue(out packet);
                 }
                 catch { break; }
@@ -313,6 +328,7 @@ namespace core.ib0t
                     byte[] packet;
                     this.data_out.TryPeek(out packet);
                     this.Sock.Send(packet);
+                    Stats.DataSent += (ulong)packet.Length;
                     this.data_out.TryDequeue(out packet);
                 }
                 catch { break; }
@@ -331,6 +347,7 @@ namespace core.ib0t
             {
                 this.socket_health = 0;
                 this.data_in.AddRange(buffer.Take(received));
+                Stats.DataReceived += (ulong)received;
             }
         }
 

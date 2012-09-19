@@ -107,6 +107,13 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_TOPIC_FIRST);
         }
 
+        public static byte[] Topic(AresClient client, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, text, false);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_TOPIC);
+        }
+
         public static byte[] OpChange(AresClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();

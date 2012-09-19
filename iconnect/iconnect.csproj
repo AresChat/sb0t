@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\iconnect.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -40,12 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IBan.cs" />
+    <Compile Include="ICompression.cs" />
     <Compile Include="IExtension.cs" />
     <Compile Include="IFont.cs" />
+    <Compile Include="IHashlink.cs" />
+    <Compile Include="IHashlinkRoom.cs" />
+    <Compile Include="IHostApp.cs" />
     <Compile Include="ILevel.cs" />
     <Compile Include="IPool.cs" />
     <Compile Include="IPrivateMsg.cs" />
-    <Compile Include="ITypePool.cs" />
+    <Compile Include="IRoom.cs" />
+    <Compile Include="IStats.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="MimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

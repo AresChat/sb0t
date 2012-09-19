@@ -6,6 +6,7 @@ using System.IO;
 using System.Data;
 using System.Data.SQLite;
 using System.Net;
+using iconnect;
 
 namespace core
 {
@@ -20,6 +21,12 @@ namespace core
                 x.Guid.Equals(client.Guid)) != null;
         }
 
+        public static void Eval(Action<IBan> action)
+        {
+            for (int i = (list.Count - 1); i > -1; i--)
+                action(list[i]);
+        }
+
         public static void AddBan(IClient client)
         {
             Ban ban = new Ban
@@ -29,7 +36,8 @@ namespace core
                 Guid = client.Guid,
                 ExternalIP = client.ExternalIP,
                 LocalIP = client.LocalIP,
-                Port = client.DataPort
+                Port = client.DataPort,
+                Ident = NextIdent
             };
 
             list.Add(ban);
@@ -38,49 +46,46 @@ namespace core
             {
                 connection.Open();
 
-                String query = @"insert into bans (name, version, guid, externalip, localip, port) 
-                                     values (@name, @version, @guid, @externalip, @localip, @port)";
+                String query = @"insert into bans (name, version, guid, externalip, localip, port, ident) 
+                                 values (@name, @version, @guid, @externalip, @localip, @port, @ident)";
 
                 using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
-                    command.Parameters.Add(new SQLiteParameter("@name", client.Name));
-                    command.Parameters.Add(new SQLiteParameter("@version", client.Version));
-                    command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
-                    command.Parameters.Add(new SQLiteParameter("@externalip", client.ExternalIP.ToString()));
-                    command.Parameters.Add(new SQLiteParameter("@localip", client.LocalIP.ToString()));
-                    command.Parameters.Add(new SQLiteParameter("@port", (int)client.DataPort));
+                    command.Parameters.Add(new SQLiteParameter("@name", ban.Name));
+                    command.Parameters.Add(new SQLiteParameter("@version", ban.Version));
+                    command.Parameters.Add(new SQLiteParameter("@guid", ban.Guid.ToString()));
+                    command.Parameters.Add(new SQLiteParameter("@externalip", ban.ExternalIP.ToString()));
+                    command.Parameters.Add(new SQLiteParameter("@localip", ban.LocalIP.ToString()));
+                    command.Parameters.Add(new SQLiteParameter("@port", (int)ban.Port));
+                    command.Parameters.Add(new SQLiteParameter("@ident", (int)ban.Ident));
                     command.ExecuteNonQuery();
                 }
             }
         }
 
-        public static String RemoveBan(String name)
+        public static void RemoveBan(ushort ident)
         {
-            int index = list.FindIndex(x => x.Name.StartsWith(name));
-            String result = null;
+            Ban ban = list.Find(x => x.Ident == ident);
 
-            if (index > -1)
+            if (ban != null)
             {
-                result = list[index].Name;
-                list.RemoveAt(index);
-
                 using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
                 {
                     connection.Open();
 
                     String query = @"delete from bans
-                                     where name=@name
+                                     where ident=@ident
                                      limit 1";
 
                     using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        command.Parameters.Add(new SQLiteParameter("@name", result));
+                        command.Parameters.Add(new SQLiteParameter("@ident", (int)ban.Ident));
                         command.ExecuteNonQuery();
                     }
                 }
-            }
 
-            return result;
+                list.RemoveAll(x => x.Ident == ident);
+            }
         }
 
         public static void LoadBans()
@@ -91,7 +96,7 @@ namespace core
             if (!Directory.Exists(DataPath))
                 Directory.CreateDirectory(DataPath);
 
-            DataPath += "\\bans.dat";
+            DataPath += "\\banned.dat";
 
             if (!File.Exists(DataPath))
                 CreateDatabase();
@@ -112,7 +117,8 @@ namespace core
                             Guid = new Guid((String)reader["guid"]),
                             ExternalIP = IPAddress.Parse((String)reader["externalip"]),
                             LocalIP = IPAddress.Parse((String)reader["localip"]),
-                            Port = (ushort)(int)reader["port"]
+                            Port = (ushort)(int)reader["port"],
+                            Ident = (ushort)(int)reader["ident"]
                         });
             }
         }
@@ -132,11 +138,31 @@ namespace core
                                      guid text not null,
                                      externalip text not null,
                                      localip text not null,
-                                     port int not null
+                                     port int not null,
+                                     ident int not null
                                  )";
 
                 using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     command.ExecuteNonQuery();
+            }
+        }
+
+        private static ushort NextIdent
+        {
+            get
+            {
+                ushort result = 0;
+
+                for (ushort u = 0; u < ushort.MaxValue; u++)
+                {
+                    result = u;
+                    int index = list.FindIndex(x => x.Ident == u);
+
+                    if (index == -1)
+                        break;
+                }
+
+                return result;
             }
         }
     }

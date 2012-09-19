@@ -8,6 +8,8 @@ namespace commands
 {
     public class ServerEvents : IExtension
     {
+        public ServerEvents(IHostApp callback) { Server.SetCallback(callback); }
+
         public void ServerStarted() { }
 
         public void CycleTick() { }
@@ -16,7 +18,10 @@ namespace commands
 
         public bool Joining(IUser client) { return true; }
 
-        public void Joined(IUser client) { }
+        public void Joined(IUser client)
+        {
+            
+        }
 
         public void Rejected(IUser client, RejectedMsg msg) { }
 

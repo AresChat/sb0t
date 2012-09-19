@@ -31,10 +31,7 @@ namespace core
         
         public bool Open()
         {
-            Settings.Set("topic", "welcome to my room");
             Settings.Set("language", (byte)10);
-            Settings.Set("text", "google", "url");
-            Settings.Set("link", "http://www.google.com/", "url");
             Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
 
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
@@ -53,6 +50,7 @@ namespace core
             this.thread = new Thread(new ThreadStart(this.ServerThread));
             this.thread.Start();
             this.Running = true;
+            Settings.RUNNING = true;
 
             return true;
         }
@@ -66,12 +64,14 @@ namespace core
 
             UserPool.Destroy();
             this.Running = false;
+            Settings.RUNNING = false;
         }
 
         private void ServerThread()
         {
             this.terminate = false;
-            
+
+            Stats.Reset();
             UserPool.Build();
             Time.Reset();
             Captcha.Initialize();

@@ -45,7 +45,6 @@ namespace core
         public bool VoiceChatPrivate { get; set; }
         public List<String> VoiceChatIgnoreList { get; set; }
         public bool Muzzled { get; set; }
-        public String CustomName { get; set; }
         public bool CustomEmoticons { get; set; }
         public List<CustomEmoticon> EmoticonList { get; set; }
         public bool WebClient { get; private set; }
@@ -69,6 +68,7 @@ namespace core
         private String _name = String.Empty;
         private ushort _vroom = 0;
         private bool _cloaked = false;
+        private String _customname = null;
 
         public AresClient(Socket sock, ulong time, ushort id)
         {
@@ -93,10 +93,24 @@ namespace core
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 
+        public String CustomName
+        {
+            get
+            {
+                if (!Settings.Get<bool>("customnames"))
+                    return null;
+
+                return this._customname;
+            }
+            set { this._customname = value; }
+        }
+
         public void Ban()
         {
             if (!this.Owner)
                 BanSystem.AddBan(this);
+
+            this.Disconnect();
         }
 
         public void PM(String sender, String text)
@@ -378,6 +392,7 @@ namespace core
                     byte[] packet;
                     this.data_out.TryPeek(out packet);
                     this.Sock.Send(packet);
+                    Stats.DataSent += (ulong)packet.Length;
                     this.data_out.TryDequeue(out packet);
                 }
                 catch { break; }
@@ -396,6 +411,7 @@ namespace core
             {
                 this.socket_health = 0;
                 this.data_in.AddRange(buffer.Take(received));
+                Stats.DataReceived += (ulong)received;
             }
 
             if (!this.LoggedIn)
@@ -428,6 +444,7 @@ namespace core
                     byte[] packet;
                     this.data_out.TryPeek(out packet);
                     this.Sock.Send(packet);
+                    Stats.DataSent += (ulong)packet.Length;
                     this.data_out.TryDequeue(out packet);
                 }
                 catch { break; }

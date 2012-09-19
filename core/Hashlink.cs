@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using iconnect;
 
 namespace core
 {
@@ -34,7 +35,7 @@ namespace core
             return buffer;
         }
 
-        public static String EncodeHashlink(Room room)
+        public static String EncodeHashlink(IHashlinkRoom room)
         {
             List<byte> list = new List<byte>();
             list.AddRange(new byte[20]);

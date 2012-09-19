@@ -57,7 +57,13 @@
     <Compile Include="Crypto.cs" />
     <Compile Include="CustomEmoticon.cs" />
     <Compile Include="Events.cs" />
-    <Compile Include="Ext.cs" />
+    <Compile Include="Extensions\ExCompression.cs" />
+    <Compile Include="Extensions\ExHashlink.cs" />
+    <Compile Include="Extensions\ExRoom.cs" />
+    <Compile Include="Extensions\ExStats.cs" />
+    <Compile Include="Prototypes.cs" />
+    <Compile Include="Extensions\ExHost.cs" />
+    <Compile Include="Extensions\ExUsers.cs" />
     <Compile Include="FileBrowseProcessor.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Hashlink.cs" />
@@ -82,6 +88,7 @@
     <Compile Include="ServerCore.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SharedFile.cs" />
+    <Compile Include="Stats.cs" />
     <Compile Include="TCPAdvancedProcessor.cs" />
     <Compile Include="TCPMsg.cs" />
     <Compile Include="TCPOutbound.cs" />

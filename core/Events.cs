@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using iconnect;
+using core.Extensions;
 
 namespace core
 {
@@ -14,8 +15,12 @@ namespace core
         public static void ServerStarted()
         {
             DefaultCommands = Settings.Get<bool>("commands");
-            commands = new commands.ServerEvents();
-            commands.ServerStarted();
+
+            if (commands == null)
+                commands = new commands.ServerEvents(new ExHost(String.Empty));
+
+            if (DefaultCommands)
+                commands.ServerStarted();
         }
 
         public static void CycleTick()
@@ -47,12 +52,19 @@ namespace core
         {
             if (DefaultCommands)
                 commands.Joined(client.IUser);
+
+            Stats.JoinCount++;
+
+            if (Stats.CurrentUserCount > Stats.PeakUserCount)
+                Stats.PeakUserCount = Stats.CurrentUserCount;
         }
 
         public static void Rejected(IClient client, RejectedMsg msg)
         {
             if (DefaultCommands)
                 commands.Rejected(client.IUser, msg);
+
+            Stats.RejectionCount++;
         }
 
         public static void Parting(IClient client)
@@ -65,6 +77,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.Parted(client.IUser);
+
+            Stats.PartCount++;
         }
 
         public static bool AvatarReceived(IClient client)
@@ -107,6 +121,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.TextSent(client.IUser, text);
+
+            Stats.PublicMessages++;
         }
 
         public static void EmoteReceived(IClient client, String text)
@@ -129,6 +145,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.EmoteSent(client.IUser, text);
+
+            Stats.PublicMessages++;
         }
 
         public static void PrivateSending(IClient client, IClient target, PMEventArgs e)
@@ -145,7 +163,10 @@ namespace core
             else if (!client.Connected || !target.Connected)
                 e.Cancel = true;
             else
+            {
                 e.Text = result;
+                Stats.PrivateMessages++;
+            }
         }
 
         public static void PrivateSent(IClient client, IClient target, String text)
@@ -287,6 +308,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.InvalidLoginAttempt(client.IUser);
+
+            Stats.InvalidLoginAttempts++;
         }
 
         public static void LoginGranted(IClient client)

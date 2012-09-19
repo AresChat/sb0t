@@ -5,7 +5,7 @@ using System.Text;
 
 namespace core
 {
-    static class Ext
+    static class Prototypes
     {
         private static Random rnd = new Random();
 

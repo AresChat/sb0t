@@ -12,6 +12,8 @@ namespace core
     {
         public const String VERSION = "sb0t 5.00";
 
+        public static bool RUNNING { get; set; }
+
         private static Type[] AcceptableTypes = 
         {
             typeof(byte),
