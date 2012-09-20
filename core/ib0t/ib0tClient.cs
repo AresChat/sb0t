@@ -40,6 +40,7 @@ namespace core.ib0t
         public bool Captcha { get; set; }
         public bool Registered { get; set; }
         public uint Cookie { get; set; }
+        public uint JoinTime { get; set; }
         public String CaptchaWord { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
@@ -84,6 +85,7 @@ namespace core.ib0t
             this.CaptchaWord = String.Empty;
             this.Captcha = !Settings.Get<bool>("captcha");
             this.DNS = client.DNS;
+            this.JoinTime = Helpers.UnixTime;
         }
 
         public String CustomName

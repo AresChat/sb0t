@@ -18,5 +18,7 @@ namespace iconnect
         void All(Action<IUser> action);
         /// <summary>Action all banned users</summary>
         void Banned(Action<IBan> action);
+        /// <summary>Action all user records from this session</summary>
+        void Records(Action<IRecord> action);
     }
 }

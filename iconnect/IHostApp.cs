@@ -20,5 +20,9 @@ namespace iconnect
         IHashlink Hashlinks { get; }
         /// <summary>Compression utility</summary>
         ICompression Compression { get; }
+        /// <summary>Write to the debug log</summary>
+        void WriteLog(String text);
+        /// <summary>Get current timestamp</summary>
+        uint Timestamp { get; }
     }
 }

@@ -241,6 +241,15 @@ namespace core
                 UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked);
         }
+
+        public static uint UnixTime
+        {
+            get
+            {
+                TimeSpan ts = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+                return (uint)ts.TotalSeconds;
+            }
+        }
     }
 
     class Command

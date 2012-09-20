@@ -86,6 +86,21 @@ namespace commands
             });
         }
 
+        /// <summary>
+        /// Write to the debug log
+        /// </summary>
+        /// <param name="text"></param>
+        public static void WriteLog(String text)
+        {
+            Callback.WriteLog(text);
+        }
 
+        /// <summary>
+        /// Get current timestamp
+        /// </summary>
+        public uint Time
+        {
+            get { return Callback.Timestamp; }
+        }
     }
 }

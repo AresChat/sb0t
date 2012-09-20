@@ -7,7 +7,7 @@ namespace core
 {
     class UserHistory
     {
-        private static List<PartedClient> list;
+        public static List<PartedClient> list { get; set; }
 
         public static void Initialize()
         {
@@ -22,7 +22,13 @@ namespace core
             {
                 ExternalIP = client.ExternalIP,
                 Name = client.Name,
-                Time = time
+                Time = time,
+                DataPort = client.DataPort,
+                DNS = client.DNS,
+                Guid = client.Guid,
+                JoinTime = Helpers.UnixTime,
+                LocalIP  = client.LocalIP,
+                Version = client.Version
             });
         }
 

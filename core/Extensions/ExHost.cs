@@ -9,7 +9,7 @@ namespace core.Extensions
 {
     class ExHost : IHostApp
     {
-        public ExHost()
+        public ExHost(String datapath)
         {
             this.Users = new ExUsers();
             this.Room = new ExRoom();
@@ -19,6 +19,9 @@ namespace core.Extensions
 
             this.DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName;
+
+            if (!String.IsNullOrEmpty(datapath))
+                this.DataPath += "\\" + datapath;
 
             if (!Directory.Exists(this.DataPath))
                 Directory.CreateDirectory(this.DataPath);
@@ -31,7 +34,16 @@ namespace core.Extensions
         public IStats Stats { get; private set; }
         public ICompression Compression { get; private set; }
         public IHashlink Hashlinks { get; private set; }
-
         public String DataPath { get; private set; }
+
+        public void WriteLog(String text)
+        {
+            ServerCore.Log(text);
+        }
+
+        public uint Timestamp
+        {
+            get { return Helpers.UnixTime; }
+        }
     }
 }

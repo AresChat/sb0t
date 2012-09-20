@@ -51,6 +51,7 @@
     <Compile Include="ILevel.cs" />
     <Compile Include="IPool.cs" />
     <Compile Include="IPrivateMsg.cs" />
+    <Compile Include="IRecord.cs" />
     <Compile Include="IRoom.cs" />
     <Compile Include="IStats.cs" />
     <Compile Include="IUser.cs" />

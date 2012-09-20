@@ -9,6 +9,8 @@ namespace iconnect
     /// <summary>Chatroom Client</summary>
     public interface IUser
     {
+        /// <summary>Get join timestamp</summary>
+        uint JoinTime { get; }
         /// <summary>Get session identity</summary>
         ushort ID { get; }
         /// <summary>Get External IP Address</summary>

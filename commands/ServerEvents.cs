@@ -9,9 +9,9 @@ namespace commands
     public class ServerEvents : IExtension
     {
         #region constructor
-        public ServerEvents(IHostApp callback)
+        public ServerEvents(IHostApp cb)
         {
-            Server.SetCallback(callback);
+            Server.SetCallback(cb);
         }
         #endregion
 
@@ -25,7 +25,7 @@ namespace commands
 
         public void Joined(IUser client)
         {
-            
+            Server.Print("welcome " + client.Name);
         }
 
         public void Rejected(IUser client, RejectedMsg msg) { }

@@ -54,6 +54,7 @@ namespace core
         public bool Registered { get; set; }
         public String CaptchaWord { get; set; }
         public byte[] OrgAvatar { get; set; }
+        public uint JoinTime { get; private set; }
 
 
         public Socket Sock { get; set; }
@@ -90,6 +91,7 @@ namespace core
             this.EmoticonList = new List<CustomEmoticon>();
             this.CaptchaWord = String.Empty;
             this.Captcha = !Settings.Get<bool>("captcha");
+            this.JoinTime = Helpers.UnixTime;
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 

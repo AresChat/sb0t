@@ -24,6 +24,11 @@ namespace core.Extensions
             UserPool.WUsers.ForEachWhere(action, x => x.LoggedIn);
         }
 
+        public void Records(Action<IRecord> action)
+        {
+            UserHistory.list.ForEach(action);
+        }
+
         public void Banned(Action<IBan> action)
         {
             BanSystem.Eval(action);
