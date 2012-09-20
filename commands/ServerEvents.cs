@@ -6,15 +6,8 @@ using iconnect;
 
 namespace commands
 {
-    public class ServerEvents : IExtension
+    public partial class ServerEvents : IExtension
     {
-        #region constructor
-        public ServerEvents(IHostApp cb)
-        {
-            Server.SetCallback(cb);
-        }
-        #endregion
-
         public void ServerStarted() { }
 
         public void CycleTick() { }
@@ -56,8 +49,6 @@ namespace commands
 
         public void BotPrivateSent(IUser client, String text) { }
 
-        public void Command(IUser client, String command, IUser target, String args) { }
-
         public bool Nick(IUser client, String name) { return true; }
 
         public void Help(IUser client) { }
@@ -93,5 +84,15 @@ namespace commands
         public void Flooded(IUser client) { } // to do
 
         public bool ProxyDetected(IUser client) { return true; } // to do
+
+        public void Command(IUser client, String cmd, IUser target, String args)
+        {
+            if (cmd.StartsWith("vroom "))
+                Eval.Vroom(client, cmd.Substring(6));
+            else if (cmd == "admins")
+                Eval.Admins(client);
+            else if (cmd == "id")
+                Eval.ID(client);
+        }
     }
 }

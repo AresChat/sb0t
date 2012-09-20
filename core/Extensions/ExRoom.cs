@@ -95,5 +95,10 @@ namespace core.Extensions
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.TopicTo(x, str)), x => x.LoggedIn);
             }
         }
+
+        public uint StartTime
+        {
+            get { return Stats.StartTime; }
+        }
     }
 }

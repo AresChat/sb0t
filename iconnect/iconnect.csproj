@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBan.cs" />
+    <Compile Include="ICommandDefault.cs" />
     <Compile Include="ICompression.cs" />
     <Compile Include="IExtension.cs" />
     <Compile Include="IFont.cs" />

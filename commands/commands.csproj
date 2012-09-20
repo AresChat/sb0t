@@ -40,8 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminTab.cs" />
+    <Compile Include="Eval.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ServerEvents.Callback.cs" />
     <Compile Include="ServerEvents.cs" />
   </ItemGroup>
   <ItemGroup>

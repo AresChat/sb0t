@@ -36,11 +36,11 @@ namespace gui
 
         private void LogUpdate(object sender, ServerLogEventArgs e)
         {
-         /*   if (!String.IsNullOrEmpty(e.Message))
+            /*if (!String.IsNullOrEmpty(e.Message))
                 MessageBox.Show(DateTime.Now + " log: " + e.Message);
 
             if (e.Error != null)
-                MessageBox.Show(DateTime.Now + " error: " + e.Error.Message + "\n" + e.Error.StackTrace); */
+                MessageBox.Show(DateTime.Now + " error: " + e.Error.Message + "\n" + e.Error.StackTrace);*/
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

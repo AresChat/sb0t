@@ -120,6 +120,10 @@
       <Project>{DEE23F91-085B-40EB-B470-42D3A7B956E9}</Project>
       <Name>core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\iconnect\iconnect.csproj">
+      <Project>{FDEBC3D9-56AA-4D35-93DC-5F7F0E9023B1}</Project>
+      <Name>iconnect</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Plugin-icon.png" />

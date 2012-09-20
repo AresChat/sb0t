@@ -98,9 +98,19 @@ namespace commands
         /// <summary>
         /// Get current timestamp
         /// </summary>
-        public uint Time
+        public static uint Time
         {
             get { return Callback.Timestamp; }
+        }
+
+        /// <summary>
+        /// Get a user defined minimum admin level for a default command
+        /// </summary>
+        /// <param name="command">command name</param>
+        /// <returns></returns>
+        public static ILevel GetLevel(String command)
+        {
+            return Callback.GetLevel(command);
         }
     }
 }

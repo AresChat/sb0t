@@ -17,6 +17,7 @@ namespace core
         public static uint JoinCount { get; set; }
         public static uint PartCount { get; set; }
         public static uint PeakUserCount { get; set; }
+        public static uint StartTime { get; private set; }
 
         public static uint CurrentUserCount
         {
@@ -43,6 +44,7 @@ namespace core
             JoinCount = 0;
             PartCount = 0;
             PeakUserCount = 0;
+            StartTime = Helpers.UnixTime;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iconnect;
 
 namespace gui
 {
@@ -12,9 +13,20 @@ namespace gui
         private void AdminCommandSetup()
         {
             listView1.ItemsSource = commands;
+            ICommandDefault[] list = this.server.DefaultCommandLevels;
 
-            for (int i = 0; i < 100; i++)
-                commands.Add(new Command { Level = "Moderator", Name = "testing" });
-        }
+            foreach (ICommandDefault c in this.server.DefaultCommandLevels)
+            {
+                ILevel l = CommandManager.GetLevel(c.Name);
+
+                if (l == (ILevel)255)
+                {
+                    l = c.Level;
+                    CommandManager.SetLevel(c.Name, c.Level);
+                }
+
+                commands.Add(new Command { Level = CommandManager.LevelToString(l), Name = c.Name });
+            }
+        }        
     }
 }

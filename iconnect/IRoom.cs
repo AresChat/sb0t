@@ -33,5 +33,7 @@ namespace iconnect
         void ClearURL();
         /// <summary>Get the chatroom bot name</summary>
         String BotName { get; }
+        /// <summary>Get the timestamp when the server started</summary>
+        uint StartTime { get; }
     }
 }

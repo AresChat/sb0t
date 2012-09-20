@@ -24,5 +24,7 @@ namespace iconnect
         void WriteLog(String text);
         /// <summary>Get current timestamp</summary>
         uint Timestamp { get; }
+        /// <summary>Get a user defined minimum admin level for a default command</summary>
+        ILevel GetLevel(String command);
     }
 }

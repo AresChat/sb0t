@@ -13,11 +13,21 @@ namespace core
     {
         public static event EventHandler<ServerLogEventArgs> LogUpdate;
 
+        public ServerCore()
+        {
+            Events.InitializeCommandsExtension();
+        }
+
         private TcpListener tcp;
         private Thread thread;
         private bool terminate = false;
 
         public bool Running { get; private set; }
+
+        public iconnect.ICommandDefault[] DefaultCommandLevels
+        {
+            get { return Events.DefaultCommandLevels; }
+        }
 
         public static void Log(String message)
         {

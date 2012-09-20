@@ -12,12 +12,20 @@ namespace core
         private static commands.ServerEvents commands { get; set; }
         private static bool DefaultCommands { get; set; }
 
+        public static void InitializeCommandsExtension()
+        {
+            if (commands == null)
+                commands = new commands.ServerEvents(new ExHost(String.Empty));
+        }
+
+        public static ICommandDefault[] DefaultCommandLevels
+        {
+            get { return commands.DefaultCommandLevels; }
+        }
+
         public static void ServerStarted()
         {
             DefaultCommands = Settings.Get<bool>("commands");
-
-            if (commands == null)
-                commands = new commands.ServerEvents(new ExHost(String.Empty));
 
             if (DefaultCommands)
                 commands.ServerStarted();
@@ -53,13 +61,13 @@ namespace core
                 x.SendPacket(TCPOutbound.NoSuch(x, "Unhandled : " + client.Name + " : " + msg)), x => x.LoggedIn);
 
             if (DefaultCommands)
-                commands.UnhandledProtocol(client.IUser, custom, (byte)msg, packet.ToArray());
+                commands.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray());
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.UnhandledProtocol(client.IUser, custom, (byte)msg, packet.ToArray());
+                    x.Plugin.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray());
                 }
                 catch { }
             });
@@ -68,16 +76,16 @@ namespace core
         public static bool Joining(IClient client)
         {
             bool result = true;
-            
+
             if (DefaultCommands)
-                result = commands.Joining(client.IUser);
+                result = commands.Joining(client != null ? client.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.Joining(client.IUser);
+                        result = x.Plugin.Joining(client != null ? client.IUser : null);
 
                         if (!result)
                             return;
@@ -96,13 +104,13 @@ namespace core
                 Stats.PeakUserCount = Stats.CurrentUserCount;
 
             if (DefaultCommands)
-                commands.Joined(client.IUser);
+                commands.Joined(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Joined(client.IUser);
+                    x.Plugin.Joined(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -113,13 +121,13 @@ namespace core
             Stats.RejectionCount++;
 
             if (DefaultCommands)
-                commands.Rejected(client.IUser, msg);
+                commands.Rejected(client != null ? client.IUser : null, msg);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Rejected(client.IUser, msg);
+                    x.Plugin.Rejected(client != null ? client.IUser : null, msg);
                 }
                 catch { }
             });
@@ -128,13 +136,13 @@ namespace core
         public static void Parting(IClient client)
         {
             if (DefaultCommands)
-                commands.Parting(client.IUser);
+                commands.Parting(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Parting(client.IUser);
+                    x.Plugin.Parting(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -145,13 +153,13 @@ namespace core
             Stats.PartCount++;
 
             if (DefaultCommands)
-                commands.Parted(client.IUser);
+                commands.Parted(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Parted(client.IUser);
+                    x.Plugin.Parted(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -162,14 +170,14 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.AvatarReceived(client.IUser);
+                result = commands.AvatarReceived(client != null ? client.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.AvatarReceived(client.IUser);
+                        result = x.Plugin.AvatarReceived(client != null ? client.IUser : null);
 
                         if (!result)
                             return;
@@ -185,14 +193,14 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.PersonalMessageReceived(client.IUser, text);
+                result = commands.PersonalMessageReceived(client != null ? client.IUser : null, text);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.PersonalMessageReceived(client.IUser, text);
+                        result = x.Plugin.PersonalMessageReceived(client != null ? client.IUser : null, text);
 
                         if (!result)
                             return;
@@ -206,13 +214,13 @@ namespace core
         public static void TextReceived(IClient client, String text)
         {
             if (DefaultCommands)
-                commands.TextReceived(client.IUser, text);
+                commands.TextReceived(client != null ? client.IUser : null, text);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.TextReceived(client.IUser, text);
+                    x.Plugin.TextReceived(client != null ? client.IUser : null, text);
                 }
                 catch { }
             });
@@ -223,14 +231,14 @@ namespace core
             String result = text;
 
             if (DefaultCommands)
-                result = commands.TextSending(client.IUser, result);
+                result = commands.TextSending(client != null ? client.IUser : null, result);
 
             if (!String.IsNullOrEmpty(result))
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.TextSending(client.IUser, result);
+                        result = x.Plugin.TextSending(client != null ? client.IUser : null, result);
 
                         if (String.IsNullOrEmpty(result))
                             return;
@@ -246,13 +254,13 @@ namespace core
             Stats.PublicMessages++;
 
             if (DefaultCommands)
-                commands.TextSent(client.IUser, text);
+                commands.TextSent(client != null ? client.IUser : null, text);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.TextSent(client.IUser, text);
+                    x.Plugin.TextSent(client != null ? client.IUser : null, text);
                 }
                 catch { }
             });
@@ -261,13 +269,13 @@ namespace core
         public static void EmoteReceived(IClient client, String text)
         {
             if (DefaultCommands)
-                commands.EmoteReceived(client.IUser, text);
+                commands.EmoteReceived(client != null ? client.IUser : null, text);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.EmoteReceived(client.IUser, text);
+                    x.Plugin.EmoteReceived(client != null ? client.IUser : null, text);
                 }
                 catch { }
             });
@@ -276,16 +284,16 @@ namespace core
         public static String EmoteSending(IClient client, String text)
         {
             String result = text;
-            
+
             if (DefaultCommands)
-                result = commands.EmoteSending(client.IUser, result);
+                result = commands.EmoteSending(client != null ? client.IUser : null, result);
 
             if (!String.IsNullOrEmpty(result))
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.EmoteSending(client.IUser, result);
+                        result = x.Plugin.EmoteSending(client != null ? client.IUser : null, result);
 
                         if (String.IsNullOrEmpty(result))
                             return;
@@ -301,13 +309,13 @@ namespace core
             Stats.PublicMessages++;
 
             if (DefaultCommands)
-                commands.EmoteSent(client.IUser, text);
+                commands.EmoteSent(client != null ? client.IUser : null, text);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.EmoteSent(client.IUser, text);
+                    x.Plugin.EmoteSent(client != null ? client.IUser : null, text);
                 }
                 catch { }
             });
@@ -318,14 +326,14 @@ namespace core
             PrivateMsg pm = new PrivateMsg(e.Text);
 
             if (DefaultCommands)
-                commands.PrivateSending(client.IUser, target.IUser, pm);
+                commands.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
             if (!String.IsNullOrEmpty(pm.Text))
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        x.Plugin.PrivateSending(client.IUser, target.IUser, pm);
+                        x.Plugin.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
                         if (String.IsNullOrEmpty(pm.Text))
                             return;
@@ -348,13 +356,13 @@ namespace core
             Stats.PrivateMessages++;
 
             if (DefaultCommands)
-                commands.PrivateSent(client.IUser, target.IUser);
+                commands.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.PrivateSent(client.IUser, target.IUser);
+                    x.Plugin.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
                 }
                 catch { }
             });
@@ -365,13 +373,13 @@ namespace core
             Stats.PrivateMessages++;
 
             if (DefaultCommands)
-                commands.BotPrivateSent(client.IUser, text);
+                commands.BotPrivateSent(client != null ? client.IUser : null, text);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.BotPrivateSent(client.IUser, text);
+                    x.Plugin.BotPrivateSent(client != null ? client.IUser : null, text);
                 }
                 catch { }
             });
@@ -441,13 +449,13 @@ namespace core
             }
 
             if (DefaultCommands)
-                commands.Command(client.IUser, command, target.IUser, args);
+                commands.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Command(client.IUser, command, target.IUser, args);
+                    x.Plugin.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
                 }
                 catch { }
             });
@@ -458,14 +466,14 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Nick(client.IUser, name);
+                result = commands.Nick(client != null ? client.IUser : null, name);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.Nick(client.IUser, name);
+                        result = x.Plugin.Nick(client != null ? client.IUser : null, name);
 
                         if (!result)
                             return;
@@ -497,13 +505,13 @@ namespace core
             }
 
             if (DefaultCommands)
-                commands.Help(client.IUser);
+                commands.Help(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Help(client.IUser);
+                    x.Plugin.Help(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -512,13 +520,13 @@ namespace core
         public static void FileReceived(IClient client, SharedFile file)
         {
             if (DefaultCommands)
-                commands.FileReceived(client.IUser, file.FileName, file.Title, file.Mime);
+                commands.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.FileReceived(client.IUser, file.FileName, file.Title, file.Mime);
+                    x.Plugin.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
                 }
                 catch { }
             });
@@ -529,14 +537,14 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Ignoring(client.IUser, target.IUser);
+                result = commands.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.Ignoring(client.IUser, target.IUser);
+                        result = x.Plugin.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
                         if (!result)
                             return;
@@ -550,13 +558,13 @@ namespace core
         public static void IgnoredStateChanged(IClient client, IClient target, bool ignored)
         {
             if (DefaultCommands)
-                commands.IgnoredStateChanged(client.IUser, target.IUser, ignored);
+                commands.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.IgnoredStateChanged(client.IUser, target.IUser, ignored);
+                    x.Plugin.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
                 }
                 catch { }
             });
@@ -567,13 +575,13 @@ namespace core
             Stats.InvalidLoginAttempts++;
 
             if (DefaultCommands)
-                commands.InvalidLoginAttempt(client.IUser);
+                commands.InvalidLoginAttempt(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.InvalidLoginAttempt(client.IUser);
+                    x.Plugin.InvalidLoginAttempt(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -582,22 +590,22 @@ namespace core
         public static void LoginGranted(IClient client)
         {
             if (DefaultCommands)
-                commands.LoginGranted(client.IUser);
+                commands.LoginGranted(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                x.Plugin.LoginGranted(client.IUser);
+                x.Plugin.LoginGranted(client != null ? client.IUser : null);
             });
         }
 
         public static void AdminLevelChanged(IClient client)
         {
             if (DefaultCommands)
-                commands.AdminLevelChanged(client.IUser);
+                commands.AdminLevelChanged(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                x.Plugin.AdminLevelChanged(client.IUser);
+                x.Plugin.AdminLevelChanged(client != null ? client.IUser : null);
             });
         }
 
@@ -606,14 +614,14 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Registering(client.IUser);
+                result = commands.Registering(client != null ? client.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.Registering(client.IUser);
+                        result = x.Plugin.Registering(client != null ? client.IUser : null);
 
                         if (!result)
                             return;
@@ -627,13 +635,13 @@ namespace core
         public static void Registered(IClient client)
         {
             if (DefaultCommands)
-                commands.Registered(client.IUser);
+                commands.Registered(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Registered(client.IUser);
+                    x.Plugin.Registered(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -642,13 +650,13 @@ namespace core
         public static void Unregistered(IClient client)
         {
             if (DefaultCommands)
-                commands.Unregistered(client.IUser);
+                commands.Unregistered(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.Unregistered(client.IUser);
+                    x.Plugin.Unregistered(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -657,13 +665,13 @@ namespace core
         public static void CaptchaSending(IClient client)
         {
             if (DefaultCommands)
-                commands.CaptchaSending(client.IUser);
+                commands.CaptchaSending(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.CaptchaSending(client.IUser);
+                    x.Plugin.CaptchaSending(client != null ? client.IUser : null);
                 }
                 catch { }
             });
@@ -672,13 +680,13 @@ namespace core
         public static void CaptchaReply(IClient client, String reply)
         {
             if (DefaultCommands)
-                commands.CaptchaReply(client.IUser, reply);
+                commands.CaptchaReply(client != null ? client.IUser : null, reply);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.CaptchaReply(client.IUser, reply);
+                    x.Plugin.CaptchaReply(client != null ? client.IUser : null, reply);
                 }
                 catch { }
             });
@@ -689,14 +697,14 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.VroomChanging(client.IUser, vroom);
+                result = commands.VroomChanging(client != null ? client.IUser : null, vroom);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
                     {
-                        result = x.Plugin.VroomChanging(client.IUser, vroom);
+                        result = x.Plugin.VroomChanging(client != null ? client.IUser : null, vroom);
 
                         if (!result)
                             return;
@@ -710,13 +718,13 @@ namespace core
         public static void VroomChanged(IClient client)
         {
             if (DefaultCommands)
-                commands.VroomChanged(client.IUser);
+                commands.VroomChanged(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try
                 {
-                    x.Plugin.VroomChanged(client.IUser);
+                    x.Plugin.VroomChanged(client != null ? client.IUser : null);
                 }
                 catch { }
             });

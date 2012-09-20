@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Microsoft.Win32;
 using iconnect;
 
 namespace core.Extensions
@@ -44,6 +45,14 @@ namespace core.Extensions
         public uint Timestamp
         {
             get { return Helpers.UnixTime; }
+        }
+
+        public ILevel GetLevel(String command)
+        {
+            RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\commands");
+            object value = key.GetValue(command);
+            key.Close();
+            return (ILevel)(byte)(int)value;
         }
     }
 }
