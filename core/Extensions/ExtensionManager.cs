@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
-using System.Text;
 using System.IO;
 using System.Reflection;
 using iconnect;
@@ -11,13 +11,16 @@ namespace core.Extensions
     class ExtensionManager
     {
         private static String DataPath { get; set; }
+        private static ConcurrentDictionary<String, ExPlugin> list { get; set; }
 
-        public static ConcurrentList<ExPlugin> Plugins { get; set; }
-
+        public static List<ExPlugin> Plugins
+        {
+            get { return list.Values.ToList(); }
+        }
 
         public static void Setup()
         {
-            Plugins = new ConcurrentList<ExPlugin>();
+            list = new ConcurrentDictionary<String, ExPlugin>();
             DataPath = AppDomain.CurrentDomain.BaseDirectory;
         }
 
@@ -35,11 +38,13 @@ namespace core.Extensions
                     ExPlugin p = new ExPlugin
                     {
                         Name = name,
-                        Plugin = (IExtension)Activator.CreateInstance(asm.GetType(type.ToString()), new ExHost(name + ".dll"))
+                        Plugin = (IExtension)Activator.CreateInstance(
+                                 asm.GetType(type.ToString()),
+                                 new ExHost(name + ".dll"))
                     };
 
-                    Plugins.RemoveAll(x => x.Name == p.Name);
-                    Plugins.Add(p);
+                    UnloadPlugin(p.Name);
+                    list[p.Name] = p;                    
 
                     return true;
                 }
@@ -49,9 +54,16 @@ namespace core.Extensions
             return false;
         }
 
-        public static void UnloadPlugin(String name)
+        public static ExPlugin UnloadPlugin(String name)
         {
-            Plugins.RemoveAll(x => x.Name == name);
+            if (!list.ContainsKey(name))
+                return null;
+
+            ExPlugin p;
+
+            while (!list.TryRemove(name, out p)) { }
+
+            return p;
         }
 
     }
