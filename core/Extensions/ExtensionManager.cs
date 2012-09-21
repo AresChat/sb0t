@@ -12,12 +12,12 @@ namespace core.Extensions
     {
         private static String DataPath { get; set; }
 
-        public static List<ExPlugin> Plugins { get; set; }
+        public static ConcurrentList<ExPlugin> Plugins { get; set; }
 
 
         public static void Setup()
         {
-            Plugins = new List<ExPlugin>();
+            Plugins = new ConcurrentList<ExPlugin>();
             DataPath = AppDomain.CurrentDomain.BaseDirectory;
         }
 
@@ -32,11 +32,14 @@ namespace core.Extensions
 
                 if (type != null)
                 {
-                    Plugins.Add(new ExPlugin
+                    ExPlugin p = new ExPlugin
                     {
                         Name = name,
                         Plugin = (IExtension)Activator.CreateInstance(asm.GetType(type.ToString()), new ExHost(name + ".dll"))
-                    });
+                    };
+
+                    Plugins.RemoveAll(x => x.Name == p.Name);
+                    Plugins.Add(p);
 
                     return true;
                 }

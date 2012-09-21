@@ -57,6 +57,7 @@
     <Compile Include="Crypto.cs" />
     <Compile Include="CustomEmoticon.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Extensions\ConcurrentList.cs" />
     <Compile Include="Extensions\ExCompression.cs" />
     <Compile Include="Extensions\ExHashlink.cs" />
     <Compile Include="Extensions\ExPlugin.cs" />
