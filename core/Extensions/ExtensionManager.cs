@@ -61,7 +61,8 @@ namespace core.Extensions
 
             ExPlugin p;
 
-            while (!list.TryRemove(name, out p)) { }
+            while (!list.TryRemove(name, out p))
+                continue;
 
             return p;
         }
