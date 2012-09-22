@@ -82,6 +82,7 @@ namespace core
             this.terminate = false;
 
             Extensions.ExtensionManager.Setup();
+            FloodControl.Reset();
             Stats.Reset();
             UserPool.Build();
             Time.Reset();
@@ -93,6 +94,7 @@ namespace core
 
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);
+            ulong reset_floods_timer = Time.Now;
             bool can_web_chat = Settings.Get<bool>("enabled", "web");
 
             while (true)
@@ -108,6 +110,12 @@ namespace core
 
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.FastPing()),
                         x => x.LoggedIn && x.FastPing);
+                }
+
+                if (time > (reset_floods_timer + 60000))
+                {
+                    reset_floods_timer = time;
+                    FloodControl.Reset();
                 }
 
                 this.CheckTCPListener(time);

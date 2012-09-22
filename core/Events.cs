@@ -418,6 +418,12 @@ namespace core
                     return;
                 }
 
+                if (command == "logout")
+                {
+                    AccountManager.Logout(client);
+                    return;
+                }
+
                 if (command.StartsWith("nick "))
                 {
                     if (!Helpers.NameAvailable(client, command.Substring(5)) || command.Substring(5).Length < 2)
@@ -498,6 +504,7 @@ namespace core
                 if (!client.Owner)
                     client.Print("/unregister");
 
+                client.Print("/logout");
                 client.Print("/nick <name>");
 
                 if (client.Owner)
@@ -725,6 +732,44 @@ namespace core
                 try
                 {
                     x.Plugin.VroomChanged(client != null ? client.IUser : null);
+                }
+                catch { }
+            });
+        }
+
+        public static bool Flooding(IClient client, byte msg)
+        {
+            bool result = true;
+
+            if (DefaultCommands)
+                result = commands.Flooding(client != null ? client.IUser : null, msg);
+
+            if (result)
+                ExtensionManager.Plugins.ForEach(x =>
+                {
+                    try
+                    {
+                        result = x.Plugin.Flooding(client != null ? client.IUser : null, msg);
+
+                        if (!result)
+                            return;
+                    }
+                    catch { }
+                });
+
+            return result;
+        }
+
+        public static void Flooded(IClient client)
+        {
+            if (DefaultCommands)
+                commands.VroomChanged(client != null ? client.IUser : null);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try
+                {
+                    x.Plugin.Flooded(client != null ? client.IUser : null);
                 }
                 catch { }
             });

@@ -14,6 +14,15 @@ namespace core
             if (!client.LoggedIn && packet.Msg > TCPMsg.MSG_CHAT_CLIENT_LOGIN)
                 throw new Exception("unordered login routine");
 
+            if (client.LoggedIn)
+                if (FloodControl.IsFlooding(client, packet.Msg, packet.Packet.ToArray(), time))
+                    if (Events.Flooding(client, (byte)packet.Msg))
+                    {
+                        client.Disconnect();
+                        Events.Flooded(client);
+                        return;
+                    }
+
             switch (packet.Msg)
             {
                 case TCPMsg.MSG_CHAT_CLIENT_LOGIN:

@@ -20,6 +20,15 @@ namespace core.ib0t
             if (client.LoggedIn && ident.StartsWith("LOGIN"))
                 return;
 
+            if (client.LoggedIn)
+                if (FloodControl.IsFlooding(client, ident, Encoding.UTF8.GetBytes(args), time))
+                    if (Events.Flooding(client, (byte)FloodControl.WebMsgToTCPMsg(ident)))
+                    {
+                        client.Disconnect();
+                        Events.Flooded(client);
+                        return;
+                    }
+
             switch (ident)
             {
                 case "LOGIN":

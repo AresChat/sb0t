@@ -109,7 +109,7 @@ namespace core
                             client.Owner = true;
                             Events.LoginGranted(client);
                             client.Level = ILevel.Host;
-                            ServerCore.Log(client.Name + " logged in with the room owner password");
+                            ServerCore.Log(client.Name + " logged in with the room owner account");
                             return;
                         }
                     }
@@ -129,7 +129,7 @@ namespace core
                             client.Captcha = true;
                             Events.LoginGranted(client);
                             client.Level = a.Level;
-                            ServerCore.Log(client.Name + " logged in with " + a.Name + "'s password");
+                            ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
                             return;
                         }
                     }
@@ -158,7 +158,7 @@ namespace core
                     client.Owner = true;
                     Events.LoginGranted(client);
                     client.Level = ILevel.Host;
-                    ServerCore.Log(client.Name + " logged in with the room owner password");
+                    ServerCore.Log(client.Name + " logged in with the room owner account");
                     return;
                 }
 
@@ -175,12 +175,19 @@ namespace core
                     client.Captcha = true;
                     Events.LoginGranted(client);
                     client.Level = a.Level;
-                    ServerCore.Log(client.Name + " logged in with " + a.Name + "'s password");
+                    ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
                     return;
                 }
             }
 
             Events.InvalidLoginAttempt(client);
+        }
+
+        public static void Logout(IClient client)
+        {
+            client.Registered = false;
+            client.Level = ILevel.Regular;
+            ServerCore.Log(client.Name + " logged out");
         }
 
         public static void Register(IClient client, String password)

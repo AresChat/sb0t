@@ -49,6 +49,7 @@ namespace core.ib0t
         public bool ProtoConnected { get; set; }
         public bool LoggedIn { get; set; }
         public bool CanScribble { get; set; }
+        public FloodRecord FloodRecord { get; private set; }
 
         private int socket_health = 0;
         private List<byte> data_in = new List<byte>();
@@ -86,6 +87,7 @@ namespace core.ib0t
             this.Captcha = !Settings.Get<bool>("captcha");
             this.DNS = client.DNS;
             this.JoinTime = Helpers.UnixTime;
+            this.FloodRecord = new FloodRecord();
         }
 
         public String CustomName

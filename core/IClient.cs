@@ -87,6 +87,7 @@ namespace core
         IUser IUser { get; }
         /// <summary>Connected</summary>
         bool Connected { get; }
+        FloodRecord FloodRecord { get; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);

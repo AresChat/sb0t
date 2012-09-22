@@ -63,6 +63,8 @@
     <Compile Include="Extensions\ExRoom.cs" />
     <Compile Include="Extensions\ExStats.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="FloodControl.cs" />
+    <Compile Include="FloodRecord.cs" />
     <Compile Include="Prototypes.cs" />
     <Compile Include="Extensions\ExHost.cs" />
     <Compile Include="Extensions\ExUsers.cs" />
@@ -128,7 +130,6 @@
     <Content Include="Libraries\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ib0t\WebOutbound.cd" />
     <None Include="Resources\web.dat" />
   </ItemGroup>
   <ItemGroup />
