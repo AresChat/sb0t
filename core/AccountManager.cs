@@ -187,6 +187,7 @@ namespace core
         {
             client.Registered = false;
             client.Level = ILevel.Regular;
+            Events.Logout(client);
             ServerCore.Log(client.Name + " logged out");
         }
 

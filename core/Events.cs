@@ -774,5 +774,20 @@ namespace core
                 catch { }
             });
         }
+
+        public static void Logout(IClient client)
+        {
+            if (DefaultCommands)
+                commands.Logout(client != null ? client.IUser : null);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try
+                {
+                    x.Plugin.Logout(client != null ? client.IUser : null);
+                }
+                catch { }
+            });
+        }
     }
 }

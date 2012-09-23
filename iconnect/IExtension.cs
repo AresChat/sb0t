@@ -84,5 +84,7 @@ namespace iconnect
         void Flooded(IUser client);
         /// <summary>Server Event</summary>
         bool ProxyDetected(IUser client);
+        /// <summary>Server Event</summary>
+        void Logout(IUser client);
     }
 }

@@ -79,11 +79,13 @@ namespace commands
 
         public void VroomChanged(IUser client) { }
 
-        public bool Flooding(IUser client, byte msg) { return true; } // to do
+        public bool Flooding(IUser client, byte msg) { return true; }
 
-        public void Flooded(IUser client) { } // to do
+        public void Flooded(IUser client) { }
 
         public bool ProxyDetected(IUser client) { return true; } // to do
+
+        public void Logout(IUser client) { }
 
         public void Command(IUser client, String cmd, IUser target, String args)
         {
