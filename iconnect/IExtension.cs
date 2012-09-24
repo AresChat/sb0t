@@ -86,5 +86,9 @@ namespace iconnect
         bool ProxyDetected(IUser client);
         /// <summary>Server Event</summary>
         void Logout(IUser client);
+        /// <summary>Server Event</summary>
+        void Idled(IUser client);
+        /// <summary>Server Event</summary>
+        void Unidled(IUser client, uint seconds_away);
     }
 }

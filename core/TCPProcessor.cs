@@ -300,15 +300,25 @@ namespace core
 
                 if (!String.IsNullOrEmpty(text) && client.SocketConnected && !client.Muzzled)
                 {
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
-                        TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                    if (client.Idled)
+                    {
+                        uint seconds_away = (uint)((Time.Now - client.IdleStart) / 1000);
+                        IdleManager.Remove(client);
+                        Events.Unidled(client, seconds_away);
+                    }
 
-                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
-                        ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                    if (client.SocketConnected)
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
+                            TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
+                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
 
-                    Events.TextSent(client, text);
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
+                            ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
+                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
+                        Events.TextSent(client, text);
+                    }
                 }
             }
         }
@@ -327,13 +337,32 @@ namespace core
 
                 if (!String.IsNullOrEmpty(text) && client.SocketConnected && !client.Muzzled)
                 {
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                    if (client.Idled)
+                    {
+                        uint seconds_away = (uint)((Time.Now - client.IdleStart) / 1000);
+                        IdleManager.Remove(client);
+                        Events.Unidled(client, seconds_away);
+                    }
 
-                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                    if (client.SocketConnected)
+                    {
+                        if (text.StartsWith("idles"))
+                        {
+                            IdleManager.Add(client);
+                            Events.Idled(client);
+                        }
 
-                    Events.EmoteSent(client, text);
+                        if (client.SocketConnected)
+                        {
+                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
+                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
+                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
+                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+
+                            Events.EmoteSent(client, text);
+                        }
+                    }
                 }
             }
         }
@@ -530,8 +559,12 @@ namespace core
             if (client.CustomClient)
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
-            
+
+            FloodControl.Remove(client);
             Events.Joined(client);
+
+            if (client.SocketConnected)
+                IdleManager.Set(client);
         }
 
     }

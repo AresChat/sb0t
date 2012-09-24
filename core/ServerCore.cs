@@ -90,6 +90,7 @@ namespace core
             UserHistory.Initialize();
             AccountManager.LoadPasswords();
             BanSystem.LoadBans();
+            IdleManager.Reset();
             Events.ServerStarted();
 
             ulong fast_ping_timer = Time.Now;

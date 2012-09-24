@@ -76,6 +76,9 @@ namespace gui
             this.checkBox8.IsEnabled = !running;
             this.checkBox9.IsEnabled = !running;
             this.checkBox10.IsEnabled = !running;
+            this.checkBox11.IsEnabled = !running;
+            this.button3.IsEnabled = running;
+            this.button4.IsEnabled = running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -168,6 +171,19 @@ namespace gui
                 Settings.Set("commands", this.checkBox10.IsChecked);
                 this.listView1.IsEnabled = (bool)this.checkBox10.IsChecked;
             }
+            else if (cb.Name == "checkBox11")
+            {
+                Settings.Set("scripting", this.checkBox11.IsChecked);
+                this.checkBox12.IsEnabled = (bool)this.checkBox11.IsChecked;
+                this.comboBox1.IsEnabled = (bool)this.checkBox11.IsChecked;
+            }
+            else if (cb.Name == "checkBox12")
+                Settings.Set("inroom_scripting", this.checkBox12.IsChecked);
+        }
+
+        private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Settings.Set("inroom_level", (byte)this.comboBox1.SelectedIndex + 1);
         }
     }
 }

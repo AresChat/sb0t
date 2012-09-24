@@ -42,6 +42,8 @@ namespace core.ib0t
         public uint Cookie { get; set; }
         public uint JoinTime { get; set; }
         public String CaptchaWord { get; set; }
+        public bool Idled { get; set; }
+        public ulong IdleStart { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }
@@ -89,6 +91,8 @@ namespace core.ib0t
             this.JoinTime = Helpers.UnixTime;
             this.FloodRecord = new FloodRecord();
         }
+
+        public bool Idle { get { return this.Idled; } }
 
         public String CustomName
         {

@@ -83,6 +83,8 @@ namespace iconnect
         bool Cloaked { get; set; }
         /// <summary>Get Connected Status</summary>
         bool Connected { get; }
+        /// <summary>Get Idle Status</summary>
+        bool Idle { get; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);

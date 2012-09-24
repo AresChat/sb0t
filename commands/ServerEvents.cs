@@ -16,10 +16,7 @@ namespace commands
 
         public bool Joining(IUser client) { return true; }
 
-        public void Joined(IUser client)
-        {
-            Server.Print("welcome " + client.Name);
-        }
+        public void Joined(IUser client) { }
 
         public void Rejected(IUser client, RejectedMsg msg) { }
 
@@ -86,6 +83,10 @@ namespace commands
         public bool ProxyDetected(IUser client) { return true; } // to do
 
         public void Logout(IUser client) { }
+
+        public void Idled(IUser client) { }
+
+        public void Unidled(IUser client, uint seconds_away) { }
 
         public void Command(IUser client, String cmd, IUser target, String args)
         {

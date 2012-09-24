@@ -26,20 +26,18 @@
                             <Label Canvas.Left="35" Canvas.Top="150" Content="Room name:" Height="28" Name="label2" />
                             <Label Canvas.Left="35" Canvas.Top="197" Content="Room port:" Height="28" Name="label3" />
                             <Label Canvas.Left="35" Canvas.Top="244" Content="Bot name:" Height="28" Name="label4" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="22" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="42" Content="Custom emoticons enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="62" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="82" Content="Load sb0t when windows starts" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="102" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="122" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="142" Content="Allow file browsing" Height="16" Name="checkBox7" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="55" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="75" Content="Custom emoticons enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="95" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="115" Content="Load sb0t when windows starts" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="135" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="155" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Button Focusable="False" Background="Silver" Canvas.Left="341" Canvas.Top="216" Content="Start server" Height="23" Name="button1" Width="193" Click="ServerStartStop" />
                             <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="247" Content="Open data folder" Height="23" Name="button2" Width="193" />
-                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="273" Content="Ares join" Height="23" Name="button3" Width="95" />
-                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="439" Canvas.Top="273" Content="cb0t join" Height="23" Name="button4" Width="95" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="273" Content="Ares join" Height="23" Name="button3" Width="95" IsEnabled="False" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="439" Canvas.Top="273" Content="cb0t join" Height="23" Name="button4" Width="95" IsEnabled="False" />
                             <Label Canvas.Left="4" Canvas.Bottom="4" Content="Status:  Server stopped." Height="28" Name="statusLabel" FontWeight="Bold" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="162" Content="Captcha enabled" Height="16" Name="checkBox8" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="182" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="341" Canvas.Top="175" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
                     </Border>
                 </Grid>
@@ -112,7 +110,26 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
-                            <Label Canvas.Left="10" Canvas.Top="10" Content="advanced tab" Height="28" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="236" Height="96" Name="rectangle1" Stroke="Black" Width="229" />
+                            <CheckBox Content="Captcha enabled" Height="16" Name="checkBox8" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" Canvas.Left="47" Canvas.Top="35" />
+                            <CheckBox Canvas.Left="47" Canvas.Top="65" Content="Allow file browsing" Height="16" Name="checkBox7" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <Grid Canvas.Left="372" Canvas.Top="245"></Grid>
+                            <CheckBox Canvas.Left="355" Canvas.Top="255" Content="Enable javascript engine" Height="16" Name="checkBox11" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="355" Canvas.Top="275" Content="Enable in-room scripting" Height="16" Name="checkBox12" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <ComboBox Canvas.Left="441" Canvas.Top="299" Height="23" Name="comboBox1" Width="118" SelectionChanged="ScriptLevelSelectionChanged">
+                                <ComboBoxItem Content="Moderator" />
+                                <ComboBoxItem Content="Administrator" />
+                                <ComboBoxItem Content="Host" />
+                                <ComboBoxItem Content="Room Owner" />
+                            </ComboBox>
+                            <Label Canvas.Left="350" Canvas.Top="297" Content="Scripting level:" Height="28" Name="label6" />
+                            <Label Canvas.Left="352" Canvas.Top="222" Content="Scripting" Height="28" Name="label7" Background="White" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="129" Height="96" Name="rectangle2" Stroke="Black" Width="229" />
+                            <Label Background="White" Canvas.Left="352" Canvas.Top="115" Content="UDP" Height="28" Name="label8" />
+                            <Rectangle Canvas.Left="10" Canvas.Top="22" Height="310" Name="rectangle3" Stroke="Black" Width="321" />
+                            <Label Background="White" Canvas.Left="20" Canvas.Top="8" Content="Advanced settings" Height="28" Name="label9" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="22" Height="96" Name="rectangle4" Stroke="Black" Width="229" />
+                            <Label Background="White" Canvas.Left="352" Canvas.Top="8" Content="Ban lists" Height="28" Name="label10" />
                         </Canvas>
                     </Border>
                 </Grid>

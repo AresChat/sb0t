@@ -55,6 +55,8 @@ namespace core
         public String CaptchaWord { get; set; }
         public byte[] OrgAvatar { get; set; }
         public uint JoinTime { get; private set; }
+        public bool Idled { get; set; }
+        public ulong IdleStart { get; set; }
 
 
         public Socket Sock { get; set; }
@@ -96,6 +98,8 @@ namespace core
             this.FloodRecord = new core.FloodRecord();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
+
+        public bool Idle { get { return this.Idled; } }
 
         public String CustomName
         {

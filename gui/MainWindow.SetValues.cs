@@ -70,7 +70,15 @@ namespace gui
             //built in admin commands
             this.checkBox10.IsChecked = Settings.Get<bool>("commands");
             this.listView1.IsEnabled = (bool)this.checkBox10.IsChecked;
-
+            //scripting enabled
+            this.checkBox11.IsChecked = Settings.Get<bool>("scripting");
+            //in room scripting
+            this.checkBox12.IsChecked = Settings.Get<bool>("inroom_scripting");
+            this.checkBox12.IsEnabled = (bool)this.checkBox11.IsChecked;
+            //in room level
+            this.comboBox1.IsEnabled = (bool)this.checkBox11.IsChecked;
+            byte b = Settings.Get<byte>("inroom_level");
+            this.comboBox1.SelectedIndex = b == 0 ? 3 : (b - 1);
         }
 
         private String RandomPassword

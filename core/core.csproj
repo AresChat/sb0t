@@ -65,6 +65,7 @@
     <Compile Include="Extensions\ExtensionManager.cs" />
     <Compile Include="FloodControl.cs" />
     <Compile Include="FloodRecord.cs" />
+    <Compile Include="IdleManager.cs" />
     <Compile Include="Prototypes.cs" />
     <Compile Include="Extensions\ExHost.cs" />
     <Compile Include="Extensions\ExUsers.cs" />

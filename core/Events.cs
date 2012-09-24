@@ -452,6 +452,13 @@ namespace core
 
                     return;
                 }
+
+                if (command.StartsWith("idle"))
+                {
+                    IdleManager.Add(client);
+                    Events.Idled(client);
+                    return;
+                }
             }
 
             if (DefaultCommands)
@@ -785,6 +792,36 @@ namespace core
                 try
                 {
                     x.Plugin.Logout(client != null ? client.IUser : null);
+                }
+                catch { }
+            });
+        }
+
+        public static void Idled(IClient client)
+        {
+            if (DefaultCommands)
+                commands.Idled(client != null ? client.IUser : null);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try
+                {
+                    x.Plugin.Idled(client != null ? client.IUser : null);
+                }
+                catch { }
+            });
+        }
+
+        public static void Unidled(IClient client, uint seconds_away)
+        {
+            if (DefaultCommands)
+                commands.Unidled(client != null ? client.IUser : null, seconds_away);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try
+                {
+                    x.Plugin.Unidled(client != null ? client.IUser : null, seconds_away);
                 }
                 catch { }
             });

@@ -88,6 +88,8 @@ namespace core
         /// <summary>Connected</summary>
         bool Connected { get; }
         FloodRecord FloodRecord { get; }
+        bool Idled { get; set; }
+        ulong IdleStart { get; set; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);

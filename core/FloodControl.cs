@@ -72,6 +72,11 @@ namespace core
             last_typer.Clear();
         }
 
+        public static void Remove(IClient client)
+        {
+            last_typer.RemoveAll(x => x.Equals(client.ExternalIP));
+        }
+
         private static List<IPAddress> last_typer { get; set; }
 
         public static bool IsTextFlood(IClient userobj)
