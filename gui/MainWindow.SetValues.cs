@@ -79,6 +79,21 @@ namespace gui
             this.comboBox1.IsEnabled = (bool)this.checkBox11.IsChecked;
             byte b = Settings.Get<byte>("inroom_level");
             this.comboBox1.SelectedIndex = b == 0 ? 3 : (b - 1);
+            //auto ban clear interval
+            int autobanclear = Settings.Get<int>("auto_ban_clear_interval");
+
+            if (autobanclear == 0)
+            {
+                autobanclear = 1;
+                Settings.Set("auto_ban_clear_interval", autobanclear);
+            }
+
+            this.numericUpDown1.Value = autobanclear;
+            //auto ban clear enabled
+            this.checkBox13.IsChecked = Settings.Get<bool>("auto_ban_clear_enabled");
+            //captcha mode
+            this.comboBox2.SelectedIndex = Settings.Get<int>("captcha_mode");
+
         }
 
         private String RandomPassword

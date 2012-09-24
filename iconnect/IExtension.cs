@@ -90,5 +90,7 @@ namespace iconnect
         void Idled(IUser client);
         /// <summary>Server Event</summary>
         void Unidled(IUser client, uint seconds_away);
+        /// <summary>Server Event</summary>
+        void BansAutoCleared();
     }
 }

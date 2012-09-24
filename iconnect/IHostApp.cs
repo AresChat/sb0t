@@ -26,5 +26,7 @@ namespace iconnect
         uint Timestamp { get; }
         /// <summary>Get a user defined minimum admin level for a default command</summary>
         ILevel GetLevel(String command);
+        /// <summary>Clear the ban list</summary>
+        void ClearBans();
     }
 }

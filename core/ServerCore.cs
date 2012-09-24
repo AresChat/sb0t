@@ -111,6 +111,8 @@ namespace core
 
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.FastPing()),
                         x => x.LoggedIn && x.FastPing);
+
+                    BanSystem.AutoClearBans();
                 }
 
                 if (time > (reset_floods_timer + 60000))

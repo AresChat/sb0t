@@ -112,5 +112,11 @@ namespace commands
         {
             return Callback.GetLevel(command);
         }
+
+        /// <summary>Clear the ban list</summary>
+        public static void ClearBans()
+        {
+            Callback.ClearBans();
+        }
     }
 }

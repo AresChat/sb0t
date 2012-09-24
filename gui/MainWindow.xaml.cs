@@ -79,6 +79,7 @@ namespace gui
             this.checkBox11.IsEnabled = !running;
             this.button3.IsEnabled = running;
             this.button4.IsEnabled = running;
+            this.comboBox2.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -179,11 +180,23 @@ namespace gui
             }
             else if (cb.Name == "checkBox12")
                 Settings.Set("inroom_scripting", this.checkBox12.IsChecked);
+            else if (cb.Name == "checkBox13")
+                Settings.Set("auto_ban_clear_enabled", this.checkBox13.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Settings.Set("inroom_level", (byte)this.comboBox1.SelectedIndex + 1);
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, NumericValueChanged e)
+        {
+            Settings.Set("auto_ban_clear_interval", this.numericUpDown1.Value);
+        }
+
+        private void CaptchaModeSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Settings.Set("captcha_mode", this.comboBox2.SelectedIndex);
         }
     }
 }

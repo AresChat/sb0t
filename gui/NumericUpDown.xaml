@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="gui.NumericUpDown"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="24" d:DesignWidth="101" Background="Silver">
+    <Grid Background="Silver">
+        <Canvas Height="23" HorizontalAlignment="Left" Margin="80,0,0,0" Name="canvas1" VerticalAlignment="Top" Width="21" Background="Silver" />
+        <TextBox Focusable="False" TextAlignment="Right" IsReadOnly="True" Height="23" HorizontalAlignment="Left" Name="textBox1" VerticalAlignment="Top" Width="80" BorderBrush="Gray" />
+        <Button Focusable="False" Content="▲" Height="11" HorizontalAlignment="Left" Margin="80,0,0,13" Name="button1" Width="20" Padding="-4" FontSize="8" Click="button1_Click" />
+        <Button Focusable="False" Content="▼" Height="11" HorizontalAlignment="Left" Margin="80,12,0,0" Name="button2" VerticalAlignment="Top" Width="20" Padding="-3" FontSize="8" Click="button2_Click" />
+    </Grid>
+</UserControl>

@@ -37,6 +37,11 @@ namespace core.Extensions
         public IHashlink Hashlinks { get; private set; }
         public String DataPath { get; private set; }
 
+        public void ClearBans()
+        {
+            BanSystem.ClearBans();
+        }
+
         public void WriteLog(String text)
         {
             ServerCore.Log(text);

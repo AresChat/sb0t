@@ -88,6 +88,8 @@ namespace commands
 
         public void Unidled(IUser client, uint seconds_away) { }
 
+        public void BansAutoCleared() { }
+
         public void Command(IUser client, String cmd, IUser target, String args)
         {
             if (cmd.StartsWith("vroom "))

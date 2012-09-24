@@ -826,5 +826,20 @@ namespace core
                 catch { }
             });
         }
+
+        public static void BansAutoCleared()
+        {
+            if (DefaultCommands)
+                commands.BansAutoCleared();
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try
+                {
+                    x.Plugin.BansAutoCleared();
+                }
+                catch { }
+            });
+        }
     }
 }

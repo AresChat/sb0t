@@ -88,8 +88,44 @@ namespace core
             }
         }
 
+        public static void AutoClearBans()
+        {
+            uint time = Helpers.UnixTime;
+
+            if (Settings.Get<bool>("auto_ban_clear_enabled"))
+            {
+                int interval = Settings.Get<int>("auto_ban_clear_interval");
+
+                if (time > (LastAutoCleared + (interval * 3600)))
+                {
+                    LastAutoCleared = time;
+                    ClearBans();
+                    Events.BansAutoCleared();
+                }
+            }
+        }
+
+        public static void ClearBans()
+        {
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                String query = @"delete from bans";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    command.ExecuteNonQuery();
+            }
+
+            list.Clear();
+        }
+
+        private static uint LastAutoCleared { get; set; }
+
         public static void LoadBans()
         {
+            LastAutoCleared = Helpers.UnixTime;
+
             DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Dat";
 
