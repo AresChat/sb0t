@@ -44,6 +44,7 @@ namespace core.ib0t
         public String CaptchaWord { get; set; }
         public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
+        public bool Quarantined { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }
@@ -94,6 +95,13 @@ namespace core.ib0t
 
         public bool Idle { get { return this.Idled; } }
 
+        public void Unquarantine()
+        {
+            this.LoggedIn = false;
+            this.Quarantined = false;
+            Helpers.FakeRejoinSequence(this);
+        }
+
         public String CustomName
         {
             get
@@ -120,27 +128,27 @@ namespace core.ib0t
 
         public void SendEmote(String text)
         {
-            if (!String.IsNullOrEmpty(text))
+            if (!String.IsNullOrEmpty(text) && !this.Quarantined)
             {
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, this.Name, text)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, this.Name, text)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
             }
         }
 
         public void SendText(String text)
         {
-            if (!String.IsNullOrEmpty(text))
+            if (!String.IsNullOrEmpty(text) && !this.Quarantined)
             {
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(this.CustomName) ?
                     TCPOutbound.Public(x, this.Name, text) : TCPOutbound.NoSuch(x, this.CustomName + text)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(this.CustomName) ?
                     ib0t.WebOutbound.PublicTo(x, this.Name, text) : ib0t.WebOutbound.NoSuchTo(x, this.CustomName + text)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name));
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
             }
         }
 
@@ -188,13 +196,16 @@ namespace core.ib0t
                         this._name = value;
                     else
                     {
+                        if (this.Quarantined)
+                            return;
+
                         this.LoggedIn = false;
 
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
-                            x => x.LoggedIn && x.Vroom == this.Vroom);
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
-                            x => x.LoggedIn && x.Vroom == this.Vroom);
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                         this._name = value;
                         Helpers.FakeRejoinSequence(this);
@@ -214,13 +225,16 @@ namespace core.ib0t
                             this._vroom = value;
                         else
                         {
+                            if (this.Quarantined)
+                                return;
+
                             this.LoggedIn = false;
 
                             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
-                                x => x.LoggedIn && x.Vroom == this.Vroom);
+                                x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                             UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
-                                x => x.LoggedIn && x.Vroom == this.Vroom);
+                                x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                             this._vroom = value;
                             Helpers.FakeRejoinSequence(this);
@@ -241,10 +255,10 @@ namespace core.ib0t
                 if (this.LoggedIn)
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                        x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.UpdateTo(x, this.Name, this._level)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom);
+                        x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
                 }
 
                 Events.AdminLevelChanged(this);
@@ -301,16 +315,16 @@ namespace core.ib0t
 
         public void SendDepart()
         {
-            if (this.LoggedIn)
+            if (this.LoggedIn && !this.Quarantined)
             {
                 this.LoggedIn = false;
                 Events.Parting(this);
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom);
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
-                    x => x.LoggedIn && x.Vroom == this.Vroom);
+                    x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                 Events.Parted(this);
             }

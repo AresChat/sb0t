@@ -82,6 +82,7 @@ namespace core
             this.terminate = false;
 
             Extensions.ExtensionManager.Setup();
+            CaptchaManager.Load();
             FloodControl.Reset();
             Stats.Reset();
             UserPool.Build();

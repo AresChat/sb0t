@@ -43,12 +43,19 @@ namespace core
 
                 for (int i = 0; i < AcceptableTypes.Length; i++)
                     if (AcceptableTypes[i].Equals(type))
-                        if (i <= 4 || i == 6)
+                        if (i <= 4)
                         {
                             if (value != null)
                                 return (T)Convert.ChangeType(value, typeof(T));
                             else
                                 return (T)Convert.ChangeType(0, typeof(T));
+                        }
+                        else if (i == 6)
+                        {
+                            if (value != null)
+                                return (T)Convert.ChangeType(value, typeof(T));
+                            else
+                                return default(T);
                         }
                         else if (i == 5)
                         {

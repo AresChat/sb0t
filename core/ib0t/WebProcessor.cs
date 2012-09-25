@@ -86,6 +86,9 @@ namespace core.ib0t
             client.Region = String.Empty;
             client.Captcha = !Settings.Get<bool>("captcha");
 
+            if (!client.Captcha)
+                client.Captcha = CaptchaManager.HasCaptcha(client);
+
             if ((UserPool.AUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count +
                  UserPool.WUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count) > 3)
             {
@@ -140,43 +143,68 @@ namespace core.ib0t
                 throw new Exception("user defined rejection");
             }
 
-            if (hijack == null || !(hijack is AresClient))
+            client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
+
+            if (!client.Quarantined)
             {
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                if (hijack == null || !(hijack is AresClient))
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom);
+                }
+
+                client.LoggedIn = true;
+                client.QueuePacket(WebOutbound.AckTo(client, client.Name));
+                client.QueuePacket(WebOutbound.TopicFirstTo(client, Settings.Get<String>("topic")));
+                client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), ILevel.Host));
+
+                UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
                     x => x.LoggedIn && x.Vroom == client.Vroom);
 
-                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
                     x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                client.QueuePacket(WebOutbound.UserlistEndTo(client));
+                client.QueuePacket(WebOutbound.UrlTo(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
+
+                UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                FloodControl.Remove(client);
+                Events.Joined(client);
+
+                if (client.SocketConnected)
+                    IdleManager.Set(client);
             }
+            else
+            {
+                if (hijack != null && hijack is AresClient)
+                    ((AresClient)hijack).SendDepart();
 
-            client.LoggedIn = true;
-            client.QueuePacket(WebOutbound.AckTo(client, client.Name));
-            client.QueuePacket(WebOutbound.TopicFirstTo(client, Settings.Get<String>("topic")));
-            client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), ILevel.Host));
+                client.LoggedIn = true;
+                client.QueuePacket(WebOutbound.AckTo(client, client.Name));
+                client.QueuePacket(WebOutbound.TopicFirstTo(client, Settings.Get<String>("topic")));
+                client.QueuePacket(WebOutbound.UserlistEndTo(client));
 
-            UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                CaptchaItem cap = Captcha.Create();
+                client.CaptchaWord = cap.Word;
+                Events.CaptchaSending(client);
+                client.QueuePacket(WebOutbound.NoSuchTo(client, String.Empty));
 
-            UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                foreach (String str in cap.Lines)
+                    client.QueuePacket(WebOutbound.NoSuchTo(client, str));
 
-            client.QueuePacket(WebOutbound.UserlistEndTo(client));
-            client.QueuePacket(WebOutbound.UrlTo(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
-
-            UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
-
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
-
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
-
-            FloodControl.Remove(client);
-            Events.Joined(client);
-
-            if (client.SocketConnected)
-                IdleManager.Set(client);
+                client.QueuePacket(WebOutbound.NoSuchTo(client, String.Empty));
+            }
         }
 
         private static void Text(ib0tClient client, String args, ulong time)
@@ -221,6 +249,11 @@ namespace core.ib0t
                     {
                         client.Captcha = true;
                         Events.CaptchaReply(client, text);
+                        CaptchaManager.AddCaptcha(client);
+
+                        if (client.Quarantined)
+                            client.Unquarantine();
+
                         return;
                     }
                 }
@@ -245,11 +278,11 @@ namespace core.ib0t
                     {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
                             TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
                             ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                         Events.TextSent(client, text);
                     }
@@ -290,10 +323,10 @@ namespace core.ib0t
                         if (client.SocketConnected)
                         {
                             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
-                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                             UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
-                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                             Events.EmoteSent(client, text);
                         }

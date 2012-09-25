@@ -93,7 +93,7 @@ namespace gui
             this.checkBox13.IsChecked = Settings.Get<bool>("auto_ban_clear_enabled");
             //captcha mode
             this.comboBox2.SelectedIndex = Settings.Get<int>("captcha_mode");
-
+            this.comboBox2.IsEnabled = (bool)this.checkBox8.IsChecked;
         }
 
         private String RandomPassword

@@ -110,6 +110,7 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Rectangle Canvas.Left="342" Canvas.Top="129" Height="96" Name="rectangle2" Stroke="Black" Width="229" />
                             <Rectangle Canvas.Left="10" Canvas.Top="236" Height="96" Name="rectangle5" Stroke="Black" Width="321" />
                             <Label Background="White" Canvas.Left="20" Canvas.Top="222" Content="Restrictions" Height="28" Name="label12" />
                             <Rectangle Canvas.Left="10" Canvas.Top="22" Height="203" Name="rectangle3" Stroke="Black" Width="321" />
@@ -127,7 +128,6 @@
                             </ComboBox>
                             <Label Canvas.Left="350" Canvas.Top="297" Content="Scripting level:" Height="28" Name="label6" />
                             <Label Canvas.Left="352" Canvas.Top="222" Content="Scripting" Height="28" Name="label7" Background="White" />
-                            <Rectangle Canvas.Left="342" Canvas.Top="129" Height="96" Name="rectangle2" Stroke="Black" Width="229" />
                             <Label Background="White" Canvas.Left="352" Canvas.Top="115" Content="Captcha" Height="28" Name="label8" />
                             <Rectangle Canvas.Left="342" Canvas.Top="22" Height="96" Name="rectangle4" Stroke="Black" Width="229" />
                             <Label Background="White" Canvas.Left="352" Canvas.Top="8" Content="Ban lists" Height="28" Name="label10" />

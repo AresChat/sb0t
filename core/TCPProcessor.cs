@@ -134,6 +134,9 @@ namespace core
 
         private static void DirChatPush(AresClient client, TCPPacketReader packet)
         {
+            if (client.Quarantined)
+                return;
+
             String name = packet.ReadString(client);
 
             if (Encoding.UTF8.GetByteCount(name) < 2)
@@ -159,6 +162,9 @@ namespace core
 
         private static void IgnoreList(AresClient client, TCPPacketReader packet)
         {
+            if (client.Quarantined)
+                return;
+
             bool ignore = (byte)packet != 0;
             String name = packet.ReadString(client);
             IClient target = UserPool.AUsers.Find(x => x.Name == name);
@@ -191,9 +197,6 @@ namespace core
 
         private static void Private(AresClient client, TCPPacketReader packet)
         {
-            if (!client.Captcha)
-                return;
-
             String name = packet.ReadString(client);
             String text = packet.ReadString(client);
             PMEventArgs args = new PMEventArgs { Cancel = false, Text = text };
@@ -210,11 +213,15 @@ namespace core
                     if (text.StartsWith("#"))
                         Command(client, text.Substring(1));
 
-                    Events.BotPrivateSent(client, args.Text);
+                    if (!client.Quarantined)
+                        Events.BotPrivateSent(client, args.Text);
                 }
             }
             else
             {
+                if (!client.Captcha)
+                    return;
+
                 IClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn);
 
                 if (target == null)
@@ -287,6 +294,11 @@ namespace core
                     {
                         client.Captcha = true;
                         Events.CaptchaReply(client, text);
+                        CaptchaManager.AddCaptcha(client);
+
+                        if (client.Quarantined)
+                            client.Unquarantine();
+
                         return;
                     }
                 }
@@ -311,11 +323,11 @@ namespace core
                     {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
                             TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
                             ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                         Events.TextSent(client, text);
                     }
@@ -355,10 +367,10 @@ namespace core
                         if (client.SocketConnected)
                         {
                             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
-                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                             UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
-                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name));
+                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                             Events.EmoteSent(client, text);
                         }
@@ -369,15 +381,21 @@ namespace core
         
         private static void CustomDataAll(AresClient client, TCPPacketReader packet)
         {
+            if (client.Quarantined)
+                return;
+
             String ident = packet.ReadString(client);
             byte[] data = packet;
 
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, client.Name, ident, data)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
         }
 
         private static void CustomData(AresClient client, TCPPacketReader packet)
         {
+            if (client.Quarantined)
+                return;
+
             String ident = packet.ReadString(client);
             String name = packet.ReadString(client);
             byte[] data = packet;
@@ -389,6 +407,9 @@ namespace core
 
         private static void PersonalMessage(AresClient client, TCPPacketReader packet)
         {
+            if (client.Quarantined)
+                return;
+
             String text = packet.ReadString(client);
 
             if (text.Length > 30)
@@ -402,6 +423,9 @@ namespace core
 
         private static void Avatar(AresClient client, TCPPacketReader packet)
         {
+            if (client.Quarantined)
+                return;
+
             byte[] avatar = packet;
 
             if (!client.Avatar.SequenceEqual(avatar))
@@ -445,6 +469,9 @@ namespace core
             client.Region = packet.ReadString(client);
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
             client.Captcha = !Settings.Get<bool>("captcha");
+
+            if (!client.Captcha)
+                client.Captcha = CaptchaManager.HasCaptcha(client);
 
             if (client.Encryption.Mode == EncryptionMode.Encrypted)
             {
@@ -507,64 +534,95 @@ namespace core
                 throw new Exception("user defined rejection");
             }
 
+            client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
+
             if (hijack != null)
                 if (hijack.Cloaked)
                     hijack = null;
 
-            if (hijack == null || !(hijack is AresClient))
+            if (!client.Quarantined)
             {
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                if (hijack == null || !(hijack is AresClient))
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom);
+                }
+
+                client.LoggedIn = true;
+                client.SendPacket(TCPOutbound.Ack(client));
+                client.SendPacket(TCPOutbound.MyFeatures(client));
+                client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Get<String>("topic")));
+                client.SendPacket(TCPOutbound.UserlistBot(client));
+
+                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
                     x => x.LoggedIn && x.Vroom == client.Vroom);
 
-                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
                     x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                client.SendPacket(TCPOutbound.UserListEnd());
+                client.SendPacket(TCPOutbound.OpChange(client));
+                client.SendPacket(TCPOutbound.SupportsVoiceClips());
+                client.SendPacket(TCPOutbound.SupportsCustomEmotes());
+                client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
+                client.SendPacket(TCPOutbound.PersonalMessageBot(client));
+                // send bot avatar
+
+                if (client.CustomClient)
+                    UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
+                        x => x.VoiceChatPrivate || x.VoiceChatPublic);
+
+                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);
+
+                UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0);
+
+                UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom);
+
+                if (client.CustomClient)
+                    UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
+
+                FloodControl.Remove(client);
+
+                if (client.SocketConnected)
+                    IdleManager.Set(client);
+
+                Events.Joined(client);
             }
+            else
+            {
+                if (hijack != null && hijack is AresClient)
+                    ((AresClient)hijack).SendDepart();
 
-            client.LoggedIn = true;
-            client.SendPacket(TCPOutbound.Ack(client));
-            client.SendPacket(TCPOutbound.MyFeatures(client));
-            client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Get<String>("topic")));
-            client.SendPacket(TCPOutbound.UserlistBot(client));
+                client.LoggedIn = true;
+                client.SendPacket(TCPOutbound.Ack(client));
+                client.SendPacket(TCPOutbound.MyFeatures(client));
+                client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Get<String>("topic")));
+                client.SendPacket(TCPOutbound.UserlistBot(client));
+                client.SendPacket(TCPOutbound.UserListEnd());
+                client.SendPacket(TCPOutbound.PersonalMessageBot(client));
+                // send bot avatar
 
-            UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                CaptchaItem cap = Captcha.Create();
+                client.CaptchaWord = cap.Word;
+                Events.CaptchaSending(client);
+                client.SendPacket(TCPOutbound.NoSuch(client, String.Empty));
 
-            UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
+                foreach (String str in cap.Lines)
+                    client.SendPacket(TCPOutbound.NoSuch(client, str));
 
-            client.SendPacket(TCPOutbound.UserListEnd());
-            client.SendPacket(TCPOutbound.OpChange(client));
-            client.SendPacket(TCPOutbound.SupportsVoiceClips());
-            client.SendPacket(TCPOutbound.SupportsCustomEmotes());
-            client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
-            client.SendPacket(TCPOutbound.PersonalMessageBot(client));
-            // send bot avatar
-
-            if (client.CustomClient)
-                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
-                    x => x.VoiceChatPrivate || x.VoiceChatPublic);
-
-            UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);
-
-            UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
-
-            UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0);
-
-            UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
-                x => x.LoggedIn && x.Vroom == client.Vroom);
-
-            if (client.CustomClient)
-                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
-
-            FloodControl.Remove(client);
-            Events.Joined(client);
-
-            if (client.SocketConnected)
-                IdleManager.Set(client);
+                client.SendPacket(TCPOutbound.NoSuch(client, String.Empty));
+                FloodControl.Remove(client);
+            }
         }
 
     }

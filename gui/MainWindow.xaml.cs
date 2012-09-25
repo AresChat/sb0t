@@ -79,7 +79,7 @@ namespace gui
             this.checkBox11.IsEnabled = !running;
             this.button3.IsEnabled = running;
             this.button4.IsEnabled = running;
-            this.comboBox2.IsEnabled = !running;
+            this.comboBox2.IsEnabled = running ? false : (bool)this.checkBox8.IsChecked;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -164,7 +164,10 @@ namespace gui
             else if (cb.Name == "checkBox7")
                 Settings.Set("files", this.checkBox7.IsChecked);
             else if (cb.Name == "checkBox8")
+            {
                 Settings.Set("captcha", this.checkBox8.IsChecked);
+                this.comboBox2.IsEnabled = (bool)this.checkBox8.IsChecked;
+            }
             else if (cb.Name == "checkBox9")
                 Settings.Set("enabled", this.checkBox9.IsChecked, "web");
             else if (cb.Name == "checkBox10")

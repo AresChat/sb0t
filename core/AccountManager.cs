@@ -83,7 +83,6 @@ namespace core
 
         public static void SecureLogin(IClient client, byte[] password)
         {
-            // option to not match guids
             List<IPAddress> addresses = new List<IPAddress>();
             byte[] ext_ip = Settings.Get<byte[]>("ip");
             addresses.Add(IPAddress.Loopback);
@@ -109,6 +108,10 @@ namespace core
                             client.Owner = true;
                             Events.LoginGranted(client);
                             client.Level = ILevel.Host;
+
+                            if (client.Quarantined)
+                                client.Unquarantine();
+
                             ServerCore.Log(client.Name + " logged in with the room owner account");
                             return;
                         }
@@ -129,6 +132,10 @@ namespace core
                             client.Captcha = true;
                             Events.LoginGranted(client);
                             client.Level = a.Level;
+
+                            if (client.Quarantined)
+                                client.Unquarantine();
+
                             ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
                             return;
                         }
@@ -147,7 +154,6 @@ namespace core
 
         public static void Login(IClient client, String password)
         {
-            // option to not match guids
             String owner = Settings.Get<String>("owner");
 
             if (!String.IsNullOrEmpty(owner))
@@ -158,6 +164,10 @@ namespace core
                     client.Owner = true;
                     Events.LoginGranted(client);
                     client.Level = ILevel.Host;
+
+                    if (client.Quarantined)
+                        client.Unquarantine();
+
                     ServerCore.Log(client.Name + " logged in with the room owner account");
                     return;
                 }
@@ -175,6 +185,10 @@ namespace core
                     client.Captcha = true;
                     Events.LoginGranted(client);
                     client.Level = a.Level;
+
+                    if (client.Quarantined)
+                        client.Unquarantine();
+
                     ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
                     return;
                 }

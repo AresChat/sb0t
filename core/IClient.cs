@@ -90,10 +90,12 @@ namespace core
         FloodRecord FloodRecord { get; }
         bool Idled { get; set; }
         ulong IdleStart { get; set; }
+        bool Quarantined { get; set; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);
         /// <summary>Print to this client</summary>
         void Print(object text);
+        void Unquarantine();
     }
 }

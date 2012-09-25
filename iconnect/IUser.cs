@@ -85,6 +85,8 @@ namespace iconnect
         bool Connected { get; }
         /// <summary>Get Idle Status</summary>
         bool Idle { get; }
+        /// <summary>Get Quarantine Status</summary>
+        bool Quarantined { get; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);

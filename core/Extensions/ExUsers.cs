@@ -10,18 +10,18 @@ namespace core.Extensions
     {
         public void All(Action<IUser> action)
         {
-            UserPool.AUsers.ForEachWhere(action, x => x.LoggedIn);
-            UserPool.WUsers.ForEachWhere(action, x => x.LoggedIn);
+            UserPool.AUsers.ForEachWhere(action, x => x.LoggedIn && !x.Quarantined);
+            UserPool.WUsers.ForEachWhere(action, x => x.LoggedIn && !x.Quarantined);
         }
 
         public void Ares(Action<IUser> action)
         {
-            UserPool.AUsers.ForEachWhere(action, x => x.LoggedIn);
+            UserPool.AUsers.ForEachWhere(action, x => x.LoggedIn && !x.Quarantined);
         }
 
         public void Web(Action<IUser> action)
         {
-            UserPool.WUsers.ForEachWhere(action, x => x.LoggedIn);
+            UserPool.WUsers.ForEachWhere(action, x => x.LoggedIn && !x.Quarantined);
         }
 
         public void Records(Action<IRecord> action)

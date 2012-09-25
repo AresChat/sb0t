@@ -9,6 +9,9 @@ namespace core
     {
         public static void Eval(AresClient client, TCPPacket packet, ulong time)
         {
+            if (client.Quarantined)
+                return;
+
             packet.Packet.SkipBytes(2);
             TCPMsg msg = (TCPMsg)(byte)packet.Packet;
 
@@ -80,7 +83,7 @@ namespace core
                     foreach (CustomEmoticon c in x.EmoticonList)
                         client.SendPacket(TCPOutbound.CustomEmoteItem(client, x, c));
                 },
-                x => x.CustomEmoticons);
+                x => x.CustomEmoticons && !x.Quarantined);
             }
         }
 
@@ -98,7 +101,7 @@ namespace core
 
                 if (!client.Cloaked)
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, c)),
-                        x => x.Vroom == client.Vroom && x.CustomEmoticons);
+                        x => x.Vroom == client.Vroom && x.CustomEmoticons && !x.Quarantined);
             }
         }
 
@@ -111,7 +114,7 @@ namespace core
 
                 if (!client.Cloaked)
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteDelete(x, client, shortcut)),
-                        x => x.Vroom == client.Vroom && x.CustomEmoticons);
+                        x => x.Vroom == client.Vroom && x.CustomEmoticons && !x.Quarantined);
             }
         }
 
@@ -122,7 +125,7 @@ namespace core
                 byte[] data = packet;
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatFirst(x, client.Name, data)),
-                    x => x.ID != client.ID && client.VoiceChatPublic);
+                    x => x.ID != client.ID && client.VoiceChatPublic && !x.Quarantined);
             }
         }
 
@@ -151,7 +154,7 @@ namespace core
                 byte[] data = packet;
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatChunk(x, client.Name, data)),
-                    x => x.ID != client.ID && client.VoiceChatPublic);
+                    x => x.ID != client.ID && client.VoiceChatPublic && !x.Quarantined);
             }
         }
 
@@ -229,10 +232,10 @@ namespace core
             if (!client.Cloaked)
             {
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.FontTo(x, client.Name, client.Font.NameColor, client.Font.TextColor)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
             }
         }
 
