@@ -112,6 +112,7 @@ namespace core
                             if (client.Quarantined)
                                 client.Unquarantine();
 
+                            CaptchaManager.AddCaptcha(client);
                             ServerCore.Log(client.Name + " logged in with the room owner account");
                             return;
                         }
@@ -136,6 +137,7 @@ namespace core
                             if (client.Quarantined)
                                 client.Unquarantine();
 
+                            CaptchaManager.AddCaptcha(client);
                             ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
                             return;
                         }
@@ -168,6 +170,7 @@ namespace core
                     if (client.Quarantined)
                         client.Unquarantine();
 
+                    CaptchaManager.AddCaptcha(client);
                     ServerCore.Log(client.Name + " logged in with the room owner account");
                     return;
                 }
@@ -189,6 +192,7 @@ namespace core
                     if (client.Quarantined)
                         client.Unquarantine();
 
+                    CaptchaManager.AddCaptcha(client);
                     ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
                     return;
                 }

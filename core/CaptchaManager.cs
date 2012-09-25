@@ -20,6 +20,9 @@ namespace core
 
         public static void AddCaptcha(IClient client)
         {
+            if (list.Find(x => x.Guid.Equals(client.Guid)) != null)
+                return;
+
             CaptchaRecord record = new CaptchaRecord
             {
                 Guid = client.Guid,
