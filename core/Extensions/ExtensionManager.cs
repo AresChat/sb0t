@@ -40,7 +40,7 @@ namespace core.Extensions
                         Name = name,
                         Plugin = (IExtension)Activator.CreateInstance(
                                  asm.GetType(type.ToString()),
-                                 new ExHost(name + ".dll"))
+                                 new ExHost(name))
                     };
 
                     UnloadPlugin(p.Name);

@@ -19,7 +19,7 @@ namespace core.Extensions
             this.Hashlinks = new ExHashlink();
 
             this.DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-               "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName;
+               "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Extensions";
 
             if (!String.IsNullOrEmpty(datapath))
                 this.DataPath += "\\" + datapath;

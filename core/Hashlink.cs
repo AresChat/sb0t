@@ -7,7 +7,7 @@ using iconnect;
 
 namespace core
 {
-    class Hashlink
+    public class Hashlink
     {
         public static byte[] d67(byte[] data, int b)
         {

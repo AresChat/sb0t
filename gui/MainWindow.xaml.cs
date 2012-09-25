@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Net;
+using System.Diagnostics;
 using core;
 
 namespace gui
@@ -200,6 +202,50 @@ namespace gui
         private void CaptchaModeSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Settings.Set("captcha_mode", this.comboBox2.SelectedIndex);
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e) // open data folder
+        {
+            try
+            {
+                Process.Start(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                    "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName);
+            }
+            catch { }
+        }
+
+        private void button3_Click(object sender, RoutedEventArgs e) // ares join
+        {
+            try
+            {
+                String hashlink = core.Hashlink.EncodeHashlink(new core.Room
+                {
+                    IP = IPAddress.Loopback,
+                    Name = textBox1.Text,
+                    Port = ushort.Parse(textBox2.Text)
+                });
+
+                if (hashlink != null)
+                    Process.Start("arlnk://" + hashlink);
+            }
+            catch { }
+        }
+
+        private void button4_Click(object sender, RoutedEventArgs e) // cbot join
+        {
+            try
+            {
+                String hashlink = core.Hashlink.EncodeHashlink(new core.Room
+                {
+                    IP = IPAddress.Loopback,
+                    Name = textBox1.Text,
+                    Port = ushort.Parse(textBox2.Text)
+                });
+
+                if (hashlink != null)
+                    Process.Start("cb0t://" + hashlink);
+            }
+            catch { }
         }
     }
 }

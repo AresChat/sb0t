@@ -33,9 +33,9 @@
                             <CheckBox Canvas.Left="341" Canvas.Top="135" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="341" Canvas.Top="155" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Button Focusable="False" Background="Silver" Canvas.Left="341" Canvas.Top="216" Content="Start server" Height="23" Name="button1" Width="193" Click="ServerStartStop" />
-                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="247" Content="Open data folder" Height="23" Name="button2" Width="193" />
-                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="273" Content="Ares join" Height="23" Name="button3" Width="95" IsEnabled="False" />
-                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="439" Canvas.Top="273" Content="cb0t join" Height="23" Name="button4" Width="95" IsEnabled="False" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="247" Content="Open data folder" Height="23" Name="button2" Width="193" Click="button2_Click" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="273" Content="Ares join" Height="23" Name="button3" Width="95" IsEnabled="False" Click="button3_Click" />
+                            <Button Focusable="False" Background="Gainsboro" Canvas.Left="439" Canvas.Top="273" Content="cb0t join" Height="23" Name="button4" Width="95" IsEnabled="False" Click="button4_Click" />
                             <Label Canvas.Left="4" Canvas.Bottom="4" Content="Status:  Server stopped." Height="28" Name="statusLabel" FontWeight="Bold" />
                             <CheckBox Canvas.Left="341" Canvas.Top="175" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>

@@ -7,7 +7,7 @@ using iconnect;
 
 namespace core
 {
-    class Room : IHashlinkRoom
+    public class Room : IHashlinkRoom
     {
         public String Name { get; set; }
         public ushort Port { get; set; }
