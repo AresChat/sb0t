@@ -16,6 +16,10 @@ namespace iconnect
         NameInUse,
         /// <summary>You are banned from this chatroom</summary>
         Banned,
+        /// <summary>You are too young to use this chatroom</summary>
+        UnderAge,
+        /// <summary>Your gender is not accepted in this chatroom</summary>
+        UnacceptableGender,
         /// <summary>An extension or script is preventing you from joining</summary>
         UserDefined
     }

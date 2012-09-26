@@ -308,6 +308,8 @@ namespace core.ib0t
             catch { }
             try { this.Sock.Close(); }
             catch { }
+            try { this.Sock.Dispose(); }
+            catch { }
 
             this.SocketConnected = false;
             this.SendDepart();

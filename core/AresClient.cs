@@ -477,6 +477,8 @@ namespace core
             catch { }
             try { this.Sock.Close(); }
             catch { }
+            try { this.Sock.Dispose(); }
+            catch { }
 
             this.SocketConnected = false;
 

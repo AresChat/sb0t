@@ -525,6 +525,26 @@ namespace core
                 throw new Exception("banned user");
             }
 
+            if (Settings.Get<bool>("age_restrict"))
+                if (client.Age > 0)
+                    if ((byte)Settings.Get<int>("age_restrict_value") > client.Age)
+                    {
+                        if (hijack != null && hijack is AresClient)
+                            ((AresClient)hijack).SendDepart();
+
+                        Events.Rejected(client, RejectedMsg.UnderAge);
+                        throw new Exception("under aged user");
+                    }
+
+            if (Helpers.IsUnacceptableGender(client))
+            {
+                if (hijack != null && hijack is AresClient)
+                    ((AresClient)hijack).SendDepart();
+
+                Events.Rejected(client, RejectedMsg.UnacceptableGender);
+                throw new Exception("unacceptable gender");
+            }
+
             if (!Events.Joining(client))
             {
                 if (hijack != null && hijack is AresClient)

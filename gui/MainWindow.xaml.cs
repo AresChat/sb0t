@@ -187,6 +187,17 @@ namespace gui
                 Settings.Set("inroom_scripting", this.checkBox12.IsChecked);
             else if (cb.Name == "checkBox13")
                 Settings.Set("auto_ban_clear_enabled", this.checkBox13.IsChecked);
+            else if (cb.Name == "checkBox17")
+            {
+                Settings.Set("age_restrict", this.checkBox17.IsChecked);
+                this.numericUpDown2.IsEnabled = (bool)this.checkBox17.IsChecked;
+            }
+            else if (cb.Name == "checkBox15")
+                Settings.Set("reject_male", this.checkBox15.IsChecked);
+            else if (cb.Name == "checkBox14")
+                Settings.Set("reject_female", this.checkBox14.IsChecked);
+            else if (cb.Name == "checkBox16")
+                Settings.Set("reject_unknown", this.checkBox16.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -246,6 +257,11 @@ namespace gui
                     Process.Start("cb0t://" + hashlink);
             }
             catch { }
+        }
+
+        private void numericUpDown2_ValueChanged(object sender, NumericValueChanged e)
+        {
+            Settings.Set("age_restrict_value", this.numericUpDown2.Value);
         }
     }
 }

@@ -10,6 +10,21 @@ namespace core
 {
     class Helpers
     {
+        public static bool IsUnacceptableGender(IClient client)
+        {
+            switch (client.Sex)
+            {
+                case 2:
+                    return Settings.Get<bool>("reject_female");
+
+                case 1:
+                    return Settings.Get<bool>("reject_male");
+
+                default:
+                    return Settings.Get<bool>("reject_unknown");
+            }
+        }
+
         public static void FormatUsername(IClient client)
         {
             if (client.OrgName == Settings.Get<String>("bot"))

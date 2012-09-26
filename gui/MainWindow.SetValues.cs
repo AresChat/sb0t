@@ -94,6 +94,25 @@ namespace gui
             //captcha mode
             this.comboBox2.SelectedIndex = Settings.Get<int>("captcha_mode");
             this.comboBox2.IsEnabled = (bool)this.checkBox8.IsChecked;
+            //enable age restriction
+            this.checkBox17.IsChecked = Settings.Get<bool>("age_restrict");
+            //age restriction
+            int age = Settings.Get<int>("age_restrict_value");
+
+            if (age == 0)
+            {
+                age = 18;
+                Settings.Set("age_restrict_value", age);
+            }
+
+            this.numericUpDown2.Value = age;
+            this.numericUpDown2.IsEnabled = (bool)this.checkBox17.IsChecked;
+            //male users
+            this.checkBox15.IsChecked = Settings.Get<bool>("reject_male");
+            //female users
+            this.checkBox14.IsChecked = Settings.Get<bool>("reject_female");
+            //unknown users
+            this.checkBox16.IsChecked = Settings.Get<bool>("reject_unknown");
         }
 
         private String RandomPassword
