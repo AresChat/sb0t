@@ -41,14 +41,24 @@ namespace gui
             String str = "";
 
             if (!String.IsNullOrEmpty(e.Message))
-           //     MessageBox.Show(DateTime.Now + " log: " + e.Message);
                 str = e.Message;
 
             if (e.Error != null)
-                //MessageBox.Show(DateTime.Now + " error: " + e.Error.Message + "\n" + e.Error.StackTrace);*/
                 str += "\r\n" + e.Error.Message + "\r\n" + e.Error.StackTrace;
 
-            try { File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "log.txt", str); }
+            try
+            {
+                String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+                    + "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName;
+
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+
+                path += "\\serverlog.txt";
+
+                using (StreamWriter writer = File.Exists(path) ? File.AppendText(path) : File.CreateText(path))
+                    writer.WriteLine(DateTime.UtcNow + " " + str);
+            }
             catch { }
         }
 
