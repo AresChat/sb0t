@@ -41,9 +41,6 @@ namespace core
         
         public bool Open()
         {
-            Settings.Set("language", (byte)10);
-            Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
-
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
             
             try
@@ -56,7 +53,7 @@ namespace core
                 return false;
             }
 
-            LogUpdate(this, new ServerLogEventArgs { Message = "Server initialized" });
+            LogUpdate(this, new ServerLogEventArgs { Message = "Server initialized on port " + ((IPEndPoint)this.tcp.LocalEndpoint).Port });
             this.thread = new Thread(new ThreadStart(this.ServerThread));
             this.thread.Start();
             this.Running = true;
@@ -244,7 +241,12 @@ namespace core
                             catch (Exception e)
                             {
                                 client.Disconnect();
-                                Log("packet read fail from " + client.ID + " " + packet.Msg, e);
+
+                                if (packet.Msg != TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL)
+                                    Log("packet read fail from " + client.ID + " " + packet.Msg, e);
+                                else
+                                    Log("packet read fail from " + client.ID + " " + (TCPMsg)packet.Packet.ToArray()[2], e);
+                                
                                 break;
                             }
 

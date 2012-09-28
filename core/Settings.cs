@@ -35,6 +35,12 @@ namespace core
 
             RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + subpath);
 
+            if (key == null)
+            {
+                Registry.CurrentUser.CreateSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + subpath);
+                key = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + subpath);
+            }
+
             if (key != null)
             {
                 object value = key.GetValue(name);

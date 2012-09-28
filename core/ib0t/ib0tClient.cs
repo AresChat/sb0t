@@ -362,7 +362,7 @@ namespace core.ib0t
             int received = 0;
             SocketError e = SocketError.Success;
 
-            try { received = this.Sock.Receive(buffer, 0, this.Sock.Available, SocketFlags.None, out e); }
+            try { received = this.Sock.Receive(buffer, 0, buffer.Length, SocketFlags.None, out e); }
             catch { }
 
             if (received == 0)

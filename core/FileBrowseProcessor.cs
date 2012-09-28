@@ -152,6 +152,10 @@ namespace core
                     case 15:
                         file.FileName = Encoding.UTF8.GetString(packet.ReadBytes(length));
                         break;
+
+                    default:
+                        packet.SkipBytes(length);
+                        break;
                 }
 
                 counter += 2;

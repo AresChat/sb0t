@@ -38,11 +38,18 @@ namespace gui
 
         private void LogUpdate(object sender, ServerLogEventArgs e)
         {
-            /*if (!String.IsNullOrEmpty(e.Message))
-                MessageBox.Show(DateTime.Now + " log: " + e.Message);
+            String str = "";
+
+            if (!String.IsNullOrEmpty(e.Message))
+           //     MessageBox.Show(DateTime.Now + " log: " + e.Message);
+                str = e.Message;
 
             if (e.Error != null)
-                MessageBox.Show(DateTime.Now + " error: " + e.Error.Message + "\n" + e.Error.StackTrace);*/
+                //MessageBox.Show(DateTime.Now + " error: " + e.Error.Message + "\n" + e.Error.StackTrace);*/
+                str += "\r\n" + e.Error.Message + "\r\n" + e.Error.StackTrace;
+
+            try { File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "log.txt", str); }
+            catch { }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -68,6 +75,7 @@ namespace gui
             this.textBox1.IsEnabled = !running;
             this.textBox2.IsEnabled = !running;
             this.textBox3.IsEnabled = !running;
+            this.textBox5.IsEnabled = !running;
             this.checkBox1.IsEnabled = !running;
             this.checkBox2.IsEnabled = !running;
             this.checkBox3.IsEnabled = !running;
@@ -82,6 +90,7 @@ namespace gui
             this.button3.IsEnabled = running;
             this.button4.IsEnabled = running;
             this.comboBox2.IsEnabled = running ? false : (bool)this.checkBox8.IsChecked;
+            this.comboBox3.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -136,13 +145,20 @@ namespace gui
             {
                 ushort u;
 
-                if (ushort.TryParse(this.textBox3.Text, out u))
+                if (ushort.TryParse(this.textBox2.Text, out u))
                     Settings.Set("port", u);
             }
             else if (tb.Name == "textBox3")
                 Settings.Set("bot", this.textBox3.Text);
             else if (tb.Name == "textBox4" && textBox4.Text.Length > 0)
                 Settings.Set("owner", this.textBox4.Text);
+            else if (tb.Name == "textBox5")
+            {
+                Uri uri;
+
+                if (Uri.TryCreate(this.textBox5.Text, UriKind.Absolute, out uri))
+                    Settings.Set("url", this.textBox5.Text, "web");
+            }
         }
 
         private void CheckBoxChecked(object sender, RoutedEventArgs e)
@@ -198,6 +214,8 @@ namespace gui
                 Settings.Set("reject_female", this.checkBox14.IsChecked);
             else if (cb.Name == "checkBox16")
                 Settings.Set("reject_unknown", this.checkBox16.IsChecked);
+            else if (cb.Name == "checkBox18")
+                Settings.Set("full_scribble", this.checkBox18.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -262,6 +280,11 @@ namespace gui
         private void numericUpDown2_ValueChanged(object sender, NumericValueChanged e)
         {
             Settings.Set("age_restrict_value", this.numericUpDown2.Value);
+        }
+
+        private void comboBox3_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Settings.Set("language", this.ComboBoxLanguageToAresLanguage(this.comboBox3.SelectedIndex));
         }
     }
 }

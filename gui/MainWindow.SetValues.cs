@@ -17,14 +17,20 @@ namespace gui
             u = Settings.Get<ushort>("port");
 
             if (u == 0)
+            {
                 u = 54321;
+                Settings.Set("port", u);
+            }
 
             this.textBox2.Text = u.ToString();
             //name
             str = Settings.Get<String>("name");
 
             if (String.IsNullOrEmpty(str))
+            {
                 str = "my chatroom";
+                Settings.Set("name", str);
+            }
 
             this.textBox1.Text = str;
             //bot
@@ -113,6 +119,20 @@ namespace gui
             this.checkBox14.IsChecked = Settings.Get<bool>("reject_female");
             //unknown users
             this.checkBox16.IsChecked = Settings.Get<bool>("reject_unknown");
+            //ib0t push
+            String ib = Settings.Get<String>("url", "web");
+
+            if (String.IsNullOrEmpty(ib))
+            {
+                ib = "http://chatrooms.marsproject.net/ibot.aspx";
+                Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
+            }
+
+            this.textBox5.Text = ib;
+            //full scribble
+            this.checkBox18.IsChecked = Settings.Get<bool>("full_scribble");
+            //preferred language
+            this.comboBox3.SelectedIndex = this.AresLanguageToComboBoxLangauge();
         }
 
         private String RandomPassword
@@ -127,6 +147,68 @@ namespace gui
                     result += letters[(int)Math.Floor(rnd.NextDouble() * letters.Length)];
 
                 return result;
+            }
+        }
+
+        private byte ComboBoxLanguageToAresLanguage(int index)
+        {
+            switch (index)
+            {
+                case 0: return 11;
+                case 1: return 12;
+                case 2: return 14;
+                case 3: return 15;
+                case 4: return 16;
+                case 5: return 10;
+                case 6: return 27;
+                case 7: return 28;
+                case 8: return 29;
+                case 9: return 30;
+                case 10: return 17;
+                case 11: return 19;
+                case 12: return 20;
+                case 13: return 21;
+                case 14: return 31;
+                case 15: return 22;
+                case 16: return 23;
+                case 17: return 25;
+                case 18: return 26;
+                default: return 10;
+            }
+        }
+
+        private int AresLanguageToComboBoxLangauge()
+        {
+            byte lang = Settings.Get<byte>("language");
+
+            if (lang == 0)
+            {
+                Settings.Set("language", (byte)10);
+                lang = 10;
+            }
+
+            switch (lang)
+            {
+                case 11: return 0;
+                case 12: return 1;
+                case 14: return 2;
+                case 15: return 3;
+                case 16: return 4;
+                case 10: return 5;
+                case 27: return 6;
+                case 28: return 7;
+                case 29: return 8;
+                case 30: return 9;
+                case 17: return 10;
+                case 19: return 11;
+                case 20: return 12;
+                case 21: return 13;
+                case 31: return 14;
+                case 22: return 15;
+                case 23: return 16;
+                case 25: return 17;
+                case 26: return 18;
+                default: return 5;
             }
         }
     }
