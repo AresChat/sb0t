@@ -52,6 +52,7 @@
     <Compile Include="Account.cs" />
     <Compile Include="AccountManager.cs" />
     <Compile Include="AresClient.cs" />
+    <Compile Include="Avatars.cs" />
     <Compile Include="Ban.cs" />
     <Compile Include="BanSystem.cs" />
     <Compile Include="CaptchaManager.cs" />

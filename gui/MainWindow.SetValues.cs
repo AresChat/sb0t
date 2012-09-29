@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
+using System.IO;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using core;
 
 namespace gui
@@ -44,12 +49,6 @@ namespace gui
             this.checkBox1.IsChecked = Settings.Get<bool>("logging");
             //custom emoticons
             this.checkBox2.IsChecked = Settings.Get<bool>("emotes");
-            //auto start
-            this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
-
-            if ((bool)this.checkBox3.IsChecked)
-                this.ServerStartStop(null, null);
-
             //auto load - TO DO
             this.checkBox4.IsChecked = Settings.Get<bool>("autoload");
             //udp - TO DO
@@ -133,6 +132,76 @@ namespace gui
             this.checkBox18.IsChecked = Settings.Get<bool>("full_scribble");
             //preferred language
             this.comboBox3.SelectedIndex = this.AresLanguageToComboBoxLangauge();
+            //local host - TO DO
+            this.checkBox19.IsChecked = Settings.Get<bool>("local_host");
+            //udp address - TO DO
+            byte[] udp = Settings.Get<byte[]>("udp_address");
+
+            if (udp == null)
+            {
+                udp = IPAddress.Any.GetAddressBytes();
+                Settings.Set("udp_address", udp);
+            }
+
+            this.textBox6.Text = new IPAddress(udp).ToString();
+            //server avatar
+            try
+            {
+                String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                  "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Avatars\\server";
+
+                if (File.Exists(path))
+                {
+                    RenderTargetBitmap resizedImage = this.FileToSizedImageSource(path, 90, 90);
+                    this.image1.Source = resizedImage;
+                    byte[] data = this.BitmapSourceToArray(resizedImage);
+                    Avatars.UpdateServerAvatar(data);
+                }
+            }
+            catch { }
+            //auto start
+            this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
+
+            if ((bool)this.checkBox3.IsChecked)
+                this.ServerStartStop(null, null);
+        }
+
+        private RenderTargetBitmap FileToSizedImageSource(String file, int width, int height)
+        {
+            byte[] data = File.ReadAllBytes(file);
+            RenderTargetBitmap resizedImage = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Default);
+
+            using (MemoryStream ms = new MemoryStream(data))
+            {
+                BitmapImage img = new BitmapImage();
+                img.BeginInit();
+                img.StreamSource = ms;
+                img.EndInit();
+                Rect rect = new Rect(0, 0, width, height);
+                DrawingVisual drawingVisual = new DrawingVisual();
+
+                using (DrawingContext drawingContext = drawingVisual.RenderOpen())
+                    drawingContext.DrawImage(img, rect);
+
+                resizedImage.Render(drawingVisual);
+            }
+
+            return resizedImage;
+        }
+
+        private byte[] BitmapSourceToArray(BitmapSource img)
+        {
+            byte[] result;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(img));
+                encoder.Save(ms);
+                result = ms.ToArray();
+            }
+
+            return result;
         }
 
         private String RandomPassword

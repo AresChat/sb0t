@@ -170,12 +170,13 @@
                                 <ComboBoxItem Content="Turkish" />
                             </ComboBox>
                             <TextBox Canvas.Left="26" Canvas.Top="139" Height="23" Name="textBox5" Width="290" TextChanged="TextBoxTextChanged" />
-                            <TextBox Canvas.Left="26" Canvas.Top="183" Height="23" Name="textBox6" Width="120" />
+                            <TextBox Canvas.Left="26" Canvas.Top="183" Height="23" Name="textBox6" Width="120" TextChanged="TextBoxTextChanged" />
                             <CheckBox Canvas.Left="26" Canvas.Top="66" Content="Enable full room scribbles" Height="16" Name="checkBox18" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="26" Canvas.Top="86" Content="Local clients auto login" Height="16" Name="checkBox19" />
+                            <CheckBox Canvas.Left="26" Canvas.Top="86" Content="Local clients auto login" Height="16" Name="checkBox19" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Label Canvas.Left="21" Canvas.Top="115" Content="ib0t channel list receiver script:" Height="28" Name="label16" />
                             <Label Canvas.Left="21" Canvas.Top="161" Content="UDP host address:" Height="28" Name="label17" />
                             <Label Canvas.Left="191" Canvas.Top="161" Content="Preferred language:" Height="28" Name="label18" />
+                            <Label Content="hours" Height="28" Name="label19" Canvas.Left="470" Canvas.Top="67" />
                         </Canvas>
                     </Border>
                 </Grid>
@@ -194,7 +195,14 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
-                            <Label Canvas.Left="10" Canvas.Top="10" Content="avatars tab" Height="28" />
+                            <Image Canvas.Left="123" Canvas.Top="81" Height="90" Name="image1" Stretch="Fill" Width="90" />
+                            <Rectangle Canvas.Left="123" Canvas.Top="81" Height="90" Name="rectangle7" Stroke="Silver" Width="90" />
+                            <Rectangle Canvas.Left="343" Canvas.Top="81" Height="90" Name="rectangle8" Stroke="Silver" Width="90" />
+                            <Image Canvas.Left="343" Canvas.Top="81" Height="90" Name="image2" Stretch="Fill" Width="90" />
+                            <Label Canvas.Left="118" Canvas.Top="58" Content="Server avatar:" Height="28" Name="label20" />
+                            <Label Canvas.Left="338" Canvas.Top="58" Content="Default avatar:" Height="28" Name="label21" />
+                            <Button Canvas.Left="123" Canvas.Top="193" Content="Update" Focusable="False" Height="23" Name="button5" Width="90" Click="button5_Click" />
+                            <Button Canvas.Left="343" Canvas.Top="193" Content="Update" Focusable="False" Height="23" Name="button6" Width="90" />
                         </Canvas>
                     </Border>
                 </Grid>

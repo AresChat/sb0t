@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
+using Microsoft.Win32;
 using core;
 
 namespace gui
@@ -27,6 +28,8 @@ namespace gui
 
         private bool do_once = true;
         private ServerCore server { get; set; }
+
+        private OpenFileDialog fd = new OpenFileDialog();
 
         public MainWindow()
         {
@@ -86,6 +89,7 @@ namespace gui
             this.textBox2.IsEnabled = !running;
             this.textBox3.IsEnabled = !running;
             this.textBox5.IsEnabled = !running;
+            this.textBox6.IsEnabled = !running;
             this.checkBox1.IsEnabled = !running;
             this.checkBox2.IsEnabled = !running;
             this.checkBox3.IsEnabled = !running;
@@ -169,6 +173,13 @@ namespace gui
                 if (Uri.TryCreate(this.textBox5.Text, UriKind.Absolute, out uri))
                     Settings.Set("url", this.textBox5.Text, "web");
             }
+            else if (tb.Name == "textBox6")
+            {
+                IPAddress ip;
+
+                if (IPAddress.TryParse(this.textBox6.Text, out ip))
+                    Settings.Set("udp_address", ip.GetAddressBytes());
+            }
         }
 
         private void CheckBoxChecked(object sender, RoutedEventArgs e)
@@ -226,6 +237,8 @@ namespace gui
                 Settings.Set("reject_unknown", this.checkBox16.IsChecked);
             else if (cb.Name == "checkBox18")
                 Settings.Set("full_scribble", this.checkBox18.IsChecked);
+            else if (cb.Name == "checkBox19")
+                Settings.Set("local_host", this.checkBox19.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -295,6 +308,31 @@ namespace gui
         private void comboBox3_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Settings.Set("language", this.ComboBoxLanguageToAresLanguage(this.comboBox3.SelectedIndex));
+        }
+
+        private void button5_Click(object sender, RoutedEventArgs e)
+        {
+            fd.Filter = "Image files (*.bmp, *.jpg)|*.bmp;*.jpg";
+            fd.Multiselect = false;
+
+            if ((bool)fd.ShowDialog())
+            {
+                try
+                {
+                    RenderTargetBitmap resizedImage = this.FileToSizedImageSource(fd.FileName, 90, 90);
+                    this.image1.Source = resizedImage;
+                    byte[] data = this.BitmapSourceToArray(resizedImage);
+                    String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                      "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Avatars";
+
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    File.WriteAllBytes(path + "\\server", data);
+                    Avatars.UpdateServerAvatar(data);
+                }
+                catch { }
+            }
         }
     }
 }
