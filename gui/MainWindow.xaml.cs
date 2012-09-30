@@ -334,5 +334,30 @@ namespace gui
                 catch { }
             }
         }
+
+        private void button6_Click(object sender, RoutedEventArgs e)
+        {
+            fd.Filter = "Image files (*.bmp, *.jpg)|*.bmp;*.jpg";
+            fd.Multiselect = false;
+
+            if ((bool)fd.ShowDialog())
+            {
+                try
+                {
+                    RenderTargetBitmap resizedImage = this.FileToSizedImageSource(fd.FileName, 90, 90);
+                    this.image2.Source = resizedImage;
+                    byte[] data = this.BitmapSourceToArray(resizedImage);
+                    String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                      "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Avatars";
+
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    File.WriteAllBytes(path + "\\default", data);
+                    Avatars.UpdateDefaultAvatar(data);
+                }
+                catch { }
+            }
+        }
     }
 }

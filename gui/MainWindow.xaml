@@ -195,14 +195,14 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Image Canvas.Left="343" Canvas.Top="81" Height="90" Name="image2" Stretch="Fill" Width="90" />
                             <Image Canvas.Left="123" Canvas.Top="81" Height="90" Name="image1" Stretch="Fill" Width="90" />
                             <Rectangle Canvas.Left="123" Canvas.Top="81" Height="90" Name="rectangle7" Stroke="Silver" Width="90" />
                             <Rectangle Canvas.Left="343" Canvas.Top="81" Height="90" Name="rectangle8" Stroke="Silver" Width="90" />
-                            <Image Canvas.Left="343" Canvas.Top="81" Height="90" Name="image2" Stretch="Fill" Width="90" />
                             <Label Canvas.Left="118" Canvas.Top="58" Content="Server avatar:" Height="28" Name="label20" />
                             <Label Canvas.Left="338" Canvas.Top="58" Content="Default avatar:" Height="28" Name="label21" />
                             <Button Canvas.Left="123" Canvas.Top="193" Content="Update" Focusable="False" Height="23" Name="button5" Width="90" Click="button5_Click" />
-                            <Button Canvas.Left="343" Canvas.Top="193" Content="Update" Focusable="False" Height="23" Name="button6" Width="90" />
+                            <Button Canvas.Left="343" Canvas.Top="193" Content="Update" Focusable="False" Height="23" Name="button6" Width="90" Click="button6_Click" />
                         </Canvas>
                     </Border>
                 </Grid>

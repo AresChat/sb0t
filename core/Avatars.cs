@@ -24,7 +24,7 @@ namespace core
 
         public static void UpdateDefaultAvatar(byte[] data)
         {
-
+            default_avatar = Scale(data);
         }
 
         internal static byte[] Server(AresClient client)
@@ -33,6 +33,26 @@ namespace core
                 return TCPOutbound.BotAvatarCleared(client);
             else
                 return TCPOutbound.BotAvatar(client, server_avatar);
+        }
+
+        public static void CheckAvatars(ulong time)
+        {
+            if (default_avatar == null)
+                return;
+
+            UserPool.AUsers.ForEachWhere(x => { x.Avatar = default_avatar; x.AvatarReceived = true; },
+                x => !x.AvatarReceived && time > (x.AvatarTimeout + 10000));
+        }
+
+        private static byte[] Default
+        {
+            get
+            {
+                if (default_avatar == null)
+                    return new byte[] { };
+                else
+                    return default_avatar;
+            }
         }
 
         private static byte[] Scale(byte[] raw)

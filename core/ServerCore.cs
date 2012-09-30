@@ -111,6 +111,7 @@ namespace core
                         x => x.LoggedIn && x.FastPing);
 
                     BanSystem.AutoClearBans();
+                    Avatars.CheckAvatars(time);
                 }
 
                 if (time > (reset_floods_timer + 60000))

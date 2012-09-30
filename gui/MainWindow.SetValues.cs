@@ -159,6 +159,21 @@ namespace gui
                 }
             }
             catch { }
+            //default avatar
+            try
+            {
+                String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                  "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Avatars\\default";
+
+                if (File.Exists(path))
+                {
+                    RenderTargetBitmap resizedImage = this.FileToSizedImageSource(path, 90, 90);
+                    this.image2.Source = resizedImage;
+                    byte[] data = this.BitmapSourceToArray(resizedImage);
+                    Avatars.UpdateDefaultAvatar(data);
+                }
+            }
+            catch { }
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
 

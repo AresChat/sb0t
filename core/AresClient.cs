@@ -62,6 +62,8 @@ namespace core
         public Socket Sock { get; set; }
         public bool HasSecureLoginAttempted { get; set; }
         public FloodRecord FloodRecord { get; private set; }
+        public bool AvatarReceived { get; set; }
+        public ulong AvatarTimeout { get; set; }
 
         private List<byte> data_in = new List<byte>();
         private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
@@ -96,6 +98,7 @@ namespace core
             this.Captcha = !Settings.Get<bool>("captcha");
             this.JoinTime = Helpers.UnixTime;
             this.FloodRecord = new core.FloodRecord();
+            this.AvatarTimeout = time;
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 

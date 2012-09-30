@@ -439,6 +439,7 @@ namespace core
                         {
                             client.OrgAvatar = avatar;
                             client.Avatar = avatar;
+                            client.AvatarReceived = true;
                         }
         }
 
