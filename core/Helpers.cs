@@ -217,7 +217,7 @@ namespace core
                 client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
             }
 
-            // send bot avatar
+            client.SendPacket(Avatars.Server(client));
             client.SendPacket(TCPOutbound.PersonalMessageBot(client));
 
             if (client.CustomClient)

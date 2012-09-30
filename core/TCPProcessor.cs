@@ -593,7 +593,7 @@ namespace core
                 client.SendPacket(TCPOutbound.SupportsCustomEmotes());
                 client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
                 client.SendPacket(TCPOutbound.PersonalMessageBot(client));
-                // send bot avatar
+                client.SendPacket(Avatars.Server(client));
 
                 if (client.CustomClient)
                     UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
@@ -634,7 +634,7 @@ namespace core
                 client.SendPacket(TCPOutbound.UserlistBot(client));
                 client.SendPacket(TCPOutbound.UserListEnd());
                 client.SendPacket(TCPOutbound.PersonalMessageBot(client));
-                // send bot avatar
+                client.SendPacket(Avatars.Server(client));
 
                 CaptchaItem cap = Captcha.Create();
                 client.CaptchaWord = cap.Word;

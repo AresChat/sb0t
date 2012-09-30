@@ -157,6 +157,21 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_AVATAR);
         }
 
+        public static byte[] BotAvatarCleared(AresClient client)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, Settings.Get<String>("bot"));
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_AVATAR);
+        }
+
+        public static byte[] BotAvatar(AresClient client, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(client, Settings.Get<String>("bot"));
+            packet.WriteBytes(data);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_AVATAR);
+        }
+
         public static byte[] PersonalMessage(AresClient client, IClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
