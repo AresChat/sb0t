@@ -135,7 +135,7 @@ namespace core
                 }
 
                 Events.CycleTick();
-                Thread.Sleep(35);
+                Thread.Sleep(25);
             }
         }
 

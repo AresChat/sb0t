@@ -25,6 +25,7 @@ namespace core
         public static void UpdateDefaultAvatar(byte[] data)
         {
             default_avatar = Scale(data);
+            UserPool.AUsers.ForEachWhere(x => x.Avatar = default_avatar, x => x.DefaultAvatar);
         }
 
         internal static byte[] Server(AresClient client)
@@ -40,7 +41,7 @@ namespace core
             if (default_avatar == null)
                 return;
 
-            UserPool.AUsers.ForEachWhere(x => { x.Avatar = default_avatar; x.AvatarReceived = true; },
+            UserPool.AUsers.ForEachWhere(x => { x.Avatar = default_avatar; x.AvatarReceived = true; x.DefaultAvatar = true; },
                 x => !x.AvatarReceived && time > (x.AvatarTimeout + 10000));
         }
 

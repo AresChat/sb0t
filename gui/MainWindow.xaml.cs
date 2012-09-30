@@ -312,7 +312,7 @@ namespace gui
 
         private void button5_Click(object sender, RoutedEventArgs e)
         {
-            fd.Filter = "Image files (*.bmp, *.jpg)|*.bmp;*.jpg";
+            fd.Filter = "Image files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png";
             fd.Multiselect = false;
 
             if ((bool)fd.ShowDialog())
@@ -337,7 +337,7 @@ namespace gui
 
         private void button6_Click(object sender, RoutedEventArgs e)
         {
-            fd.Filter = "Image files (*.bmp, *.jpg)|*.bmp;*.jpg";
+            fd.Filter = "Image files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png";
             fd.Multiselect = false;
 
             if ((bool)fd.ShowDialog())

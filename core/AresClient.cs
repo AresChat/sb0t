@@ -64,6 +64,7 @@ namespace core
         public FloodRecord FloodRecord { get; private set; }
         public bool AvatarReceived { get; set; }
         public ulong AvatarTimeout { get; set; }
+        public bool DefaultAvatar { get; set; }
 
         private List<byte> data_in = new List<byte>();
         private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
