@@ -8,12 +8,12 @@ using iconnect;
 
 namespace core.Extensions
 {
-    class ExtensionManager
+    public class ExtensionManager
     {
         private static String DataPath { get; set; }
         private static ConcurrentDictionary<String, ExPlugin> list { get; set; }
 
-        public static List<ExPlugin> Plugins
+        internal static List<ExPlugin> Plugins
         {
             get { return list.Values.ToList(); }
         }
@@ -21,14 +21,21 @@ namespace core.Extensions
         public static void Setup()
         {
             list = new ConcurrentDictionary<String, ExPlugin>();
-            DataPath = AppDomain.CurrentDomain.BaseDirectory;
+
+            DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+               "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Extensions";
+
+            if (!Directory.Exists(DataPath))
+                Directory.CreateDirectory(DataPath);
+
+            DataPath += "\\";
         }
 
         public static bool LoadPlugin(String name)
         {
             try
             {
-                Assembly asm = Assembly.Load(File.ReadAllBytes(DataPath + name + ".dll"));
+                Assembly asm = Assembly.Load(File.ReadAllBytes(DataPath + name + "\\extension.dll"));
 
                 Type type = asm.GetTypes().FirstOrDefault(x =>
                     x.GetInterface("iconnect.IExtension") != null);

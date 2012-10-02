@@ -312,10 +312,12 @@ namespace gui
 
         private void button5_Click(object sender, RoutedEventArgs e)
         {
-            fd.Filter = "Image files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png";
-            fd.Multiselect = false;
+            this.fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            this.fd.Filter = "Image files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png";
+            this.fd.Multiselect = false;
+            this.fd.FileName = String.Empty;
 
-            if ((bool)fd.ShowDialog())
+            if ((bool)this.fd.ShowDialog())
             {
                 try
                 {
@@ -337,10 +339,12 @@ namespace gui
 
         private void button6_Click(object sender, RoutedEventArgs e)
         {
-            fd.Filter = "Image files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png";
-            fd.Multiselect = false;
+            this.fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            this.fd.Filter = "Image files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png";
+            this.fd.Multiselect = false;
+            this.fd.FileName = String.Empty;
 
-            if ((bool)fd.ShowDialog())
+            if ((bool)this.fd.ShowDialog())
             {
                 try
                 {
@@ -357,6 +361,54 @@ namespace gui
                     Avatars.UpdateDefaultAvatar(data);
                 }
                 catch { }
+            }
+        }
+
+        private void treeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            TreeViewItem item = (TreeViewItem)this.treeView1.SelectedItem;
+            String extension_name = item.Tag.ToString();
+
+        }
+
+        private void UninstallExtension(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem item = (TreeViewItem)this.treeView1.SelectedItem;
+
+            if (item != null)
+            {
+                String extension_name = item.Tag.ToString();
+
+            }
+        }
+
+        private void RefreshExtensions(object sender, MouseButtonEventArgs e)
+        {
+            this.listBox1.Items.Clear();
+
+            String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+               "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Extensions";
+
+            if (Directory.Exists(path))
+            {
+                DirectoryInfo root = new DirectoryInfo(path);
+
+                foreach (DirectoryInfo folder in root.GetDirectories())
+                    foreach (FileInfo file in folder.GetFiles())
+                        if (file.Name == "extension.dll")
+                        {
+                            this.listBox1.Items.Add(folder);
+                            break;
+                        }
+            }
+        }
+
+        private void PluginInstallDoubleClicked(object sender, MouseButtonEventArgs e)
+        {
+            if (this.listBox1.SelectedIndex > -1)
+            {
+                String extension_name = this.listBox1.SelectedItem.ToString();
+                this.LoadExtension(extension_name); // check duplicate
             }
         }
     }

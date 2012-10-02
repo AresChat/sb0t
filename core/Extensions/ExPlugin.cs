@@ -6,7 +6,7 @@ using iconnect;
 
 namespace core.Extensions
 {
-    class ExPlugin
+    public class ExPlugin
     {
         public IExtension Plugin { get; set; }
         public String Name { get; set; }

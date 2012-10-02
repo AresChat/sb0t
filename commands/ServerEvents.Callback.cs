@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Windows.Forms;
 using iconnect;
 
 namespace commands
@@ -35,6 +36,16 @@ namespace commands
 
                 return list.ToArray();
             }
+        }
+
+        public byte[] Icon
+        {
+            get { return null; }
+        }
+
+        public UserControl GUI
+        {
+            get { return null; }
         }
     }
 }

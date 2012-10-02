@@ -7,8 +7,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 using core;
-
+//343 ext height, 416 ext width   Canvas.Left="166" Canvas.Top="0"
 namespace gui
 {
     partial class MainWindow
@@ -174,6 +175,9 @@ namespace gui
                 }
             }
             catch { }
+            //extensions
+            this.RefreshExtensions(null, null);
+
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
 
@@ -181,9 +185,33 @@ namespace gui
                 this.ServerStartStop(null, null);
         }
 
+        private void LoadExtension(String name)
+        {
+            TreeViewItem item = new TreeViewItem();
+            StackPanel stack = new StackPanel();
+            stack.Orientation = Orientation.Horizontal;
+            Image img = new Image();
+            img.Source = new BitmapImage(new Uri("pack://application:,,/Images/plugin.png"));
+            img.Height = 16;
+            TextBlock tb = new TextBlock();
+            tb.Text = name;
+            tb.Margin = new Thickness(2, 0, 0, 0);
+            tb.VerticalAlignment = VerticalAlignment.Center;
+            stack.Children.Add(img);
+            stack.Children.Add(tb);
+            item.Header = stack;
+            item.Tag = name;
+            this.treeView1.Items.Add(item);
+        }
+
         private RenderTargetBitmap FileToSizedImageSource(String file, int width, int height)
         {
             byte[] data = File.ReadAllBytes(file);
+            return this.FileToSizedImageSource(data, width, height);
+        }
+
+        private RenderTargetBitmap FileToSizedImageSource(byte[] data, int width, int height)
+        {
             RenderTargetBitmap resizedImage = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Default);
 
             using (MemoryStream ms = new MemoryStream(data))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace iconnect
 {
@@ -92,5 +93,9 @@ namespace iconnect
         void Unidled(IUser client, uint seconds_away);
         /// <summary>Server Event</summary>
         void BansAutoCleared();
+        /// <summary>Icon</summary>
+        byte[] Icon { get; }
+        /// <summary>GUI</summary>
+        UserControl GUI { get; }
     }
 }
