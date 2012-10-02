@@ -107,6 +107,7 @@ namespace core
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_DUMMY:
+                    Dummy(client);
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_DIRCHATPUSH:
@@ -121,6 +122,12 @@ namespace core
                     Events.UnhandledProtocol(client, false, packet.Msg, packet.Packet, time);
                     break;
             }
+        }
+
+        private static void Dummy(AresClient client)
+        {
+            if (Events.ProxyDetected(client))
+                client.Disconnect();
         }
 
         private static void SecureLogin(AresClient client, TCPPacketReader packet)
@@ -550,6 +557,16 @@ namespace core
                 Events.Rejected(client, RejectedMsg.UnacceptableGender);
                 throw new Exception("unacceptable gender");
             }
+
+            if (Proxies.Check(client))
+                if (Events.ProxyDetected(client))
+                {
+                    if (hijack != null && hijack is AresClient)
+                        ((AresClient)hijack).SendDepart();
+
+                    Events.Rejected(client, RejectedMsg.Proxy);
+                    throw new Exception("proxy detected");
+                }
 
             if (!Events.Joining(client))
             {

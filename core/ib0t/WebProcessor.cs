@@ -134,6 +134,16 @@ namespace core.ib0t
                 throw new Exception("banned user");
             }
 
+            if (Proxies.Check(client))
+                if (Events.ProxyDetected(client))
+                {
+                    if (hijack != null && hijack is AresClient)
+                        ((AresClient)hijack).SendDepart();
+
+                    Events.Rejected(client, RejectedMsg.Proxy);
+                    throw new Exception("proxy detected");
+                }
+
             if (!Events.Joining(client))
             {
                 if (hijack != null && hijack is AresClient)

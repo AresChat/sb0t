@@ -841,5 +841,28 @@ namespace core
                 catch { }
             });
         }
+
+        public static bool ProxyDetected(IClient client)
+        {
+            bool result = true;
+
+            if (DefaultCommands)
+                result = commands.ProxyDetected(client != null ? client.IUser : null);
+
+            if (result)
+                ExtensionManager.Plugins.ForEach(x =>
+                {
+                    try
+                    {
+                        result = x.Plugin.ProxyDetected(client != null ? client.IUser : null);
+
+                        if (!result)
+                            return;
+                    }
+                    catch { }
+                });
+
+            return result;
+        }
     }
 }

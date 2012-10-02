@@ -80,7 +80,7 @@ namespace commands
 
         public void Flooded(IUser client) { }
 
-        public bool ProxyDetected(IUser client) { return true; } // to do
+        public bool ProxyDetected(IUser client) { return true; }
 
         public void Logout(IUser client) { }
 

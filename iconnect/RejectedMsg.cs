@@ -21,6 +21,8 @@ namespace iconnect
         /// <summary>Your gender is not accepted in this chatroom</summary>
         UnacceptableGender,
         /// <summary>An extension or script is preventing you from joining</summary>
-        UserDefined
+        UserDefined,
+        /// <summary>You are using a black listed proxy server</summary>
+        Proxy
     }
 }

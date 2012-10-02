@@ -41,8 +41,13 @@ namespace core
             if (default_avatar == null)
                 return;
 
-            UserPool.AUsers.ForEachWhere(x => { x.Avatar = default_avatar; x.AvatarReceived = true; x.DefaultAvatar = true; },
-                x => !x.AvatarReceived && time > (x.AvatarTimeout + 10000));
+            UserPool.AUsers.ForEachWhere(x =>
+            {
+                x.Avatar = default_avatar;
+                x.OrgAvatar = default_avatar;
+                x.AvatarReceived = true;
+                x.DefaultAvatar = true;
+            }, x => !x.AvatarReceived && time > (x.AvatarTimeout + 10000));
         }
 
         private static byte[] Default
