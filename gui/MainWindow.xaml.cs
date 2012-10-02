@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
+using System.Windows.Forms.Integration;
 using Microsoft.Win32;
 using core;
 

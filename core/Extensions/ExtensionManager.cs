@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using System.Windows.Controls;
 using iconnect;
 
 namespace core.Extensions
@@ -31,7 +32,7 @@ namespace core.Extensions
             DataPath += "\\";
         }
 
-        public static bool LoadPlugin(String name)
+        public static ExtensionFrontEnd LoadPlugin(String name)
         {
             try
             {
@@ -51,14 +52,18 @@ namespace core.Extensions
                     };
 
                     UnloadPlugin(p.Name);
-                    list[p.Name] = p;                    
+                    list[p.Name] = p;
 
-                    return true;
+                    return new ExtensionFrontEnd
+                    {
+                        GUI = list[p.Name].Plugin.GUI,
+                        Icon = list[p.Name].Plugin.Icon
+                    };
                 }
             }
             catch { }
 
-            return false;
+            return null;
         }
 
         public static ExPlugin UnloadPlugin(String name)
@@ -74,5 +79,11 @@ namespace core.Extensions
             return p;
         }
 
+    }
+
+    public class ExtensionFrontEnd
+    {
+        public UserControl GUI { get; set; }
+        public byte[] Icon { get; set; }
     }
 }

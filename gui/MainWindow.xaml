@@ -220,7 +220,7 @@
                 </TabItem.Header>
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
-                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White" Name="gui_host">
                             <TreeView Canvas.Left="0" Canvas.Top="6" Height="165" Name="treeView1" Width="164" BorderBrush="{x:Null}" SelectedItemChanged="treeView1_SelectedItemChanged">
                                 <TreeView.Resources>
                                     <SolidColorBrush Color="White" x:Key="{x:Static SystemColors.HighlightBrushKey}" />

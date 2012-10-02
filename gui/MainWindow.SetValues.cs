@@ -177,6 +177,8 @@ namespace gui
             catch { }
             //extensions
             this.RefreshExtensions(null, null);
+            core.Extensions.ExtensionManager.Setup();
+
 
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
@@ -202,6 +204,14 @@ namespace gui
             item.Header = stack;
             item.Tag = name;
             this.treeView1.Items.Add(item);
+            core.Extensions.ExtensionFrontEnd fe = core.Extensions.ExtensionManager.LoadPlugin(name);
+
+            if (fe != null)
+            {
+                gui_host.Children.Add(fe.GUI);
+                fe.GUI.Margin = new Thickness(166, 0, 0, 0);
+                
+            }
         }
 
         private RenderTargetBitmap FileToSizedImageSource(String file, int width, int height)
