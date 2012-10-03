@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using iconnect;
 
 namespace core.Extensions
@@ -37,7 +38,7 @@ namespace core.Extensions
             try
             {
                 Assembly asm = Assembly.Load(File.ReadAllBytes(DataPath + name + "\\extension.dll"));
-
+                ServerCore.Log(asm.FullName);
                 Type type = asm.GetTypes().FirstOrDefault(x =>
                     x.GetInterface("iconnect.IExtension") != null);
 
@@ -54,10 +55,17 @@ namespace core.Extensions
                     UnloadPlugin(p.Name);
                     list[p.Name] = p;
 
+                    try
+                    {
+                        list[p.Name].Plugin.Load();
+                    }
+                    catch { }
+
                     return new ExtensionFrontEnd
                     {
                         GUI = list[p.Name].Plugin.GUI,
-                        Icon = list[p.Name].Plugin.Icon
+                        Icon = list[p.Name].Plugin.Icon,
+                        Name = list[p.Name].Name
                     };
                 }
             }
@@ -66,17 +74,21 @@ namespace core.Extensions
             return null;
         }
 
-        public static ExPlugin UnloadPlugin(String name)
+        public static void UnloadPlugin(String name)
         {
             if (!list.ContainsKey(name))
-                return null;
+                return;
+
+            try
+            {
+                list[name].Plugin.Dispose();
+            }
+            catch { }
 
             ExPlugin p;
 
             while (!list.TryRemove(name, out p))
                 continue;
-
-            return p;
         }
 
     }
@@ -84,6 +96,7 @@ namespace core.Extensions
     public class ExtensionFrontEnd
     {
         public UserControl GUI { get; set; }
-        public byte[] Icon { get; set; }
+        public BitmapSource Icon { get; set; }
+        public String Name { get; set; }
     }
 }

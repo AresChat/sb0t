@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using iconnect;
 
 namespace testext
@@ -93,15 +94,19 @@ namespace testext
 
         public void Command(IUser client, String cmd, IUser target, String args) { }
 
+        public void Load() { }
+
+        public void Dispose() { }
+
         public MyPlugin(IHostApp cb)
         {
             Server.SetCallback(cb);
             this.GUI = new MyGUI();
         }
 
-        public byte[] Icon
+        public BitmapSource Icon
         {
-            get { return null; }
+            get { return new BitmapImage(new Uri("pack://application:,,/testext;Component/Images/aliceS.png")); }
         }
 
         public UserControl GUI { get; private set; }

@@ -189,29 +189,61 @@ namespace gui
 
         private void LoadExtension(String name)
         {
-            TreeViewItem item = new TreeViewItem();
-            StackPanel stack = new StackPanel();
-            stack.Orientation = Orientation.Horizontal;
-            Image img = new Image();
-            img.Source = new BitmapImage(new Uri("pack://application:,,/Images/plugin.png"));
-            img.Height = 16;
-            TextBlock tb = new TextBlock();
-            tb.Text = name;
-            tb.Margin = new Thickness(2, 0, 0, 0);
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            stack.Children.Add(img);
-            stack.Children.Add(tb);
-            item.Header = stack;
-            item.Tag = name;
-            this.treeView1.Items.Add(item);
+            this.UnloadExtension(name);
             core.Extensions.ExtensionFrontEnd fe = core.Extensions.ExtensionManager.LoadPlugin(name);
 
             if (fe != null)
             {
+                TreeViewItem item = new TreeViewItem();
+                StackPanel stack = new StackPanel();
+                stack.Orientation = Orientation.Horizontal;
+                Image img = new Image();
+
+                if (fe.Icon != null)
+                    img.Source = fe.Icon;
+                else
+                    img.Source = new BitmapImage(new Uri("pack://application:,,/Images/plugin.png"));
+
+                img.Height = 16;
+                img.Width = 16;
+                TextBlock tb = new TextBlock();
+                tb.Text = name;
+                tb.Margin = new Thickness(2, 0, 0, 0);
+                tb.VerticalAlignment = VerticalAlignment.Center;
+                stack.Children.Add(img);
+                stack.Children.Add(tb);
+                item.Header = stack;
+                item.Tag = name;
+                this.treeView1.Items.Add(item);
+                fe.GUI.Tag = name;
                 gui_host.Children.Add(fe.GUI);
                 fe.GUI.Margin = new Thickness(166, 0, 0, 0);
-                
             }
+            else MessageBox.Show("Invalid sb0t extension",
+                "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void UnloadExtension(String name)
+        {
+            for (int i = 0; i < this.gui_host.Children.Count; i++)
+                if (this.gui_host.Children[i] != null)
+                    if (this.gui_host.Children[i] is UserControl)
+                        if (((UserControl)this.gui_host.Children[i]).Tag != null)
+                            if (((UserControl)this.gui_host.Children[i]).Tag is String)
+                                if (((UserControl)this.gui_host.Children[i]).Tag.ToString() == name)
+                                {
+                                    this.gui_host.Children.RemoveAt(i);
+                                    break;
+                                }
+
+            for (int i = 0; i < this.treeView1.Items.Count; i++)
+                if (((TreeViewItem)this.treeView1.Items[i]).Tag.ToString() == name)
+                {
+                    this.treeView1.Items.RemoveAt(i);
+                    break;
+                }
+
+            core.Extensions.ExtensionManager.UnloadPlugin(name);
         }
 
         private RenderTargetBitmap FileToSizedImageSource(String file, int width, int height)

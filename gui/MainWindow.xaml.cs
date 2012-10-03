@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
-using System.Windows.Forms.Integration;
 using Microsoft.Win32;
 using core;
 
@@ -368,8 +367,28 @@ namespace gui
         private void treeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             TreeViewItem item = (TreeViewItem)this.treeView1.SelectedItem;
-            String extension_name = item.Tag.ToString();
 
+            if (item != null)
+            {
+                String extension_name = item.Tag.ToString();
+
+                for (int i = 0; i < this.gui_host.Children.Count; i++)
+                {
+                    if (this.gui_host.Children[i] != null)
+                    {
+                        if (this.gui_host.Children[i] is UserControl)
+                            if (((UserControl)this.gui_host.Children[i]).Tag != null)
+                                if (((UserControl)this.gui_host.Children[i]).Tag is String)
+                                    if (((UserControl)this.gui_host.Children[i]).Tag.ToString() == extension_name)
+                                    {
+                                        this.gui_host.Children[i].Visibility = Visibility.Visible;
+                                        continue;
+                                    }
+                        
+                        this.gui_host.Children[i].Visibility = Visibility.Hidden;
+                    }
+                }
+            }
         }
 
         private void UninstallExtension(object sender, RoutedEventArgs e)
@@ -379,7 +398,7 @@ namespace gui
             if (item != null)
             {
                 String extension_name = item.Tag.ToString();
-
+                this.UnloadExtension(extension_name);
             }
         }
 
@@ -409,7 +428,7 @@ namespace gui
             if (this.listBox1.SelectedIndex > -1)
             {
                 String extension_name = this.listBox1.SelectedItem.ToString();
-                this.LoadExtension(extension_name); // check duplicate
+                this.LoadExtension(extension_name);
             }
         }
     }

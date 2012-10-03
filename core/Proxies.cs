@@ -33,7 +33,7 @@ namespace core
             "95.141.", // cyber ghost
             "95.142.", // cyber ghost
             "95.143.", // cyber ghost
-            "95.215.63.29", // cyber ghost
+            "95.215.", // cyber ghost
             "109.74.3.24", // cyber ghost
             "124.248.202.119", // cyber ghost
             "174.36.47.170", // cyber ghost

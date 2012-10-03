@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace iconnect
 {
@@ -93,8 +94,12 @@ namespace iconnect
         void Unidled(IUser client, uint seconds_away);
         /// <summary>Server Event</summary>
         void BansAutoCleared();
+        /// <summary>Plugin disposing</summary>
+        void Dispose();
+        /// <summary>Plugin loaded</summary>
+        void Load();
         /// <summary>Icon</summary>
-        byte[] Icon { get; }
+        BitmapSource Icon { get; }
         /// <summary>GUI</summary>
         UserControl GUI { get; }
     }
