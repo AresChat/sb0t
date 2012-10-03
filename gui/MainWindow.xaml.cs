@@ -364,41 +364,49 @@ namespace gui
             }
         }
 
-        private void treeView1_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void ExtensionGUISelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            TreeViewItem item = (TreeViewItem)this.treeView1.SelectedItem;
+            object obj = this.listBox2.SelectedItem;
 
-            if (item != null)
+            if (obj != null)
             {
-                String extension_name = item.Tag.ToString();
+                StackPanel item = (StackPanel)obj;
 
-                for (int i = 0; i < this.gui_host.Children.Count; i++)
+                if (item != null)
                 {
-                    if (this.gui_host.Children[i] != null)
-                    {
-                        if (this.gui_host.Children[i] is UserControl)
-                            if (((UserControl)this.gui_host.Children[i]).Tag != null)
-                                if (((UserControl)this.gui_host.Children[i]).Tag is String)
-                                    if (((UserControl)this.gui_host.Children[i]).Tag.ToString() == extension_name)
-                                    {
-                                        this.gui_host.Children[i].Visibility = Visibility.Visible;
-                                        continue;
-                                    }
-                        
-                        this.gui_host.Children[i].Visibility = Visibility.Hidden;
-                    }
+                    String extension_name = item.Tag.ToString();
+
+                    for (int i = 0; i < this.gui_host.Children.Count; i++)
+                        if (this.gui_host.Children[i] != null)
+                            if (this.gui_host.Children[i] is UserControl)
+                            {
+                                if (((UserControl)this.gui_host.Children[i]).Tag != null)
+                                    if (((UserControl)this.gui_host.Children[i]).Tag is String)
+                                        if (((UserControl)this.gui_host.Children[i]).Tag.ToString() == extension_name)
+                                        {
+                                            this.gui_host.Children[i].Visibility = Visibility.Visible;
+                                            continue;
+                                        }
+
+                                this.gui_host.Children[i].Visibility = Visibility.Hidden;
+                            }
                 }
             }
         }
 
         private void UninstallExtension(object sender, RoutedEventArgs e)
         {
-            TreeViewItem item = (TreeViewItem)this.treeView1.SelectedItem;
+            object obj = this.listBox2.SelectedItem;
 
-            if (item != null)
+            if (obj != null)
             {
-                String extension_name = item.Tag.ToString();
-                this.UnloadExtension(extension_name);
+                StackPanel item = (StackPanel)obj;
+
+                if (item != null)
+                {
+                    String extension_name = item.Tag.ToString();
+                    this.UnloadExtension(extension_name);
+                }
             }
         }
 
@@ -431,5 +439,6 @@ namespace gui
                 this.LoadExtension(extension_name);
             }
         }
+
     }
 }

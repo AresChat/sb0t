@@ -194,7 +194,6 @@ namespace gui
 
             if (fe != null)
             {
-                TreeViewItem item = new TreeViewItem();
                 StackPanel stack = new StackPanel();
                 stack.Orientation = Orientation.Horizontal;
                 Image img = new Image();
@@ -206,15 +205,15 @@ namespace gui
 
                 img.Height = 16;
                 img.Width = 16;
+                img.Margin = new Thickness(10, 0, 0, 0);
                 TextBlock tb = new TextBlock();
                 tb.Text = name;
                 tb.Margin = new Thickness(2, 0, 0, 0);
                 tb.VerticalAlignment = VerticalAlignment.Center;
                 stack.Children.Add(img);
                 stack.Children.Add(tb);
-                item.Header = stack;
-                item.Tag = name;
-                this.treeView1.Items.Add(item);
+                stack.Tag = name;
+                this.listBox2.Items.Add(stack);
                 fe.GUI.Tag = name;
                 gui_host.Children.Add(fe.GUI);
                 fe.GUI.Margin = new Thickness(166, 0, 0, 0);
@@ -236,10 +235,10 @@ namespace gui
                                     break;
                                 }
 
-            for (int i = 0; i < this.treeView1.Items.Count; i++)
-                if (((TreeViewItem)this.treeView1.Items[i]).Tag.ToString() == name)
+            for (int i=0;i<this.listBox2.Items.Count;i++)
+                if (((StackPanel)this.listBox2.Items[i]).Tag.ToString() == name)
                 {
-                    this.treeView1.Items.RemoveAt(i);
+                    this.listBox2.Items.RemoveAt(i);
                     break;
                 }
 

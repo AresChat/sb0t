@@ -221,21 +221,17 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White" Name="gui_host">
-                            <TreeView Canvas.Left="0" Canvas.Top="6" Height="165" Name="treeView1" Width="164" BorderBrush="{x:Null}" SelectedItemChanged="treeView1_SelectedItemChanged">
-                                <TreeView.Resources>
-                                    <SolidColorBrush Color="White" x:Key="{x:Static SystemColors.HighlightBrushKey}" />
-                                    <SolidColorBrush Color="Red" x:Key="{x:Static SystemColors.HighlightTextBrushKey}" />
-                                </TreeView.Resources>
-                                <TreeView.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Uninstall" Click="UninstallExtension" />
-                                    </ContextMenu>
-                                </TreeView.ContextMenu>
-                            </TreeView>
                             <Rectangle Canvas.Left="164" Canvas.Top="5" Height="333" Name="rectangle9" Stroke="Silver" Width="1" />
                             <ListBox Canvas.Left="22" Canvas.Top="201" Height="117" Name="listBox1" Width="120" MouseDoubleClick="PluginInstallDoubleClicked" />
                             <Label Canvas.Left="17" Canvas.Top="177" Content="Available:" Height="28" Name="label22" />
                             <Label Canvas.Left="90" Canvas.Top="316" Content="Refresh..." Height="28" Name="label23" Foreground="Blue" Cursor="Hand" MouseLeftButtonUp="RefreshExtensions" />
+                            <ListBox Canvas.Left="0" Canvas.Top="6" Height="165" Name="listBox2" Width="164" Padding="10,10,10,10" BorderBrush="{x:Null}" SelectionChanged="ExtensionGUISelectionChanged">
+                                <ListBox.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Uninstall" Click="UninstallExtension" />
+                                    </ContextMenu>
+                                </ListBox.ContextMenu>
+                            </ListBox>
                         </Canvas>
                     </Border>
                 </Grid>
