@@ -52,7 +52,7 @@ namespace gui
             this.checkBox2.IsChecked = Settings.Get<bool>("emotes");
             //auto load - TO DO
             this.checkBox4.IsChecked = Settings.Get<bool>("autoload");
-            //udp - TO DO
+            //udp
             this.checkBox5.IsChecked = Settings.Get<bool>("udp");
             //voice chat
             this.checkBox6.IsChecked = Settings.Get<bool>("voice");
@@ -67,7 +67,7 @@ namespace gui
             //owner
             str = Settings.Get<String>("owner");
 
-            if (str.Length == 0)
+            if (String.IsNullOrEmpty(str))
                 str = this.RandomPassword;
 
             this.textBox4.Text = str;
@@ -135,7 +135,7 @@ namespace gui
             this.comboBox3.SelectedIndex = this.AresLanguageToComboBoxLangauge();
             //local host - TO DO
             this.checkBox19.IsChecked = Settings.Get<bool>("local_host");
-            //udp address - TO DO
+            //udp address
             byte[] udp = Settings.Get<byte[]>("udp_address");
 
             if (udp == null)

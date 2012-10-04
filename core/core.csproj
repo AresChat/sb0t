@@ -111,6 +111,11 @@
     <Compile Include="TCPPacketWriter.cs" />
     <Compile Include="TCPProcessor.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="Udp\UdpListener.cs" />
+    <Compile Include="Udp\UdpItem.cs" />
+    <Compile Include="Udp\UdpMsg.cs" />
+    <Compile Include="Udp\UdpProcessor.cs" />
+    <Compile Include="Udp\UdpStats.cs" />
     <Compile Include="UserHistory.cs" />
     <Compile Include="UserPool.cs" />
     <Compile Include="Zip.cs" />

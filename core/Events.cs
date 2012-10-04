@@ -610,7 +610,11 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                x.Plugin.LoginGranted(client != null ? client.IUser : null);
+                try
+                {
+                    x.Plugin.LoginGranted(client != null ? client.IUser : null);
+                }
+                catch { }
             });
         }
 
@@ -621,7 +625,11 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                x.Plugin.AdminLevelChanged(client != null ? client.IUser : null);
+                try
+                {
+                    x.Plugin.AdminLevelChanged(client != null ? client.IUser : null);
+                }
+                catch { }
             });
         }
 

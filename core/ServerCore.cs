@@ -6,6 +6,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using captcha;
+using core.Udp;
 
 namespace core
 {
@@ -19,6 +20,7 @@ namespace core
         }
 
         private TcpListener tcp;
+        private UdpListener udp;
         private Thread thread;
         private bool terminate = false;
 
@@ -53,6 +55,18 @@ namespace core
                 return false;
             }
 
+            this.udp = new UdpListener(new IPEndPoint(new IPAddress(Settings.Get<byte[]>("udp_address")), Settings.Get<ushort>("port")));
+
+            try
+            {
+                this.udp.Start();
+            }
+            catch (Exception e)
+            {
+                LogUpdate(this, new ServerLogEventArgs { Message = "UDP Listener", Error = e });
+                return false;
+            }
+
             LogUpdate(this, new ServerLogEventArgs { Message = "Server initialized on port " + ((IPEndPoint)this.tcp.LocalEndpoint).Port });
             this.thread = new Thread(new ThreadStart(this.ServerThread));
             this.thread.Start();
@@ -67,6 +81,9 @@ namespace core
             this.terminate = true;
 
             try { this.tcp.Stop(); }
+            catch { }
+
+            try { this.udp.Stop(); }
             catch { }
 
             UserPool.Destroy();
@@ -119,6 +136,7 @@ namespace core
                     FloodControl.Reset();
                 }
 
+                this.udp.ServiceUdp(time);
                 this.CheckTCPListener(time);
                 this.ServiceAresSockets(time);
 
