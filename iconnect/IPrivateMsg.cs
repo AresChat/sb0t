@@ -14,5 +14,7 @@ namespace iconnect
         void Replace(String oldText, String newText);
         /// <summary>Remove specific text from PM</summary>
         void Remove(String text);
+        /// <summary>Prevent PM from being sent</summary>
+        bool Cancel { get; set; }
     }
 }

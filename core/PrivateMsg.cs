@@ -30,5 +30,7 @@ namespace core
         {
             this.Text = Regex.Replace(this.Text, Regex.Escape(text), String.Empty, RegexOptions.IgnoreCase);
         }
+
+        public bool Cancel { get; set; }
     }
 }

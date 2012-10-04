@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using core;
-//343 ext height, 416 ext width   Canvas.Left="166" Canvas.Top="0"
+
 namespace gui
 {
     partial class MainWindow
@@ -221,6 +221,8 @@ namespace gui
                 {
                     fe.GUI.Tag = name;
                     gui_host.Children.Add(fe.GUI);
+                    fe.GUI.Height = 343;
+                    fe.GUI.Width = 416;
                     fe.GUI.Margin = new Thickness(166, 0, 0, 0);
                 }
 

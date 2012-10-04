@@ -335,7 +335,7 @@ namespace core
                     {
                         x.Plugin.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
-                        if (String.IsNullOrEmpty(pm.Text))
+                        if (String.IsNullOrEmpty(pm.Text) || pm.Cancel)
                             return;
                     }
                     catch { }
@@ -346,6 +346,8 @@ namespace core
             if (String.IsNullOrEmpty(result))
                 e.Cancel = true;
             else if (!client.Connected || !target.Connected)
+                e.Cancel = true;
+            else if (pm.Cancel)
                 e.Cancel = true;
             else
                 e.Text = result;
