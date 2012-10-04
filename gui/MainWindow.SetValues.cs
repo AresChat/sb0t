@@ -179,6 +179,8 @@ namespace gui
             this.RefreshExtensions(null, null);
             core.Extensions.ExtensionManager.Setup();
 
+            foreach (String ext in ExtAutorun.Items)
+                this.LoadExtension(ext);
 
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
@@ -214,9 +216,16 @@ namespace gui
                 stack.Children.Add(tb);
                 stack.Tag = name;
                 this.listBox2.Items.Add(stack);
-                fe.GUI.Tag = name;
-                gui_host.Children.Add(fe.GUI);
-                fe.GUI.Margin = new Thickness(166, 0, 0, 0);
+
+                if (fe.GUI != null)
+                {
+                    fe.GUI.Tag = name;
+                    gui_host.Children.Add(fe.GUI);
+                    fe.GUI.Margin = new Thickness(166, 0, 0, 0);
+                }
+
+                this.listBox2.SelectedIndex = this.listBox2.Items.Count - 1;
+                ExtAutorun.AddItem(name);
             }
             else MessageBox.Show("Invalid sb0t extension",
                 "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -243,6 +252,7 @@ namespace gui
                 }
 
             core.Extensions.ExtensionManager.UnloadPlugin(name);
+            ExtAutorun.RemoveItem(name);
         }
 
         private RenderTargetBitmap FileToSizedImageSource(String file, int width, int height)

@@ -34,7 +34,7 @@ namespace testext
 
         public String TextSending(IUser client, String text) { return text; }
 
-        public void TextSent(IUser client, String text) { }
+        public void TextSent(IUser client, String text) { Server.Print(text); }
 
         public void EmoteReceived(IUser client, String text) { }
 
@@ -96,18 +96,20 @@ namespace testext
 
         public void Load() { }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            this.GUI = null;
+            this.Icon = null;
+        }
 
         public MyPlugin(IHostApp cb)
         {
             Server.SetCallback(cb);
             this.GUI = new MyGUI();
+            this.Icon = new BitmapImage(new Uri("pack://application:,,/testext;Component/Images/aliceS.png"));
         }
 
-        public BitmapSource Icon
-        {
-            get { return new BitmapImage(new Uri("pack://application:,,/testext;Component/Images/aliceS.png")); }
-        }
+        public BitmapSource Icon { get; private set; }
 
         public UserControl GUI { get; private set; }
     }

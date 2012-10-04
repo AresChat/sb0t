@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="Command.cs" />
     <Compile Include="CommandManager.cs" />
+    <Compile Include="ExtAutorun.cs" />
     <Compile Include="MainWindow.Admin.cs" />
     <Compile Include="MainWindow.SetValues.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -38,7 +38,6 @@ namespace core.Extensions
             try
             {
                 Assembly asm = Assembly.Load(File.ReadAllBytes(DataPath + name + "\\extension.dll"));
-                ServerCore.Log(asm.FullName);
                 Type type = asm.GetTypes().FirstOrDefault(x =>
                     x.GetInterface("iconnect.IExtension") != null);
 

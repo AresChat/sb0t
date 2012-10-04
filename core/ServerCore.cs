@@ -251,7 +251,9 @@ namespace core
                             }
 
                     client.SendReceive();
-                    client.EnforceRules(time);
+
+                    if (client.SocketConnected)
+                        client.EnforceRules(time);
                 }
 
             UserPool.AUsers.FindAll(x => !x.SocketConnected).ForEach(x => x.Disconnect());
