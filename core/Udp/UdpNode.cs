@@ -14,5 +14,10 @@ namespace core.Udp
         public int Try { get; set; }
         public ulong LastConnect { get; set; }
         public ulong LastSentIPS { get; set; }
+
+        public EndPoint EndPoint
+        {
+            get { return new IPEndPoint(this.IP, this.Port); }
+        }
     }
 }

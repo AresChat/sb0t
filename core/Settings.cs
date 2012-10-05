@@ -39,6 +39,19 @@ namespace core
             }
         }
 
+        private static ushort port { get; set; }
+
+        public static ushort Port
+        {
+            get
+            {
+                if (port == 0)
+                    port = Get<ushort>("port");
+
+                return port;
+            }
+        }
+
         private static Type[] AcceptableTypes = 
         {
             typeof(byte),

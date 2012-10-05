@@ -10,24 +10,33 @@ namespace core.Udp
     class UdpListener
     {
         public IPEndPoint EndPoint { get; private set; }
-        public Socket Sock { get; private set; }
+        public bool Showing { get; private set; }
 
+        private Socket Sock { get; set; }
         private Queue<UdpItem> data_out = new Queue<UdpItem>();
         private Queue<UdpItem> data_in = new Queue<UdpItem>();
+        private List<FirewallTest> firewall_tests = new List<FirewallTest>();
+        private MyFirewallTester TcpTester { get; set; }
+        private ulong Timer_1_Second { get; set; }
+        private ulong Timer_1_Minute { get; set; }
+        private ulong Timer_15_Minutes { get; set; }
 
         public UdpListener(IPEndPoint ep)
         {
             this.EndPoint = ep;
+            this.TcpTester = new MyFirewallTester();
         }
 
         public void Start()
         {
-            this.data_out.Clear();
-            this.data_in.Clear();
-
             UdpStats.Reset();
             UdpNodeManager.Initialize();
 
+            this.TcpTester.PopulateNodes();
+            this.Showing = Settings.Get<bool>("udp");
+            this.Timer_1_Second = Time.Now;
+            this.Timer_1_Minute = Time.Now;
+            this.Timer_15_Minutes = Time.Now;
             this.Sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             this.Sock.Blocking = false;
             this.Sock.Bind(this.EndPoint);
@@ -55,33 +64,29 @@ namespace core.Udp
             get { return this.Sock.Available > 0; }
         }
 
-        private byte[] ReceiveFrom(out EndPoint ep)
+        public bool IsTcpChecker(Socket sock)
         {
-            ep = new IPEndPoint(IPAddress.Any, 0);
-            byte[] buf = new byte[8192];
-            int size = 0;
+            IPAddress ip = ((IPEndPoint)sock.RemoteEndPoint).Address;
 
-            try
+            if (this.TcpTester.IsChecker(ip))
             {
-                size = this.Sock.ReceiveFrom(buf, ref ep);
-            }
-            catch { }
+                try { sock.Disconnect(false); }
+                catch { }
+                try { sock.Shutdown(SocketShutdown.Both); }
+                catch { }
+                try { sock.Close(); }
+                catch { }
+                try { sock.Dispose(); }
+                catch { }
+                try { sock = null; }
+                catch { }
 
-            return buf.Take(size).ToArray();
-        }
-
-        private bool SendTo(byte[] packet, EndPoint ep)
-        {
-            try
-            {
-                int size = this.Sock.SendTo(packet, ep);
-                return packet.Length == size;
+                return true;
             }
-            catch { }
 
             return false;
         }
-
+        
         public void ServiceUdp(ulong time)
         {
             this.SendReceive();
@@ -93,7 +98,43 @@ namespace core.Udp
                 }
                 catch { }
 
-            // timers
+            if (this.Timer_1_Second > (time + 1000))
+            {
+                this.Timer_1_Second = time;
+                this.firewall_tests.ForEachWhere(x => x.Stop(), x => (x.Time + 10000) < time);
+                this.firewall_tests.RemoveAll(x => x.Completed);
+
+                if (this.TcpTester.IsTesting)
+                    this.TcpTester.TestNext(this);
+                else
+                    this.Push(time);
+            }
+
+            if (this.Timer_1_Minute > (time + 60000))
+            {
+                this.Timer_1_Minute = time;
+                this.TcpTester.Timeout();
+                UdpNodeManager.Expire(time);
+            }
+
+            if (this.Timer_15_Minutes > (time + 900000))
+            {
+                this.Timer_15_Minutes = time;
+                UdpNodeManager.Update(time);
+            }
+        }
+
+        private void Push(ulong time)
+        {
+            UdpNode node = UdpNodeManager.NextPusher(time);
+
+            if (node != null)
+                this.SendDatagram(new UdpItem
+                {
+                    Data = UdpOutbound.AddIps(node.IP, time),
+                    EndPoint = node.EndPoint,
+                    Msg = UdpMsg.OP_SERVERLIST_ADDIPS
+                });
         }
 
         private void SendReceive()

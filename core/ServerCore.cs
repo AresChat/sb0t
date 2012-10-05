@@ -159,7 +159,12 @@ namespace core
         private void CheckTCPListener(ulong time)
         {
             while (this.tcp.Pending())
-                UserPool.CreateAresClient(this.tcp.AcceptSocket(), time);
+            {
+                Socket sock = this.tcp.AcceptSocket();
+
+                if (!this.udp.IsTcpChecker(sock))
+                    UserPool.CreateAresClient(sock, time);
+            }
         }
 
         private void ServiceWebSockets(ulong time)

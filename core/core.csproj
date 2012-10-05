@@ -111,6 +111,8 @@
     <Compile Include="TCPPacketWriter.cs" />
     <Compile Include="TCPProcessor.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="Udp\FirewallTest.cs" />
+    <Compile Include="Udp\MyFirewallTester.cs" />
     <Compile Include="Udp\UdpListener.cs" />
     <Compile Include="Udp\UdpItem.cs" />
     <Compile Include="Udp\UdpMsg.cs" />

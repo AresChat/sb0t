@@ -39,7 +39,7 @@ namespace core.Udp
                     if (Nodes.Count > 4000)
                     {
                         Nodes.Sort((x, y) => x.LastConnect.CompareTo(y.LastConnect));
-                        Nodes.RemoveRange(0, 500);
+                        Nodes.RemoveRange(0, 250);
                     }
 
                     Nodes.Add(server);
@@ -145,6 +145,28 @@ namespace core.Udp
                 results = results.GetRange(0, max_servers);
 
             return results.ToArray();
+        }
+
+        public static UdpNode[] GetServers()
+        {
+            return Nodes.ToArray();
+        }
+
+        public static UdpNode NextPusher(ulong time)
+        {
+            if (Nodes.Count == 0)
+                return null;
+
+            Nodes.Sort((x, y) => x.LastSentIPS.CompareTo(y.LastSentIPS));
+
+            if ((Nodes[0].LastSentIPS + 900000) < time)
+            {
+                Nodes[0].LastSentIPS = time;
+                Nodes[0].Try++;
+                return Nodes[0];
+            }
+
+            return null;
         }
     }
 }
