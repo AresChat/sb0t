@@ -14,6 +14,31 @@ namespace core
 
         public static bool RUNNING { get; set; }
 
+        private static IPAddress externalip { get; set; }
+
+        public static IPAddress ExternalIP
+        {
+            get
+            {
+                if (externalip != null)
+                    return externalip;
+
+                byte[] buffer = Get<byte[]>("ip");
+
+                if (buffer != null)
+                    externalip = new IPAddress(buffer);
+                else
+                    externalip = IPAddress.Loopback;
+
+                return externalip;
+            }
+            set
+            {
+                externalip = value;
+                Set("ip", externalip.GetAddressBytes());
+            }
+        }
+
         private static Type[] AcceptableTypes = 
         {
             typeof(byte),

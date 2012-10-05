@@ -114,6 +114,11 @@
     <Compile Include="Udp\UdpListener.cs" />
     <Compile Include="Udp\UdpItem.cs" />
     <Compile Include="Udp\UdpMsg.cs" />
+    <Compile Include="Udp\UdpNode.cs" />
+    <Compile Include="Udp\UdpNodeManager.cs" />
+    <Compile Include="Udp\UdpOutbound.cs" />
+    <Compile Include="Udp\UdpPacketReader.cs" />
+    <Compile Include="Udp\UdpPacketWriter.cs" />
     <Compile Include="Udp\UdpProcessor.cs" />
     <Compile Include="Udp\UdpStats.cs" />
     <Compile Include="UserHistory.cs" />

@@ -37,5 +37,44 @@ namespace core.Udp
             }
         }
 
+        private static void SendInfo(UdpItem item, UdpListener udp, ulong time)
+        {
+            UdpStats.SENDINFO++;
+        }
+
+        private static void AddIps(UdpItem item, UdpListener udp, ulong time)
+        {
+
+        }
+
+        private static void AckIps(UdpItem item, UdpListener udp, ulong time)
+        {
+            UdpStats.ACKIPS++;
+        }
+
+        private static void SendNodes(UdpItem item, UdpListener udp, ulong time)
+        {
+
+        }
+
+        private static void WantCheckFirewall(UdpItem item, UdpListener udp, ulong time)
+        {
+
+        }
+
+        private static void ReadyToCheckFirewall(UdpItem item, UdpListener udp, ulong time)
+        {
+
+        }
+
+        private static void ProceedCheckFirewall(UdpItem item, UdpListener udp, ulong time)
+        {
+
+        }
+
+        private static void CheckFirewallBusy(UdpItem item, UdpListener udp, ulong time)
+        {
+
+        }
     }
 }

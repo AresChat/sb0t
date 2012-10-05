@@ -26,6 +26,7 @@ namespace core.Udp
             this.data_in.Clear();
 
             UdpStats.Reset();
+            UdpNodeManager.Initialize();
 
             this.Sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             this.Sock.Blocking = false;

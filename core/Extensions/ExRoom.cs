@@ -38,7 +38,7 @@ namespace core.Extensions
 
         public IPAddress ExternalIP
         {
-            get { return IPAddress.Loopback; }
+            get { return Settings.ExternalIP; }
         }
 
         public IPAddress LocalIP

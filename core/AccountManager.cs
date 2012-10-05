@@ -84,12 +84,9 @@ namespace core
         public static void SecureLogin(IClient client, byte[] password)
         {
             List<IPAddress> addresses = new List<IPAddress>();
-            byte[] ext_ip = Settings.Get<byte[]>("ip");
             addresses.Add(IPAddress.Loopback);
+            addresses.Add(Settings.ExternalIP);
             addresses.Add(Settings.LocalIP);
-
-            if (ext_ip != null)
-                addresses.Add(new IPAddress(ext_ip));
 
             using (SHA1 sha1 = SHA1.Create())
             {
