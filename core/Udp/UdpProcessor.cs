@@ -13,27 +13,35 @@ namespace core.Udp
             switch (item.Msg)
             {
                 case UdpMsg.OP_SERVERLIST_SENDINFO:
+                    SendInfo(item, udp, time);
                     break;
 
                 case UdpMsg.OP_SERVERLIST_ADDIPS:
+                    AddIps(item, udp, time);
                     break;
 
                 case UdpMsg.OP_SERVERLIST_ACKIPS:
+                    AckIps(item, udp, time);
                     break;
 
                 case UdpMsg.OP_SERVERLIST_SENDNODES:
+                    SendNodes(item, udp, time);
                     break;
 
                 case UdpMsg.OP_SERVERLIST_WANTCHECKFIREWALL:
+                    WantCheckFirewall(item, udp, time);
                     break;
 
                 case UdpMsg.OP_SERVERLIST_READYTOCHECKFIREWALL:
+                    ReadyToCheckFirewall(item, udp, time);
                     break;
 
                 case UdpMsg.OP_SERVERLIST_PROCEEDCHECKFIREWALL:
+                    ProceedCheckFirewall(item, udp, time);
                     break;
 
                 case UdpMsg.OP_SERVERLIST_CHECKFIREWALLBUSY:
+                    CheckFirewallBusy(item, udp, time);
                     break;
             }
         }
@@ -172,6 +180,8 @@ namespace core.Udp
                 EndPoint = item.EndPoint,
                 Msg = UdpMsg.OP_SERVERLIST_PROCEEDCHECKFIREWALL
             });
+
+            udp.AddChecker(((IPEndPoint)item.EndPoint).Address);
         }
 
         private static void ProceedCheckFirewall(UdpItem item, UdpListener udp, ulong time)

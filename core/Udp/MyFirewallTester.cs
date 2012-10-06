@@ -20,6 +20,11 @@ namespace core.Udp
                 this.nodes.Enqueue(node.EndPoint);
         }
 
+        public void AddChecker(IPAddress ip)
+        {
+            this.checking_me.Add(ip);
+        }
+
         public MyFirewallTester()
         {
             this.IsTesting = true;
@@ -54,9 +59,12 @@ namespace core.Udp
 
         public void Timeout()
         {
-            this.IsTesting = false;
-            this.checking_me.Clear();
-            ServerCore.Log("TCP firewall test failed");
+            if (this.IsTesting)
+            {
+                this.IsTesting = false;
+                this.checking_me.Clear();
+                ServerCore.Log("TCP firewall test failed");
+            }
         }
     }
 }

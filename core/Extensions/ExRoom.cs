@@ -86,7 +86,7 @@ namespace core.Extensions
             {
                 String str = value;
 
-                while (Encoding.UTF8.GetByteCount(str) > 20)
+                while (Encoding.UTF8.GetByteCount(str) > 180)
                     str = str.Substring(0, str.Length - 1);
 
                 Settings.Topic = str;

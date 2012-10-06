@@ -24,7 +24,7 @@ namespace core
 
         public static ulong Now
         {
-            get { return (ulong)sw.ElapsedMilliseconds; }
+            get { return (ulong)sw.ElapsedMilliseconds + 900000; }
         }
     }
 }

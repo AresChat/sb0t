@@ -43,6 +43,7 @@ namespace core
         
         public bool Open()
         {
+            Time.Reset();
             this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Port));
             
             try
@@ -99,7 +100,6 @@ namespace core
             FloodControl.Reset();
             Stats.Reset();
             UserPool.Build();
-            Time.Reset();
             Captcha.Initialize();
             UserHistory.Initialize();
             AccountManager.LoadPasswords();

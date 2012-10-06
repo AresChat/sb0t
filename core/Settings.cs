@@ -82,6 +82,12 @@ namespace core
                 if (topic == null)
                     topic = Get<String>("topic");
 
+                if (topic.Length < 2)
+                {
+                    topic = "welcome to my room";
+                    Set("topic", topic);
+                }
+
                 return topic;
             }
             set

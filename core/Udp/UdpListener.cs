@@ -85,6 +85,11 @@ namespace core.Udp
             get { return this.Sock.Available > 0; }
         }
 
+        public void AddChecker(IPAddress ip)
+        {
+            this.TcpTester.AddChecker(ip);
+        }
+
         public bool IsTcpChecker(Socket sock)
         {
             IPAddress ip = ((IPEndPoint)sock.RemoteEndPoint).Address;
@@ -119,7 +124,7 @@ namespace core.Udp
                 }
                 catch { }
 
-            if (this.Timer_1_Second > (time + 1000))
+            if ((this.Timer_1_Second + 1000) < time)
             {
                 this.Timer_1_Second = time;
                 this.firewall_tests.ForEachWhere(x => x.Stop(), x => (x.Time + 10000) < time);
@@ -131,21 +136,18 @@ namespace core.Udp
                     this.Push(time);
             }
 
-            if (this.Timer_1_Minute > (time + 60000))
+            if ((this.Timer_1_Minute + 60000) < time)
             {
                 this.Timer_1_Minute = time;
                 this.TcpTester.Timeout();
                 UdpNodeManager.Expire(time);
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x,
-                    "udp stats: " + UdpStats.SENDINFO + ":" + UdpStats.ACKINFO + ":" + UdpStats.ADDIPS + ":" + UdpStats.ACKIPS)),
-                    x => x.LoggedIn);
             }
 
-            if (this.Timer_15_Minutes > (time + 900000))
+            if ((this.Timer_15_Minutes + 900000) < time)
             {
                 this.Timer_15_Minutes = time;
                 UdpNodeManager.Update(time);
-                ServerCore.Log("udp stats: " + UdpStats.SENDINFO + ":" + UdpStats.ACKINFO + ":" + UdpStats.ADDIPS + ":" + UdpStats.ACKIPS);
+                ServerCore.Log("local node list updated [" + UdpStats.SENDINFO + ":" + UdpStats.ACKINFO + ":" + UdpStats.ADDIPS + ":" + UdpStats.ACKIPS + "]");
                 UdpStats.Reset();
             }
         }

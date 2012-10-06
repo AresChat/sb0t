@@ -65,10 +65,18 @@ namespace core.Udp
             Nodes.RemoveAll(s => s.Try > 4 &&
                 (time - s.LastSentIPS) > 60000 &&
                 (time - s.LastConnect) > 3600000);
+
+            if (Nodes.Count < 10)
+            {
+                ServerCore.Log("local node list expired");
+                LoadDefaultList();
+            }
         }
 
         public static void Update(ulong time)
         {
+            Nodes.ForEachWhere(x => x.Ack = 40000, x => x.Ack > 65000);
+
             try
             {
                 var linq = from x in Nodes
@@ -109,6 +117,7 @@ namespace core.Udp
                              Ack = int.Parse(i.Element("ack").Value)
                          }).ToList<UdpNode>();
 
+                ServerCore.Log("local node list loaded [" + Nodes.Count + "]");
                 return true;
             }
             catch { }
@@ -132,6 +141,8 @@ namespace core.Udp
                     Nodes.Add(node);
                 }
             }
+
+            ServerCore.Log("default node list loaded");
         }
 
         public static UdpNode[] GetServers(int max_servers, ulong time)
