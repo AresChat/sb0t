@@ -597,7 +597,7 @@ namespace core
                 client.LoggedIn = true;
                 client.SendPacket(TCPOutbound.Ack(client));
                 client.SendPacket(TCPOutbound.MyFeatures(client));
-                client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Get<String>("topic")));
+                client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Topic));
                 client.SendPacket(TCPOutbound.UserlistBot(client));
 
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
@@ -649,7 +649,7 @@ namespace core
                 client.LoggedIn = true;
                 client.SendPacket(TCPOutbound.Ack(client));
                 client.SendPacket(TCPOutbound.MyFeatures(client));
-                client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Get<String>("topic")));
+                client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Topic));
                 client.SendPacket(TCPOutbound.UserlistBot(client));
                 client.SendPacket(TCPOutbound.UserListEnd());
                 client.SendPacket(TCPOutbound.PersonalMessageBot(client));

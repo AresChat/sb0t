@@ -43,7 +43,7 @@ namespace core
         
         public bool Open()
         {
-            this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Get<ushort>("port")));
+            this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Port));
             
             try
             {
@@ -55,7 +55,7 @@ namespace core
                 return false;
             }
 
-            this.udp = new UdpListener(new IPEndPoint(new IPAddress(Settings.Get<byte[]>("udp_address")), Settings.Get<ushort>("port")));
+            this.udp = new UdpListener(new IPEndPoint(new IPAddress(Settings.Get<byte[]>("udp_address")), Settings.Port));
 
             try
             {

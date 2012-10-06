@@ -9,9 +9,9 @@ namespace core.Udp
 {
     class FirewallTest
     {
-        public EndPoint EndPoint { get; private set; }
-        public ulong Time { get; private set; }
-        public uint Cookie { get; private set; }
+        public EndPoint EndPoint { get; set; }
+        public ulong Time { get; set; }
+        public uint Cookie { get; set; }
         public Socket Sock { get; private set; }
         public bool Completed { get; private set; }
 

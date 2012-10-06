@@ -45,6 +45,7 @@ namespace core.Udp
             {
                 this.IsTesting = false;
                 this.checking_me.Clear();
+                ServerCore.Log("TCP firewall test succeeded");
                 return true;
             }
 

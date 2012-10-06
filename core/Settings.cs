@@ -15,7 +15,6 @@ namespace core
         public static bool RUNNING { get; set; }
 
         private static IPAddress externalip { get; set; }
-
         public static IPAddress ExternalIP
         {
             get
@@ -40,7 +39,6 @@ namespace core
         }
 
         private static ushort port { get; set; }
-
         public static ushort Port
         {
             get
@@ -49,6 +47,47 @@ namespace core
                     port = Get<ushort>("port");
 
                 return port;
+            }
+        }
+
+        private static String name { get; set; }
+        public static String Name
+        {
+            get
+            {
+                if (name == null)
+                    name = Get<String>("name");
+
+                return name;
+            }
+        }
+
+        private static byte language { get; set; }
+        public static byte Language
+        {
+            get
+            {
+                if (language == 0)
+                    language = Get<byte>("language");
+
+                return language;
+            }
+        }
+
+        private static String topic { get; set; }
+        public static String Topic
+        {
+            get
+            {
+                if (topic == null)
+                    topic = Get<String>("topic");
+
+                return topic;
+            }
+            set
+            {
+                topic = value;
+                Set("topic", topic);
             }
         }
 

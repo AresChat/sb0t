@@ -12,6 +12,11 @@ namespace core.Udp
         private static List<UdpNode> Nodes { get; set; }
         private static String DataPath { get; set; }
 
+        public static UdpNode Find(Predicate<UdpNode> condition)
+        {
+            return Nodes.Find(condition);
+        }
+
         public static void Initialize()
         {
             DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
@@ -24,6 +29,14 @@ namespace core.Udp
 
             if (!LoadList())
                 LoadDefaultList();
+        }
+
+        public static void Add(EndPoint ep)
+        {
+            UdpNode node = new UdpNode();
+            node.IP = ((IPEndPoint)ep).Address;
+            node.Port = (ushort)((IPEndPoint)ep).Port;
+            Add(node);
         }
 
         public static void Add(UdpNode server)

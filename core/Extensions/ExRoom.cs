@@ -48,12 +48,12 @@ namespace core.Extensions
 
         public String Name
         {
-            get { return Settings.Get<String>("name"); }
+            get { return Settings.Name; }
         }
 
         public ushort Port
         {
-            get { return Settings.Get<ushort>("port"); }
+            get { return Settings.Port; }
         }
 
         public String Hashlink
@@ -68,14 +68,14 @@ namespace core.Extensions
 
         public byte Language
         {
-            get { return Settings.Get<byte>("language"); }
+            get { return Settings.Language; }
         }
 
         public String Topic
         {
             get
             {
-                String str = Settings.Get<String>("topic");
+                String str = Settings.Topic;
 
                 if (String.IsNullOrEmpty(str))
                     return "welcome to my room";
@@ -89,7 +89,7 @@ namespace core.Extensions
                 while (Encoding.UTF8.GetByteCount(str) > 20)
                     str = str.Substring(0, str.Length - 1);
 
-                Settings.Set("topic", str);
+                Settings.Topic = str;
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Topic(x, str)), x => x.LoggedIn);
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.TopicTo(x, str)), x => x.LoggedIn);

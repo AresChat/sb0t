@@ -20,17 +20,17 @@ namespace core.Udp
             this.Data.AddRange(b);
         }
 
-        public void WriteInt16(ushort i)
+        public void WriteUInt16(ushort i)
         {
             this.Data.AddRange(BitConverter.GetBytes(i));
         }
 
-        public void WriteInt32(uint i)
+        public void WriteUInt32(uint i)
         {
             this.Data.AddRange(BitConverter.GetBytes(i));
         }
 
-        public void WriteInt64(ulong i)
+        public void WriteUInt64(ulong i)
         {
             this.Data.AddRange(BitConverter.GetBytes(i));
         }

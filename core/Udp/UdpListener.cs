@@ -11,6 +11,7 @@ namespace core.Udp
     {
         public IPEndPoint EndPoint { get; private set; }
         public bool Showing { get; private set; }
+        public bool ServerAddressReceived { get; set; }
 
         private Socket Sock { get; set; }
         private Queue<UdpItem> data_out = new Queue<UdpItem>();
@@ -52,6 +53,26 @@ namespace core.Udp
             catch { }
             try { this.Sock = null; }
             catch { }
+        }
+
+        public FirewallTest TestRemoteFirewall
+        {
+            get
+            {
+                if (this.firewall_tests.Count < 4)
+                {
+                    FirewallTest fw = new FirewallTest();
+                    this.firewall_tests.Add(fw);
+                    return fw;
+                }
+
+                return null;
+            }
+        }
+
+        public void StartRemoteFirewallTest(uint cookie)
+        {
+            this.firewall_tests.ForEachWhere(x => x.Start(), x => x.Cookie == cookie);
         }
 
         public void SendDatagram(UdpItem item)
@@ -106,7 +127,7 @@ namespace core.Udp
 
                 if (this.TcpTester.IsTesting)
                     this.TcpTester.TestNext(this);
-                else
+                else if (this.Showing)
                     this.Push(time);
             }
 
@@ -115,12 +136,17 @@ namespace core.Udp
                 this.Timer_1_Minute = time;
                 this.TcpTester.Timeout();
                 UdpNodeManager.Expire(time);
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x,
+                    "udp stats: " + UdpStats.SENDINFO + ":" + UdpStats.ACKINFO + ":" + UdpStats.ADDIPS + ":" + UdpStats.ACKIPS)),
+                    x => x.LoggedIn);
             }
 
             if (this.Timer_15_Minutes > (time + 900000))
             {
                 this.Timer_15_Minutes = time;
                 UdpNodeManager.Update(time);
+                ServerCore.Log("udp stats: " + UdpStats.SENDINFO + ":" + UdpStats.ACKINFO + ":" + UdpStats.ADDIPS + ":" + UdpStats.ACKIPS);
+                UdpStats.Reset();
             }
         }
 

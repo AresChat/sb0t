@@ -58,5 +58,15 @@ namespace core
                 }
             }
         }
+
+        public static ushort UserCount
+        {
+            get
+            {
+                ushort result = (ushort)AUsers.FindAll(x => x.LoggedIn).Count;
+                result += (ushort)WUsers.FindAll(x => x.LoggedIn).Count;
+                return result;
+            }
+        }
     }
 }
