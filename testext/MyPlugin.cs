@@ -20,7 +20,7 @@ namespace testext
 
         public void Joined(IUser client) { }
 
-        public void Rejected(IUser client, RejectedMsg msg) { client.Print("test"); }
+        public void Rejected(IUser client, RejectedMsg msg) { }
 
         public void Parting(IUser client) { }
 
@@ -34,7 +34,7 @@ namespace testext
 
         public String TextSending(IUser client, String text) { return text; }
 
-        public void TextSent(IUser client, String text) { Server.Print(text); }
+        public void TextSent(IUser client, String text) { }
 
         public void EmoteReceived(IUser client, String text) { }
 

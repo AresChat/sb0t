@@ -18,7 +18,7 @@ namespace commands
 
         public void Joined(IUser client) { }
 
-        public void Rejected(IUser client, RejectedMsg msg) { client.Print("test"); }
+        public void Rejected(IUser client, RejectedMsg msg) { }
 
         public void Parting(IUser client) { }
 
