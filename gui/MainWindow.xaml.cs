@@ -475,5 +475,17 @@ namespace gui
             Settings.Set("link_mode", this.comboBox4.SelectedIndex);
         }
 
+        private void RemoveTrustedLeaf(object sender, RoutedEventArgs e)
+        {
+            int i = this.listBox3.SelectedIndex;
+
+            if (i > -1)
+            {
+                core.Linking.TrustedLeafItem item = (core.Linking.TrustedLeafItem)this.listBox3.Items[i];
+                core.Linking.TrustedLeavesManager.RemoveItem(item);
+                this.listBox3.Items.RemoveAt(i);
+            }
+        }
+
     }
 }

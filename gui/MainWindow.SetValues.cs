@@ -191,7 +191,13 @@ namespace gui
             }
             //link mode
             this.comboBox4.SelectedIndex = Settings.Get<int>("link_mode");
+            //trusted leaves
+            core.Linking.TrustedLeavesManager.Init();
 
+            foreach (core.Linking.TrustedLeafItem item in core.Linking.TrustedLeavesManager.Items)
+                this.listBox3.Items.Add(item);
+
+            //my link ident
             this.SetLinkIdent();
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
@@ -213,7 +219,17 @@ namespace gui
 
         private void AddLink(String name, Guid guid)
         {
-            
+            core.Linking.TrustedLeafItem item = new core.Linking.TrustedLeafItem
+            {
+                Guid = guid,
+                Name = name
+            };
+
+            if (!core.Linking.TrustedLeavesManager.AddItem(item))
+                MessageBox.Show("This leaf already exists in your trusted leaf list",
+                    "sb0t", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            else
+                this.listBox3.Items.Add(item);
         }
 
         private void LoadExtension(String name)
