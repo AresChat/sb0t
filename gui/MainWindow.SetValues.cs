@@ -181,12 +181,39 @@ namespace gui
 
             foreach (String ext in ExtAutorun.Items)
                 this.LoadExtension(ext);
+            //link identifier
+            byte[] link_guid = Settings.Get<byte[]>("guid");
 
+            if (link_guid == null)
+            {
+                link_guid = Guid.NewGuid().ToByteArray();
+                Settings.Set("guid", link_guid);
+            }
+            //link mode
+            this.comboBox4.SelectedIndex = Settings.Get<int>("link_mode");
+
+            this.SetLinkIdent();
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
 
             if ((bool)this.checkBox3.IsChecked)
                 this.ServerStartStop(null, null);
+        }
+
+        private void SetLinkIdent()
+        {
+            List<byte> list = new List<byte>();
+            byte[] name = Encoding.UTF8.GetBytes(Settings.Get<String>("name"));
+            list.Add((byte)name.Length);
+            list.AddRange(name);
+            list.AddRange(Settings.Get<byte[]>("guid"));
+            list.Reverse();
+            this.textBox7.Text = "sblnk://" + Convert.ToBase64String(list.ToArray());
+        }
+
+        private void AddLink(String name, Guid guid)
+        {
+            
         }
 
         private void LoadExtension(String name)

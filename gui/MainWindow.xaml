@@ -18,6 +18,7 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
+                            <Rectangle Canvas.Left="332" Canvas.Top="28" Height="167" Name="rectangle11" Stroke="Silver" Width="213" />
                             <Image Height="128" Width="128" Canvas.Left="65" Canvas.Top="8" Source="Images/chat-bubble-icon.png" />
                             <Label Canvas.Left="65" Canvas.Top="57" Height="27" Name="label1" Width="128" HorizontalContentAlignment="Center" Foreground="#FFF80000" FontFamily="Comic Sans MS" FontWeight="Bold" />
                             <TextBox Canvas.Left="35" Canvas.Top="172" Height="23" Name="textBox1" Width="188" TextChanged="TextBoxTextChanged" />
@@ -26,18 +27,18 @@
                             <Label Canvas.Left="29" Canvas.Top="150" Content="Room name:" Height="28" Name="label2" />
                             <Label Canvas.Left="29" Canvas.Top="197" Content="Room port:" Height="28" Name="label3" />
                             <Label Canvas.Left="29" Canvas.Top="244" Content="Bot name:" Height="28" Name="label4" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="55" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="75" Content="Custom emoticons enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="95" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="115" Content="Load sb0t when windows starts" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="135" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="155" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="45" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="65" Content="Custom emoticons enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="85" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="105" Content="Load sb0t when windows starts" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="125" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="145" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Button Focusable="False" Background="Silver" Canvas.Left="341" Canvas.Top="216" Content="Start server" Height="23" Name="button1" Width="193" Click="ServerStartStop" />
                             <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="247" Content="Open data folder" Height="23" Name="button2" Width="193" Click="button2_Click" />
                             <Button Focusable="False" Background="Gainsboro" Canvas.Left="341" Canvas.Top="273" Content="Ares join" Height="23" Name="button3" Width="95" IsEnabled="False" Click="button3_Click" />
                             <Button Focusable="False" Background="Gainsboro" Canvas.Left="439" Canvas.Top="273" Content="cb0t join" Height="23" Name="button4" Width="95" IsEnabled="False" Click="button4_Click" />
                             <Label Canvas.Left="4" Canvas.Bottom="4" Content="Status:  Server stopped." Height="28" Name="statusLabel" FontWeight="Bold" />
-                            <CheckBox Canvas.Left="341" Canvas.Top="175" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="165" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
                     </Border>
                 </Grid>
@@ -91,7 +92,20 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
-                            <Label Canvas.Left="10" Canvas.Top="10" Content="linking tab" Height="28" />
+                            <Rectangle Canvas.Left="34" Canvas.Top="29" Height="177" Name="rectangle10" Stroke="Silver" Width="515" />
+                            <ComboBox Canvas.Left="399" Canvas.Top="253" Height="23" Name="comboBox4" Width="120" SelectionChanged="comboBox4_SelectionChanged">
+                                <ComboBoxItem Content="Disabled" />
+                                <ComboBoxItem Content="Hub" />
+                                <ComboBoxItem Content="Leaf" />
+                            </ComboBox>
+                            <Label Canvas.Left="394" Canvas.Top="228" Content="Link mode:" Height="28" Name="label24" />
+                            <TextBox Canvas.Left="34" Canvas.Top="253" Height="64" Name="textBox7" Width="292" IsReadOnly="True" TextWrapping="Wrap" />
+                            <Label Canvas.Left="29" Canvas.Top="228" Content="Your leaf identifier:" Height="28" Name="label25" />
+                            <Label Background="White" Canvas.Left="44" Canvas.Top="15" Content="Trusted leaves" Height="28" Name="label26" />
+                            <ListBox Height="140" Name="listBox3" Width="208" Canvas.Left="53" Canvas.Top="49" />
+                            <Label Background="White" Canvas.Left="324" Canvas.Top="56" Content="Trusted leaf identifier:" Height="28" Name="label27" />
+                            <TextBox Canvas.Left="328" Canvas.Top="81" Height="57" Name="textBox8" Width="183" TextWrapping="Wrap" />
+                            <Button Canvas.Left="471" Canvas.Top="144" Content="Add" Height="23" Name="button7" Width="40" Click="button7_Click" Focusable="False" />
                         </Canvas>
                     </Border>
                 </Grid>
@@ -110,14 +124,14 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Background="White">
-                            <Rectangle Canvas.Left="149" Canvas.Top="250" Height="74" Name="rectangle6" Stroke="Black" Width="173" />
+                            <Rectangle Canvas.Left="149" Canvas.Top="250" Height="74" Name="rectangle6" Stroke="Silver" Width="173" />
                             <Label Background="White" Canvas.Left="159" Canvas.Top="236" Content="Gender" Height="28" Name="label15" />
-                            <Rectangle Canvas.Left="10" Canvas.Top="236" Height="96" Name="rectangle5" Stroke="Black" Width="321" />
-                            <Rectangle Canvas.Left="342" Canvas.Top="236" Height="96" Name="rectangle1" Stroke="Black" Width="229" />
+                            <Rectangle Canvas.Left="10" Canvas.Top="236" Height="96" Name="rectangle5" Stroke="Silver" Width="321" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="236" Height="96" Name="rectangle1" Stroke="Silver" Width="229" />
                             <Label Canvas.Left="352" Canvas.Top="222" Content="Scripting" Height="28" Name="label7" Background="White" />
-                            <Rectangle Canvas.Left="342" Canvas.Top="129" Height="96" Name="rectangle2" Stroke="Black" Width="229" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="129" Height="96" Name="rectangle2" Stroke="Silver" Width="229" />
                             <Label Background="White" Canvas.Left="20" Canvas.Top="222" Content="Restrictions" Height="28" Name="label12" />
-                            <Rectangle Canvas.Left="10" Canvas.Top="22" Height="203" Name="rectangle3" Stroke="Black" Width="321" />
+                            <Rectangle Canvas.Left="10" Canvas.Top="22" Height="203" Name="rectangle3" Stroke="Silver" Width="321" />
                             <CheckBox Content="Captcha enabled" Height="16" Name="checkBox8" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" Canvas.Left="355" Canvas.Top="200" />
                             <CheckBox Canvas.Left="26" Canvas.Top="46" Content="Enable file browsing" Height="16" Name="checkBox7" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Grid Canvas.Left="372" Canvas.Top="245"></Grid>
@@ -131,7 +145,7 @@
                             </ComboBox>
                             <Label Canvas.Left="350" Canvas.Top="297" Content="Scripting level:" Height="28" Name="label6" />
                             <Label Background="White" Canvas.Left="352" Canvas.Top="115" Content="Captcha" Height="28" Name="label8" />
-                            <Rectangle Canvas.Left="342" Canvas.Top="22" Height="96" Name="rectangle4" Stroke="Black" Width="229" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="22" Height="96" Name="rectangle4" Stroke="Silver" Width="229" />
                             <Label Background="White" Canvas.Left="352" Canvas.Top="8" Content="Ban lists" Height="28" Name="label10" />
                             <my:NumericUpDown Canvas.Left="425" Canvas.Top="50" x:Name="numericUpDown1" MinValue="1" MaxValue="96" Value="1" ValueChanged="numericUpDown1_ValueChanged" />
                             <CheckBox Canvas.Left="355" Canvas.Top="93" Content="Auto clear bans" Height="16" Name="checkBox13" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />

@@ -105,6 +105,7 @@ namespace gui
             this.button4.IsEnabled = running;
             this.comboBox2.IsEnabled = running ? false : (bool)this.checkBox8.IsChecked;
             this.comboBox3.IsEnabled = !running;
+            this.comboBox4.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -154,7 +155,10 @@ namespace gui
             TextBox tb = (TextBox)sender;
 
             if (tb.Name == "textBox1")
+            {
                 Settings.Set("name", this.textBox1.Text);
+                this.SetLinkIdent();
+            }
             else if (tb.Name == "textBox2")
             {
                 ushort u;
@@ -438,6 +442,37 @@ namespace gui
                 String extension_name = this.listBox1.SelectedItem.ToString();
                 this.LoadExtension(extension_name);
             }
+        }
+
+        private void button7_Click(object sender, RoutedEventArgs e)
+        {
+            String text = this.textBox8.Text;
+            this.textBox8.Text = String.Empty;
+
+            try
+            {
+                if (text.StartsWith("sblnk://"))
+                {
+                    text = text.Substring(8);
+                    byte[] buffer = Convert.FromBase64String(text);
+                    Array.Reverse(buffer);
+                    byte len = buffer[0];
+                    String name = Encoding.UTF8.GetString(buffer, 1, len);
+                    Guid guid = new Guid(buffer.Skip(1 + len).ToArray());
+                    this.AddLink(name, guid);
+                }
+                else throw new Exception();
+            }
+            catch
+            {
+                MessageBox.Show("Invalid leaf identifier",
+                    "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void comboBox4_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Settings.Set("link_mode", this.comboBox4.SelectedIndex);
         }
 
     }
