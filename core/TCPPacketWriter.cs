@@ -88,6 +88,22 @@ namespace core
                 this.Data.Add(0);
         }
 
+        public void WriteString(core.LinkHub.Leaf leaf, String text)
+        {
+            this.WriteString(leaf, text, true);
+        }
+
+        public void WriteString(core.LinkHub.Leaf leaf, String text, bool null_terminated)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(text);
+            data = Crypto.Encrypt(data, leaf.Key, leaf.IV);
+            this.WriteUInt16((ushort)data.Length);
+            this.WriteBytes(data);
+
+            if (null_terminated)
+                this.Data.Add(0);
+        }
+
         public void ReplaceByte(byte b, int i)
         {
             this.Data[i] = b;
@@ -102,6 +118,14 @@ namespace core
         {
             List<byte> tmp = new List<byte>(this.Data.ToArray());
             tmp.Insert(0, (byte)packet_id);
+            tmp.InsertRange(0, BitConverter.GetBytes((ushort)(tmp.Count - 1)));
+            return tmp.ToArray();
+        }
+
+        public byte[] ToLinkPacket(core.LinkHub.LinkMsg msg)
+        {
+            List<byte> tmp = new List<byte>(this.Data.ToArray());
+            tmp.Insert(0, (byte)msg);
             tmp.InsertRange(0, BitConverter.GetBytes((ushort)(tmp.Count - 1)));
             return tmp.ToArray();
         }

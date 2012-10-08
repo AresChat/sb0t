@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Data;
 using System.Data.SQLite;
+using System.Security.Cryptography;
 
 namespace core.LinkHub
 {
@@ -113,6 +114,29 @@ namespace core.LinkHub
         public static bool IsTrusted(TrustedLeafItem item)
         {
             return items.Find(x => x.Guid.Equals(item.Guid) && x.Name == item.Name) != null;
+        }
+
+        public static TrustedLeafItem GetTrusted(byte[] data)
+        {
+            TrustedLeafItem result = null;
+
+            using (SHA1 sha1 = SHA1.Create())
+                foreach (TrustedLeafItem i in items)
+                {
+                    List<byte> list = new List<byte>();
+                    list.AddRange(Encoding.UTF8.GetBytes(i.Name));
+                    list.AddRange(i.Guid.ToByteArray());
+                    list.Reverse();
+                    byte[] buf = sha1.ComputeHash(list.ToArray());
+
+                    if (buf.SequenceEqual(data))
+                    {
+                        result = i;
+                        break;
+                    }
+                }
+
+            return result;
         }
     }
 }

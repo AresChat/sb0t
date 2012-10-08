@@ -10,7 +10,7 @@ namespace core.LinkHub
         Unavailable = 0,
         ExpiredProtocol = 1,
         Untrusted = 2,
-        LoginTimeout = 3,
+        HandshakeTimeout = 3,
         PingTimeout = 4,
         BadProtocol = 6
     }

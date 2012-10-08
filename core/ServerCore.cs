@@ -312,6 +312,9 @@ namespace core
                     }
 
                 leaf.SendReceive();
+
+                if (leaf.SocketConnected)
+                    leaf.EnforceRules(time);
             }
 
             core.LinkHub.LeafPool.Leaves.ForEachWhere(x => x.Disconnect(), x => !x.SocketConnected);

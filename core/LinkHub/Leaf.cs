@@ -12,9 +12,16 @@ namespace core.LinkHub
     {
         public Socket Sock { get; set; }
         public IPAddress ExternalIP { get; set; }
-        public bool LoggedIn { get; set; }
         public uint Ident { get; set; }
         public ulong Time { get; set; }
+        public LinkLogin LoginPhase { get; set; }
+        public String Name { get; set; }
+        public Guid Guid { get; set; }
+        public byte[] Key { get; set; }
+        public byte[] IV { get; set; }
+        public ushort Port { get; set; }
+        public ushort Protocol { get; set; }
+        public List<LinkUser> Users { get; set; }
 
         private List<byte> data_in = new List<byte>();
         private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
@@ -22,10 +29,12 @@ namespace core.LinkHub
 
         public Leaf(Socket sock, ulong time, byte[] buffer)
         {
+            this.Users = new List<LinkUser>();
             this.Sock = sock;
             this.ExternalIP = ((IPEndPoint)sock.RemoteEndPoint).Address;
             this.Ident = LeafPool.NextIdent;
             this.Time = time;
+            this.LoginPhase = LinkLogin.AwaitingLogin;
             data_in.AddRange(BitConverter.GetBytes((ushort)buffer.Length));
             data_in.Add((byte)TCPMsg.MSG_LINK_PROTO);
             data_in.AddRange(buffer);
@@ -131,20 +140,41 @@ namespace core.LinkHub
 
             this.SocketConnected = false;
 
-            if (this.LoggedIn)
-            {
-                this.LoggedIn = false;
-                // event
-            }
+            if (this.LoginPhase == LinkLogin.Ready)
+                LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubLeafDisconnected(x, this)),
+                    x => x.Ident != this.Ident && x.LoginPhase == LinkLogin.Ready);
         }
 
         public void EnforceRules(ulong time)
         {
-            if ((!this.LoggedIn && time > (this.Time + 15000)) ||
-                (this.LoggedIn && time > (this.Time + 240000)))
+            switch (this.LoginPhase)
             {
-                this.SocketConnected = false;
-                ServerCore.Log("ping timeout or login timeout from " + this.ExternalIP + " id: " + this.Ident);
+                case LinkLogin.AwaitingLogin:
+                    if (time > (this.Time + 10000))
+                    {
+                        this.SendPacket(HubOutbound.LinkError(LinkError.HandshakeTimeout));
+                        this.SocketConnected = false;
+                        ServerCore.Log("handshake timeout from leaf " + this.ExternalIP + " id: " + this.Ident);
+                    }
+                    break;
+
+                case LinkLogin.AwaitingUserlist:
+                    if (time > (this.Time + 60000))
+                    {
+                        this.SendPacket(HubOutbound.LinkError(LinkError.HandshakeTimeout));
+                        this.SocketConnected = false;
+                        ServerCore.Log("handshake timeout from leaf " + this.ExternalIP + " id: " + this.Ident);
+                    }
+                    break;
+
+                case LinkLogin.Ready:
+                    if (time > (this.Time + 240000))
+                    {
+                        this.SendPacket(HubOutbound.LinkError(LinkError.PingTimeout));
+                        this.SocketConnected = false;
+                        ServerCore.Log("ping timeout from leaf " + this.ExternalIP + " id: " + this.Ident);
+                    }
+                    break;
             }
         }
 
