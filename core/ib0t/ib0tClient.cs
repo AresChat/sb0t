@@ -294,10 +294,16 @@ namespace core.ib0t
                 try
                 {
                     byte[] packet;
-                    this.data_out.TryPeek(out packet);
-                    this.Sock.Send(packet);
-                    Stats.DataSent += (ulong)packet.Length;
-                    this.data_out.TryDequeue(out packet);
+
+                    if (this.data_out.TryPeek(out packet))
+                    {
+                        this.Sock.Send(packet);
+                        Stats.DataSent += (ulong)packet.Length;
+
+                        while (!this.data_out.TryDequeue(out packet))
+                            continue;
+                    }
+                    else break;
                 }
                 catch { break; }
             }
@@ -350,10 +356,16 @@ namespace core.ib0t
                 try
                 {
                     byte[] packet;
-                    this.data_out.TryPeek(out packet);
-                    this.Sock.Send(packet);
-                    Stats.DataSent += (ulong)packet.Length;
-                    this.data_out.TryDequeue(out packet);
+
+                    if (this.data_out.TryPeek(out packet))
+                    {
+                        this.Sock.Send(packet);
+                        Stats.DataSent += (ulong)packet.Length;
+
+                        while (!this.data_out.TryDequeue(out packet))
+                            continue;
+                    }
+                    else break;
                 }
                 catch { break; }
             }

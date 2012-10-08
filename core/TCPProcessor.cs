@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using captcha;
 using iconnect;
+using core.LinkHub;
 
 namespace core
 {
@@ -11,7 +12,7 @@ namespace core
     {
         public static void Eval(AresClient client, TCPPacket packet, ulong time)
         {
-            if (!client.LoggedIn && packet.Msg > TCPMsg.MSG_CHAT_CLIENT_LOGIN)
+            if (!client.LoggedIn && (packet.Msg > TCPMsg.MSG_CHAT_CLIENT_LOGIN && packet.Msg != TCPMsg.MSG_LINK_PROTO))
                 throw new Exception("unordered login routine");
 
             if (client.LoggedIn)
@@ -118,10 +119,22 @@ namespace core
                     client.SendPacket(TCPOutbound.SuperNodes());
                     break;
 
+                case TCPMsg.MSG_LINK_PROTO:
+                    LinkProto(client, packet.Packet, time);
+                    break;
+
                 default:
                     Events.UnhandledProtocol(client, false, packet.Msg, packet.Packet, time);
                     break;
             }
+        }
+
+        private static void LinkProto(AresClient client, TCPPacketReader packet, ulong time)
+        {
+            Leaf leaf = new Leaf(client.Sock, time, packet.ToArray());
+            client.IsLeaf = true;
+            client.Sock = null;
+            LeafPool.Leaves.Add(leaf);
         }
 
         private static void Dummy(AresClient client)

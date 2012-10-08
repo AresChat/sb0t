@@ -88,6 +88,7 @@ namespace core
             catch { }
 
             UserPool.Destroy();
+            core.LinkHub.LeafPool.Destroy();
             this.Running = false;
             Settings.RUNNING = false;
         }
@@ -100,6 +101,7 @@ namespace core
             FloodControl.Reset();
             Stats.Reset();
             UserPool.Build();
+            core.LinkHub.LeafPool.Build();
             Captcha.Initialize();
             UserHistory.Initialize();
             AccountManager.LoadPasswords();
@@ -111,6 +113,7 @@ namespace core
             ulong channel_push_timer = (Time.Now - 1200000);
             ulong reset_floods_timer = Time.Now;
             bool can_web_chat = Settings.Get<bool>("enabled", "web");
+            core.LinkHub.LinkMode link_mode = (core.LinkHub.LinkMode)Settings.Get<int>("link_mode");
 
             while (true)
             {
@@ -139,6 +142,7 @@ namespace core
                 this.udp.ServiceUdp(time);
                 this.CheckTCPListener(time);
                 this.ServiceAresSockets(time);
+                this.ServiceLeaves(link_mode, time);
 
                 if (can_web_chat)
                 {
@@ -233,7 +237,7 @@ namespace core
                 }
             }
 
-            UserPool.WUsers.FindAll(x => !x.SocketConnected).ForEach(x => x.Disconnect());
+            UserPool.WUsers.ForEachWhere(x => x.Disconnect(), x => !x.SocketConnected);
             UserPool.WUsers.RemoveAll(x => !x.SocketConnected);
         }
 
@@ -260,6 +264,9 @@ namespace core
                             try
                             {
                                 TCPProcessor.Eval(client, packet, time);
+
+                                if (client.IsLeaf)
+                                    break;
                             }
                             catch (Exception e)
                             {
@@ -273,14 +280,42 @@ namespace core
                                 break;
                             }
 
+                    if (client.IsLeaf)
+                        continue;
+
                     client.SendReceive();
 
                     if (client.SocketConnected)
                         client.EnforceRules(time);
                 }
 
-            UserPool.AUsers.FindAll(x => !x.SocketConnected).ForEach(x => x.Disconnect());
-            UserPool.AUsers.RemoveAll(x => !x.SocketConnected);
+            UserPool.AUsers.ForEachWhere(x => x.Disconnect(), x => !x.SocketConnected);
+            UserPool.AUsers.RemoveAll(x => !x.SocketConnected || x.IsLeaf);
+        }
+
+        private void ServiceLeaves(core.LinkHub.LinkMode mode, ulong time)
+        {
+            foreach (core.LinkHub.Leaf leaf in core.LinkHub.LeafPool.Leaves)
+            {
+                core.LinkHub.LinkPacket packet = null;
+
+                while ((packet = leaf.NextReceivedPacket) != null && leaf.SocketConnected)
+                    try
+                    {
+                        core.LinkHub.HubProcessor.Eval(leaf, packet.Msg, packet.Packet, time, mode);
+                    }
+                    catch (Exception e)
+                    {
+                        leaf.Disconnect();
+                        Log("packet read fail from leaf " + leaf.Ident + " " + packet.Msg, e);
+                        break;
+                    }
+
+                leaf.SendReceive();
+            }
+
+            core.LinkHub.LeafPool.Leaves.ForEachWhere(x => x.Disconnect(), x => !x.SocketConnected);
+            core.LinkHub.LeafPool.Leaves.RemoveAll(x => !x.SocketConnected);
         }
     }
 

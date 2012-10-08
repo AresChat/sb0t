@@ -58,6 +58,7 @@ namespace core
         public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
         public bool Quarantined { get; set; }
+        public bool IsLeaf { get; set; }
 
         public Socket Sock { get; set; }
         public bool HasSecureLoginAttempted { get; set; }
@@ -415,10 +416,16 @@ namespace core
                 try
                 {
                     byte[] packet;
-                    this.data_out.TryPeek(out packet);
-                    this.Sock.Send(packet);
-                    Stats.DataSent += (ulong)packet.Length;
-                    this.data_out.TryDequeue(out packet);
+
+                    if (this.data_out.TryPeek(out packet))
+                    {
+                        this.Sock.Send(packet);
+                        Stats.DataSent += (ulong)packet.Length;
+
+                        while (!this.data_out.TryDequeue(out packet))
+                            continue;
+                    }
+                    else break;
                 }
                 catch { break; }
             }
@@ -467,10 +474,16 @@ namespace core
                 try
                 {
                     byte[] packet;
-                    this.data_out.TryPeek(out packet);
-                    this.Sock.Send(packet);
-                    Stats.DataSent += (ulong)packet.Length;
-                    this.data_out.TryDequeue(out packet);
+
+                    if (this.data_out.TryPeek(out packet))
+                    {
+                        this.Sock.Send(packet);
+                        Stats.DataSent += (ulong)packet.Length;
+
+                        while (!this.data_out.TryDequeue(out packet))
+                            continue;
+                    }
+                    else break;
                 }
                 catch { break; }
             }

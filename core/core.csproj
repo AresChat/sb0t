@@ -74,8 +74,15 @@
     <Compile Include="FloodControl.cs" />
     <Compile Include="FloodRecord.cs" />
     <Compile Include="IdleManager.cs" />
-    <Compile Include="Linking\TrustedLeafItem.cs" />
-    <Compile Include="Linking\TrustedLeavesManager.cs" />
+    <Compile Include="LinkHub\Leaf.cs" />
+    <Compile Include="LinkHub\LeafPool.cs" />
+    <Compile Include="LinkHub\HubProcessor.cs" />
+    <Compile Include="LinkHub\LinkError.cs" />
+    <Compile Include="LinkHub\LinkMode.cs" />
+    <Compile Include="LinkHub\LinkMsg.cs" />
+    <Compile Include="LinkHub\LinkPacket.cs" />
+    <Compile Include="LinkHub\TrustedLeafItem.cs" />
+    <Compile Include="LinkHub\TrustedLeavesManager.cs" />
     <Compile Include="Prototypes.cs" />
     <Compile Include="Extensions\ExHost.cs" />
     <Compile Include="Extensions\ExUsers.cs" />

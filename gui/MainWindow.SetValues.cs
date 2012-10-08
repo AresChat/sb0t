@@ -192,9 +192,9 @@ namespace gui
             //link mode
             this.comboBox4.SelectedIndex = Settings.Get<int>("link_mode");
             //trusted leaves
-            core.Linking.TrustedLeavesManager.Init();
+            core.LinkHub.TrustedLeavesManager.Init();
 
-            foreach (core.Linking.TrustedLeafItem item in core.Linking.TrustedLeavesManager.Items)
+            foreach (core.LinkHub.TrustedLeafItem item in core.LinkHub.TrustedLeavesManager.Items)
                 this.listBox3.Items.Add(item);
 
             //my link ident
@@ -219,13 +219,13 @@ namespace gui
 
         private void AddLink(String name, Guid guid)
         {
-            core.Linking.TrustedLeafItem item = new core.Linking.TrustedLeafItem
+            core.LinkHub.TrustedLeafItem item = new core.LinkHub.TrustedLeafItem
             {
                 Guid = guid,
                 Name = name
             };
 
-            if (!core.Linking.TrustedLeavesManager.AddItem(item))
+            if (!core.LinkHub.TrustedLeavesManager.AddItem(item))
                 MessageBox.Show("This leaf already exists in your trusted leaf list",
                     "sb0t", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             else

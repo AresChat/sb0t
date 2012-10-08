@@ -481,8 +481,8 @@ namespace gui
 
             if (i > -1)
             {
-                core.Linking.TrustedLeafItem item = (core.Linking.TrustedLeafItem)this.listBox3.Items[i];
-                core.Linking.TrustedLeavesManager.RemoveItem(item);
+                core.LinkHub.TrustedLeafItem item = (core.LinkHub.TrustedLeafItem)this.listBox3.Items[i];
+                core.LinkHub.TrustedLeavesManager.RemoveItem(item);
                 this.listBox3.Items.RemoveAt(i);
             }
         }
