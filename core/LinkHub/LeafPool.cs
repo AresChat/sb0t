@@ -24,7 +24,8 @@ namespace core.LinkHub
 
         public static void Destroy()
         {
-
+            Leaves.ForEach(x => x.Disconnect());
+            Leaves.Clear();
         }
     }
 }

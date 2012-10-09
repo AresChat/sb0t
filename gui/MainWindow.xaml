@@ -112,6 +112,7 @@
                             <Label Background="White" Canvas.Left="324" Canvas.Top="56" Content="Trusted leaf identifier:" Height="28" Name="label27" />
                             <TextBox Canvas.Left="328" Canvas.Top="81" Height="57" Name="textBox8" Width="183" TextWrapping="Wrap" />
                             <Button Canvas.Left="471" Canvas.Top="144" Content="Add" Height="23" Name="button7" Width="40" Click="button7_Click" Focusable="False" />
+                            <CheckBox Content="Auto reconnect" Height="16" Name="checkBox20" Canvas.Left="399" Canvas.Top="291" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
                     </Border>
                 </Grid>

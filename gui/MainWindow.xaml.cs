@@ -106,6 +106,7 @@ namespace gui
             this.comboBox2.IsEnabled = running ? false : (bool)this.checkBox8.IsChecked;
             this.comboBox3.IsEnabled = !running;
             this.comboBox4.IsEnabled = !running;
+            this.checkBox20.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -243,6 +244,8 @@ namespace gui
                 Settings.Set("full_scribble", this.checkBox18.IsChecked);
             else if (cb.Name == "checkBox19")
                 Settings.Set("local_host", this.checkBox19.IsChecked);
+            else if (cb.Name == "checkBox20")
+                Settings.Set("link_reconnect", this.checkBox20.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)

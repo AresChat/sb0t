@@ -20,6 +20,7 @@ namespace core.LinkHub
                     break;
 
                 case LinkMsg.MSG_LINK_LEAF_EMOTE_TEXT:
+                    LeafEmoteText(leaf, packet);
                     break;
 
                 case LinkMsg.MSG_LINK_LEAF_LOGIN:
@@ -31,12 +32,15 @@ namespace core.LinkHub
                     break;
 
                 case LinkMsg.MSG_LINK_LEAF_PRIVATE_IGNORED:
+                    LeafPrivateIgnored(leaf, packet);
                     break;
 
                 case LinkMsg.MSG_LINK_LEAF_PRIVATE_TEXT:
+                    LeafPrivateText(leaf, packet);
                     break;
 
                 case LinkMsg.MSG_LINK_LEAF_PUBLIC_TEXT:
+                    LeafPublicText(leaf, packet);
                     break;
 
                 case LinkMsg.MSG_LINK_LEAF_USERLIST_END:
@@ -58,7 +62,75 @@ namespace core.LinkHub
                 case LinkMsg.MSG_LINK_LEAF_PING:
                     LeafPing(leaf, time);
                     break;
+
+                case LinkMsg.MSG_LINK_LEAF_RELAY:
+                    LeafRelay(leaf, packet);
+                    break;
+
+                case LinkMsg.MSG_LINK_LEAF_BROADCAST:
+                    LeafBroadcast(leaf, packet);
+                    break;
             }
+        }
+
+        private static void LeafRelay(Leaf leaf, TCPPacketReader packet)
+        {
+            uint target_leaf = packet;
+            String target_name = packet.ReadString(leaf);
+            byte[] data = packet;
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == target_leaf && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+                l.SendPacket(HubOutbound.HubRelay(l, leaf.Ident, target_name, data));
+        }
+
+        private static void LeafBroadcast(Leaf leaf, TCPPacketReader packet)
+        {
+            byte[] data = packet;
+
+            LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubBroadcast(x, leaf.Ident, data)),
+                x => x.Ident != leaf.Ident && x.LoginPhase == LinkLogin.Ready);
+        }
+
+        private static void LeafEmoteText(Leaf leaf, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(leaf);
+            String text = packet.ReadString(leaf);
+
+            LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubEmoteText(x, leaf.Ident, name, text)),
+                x => x.Ident != leaf.Ident && x.LoginPhase == LinkLogin.Ready);
+        }
+
+        private static void LeafPublicText(Leaf leaf, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(leaf);
+            String text = packet.ReadString(leaf);
+
+            LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubPublicText(x, leaf.Ident, name, text)),
+                x => x.Ident != leaf.Ident && x.LoginPhase == LinkLogin.Ready);
+        }
+
+        private static void LeafPrivateText(Leaf leaf, TCPPacketReader packet)
+        {
+            uint target_leaf = packet;
+            String target_name = packet.ReadString(leaf);
+            String send_name = packet.ReadString(leaf);
+            String text = packet.ReadString(leaf);
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == target_leaf && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+                l.SendPacket(HubOutbound.HubPrivateText(l, leaf.Ident, send_name, target_name, text));
+        }
+
+        private static void LeafPrivateIgnored(Leaf leaf, TCPPacketReader packet)
+        {
+            uint sender_leaf = packet;
+            String target = packet.ReadString(leaf);
+            String sender = packet.ReadString(leaf);
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == sender_leaf && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+                l.SendPacket(HubOutbound.HubPrivateIgnored(l, leaf.Ident, sender, target));
         }
 
         private static void LeafJoin(Leaf leaf, TCPPacketReader packet)
@@ -292,7 +364,9 @@ namespace core.LinkHub
             }
 
             byte[] credentials = packet.ReadBytes(20);
-            TrustedLeafItem item = TrustedLeavesManager.GetTrusted(credentials);
+            leaf.Protocol = packet;
+            leaf.Port = packet;
+            TrustedLeafItem item = TrustedLeavesManager.GetTrusted(leaf.ExternalIP, leaf.Port, credentials);
 
             if (item == null)
             {
@@ -310,9 +384,7 @@ namespace core.LinkHub
 
             leaf.Name = item.Name;
             leaf.Guid = item.Guid;
-            leaf.Protocol = packet;
-            leaf.Port = packet;
-
+            
             if (leaf.Protocol < Settings.LINK_PROTO)
             {
                 leaf.SendPacket(HubOutbound.LinkError(LinkError.ExpiredProtocol));

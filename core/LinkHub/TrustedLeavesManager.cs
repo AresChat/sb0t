@@ -6,6 +6,7 @@ using System.IO;
 using System.Data;
 using System.Data.SQLite;
 using System.Security.Cryptography;
+using System.Net;
 
 namespace core.LinkHub
 {
@@ -116,8 +117,17 @@ namespace core.LinkHub
             return items.Find(x => x.Guid.Equals(item.Guid) && x.Name == item.Name) != null;
         }
 
-        public static TrustedLeafItem GetTrusted(byte[] data)
+        public static TrustedLeafItem GetTrusted(IPAddress ip, ushort port, byte[] data)
         {
+            if (ip.Equals(IPAddress.Loopback) && port == Settings.Port)
+            {
+                return new TrustedLeafItem
+                {
+                    Guid = new Guid(Settings.Get<byte[]>("guid")),
+                    Name = Settings.Name
+                };
+            }
+
             TrustedLeafItem result = null;
 
             using (SHA1 sha1 = SHA1.Create())

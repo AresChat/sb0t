@@ -69,7 +69,7 @@ namespace core
             }
         }
 
-        private static byte[] d67(byte[] data, ushort b)
+        public static byte[] d67(byte[] data, ushort b)
         {
             byte[] buffer = new byte[data.Length];
             Array.Copy(data, buffer, data.Length);

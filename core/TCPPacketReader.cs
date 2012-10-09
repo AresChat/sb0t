@@ -127,6 +127,35 @@ namespace core
             return str;
         }
 
+        public String ReadString(core.LinkLeaf.LinkClient client)
+        {
+            String str = String.Empty;
+            ushort size = this;
+            byte[] data = this.ReadBytes(size);
+            data = Crypto.Decrypt(data, client.Key, client.IV);
+            str = Encoding.UTF8.GetString(data);
+
+            if (this.Position < this.Data.Count)
+                if (this.Data[this.Position] == 0)
+                    this.Position++;
+
+            String[] bad_chars = new String[] // skiddy
+            {
+                "\r\n",
+                "\r",
+                "\n",
+                "",
+                "",
+                "\x00cc\x00b8",
+                "͋"
+            };
+
+            foreach (String c in bad_chars)
+                str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
+
+            return str;
+        }
+
         public String ReadString(IClient client)
         {
             String str = String.Empty;

@@ -122,7 +122,7 @@ namespace core
 
                 return this._customname;
             }
-            set { this._customname = value; }
+            set { this._customname = value == null ? String.Empty : value; }
         }
 
         public void Ban()
@@ -390,7 +390,7 @@ namespace core
             get { return this.personal_message; }
             set
             {
-                this.personal_message = value;
+                this.personal_message = value == null ? String.Empty : value;
 
                 if (!this.Cloaked)
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),

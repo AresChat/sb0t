@@ -104,6 +104,22 @@ namespace core
                 this.Data.Add(0);
         }
 
+        public void WriteString(core.LinkLeaf.LinkClient client, String text)
+        {
+            this.WriteString(client, text, true);
+        }
+
+        public void WriteString(core.LinkLeaf.LinkClient client, String text, bool null_terminated)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(text);
+            data = Crypto.Encrypt(data, client.Key, client.IV);
+            this.WriteUInt16((ushort)data.Length);
+            this.WriteBytes(data);
+
+            if (null_terminated)
+                this.Data.Add(0);
+        }
+
         public void ReplaceByte(byte b, int i)
         {
             this.Data[i] = b;

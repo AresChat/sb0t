@@ -13,6 +13,7 @@ namespace core
     public class ServerCore
     {
         public static event EventHandler<ServerLogEventArgs> LogUpdate;
+        internal static core.LinkLeaf.LinkClient Linker;
 
         public ServerCore()
         {
@@ -89,6 +90,10 @@ namespace core
 
             UserPool.Destroy();
             core.LinkHub.LeafPool.Destroy();
+
+            if (Linker != null)
+                Linker.Disconnect();
+
             this.Running = false;
             Settings.RUNNING = false;
         }
@@ -114,6 +119,10 @@ namespace core
             ulong reset_floods_timer = Time.Now;
             bool can_web_chat = Settings.Get<bool>("enabled", "web");
             core.LinkHub.LinkMode link_mode = (core.LinkHub.LinkMode)Settings.Get<int>("link_mode");
+            Linker = new LinkLeaf.LinkClient();
+
+            if (link_mode == LinkHub.LinkMode.Hub)
+                Linker.ConnectLocal();
 
             while (true)
             {
@@ -143,6 +152,7 @@ namespace core
                 this.CheckTCPListener(time);
                 this.ServiceAresSockets(time);
                 this.ServiceLeaves(link_mode, time);
+                Linker.Service(time);
 
                 if (can_web_chat)
                 {

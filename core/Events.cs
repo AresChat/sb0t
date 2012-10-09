@@ -874,5 +874,15 @@ namespace core
 
             return result;
         }
+
+        public static void LinkError(core.LinkLeaf.LinkError e)
+        {
+
+        }
+
+        public static void LinkConnected()
+        {
+
+        }
     }
 }

@@ -32,7 +32,6 @@ namespace core.LinkHub
                 key = Crypto.e67(key, BitConverter.ToUInt16(guid, i));
 
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteByte((byte)(LeafPool.Leaves.Count - 1));
             packet.WriteBytes(key);
             packet.WriteUInt32(leaf.Ident);
             byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_ACK);
@@ -146,6 +145,78 @@ namespace core.LinkHub
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PONG);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubPrivateIgnored(Leaf x, uint ident, String ignorer, String ignored)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, ignored);
+            packet.WriteString(x, ignorer, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PRIVATE_IGNORED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubPrivateText(Leaf x, uint ident, String sender, String target, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, target);
+            packet.WriteString(x, text);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PRIVATE_TEXT);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubPublicText(Leaf x, uint ident, String name, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, name);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PUBLIC_TEXT);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubEmoteText(Leaf x, uint ident, String name, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, name);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_EMOTE_TEXT);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubRelay(Leaf x, uint ident, String name, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, name);
+            packet.WriteBytes(data);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_RELAY);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubBroadcast(Leaf x, uint ident, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteBytes(data);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_BROADCAST);
             packet = new TCPPacketWriter();
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
