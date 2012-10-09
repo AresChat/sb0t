@@ -23,6 +23,78 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_PONG:
                     link.LastPong = time;
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_USERLIST_ITEM:
+                    HubUserlistItem(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_LEAF_CONNECTED:
+                    HubLeafConnected(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_LEAF_DISCONNECTED:
+                    HubLeafDisconnected(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubLeafConnected(LinkClient link, TCPPacketReader packet)
+        {
+            Leaf leaf = new Leaf();
+            leaf.Ident = packet;
+            leaf.Name = packet.ReadString(link);
+            leaf.ExternalIP = packet;
+            leaf.Port = packet;
+            link.Leaves.Add(leaf);
+            Events.LinkLeafConnected(leaf);
+        }
+
+        private static void HubLeafDisconnected(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                // part packets for all visible items in leaf.Users
+                link.Leaves.RemoveAll(x => x.Ident == leaf_ident);
+                Events.LinkLeafDisconnected(leaf);
+            }
+        }
+
+        private static void HubUserlistItem(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                LinkUser user = new LinkUser(leaf_ident);
+                user.JoinTime = Helpers.UnixTime;
+                user.Name = packet.ReadString(link);
+                user.OrgName = user.Name;
+                user.Version = packet.ReadString(link);
+                user.Guid = packet;
+                user.FileCount = packet;
+                user.ExternalIP = packet;
+                user.LocalIP = packet;
+                user.DataPort = packet;
+                user.DNS = packet.ReadString(link);
+                user.Browsable = ((byte)packet) == 1;
+                user.Age = packet;
+                user.Sex = packet;
+                user.Country = packet;
+                user.Region = packet.ReadString(link);
+                user.Level = (iconnect.ILevel)(byte)packet;
+                user.Vroom = packet;
+                user.CustomClient = ((byte)packet) == 1;
+                user.Muzzled = ((byte)packet) == 1;
+                user.WebClient = ((byte)packet) == 1;
+                user.Encrypted = ((byte)packet) == 1;
+                user.Registered = ((byte)packet) == 1;
+                user.Idle = ((byte)packet) == 1;
+                leaf.Users.Add(user);
+                // check if visible, and send join packet if required
             }
         }
 
@@ -68,7 +140,7 @@ namespace core.LinkLeaf
             link.SendPacket(LeafOutbound.LeafUserlistEnd());
 
             if (!link.Local)
-                Events.LinkConnected();
+                Events.LinkHubConnected();
         }
 
 

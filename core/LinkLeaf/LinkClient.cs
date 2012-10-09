@@ -27,6 +27,12 @@ namespace core.LinkLeaf
         public byte[] Key { get; set; }
         public byte[] IV { get; set; }
         public bool Local { get; set; }
+        public List<Leaf> Leaves { get; set; }
+
+        private void ClearUserlist()
+        {
+
+        }
 
         public void Service(ulong time)
         {
@@ -99,9 +105,7 @@ namespace core.LinkLeaf
                         ServerCore.Log("packet read fail from hub " + packet.Msg, e);
 
                         if (this.LoginPhase == LinkLogin.Ready)
-                        {
-                            // clear userlist of linked users
-                        }
+                            this.ClearUserlist();
 
                         return;
                     }
@@ -122,9 +126,7 @@ namespace core.LinkLeaf
                     Events.LinkError(LinkError.RemoteDisconnect);
 
                     if (this.LoginPhase == LinkLogin.Ready)
-                    {
-                        // clear userlist of linked users
-                    }
+                        this.ClearUserlist();
                 }
                 else if (this.LoginPhase == LinkLogin.AwaitingAck)
                 {
@@ -162,7 +164,7 @@ namespace core.LinkLeaf
                         else this.Busy = false;
 
                         Events.LinkError(LinkError.PingTimeout);
-                        // clear userlist of linked users
+                        this.ClearUserlist();
                     }
                 }
             }
@@ -282,6 +284,7 @@ namespace core.LinkLeaf
         {
             this.Disconnect();
             this.Busy = false;
+            this.ClearUserlist();
         }
 
         private bool SocketConnected

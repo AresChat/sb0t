@@ -86,11 +86,13 @@
     <Compile Include="LinkHub\TrustedLeafItem.cs" />
     <Compile Include="LinkHub\TrustedLeavesManager.cs" />
     <Compile Include="LinkHub\LinkUser.cs" />
+    <Compile Include="LinkLeaf\Leaf.cs" />
     <Compile Include="LinkLeaf\LeafOutbound.cs" />
     <Compile Include="LinkLeaf\LeafProcessor.cs" />
     <Compile Include="LinkLeaf\LinkClient.cs" />
     <Compile Include="LinkLeaf\LinkError.cs" />
     <Compile Include="LinkLeaf\LinkLogin.cs" />
+    <Compile Include="LinkLeaf\LinkUser.cs" />
     <Compile Include="Prototypes.cs" />
     <Compile Include="Extensions\ExHost.cs" />
     <Compile Include="Extensions\ExUsers.cs" />

@@ -231,6 +231,9 @@ namespace core
                     if (!this.LoggedIn || !this.Quarantined)
                         return;
 
+                if (ServerCore.Linker.Busy)
+                    return;
+
                 if (value == this._cloaked)
                     return;
 
