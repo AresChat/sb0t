@@ -87,6 +87,13 @@ namespace core.LinkHub
 
         private static void LeafNickChanged(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             String name = packet.ReadString(leaf);
             LinkUser user = leaf.Users.Find(x => x.Name == name);
 
@@ -101,6 +108,13 @@ namespace core.LinkHub
 
         private static void LeafVroomChanged(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             String name = packet.ReadString(leaf);
             LinkUser user = leaf.Users.Find(x => x.Name == name);
 
@@ -115,6 +129,13 @@ namespace core.LinkHub
 
         private static void LeafUserUpdated(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             String name = packet.ReadString(leaf);
             LinkUser user = leaf.Users.Find(x => x.Name == name);
 
@@ -132,6 +153,13 @@ namespace core.LinkHub
 
         private static void LeafRelay(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             uint target_leaf = packet;
             String target_name = packet.ReadString(leaf);
             byte[] data = packet;
@@ -143,6 +171,13 @@ namespace core.LinkHub
 
         private static void LeafBroadcast(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             byte[] data = packet;
 
             LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubBroadcast(x, leaf.Ident, data)),
@@ -151,6 +186,13 @@ namespace core.LinkHub
 
         private static void LeafEmoteText(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             String name = packet.ReadString(leaf);
             String text = packet.ReadString(leaf);
 
@@ -160,6 +202,13 @@ namespace core.LinkHub
 
         private static void LeafPublicText(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             String name = packet.ReadString(leaf);
             String text = packet.ReadString(leaf);
 
@@ -169,6 +218,13 @@ namespace core.LinkHub
 
         private static void LeafPrivateText(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             uint target_leaf = packet;
             String target_name = packet.ReadString(leaf);
             String send_name = packet.ReadString(leaf);
@@ -181,6 +237,13 @@ namespace core.LinkHub
 
         private static void LeafPrivateIgnored(Leaf leaf, TCPPacketReader packet)
         {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
             uint sender_leaf = packet;
             String target = packet.ReadString(leaf);
             String sender = packet.ReadString(leaf);
