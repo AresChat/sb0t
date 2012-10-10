@@ -42,6 +42,7 @@ namespace core.LinkLeaf
         public static byte[] LeafUserlistItem(LinkClient x, IClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, client.OrgName);
             packet.WriteString(x, client.Name);
             packet.WriteString(x, client.Version);
             packet.WriteGuid(client.Guid);
@@ -64,6 +65,47 @@ namespace core.LinkLeaf
             packet.WriteByte((byte)(client.Registered ? 1 : 0));
             packet.WriteByte((byte)(client.Idled ? 1 : 0));
             byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_USERLIST_ITEM);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafJoin(LinkClient x, IClient client)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, client.OrgName);
+            packet.WriteString(x, client.Name);
+            packet.WriteString(x, client.Version);
+            packet.WriteGuid(client.Guid);
+            packet.WriteUInt16(client.FileCount);
+            packet.WriteIP(client.ExternalIP);
+            packet.WriteIP(client.LocalIP);
+            packet.WriteUInt16(client.DataPort);
+            packet.WriteString(x, client.DNS);
+            packet.WriteByte((byte)(client.Browsable ? 1 : 0));
+            packet.WriteByte(client.Age);
+            packet.WriteByte(client.Sex);
+            packet.WriteByte(client.Country);
+            packet.WriteString(x, client.Region);
+            packet.WriteByte((byte)client.Level);
+            packet.WriteUInt16(client.Vroom);
+            packet.WriteByte((byte)(client.CustomClient ? 1 : 0));
+            packet.WriteByte((byte)(client.Muzzled ? 1 : 0));
+            packet.WriteByte((byte)(client.WebClient ? 1 : 0));
+            packet.WriteByte((byte)(client.Encryption.Mode == EncryptionMode.Encrypted ? 1 : 0));
+            packet.WriteByte((byte)(client.Registered ? 1 : 0));
+            packet.WriteByte((byte)(client.Idled ? 1 : 0));
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_JOIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafPart(LinkClient x, IClient client)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, client.Name, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PART);
             packet = new TCPPacketWriter();
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
@@ -110,5 +152,20 @@ namespace core.LinkLeaf
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] LeafUserUpdated(LinkClient x, IClient client)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, client.Name);
+            packet.WriteByte((byte)client.Level);
+            packet.WriteByte((byte)(client.Muzzled ? 1 : 0));
+            packet.WriteByte((byte)(client.Registered ? 1 : 0));
+            packet.WriteByte((byte)(client.Idled ? 1 : 0));
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_USER_UPDATED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
     }
 }

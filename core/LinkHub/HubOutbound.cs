@@ -67,6 +67,7 @@ namespace core.LinkHub
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteUInt32(ident);
+            packet.WriteString(x, user.OrgName);
             packet.WriteString(x, user.Name);
             packet.WriteString(x, user.Version);
             packet.WriteGuid(user.Guid);
@@ -89,6 +90,45 @@ namespace core.LinkHub
             packet.WriteByte((byte)(user.Registered ? 1 : 0));
             packet.WriteByte((byte)(user.Idle ? 1 : 0));
             byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_USERLIST_ITEM);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubUserUpdated(Leaf x, uint ident, LinkUser user)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, user.Name);
+            packet.WriteByte((byte)user.Level);
+            packet.WriteByte((byte)(user.Muzzled ? 1 : 0));
+            packet.WriteByte((byte)(user.Registered ? 1 : 0));
+            packet.WriteByte((byte)(user.Idle ? 1 : 0));
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_HUB_USER_UPDATED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubNickChanged(Leaf x, uint ident, String old_name, String new_name)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, old_name);
+            packet.WriteString(x, new_name, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_NICK_CHANGED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubVroomChanged(Leaf x, uint ident, LinkUser user)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, user.Name);
+            packet.WriteUInt16(user.Vroom);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_VROOM_CHANGED);
             packet = new TCPPacketWriter();
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);

@@ -35,6 +35,79 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_LEAF_DISCONNECTED:
                     HubLeafDisconnected(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_USER_UPDATED:
+                    HubUserUpdated(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_NICK_CHANGED:
+                    HubNickChanged(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_VROOM_CHANGED:
+                    HubVroomChanged(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubNickChanged(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+                if (user != null)
+                {
+                    String new_name = packet.ReadString(link);
+                    // check if visible, and send part packet if required
+                    user.Name = new_name;
+                    // check if visible, and send join packet if required
+                }
+            }
+        }
+
+        private static void HubVroomChanged(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+                if (user != null)
+                {
+                    ushort new_vroom = packet;
+                    // check if visible, and send part packet if required
+                    user.Vroom = new_vroom;
+                    // check if visible, and send join packet if required
+                }
+            }
+        }
+
+        private static void HubUserUpdated(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+                if (user != null)
+                {
+                    user.Level = (iconnect.ILevel)((byte)packet);
+                    user.Muzzled = ((byte)packet) == 1;
+                    user.Registered = ((byte)packet) == 1;
+                    user.Idle = ((byte)packet) == 1;
+                    // check if visible, and send update packet if required
+                }
             }
         }
 
@@ -71,8 +144,8 @@ namespace core.LinkLeaf
             {
                 LinkUser user = new LinkUser(leaf_ident);
                 user.JoinTime = Helpers.UnixTime;
+                user.OrgName = packet.ReadString(link);
                 user.Name = packet.ReadString(link);
-                user.OrgName = user.Name;
                 user.Version = packet.ReadString(link);
                 user.Guid = packet;
                 user.FileCount = packet;

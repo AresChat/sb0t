@@ -44,18 +44,15 @@ namespace core
         public bool VoiceChatPublic { get; set; }
         public bool VoiceChatPrivate { get; set; }
         public List<String> VoiceChatIgnoreList { get; set; }
-        public bool Muzzled { get; set; }
         public bool CustomEmoticons { get; set; }
         public List<CustomEmoticon> EmoticonList { get; set; }
         public bool WebClient { get; private set; }
         public bool Owner { get; set; }
         public bool IsHTML { get; private set; }
         public bool Captcha { get; set; }
-        public bool Registered { get; set; }
         public String CaptchaWord { get; set; }
         public byte[] OrgAvatar { get; set; }
         public uint JoinTime { get; private set; }
-        public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
         public bool Quarantined { get; set; }
         public bool IsLeaf { get; set; }
@@ -104,6 +101,45 @@ namespace core
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 
+        private bool _muzzled;
+        public bool Muzzled
+        {
+            get { return this._muzzled; }
+            set
+            {
+                this._muzzled = value;
+
+                if (ServerCore.Linker.Busy && this.LoggedIn)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+            }
+        }
+
+        private bool _registered;
+        public bool Registered
+        {
+            get { return this._registered; }
+            set
+            {
+                this._registered = value;
+
+                if (ServerCore.Linker.Busy && this.LoggedIn)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+            }
+        }
+
+        private bool _idled;
+        public bool Idled
+        {
+            get { return this._idled; }
+            set
+            {
+                this._idled = value;
+
+                if (ServerCore.Linker.Busy && this.LoggedIn)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+            }
+        }
+
         public bool Idle { get { return this.Idled; } }
 
         public void Unquarantine()
@@ -111,6 +147,9 @@ namespace core
             this.LoggedIn = false;
             this.Quarantined = false;
             Helpers.FakeRejoinSequence(this, true);
+
+            if (ServerCore.Linker.Busy)
+                ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, this));
         }
 
         public String CustomName
@@ -330,6 +369,9 @@ namespace core
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.UpdateTo(x, this.Name, this._level)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
                 }
 
                 Events.AdminLevelChanged(this);
@@ -504,6 +546,16 @@ namespace core
 
             if (!ghost)
                 this.SendDepart();
+            else if (this.LoggedIn)
+            {
+                this.LoggedIn = false;
+                Events.Parting(this);
+
+                if (ServerCore.Linker.Busy && !this.Quarantined)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPart(ServerCore.Linker, this));
+
+                Events.Parted(this);
+            }
         }
 
         public void SendDepart()
@@ -520,6 +572,9 @@ namespace core
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPart(ServerCore.Linker, this));
                 }
 
                 Events.Parted(this);

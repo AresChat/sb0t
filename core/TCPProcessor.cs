@@ -652,6 +652,9 @@ namespace core
                 if (client.SocketConnected)
                     IdleManager.Set(client);
 
+                if (ServerCore.Linker.Busy)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, client));
+
                 Events.Joined(client);
             }
             else

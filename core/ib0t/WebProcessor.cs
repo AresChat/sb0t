@@ -190,10 +190,14 @@ namespace core.ib0t
                     x => x.LoggedIn && x.Vroom == client.Vroom);
 
                 FloodControl.Remove(client);
-                Events.Joined(client);
 
                 if (client.SocketConnected)
                     IdleManager.Set(client);
+
+                if (ServerCore.Linker.Busy)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, client));
+
+                Events.Joined(client);
             }
             else
             {

@@ -33,16 +33,13 @@ namespace core.ib0t
         public IFont Font { get; set; }
         public bool CustomClient { get; set; }
         public List<String> CustomClientTags { get; set; }
-        public bool Muzzled { get; set; }
         public bool WebClient { get; private set; }
         public bool Owner { get; set; }
         public Encryption Encryption { get; set; }
         public bool Captcha { get; set; }
-        public bool Registered { get; set; }
         public uint Cookie { get; set; }
         public uint JoinTime { get; set; }
         public String CaptchaWord { get; set; }
-        public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
         public bool Quarantined { get; set; }
 
@@ -93,6 +90,45 @@ namespace core.ib0t
             this.FloodRecord = new FloodRecord();
         }
 
+        private bool _muzzled;
+        public bool Muzzled
+        {
+            get { return this._muzzled; }
+            set
+            {
+                this._muzzled = value;
+
+                if (ServerCore.Linker.Busy && this.LoggedIn)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+            }
+        }
+
+        private bool _registered;
+        public bool Registered
+        {
+            get { return this._registered; }
+            set
+            {
+                this._registered = value;
+
+                if (ServerCore.Linker.Busy && this.LoggedIn)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+            }
+        }
+
+        private bool _idled;
+        public bool Idled
+        {
+            get { return this._idled; }
+            set
+            {
+                this._idled = value;
+
+                if (ServerCore.Linker.Busy && this.LoggedIn)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+            }
+        }
+
         public bool Idle { get { return this.Idled; } }
 
         public void Unquarantine()
@@ -100,6 +136,9 @@ namespace core.ib0t
             this.LoggedIn = false;
             this.Quarantined = false;
             Helpers.FakeRejoinSequence(this);
+
+            if (ServerCore.Linker.Busy)
+                ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, this));
         }
 
         public String CustomName
@@ -259,6 +298,9 @@ namespace core.ib0t
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.UpdateTo(x, this.Name, this._level)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
                 }
 
                 Events.AdminLevelChanged(this);
@@ -333,6 +375,9 @@ namespace core.ib0t
 
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
                     x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                if (ServerCore.Linker.Busy)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPart(ServerCore.Linker, this));
 
                 Events.Parted(this);
             }

@@ -9,6 +9,7 @@ namespace core.LinkHub
 {
     class LinkUser
     {
+        public String OrgName { get; set; }
         public String Name { get; set; }
         public String Version { get; set; }
         public Guid Guid { get; set; }

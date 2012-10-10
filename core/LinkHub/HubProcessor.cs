@@ -70,6 +70,63 @@ namespace core.LinkHub
                 case LinkMsg.MSG_LINK_LEAF_BROADCAST:
                     LeafBroadcast(leaf, packet);
                     break;
+
+                case LinkMsg.MSG_LINK_LEAF_USER_UPDATED:
+                    LeafUserUpdated(leaf, packet);
+                    break;
+
+                case LinkMsg.MSG_LINK_LEAF_NICK_CHANGED:
+                    LeafNickChanged(leaf, packet);
+                    break;
+
+                case LinkMsg.MSG_LINK_LEAF_VROOM_CHANGED:
+                    LeafVroomChanged(leaf, packet);
+                    break;
+            }
+        }
+
+        private static void LeafNickChanged(Leaf leaf, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(leaf);
+            LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+            if (user != null)
+            {
+                user.Name = packet.ReadString(leaf);
+
+                LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubNickChanged(x, leaf.Ident, name, user.Name)),
+                    x => x.Ident != leaf.Ident && x.LoginPhase == LinkLogin.Ready);
+            }
+        }
+
+        private static void LeafVroomChanged(Leaf leaf, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(leaf);
+            LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+            if (user != null)
+            {
+                user.Vroom = packet;
+
+                LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubVroomChanged(x, leaf.Ident, user)),
+                    x => x.Ident != leaf.Ident && x.LoginPhase == LinkLogin.Ready);
+            }
+        }
+
+        private static void LeafUserUpdated(Leaf leaf, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(leaf);
+            LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+            if (user != null)
+            {
+                user.Level = (iconnect.ILevel)((byte)packet);
+                user.Muzzled = ((byte)packet) == 1;
+                user.Registered = ((byte)packet) == 1;
+                user.Idle = ((byte)packet) == 1;
+
+                LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubUserUpdated(x, leaf.Ident, user)),
+                    x => x.Ident != leaf.Ident && x.LoginPhase == LinkLogin.Ready);
             }
         }
 
@@ -143,6 +200,7 @@ namespace core.LinkHub
             }
 
             LinkUser user = new LinkUser();
+            user.OrgName = packet.ReadString(leaf);
             user.Name = packet.ReadString(leaf);
             user.Version = packet.ReadString(leaf);
             user.Guid = packet;
@@ -327,6 +385,7 @@ namespace core.LinkHub
             }
 
             LinkUser user = new LinkUser();
+            user.OrgName = packet.ReadString(leaf);
             user.Name = packet.ReadString(leaf);
             user.Version = packet.ReadString(leaf);
             user.Guid = packet;
