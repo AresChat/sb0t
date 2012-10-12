@@ -160,10 +160,10 @@ namespace core.ib0t
                 if (hijack == null || !(hijack is AresClient))
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
                 }
 
                 client.LoggedIn = true;
@@ -172,22 +172,22 @@ namespace core.ib0t
                 client.QueuePacket(WebOutbound.UserlistItemTo(client, Settings.Get<String>("bot"), ILevel.Host));
 
                 UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 client.QueuePacket(WebOutbound.UserlistEndTo(client));
                 client.QueuePacket(WebOutbound.UrlTo(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
 
                 UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Quarantined);
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 FloodControl.Remove(client);
 

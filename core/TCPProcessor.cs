@@ -601,10 +601,10 @@ namespace core
                 if (hijack == null || !(hijack is AresClient))
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
                 }
 
                 client.LoggedIn = true;
@@ -614,10 +614,10 @@ namespace core
                 client.SendPacket(TCPOutbound.UserlistBot(client));
 
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 client.SendPacket(TCPOutbound.UserListEnd());
                 client.SendPacket(TCPOutbound.OpChange(client));
@@ -629,23 +629,23 @@ namespace core
 
                 if (client.CustomClient)
                     UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.VoiceChatUserSupport(client, x)),
-                        x => x.VoiceChatPrivate || x.VoiceChatPublic);
+                        x => (x.VoiceChatPrivate || x.VoiceChatPublic) && !x.Quarantined);
 
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0 && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0 && !x.Quarantined);
 
                 UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom);
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                 if (client.CustomClient)
                     UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Quarantined);
 
                 FloodControl.Remove(client);
 

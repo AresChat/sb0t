@@ -18,7 +18,6 @@ namespace core.LinkLeaf
         public ushort DataPort { get; set; }
         public IPAddress NodeIP { get { return IPAddress.Any; } set { } }
         public ushort NodePort { get { return 0; } set { } }
-        public String Name { get; set; }
         public String OrgName { get; set; }
         public String Version { get; set; }
         public IPAddress LocalIP { get; set; }
@@ -57,6 +56,21 @@ namespace core.LinkLeaf
         public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
         public IUser IUser { get { return this; } }
+
+        public void SetName(String name)
+        {
+            this._name = name;
+        }
+
+        private String _name;
+        public String Name
+        {
+            get { return this._name; }
+            set
+            {
+                this._name = value;
+            }
+        }
 
         public void Unquarantine() { }
 

@@ -24,6 +24,10 @@ namespace core.LinkLeaf
                     link.LastPong = time;
                     break;
 
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PART:
+                    HubPart(link, packet);
+                    break;
+
                 case LinkHub.LinkMsg.MSG_LINK_HUB_USERLIST_ITEM:
                     HubUserlistItem(link, packet);
                     break;
@@ -50,6 +54,46 @@ namespace core.LinkLeaf
             }
         }
 
+        private static void HubPart(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+                if (user != null)
+                {
+                    if (user.Visible)
+                    {
+                        IClient other = null;
+
+                        foreach (Leaf l in link.Leaves)
+                            if (l.Ident != leaf.Ident)
+                            {
+                                other = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom);
+
+                                if (other != null)
+                                {
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    break;
+                                }
+                            }
+
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Part(x, user) : TCPOutbound.UpdateUserStatus(x, other)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, user.Name) : ib0t.WebOutbound.UpdateTo(x, user.Name, user.Level)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
+
+                    leaf.Users.RemoveAll(x => x.Name == name);
+                }
+            }
+        }
+
         private static void HubNickChanged(LinkClient link, TCPPacketReader packet)
         {
             uint leaf_ident = packet;
@@ -63,9 +107,54 @@ namespace core.LinkLeaf
                 if (user != null)
                 {
                     String new_name = packet.ReadString(link);
-                    // check if visible, and send part packet if required
+
+                    if (user.Visible)
+                    {
+                        IClient other = null;
+
+                        foreach (Leaf l in link.Leaves)
+                            if (l.Ident != leaf.Ident)
+                            {
+                                other = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom);
+
+                                if (other != null)
+                                {
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    break;
+                                }
+                            }
+
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Part(x, user) : TCPOutbound.UpdateUserStatus(x, other)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, user.Name) : ib0t.WebOutbound.UpdateTo(x, user.Name, user.Level)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
+
                     user.Name = new_name;
-                    // check if visible, and send join packet if required
+                    user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+
+                    if (user.Visible)
+                        user.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+
+                    if (user.Visible)
+                        foreach (Leaf l in link.Leaves)
+                            if (l.Ident != leaf.Ident)
+                            {
+                                user.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
+
+                                if (!user.Visible)
+                                    break;
+                            }
+
+                    if (user.Visible)
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, user)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
                 }
             }
         }
@@ -83,9 +172,54 @@ namespace core.LinkLeaf
                 if (user != null)
                 {
                     ushort new_vroom = packet;
-                    // check if visible, and send part packet if required
+
+                    if (user.Visible)
+                    {
+                        IClient other = null;
+
+                        foreach (Leaf l in link.Leaves)
+                            if (l.Ident != leaf.Ident)
+                            {
+                                other = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom);
+
+                                if (other != null)
+                                {
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    break;
+                                }
+                            }
+
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Part(x, user) : TCPOutbound.UpdateUserStatus(x, other)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, user.Name) : ib0t.WebOutbound.UpdateTo(x, user.Name, user.Level)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
+
                     user.Vroom = new_vroom;
-                    // check if visible, and send join packet if required
+                    user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+
+                    if (user.Visible)
+                        user.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+
+                    if (user.Visible)
+                        foreach (Leaf l in link.Leaves)
+                            if (l.Ident != leaf.Ident)
+                            {
+                                user.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
+
+                                if (!user.Visible)
+                                    break;
+                            }
+
+                    if (user.Visible)
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, user)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
                 }
             }
         }
@@ -106,7 +240,15 @@ namespace core.LinkLeaf
                     user.Muzzled = ((byte)packet) == 1;
                     user.Registered = ((byte)packet) == 1;
                     user.Idle = ((byte)packet) == 1;
-                    // check if visible, and send update packet if required
+
+                    if (user.Visible)
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, user)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.UpdateTo(x, user.Name, user.Level)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
                 }
             }
         }
@@ -129,7 +271,30 @@ namespace core.LinkLeaf
 
             if (leaf != null)
             {
-                // part packets for all visible items in leaf.Users
+                foreach (LinkUser user in leaf.Users)
+                    if (user.Visible)
+                    {
+                        IClient other = null;
+
+                        foreach (Leaf l in link.Leaves)
+                            if (l.Ident != leaf.Ident)
+                            {
+                                other = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom);
+
+                                if (other != null)
+                                {
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    break;
+                                }
+                            }
+
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Part(x, user) : TCPOutbound.UpdateUserStatus(x, other)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, user.Name) : ib0t.WebOutbound.UpdateTo(x, user.Name, user.Level)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
+
                 link.Leaves.RemoveAll(x => x.Ident == leaf_ident);
                 Events.LinkLeafDisconnected(leaf);
             }
@@ -145,7 +310,7 @@ namespace core.LinkLeaf
                 LinkUser user = new LinkUser(leaf_ident);
                 user.JoinTime = Helpers.UnixTime;
                 user.OrgName = packet.ReadString(link);
-                user.Name = packet.ReadString(link);
+                user.SetName(packet.ReadString(link));
                 user.Version = packet.ReadString(link);
                 user.Guid = packet;
                 user.FileCount = packet;
@@ -166,8 +331,31 @@ namespace core.LinkLeaf
                 user.Encrypted = ((byte)packet) == 1;
                 user.Registered = ((byte)packet) == 1;
                 user.Idle = ((byte)packet) == 1;
+                user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+
+                if (user.Visible)
+                    user.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+
+                if (user.Visible)
+                    foreach (Leaf l in link.Leaves)
+                        if (l.Ident != leaf.Ident)
+                        {
+                            user.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
+
+                            if (!user.Visible)
+                                break;
+                        }
+
+                if (user.Visible)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, user)),
+                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
+                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                }
+
                 leaf.Users.Add(user);
-                // check if visible, and send join packet if required
             }
         }
 
