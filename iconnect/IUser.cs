@@ -10,6 +10,8 @@ namespace iconnect
     public interface IUser
     {
         /// <summary>Get join timestamp</summary>
+        bool Linked { get; }
+        /// <summary>Get join timestamp</summary>
         uint JoinTime { get; }
         /// <summary>Get session identity</summary>
         ushort ID { get; }

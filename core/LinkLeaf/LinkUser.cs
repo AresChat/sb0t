@@ -28,7 +28,6 @@ namespace core.LinkLeaf
         public String Region { get; set; }
         public bool FastPing { get { return false; } set { } }
         public ILevel Level { get; set; }
-        public ushort Vroom { get; set; }
         public bool Ghosting { get { return false; } set { } }
         public List<String> IgnoreList { get { return new List<String>(); } set { } }
         public IFont Font { get { return new Font(); } set { } }
@@ -56,6 +55,7 @@ namespace core.LinkLeaf
         public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
         public IUser IUser { get { return this; } }
+        public bool Linked { get { return true; } }
 
         public void SetName(String name)
         {
@@ -69,6 +69,21 @@ namespace core.LinkLeaf
             set
             {
                 this._name = value;
+            }
+        }
+
+        public void SetVroom(ushort vroom)
+        {
+            this._vroom = vroom;
+        }
+
+        private ushort _vroom;
+        public ushort Vroom
+        {
+            get { return this._vroom; }
+            set
+            {
+                this._vroom = value;
             }
         }
 

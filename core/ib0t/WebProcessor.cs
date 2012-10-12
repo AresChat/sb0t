@@ -159,10 +159,24 @@ namespace core.ib0t
             {
                 if (hijack == null || !(hijack is AresClient))
                 {
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
+                    LinkLeaf.LinkUser other = null;
+
+                    if (ServerCore.Linker.Busy)
+                        foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                        {
+                            other = leaf.Users.Find(x => x.Vroom == client.Vroom && x.Name == client.Name && x.Visible);
+
+                            if (other != null)
+                            {
+                                other.Visible = false;
+                                break;
+                            }
+                        }
+
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Join(x, client) : TCPOutbound.UpdateUserStatus(x, client)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
-                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.JoinTo(x, client.Name, client.Level) : ib0t.WebOutbound.UpdateTo(x, client.Name, client.Level)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
                 }
 

@@ -135,7 +135,7 @@ namespace core.LinkLeaf
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
                     }
 
-                    user.Name = new_name;
+                    user.SetName(new_name);
                     user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
                     if (user.Visible)
@@ -200,7 +200,7 @@ namespace core.LinkLeaf
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
                     }
 
-                    user.Vroom = new_vroom;
+                    user.SetVroom(new_vroom);
                     user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
                     if (user.Visible)

@@ -11,6 +11,7 @@ namespace core.ib0t
 {
     class ib0tClient : IClient, IUser
     {
+        public bool Linked { get { return false; } }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
         public String DNS { get; set; }
@@ -239,11 +240,24 @@ namespace core.ib0t
                             return;
 
                         this.LoggedIn = false;
+                        LinkLeaf.LinkUser other = null;
 
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                        if (ServerCore.Linker.Busy)
+                            foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                            {
+                                other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Visible);
+
+                                if (other != null)
+                                {
+                                    other.Visible = false;
+                                    break;
+                                }
+                            }
+
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Part(x, this) : TCPOutbound.UpdateUserStatus(x, other)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, this.Name) : ib0t.WebOutbound.UpdateTo(x, other.Name, other.Level)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                         this._name = value;
@@ -268,11 +282,24 @@ namespace core.ib0t
                                 return;
 
                             this.LoggedIn = false;
+                            LinkLeaf.LinkUser other = null;
 
-                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                            if (ServerCore.Linker.Busy)
+                                foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                                {
+                                    other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Visible);
+
+                                    if (other != null)
+                                    {
+                                        other.Visible = false;
+                                        break;
+                                    }
+                                }
+
+                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Part(x, this) : TCPOutbound.UpdateUserStatus(x, other)),
                                 x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, this.Name) : ib0t.WebOutbound.UpdateTo(x, other.Name, other.Level)),
                                 x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                             this._vroom = value;
@@ -370,10 +397,24 @@ namespace core.ib0t
                 this.LoggedIn = false;
                 Events.Parting(this);
 
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Part(x, this)),
+                LinkLeaf.LinkUser other = null;
+
+                if (ServerCore.Linker.Busy)
+                    foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                    {
+                        other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Visible);
+
+                        if (other != null)
+                        {
+                            other.Visible = false;
+                            break;
+                        }
+                    }
+
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Part(x, this) : TCPOutbound.UpdateUserStatus(x, other)),
                     x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PartTo(x, this.Name)),
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, this.Name) : ib0t.WebOutbound.UpdateTo(x, other.Name, other.Level)),
                     x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                 if (ServerCore.Linker.Busy)
