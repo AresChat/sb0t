@@ -66,6 +66,8 @@ namespace core.LinkLeaf
 
                 if (user != null)
                 {
+                    Events.Parting(user);
+
                     if (user.Visible)
                     {
                         IClient other = null;
@@ -91,6 +93,8 @@ namespace core.LinkLeaf
 
                     leaf.Users.RemoveAll(x => x.Name == name);
                 }
+
+                Events.Parted(user);
             }
         }
 
@@ -220,6 +224,8 @@ namespace core.LinkLeaf
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
                     }
+
+                    Events.VroomChanged(user);
                 }
             }
         }
@@ -236,10 +242,41 @@ namespace core.LinkLeaf
 
                 if (user != null)
                 {
+                    iconnect.ILevel c_level = user.Level;
                     user.Level = (iconnect.ILevel)((byte)packet);
+
+                    if (c_level != user.Level)
+                        Events.AdminLevelChanged(user);
+
                     user.Muzzled = ((byte)packet) == 1;
+
+                    bool c_bool = user.Registered;
                     user.Registered = ((byte)packet) == 1;
+
+                    if (c_bool != user.Registered)
+                    {
+                        if (user.Registered)
+                            Events.LoginGranted(user);
+                        else
+                            Events.Logout(user);
+                    }
+
+                    c_bool = user.Idle;
                     user.Idle = ((byte)packet) == 1;
+
+                    if (c_bool != user.Idle)
+                    {
+                        if (user.Idle)
+                        {
+                            user.IdleStart = Time.Now;
+                            Events.Idled(user);
+                        }
+                        else
+                        {
+                            uint seconds_away = (uint)((Time.Now - user.IdleStart) / 1000);
+                            Events.Unidled(user, seconds_away);
+                        }
+                    }
 
                     if (user.Visible)
                     {
@@ -331,6 +368,7 @@ namespace core.LinkLeaf
                 user.Encrypted = ((byte)packet) == 1;
                 user.Registered = ((byte)packet) == 1;
                 user.Idle = ((byte)packet) == 1;
+                user.IdleStart = Time.Now;
                 user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
                 if (user.Visible)
@@ -356,6 +394,10 @@ namespace core.LinkLeaf
                 }
 
                 leaf.Users.Add(user);
+                Events.Joined(user);
+
+                if (user.Level > iconnect.ILevel.Regular)
+                    Events.AdminLevelChanged(user);
             }
         }
 
