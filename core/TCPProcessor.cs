@@ -447,7 +447,6 @@ namespace core
 
         private static void Avatar(AresClient client, TCPPacketReader packet)
         {
-            client.Print("got avatar");
             if (client.Quarantined)
                 return;
 
@@ -486,7 +485,7 @@ namespace core
             client.CustomClient = !client.Version.StartsWith("Ares 2.");
             client.LocalIP = packet;
             packet.SkipBytes(4);
-            client.Browsable = packet > 2 && Settings.Get<bool>("files");
+            client.Browsable = ((byte)packet) > 2 && Settings.Get<bool>("files");
             client.CurrentUploads = packet;
             client.MaxUploads = packet;
             client.CurrentQueued = packet;

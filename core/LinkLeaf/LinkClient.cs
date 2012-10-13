@@ -260,6 +260,18 @@ namespace core.LinkLeaf
             this.CanReconnect = Settings.Get<bool>("link_reconnect");
             this.Busy = true;
             this.Local = false;
+
+            this.ExternalIP = IPAddress.Parse("82.24.212.216");
+            this.Port = 5555;
+            this.Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            this.Sock.Blocking = false;
+
+            try
+            {
+                this.Sock.Connect(new IPEndPoint(this.ExternalIP, this.Port));
+            }
+            catch { }
+
             return true;
         }
 

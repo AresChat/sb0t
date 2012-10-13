@@ -20,7 +20,7 @@ namespace core
             Events.InitializeCommandsExtension();
         }
 
-        private TcpListener tcp;
+        private TcpListenerEx tcp;
         private UdpListener udp;
         private Thread thread;
         private bool terminate = false;
@@ -44,8 +44,9 @@ namespace core
         
         public bool Open()
         {
+            Settings.Reset();
             Time.Reset();
-            this.tcp = new TcpListener(new IPEndPoint(IPAddress.Any, Settings.Port));
+            this.tcp = new TcpListenerEx(new IPEndPoint(IPAddress.Any, Settings.Port));
             
             try
             {
@@ -80,6 +81,8 @@ namespace core
 
         public void Close()
         {
+            Settings.RUNNING = false;
+            this.Running = false;
             this.terminate = true;
 
             try { this.tcp.Stop(); }
@@ -93,9 +96,6 @@ namespace core
 
             if (Linker != null)
                 Linker.Disconnect();
-
-            this.Running = false;
-            Settings.RUNNING = false;
         }
 
         private void ServerThread()
@@ -172,13 +172,14 @@ namespace core
 
         private void CheckTCPListener(ulong time)
         {
-            while (this.tcp.Pending())
-            {
-                Socket sock = this.tcp.AcceptSocket();
+            if (this.tcp.Active)
+                while (this.tcp.Pending())
+                {
+                    Socket sock = this.tcp.AcceptSocket();
 
-                if (!this.udp.IsTcpChecker(sock))
-                    UserPool.CreateAresClient(sock, time);
-            }
+                    if (!this.udp.IsTcpChecker(sock))
+                        UserPool.CreateAresClient(sock, time);
+                }
         }
 
         private void ServiceWebSockets(ulong time)
@@ -336,5 +337,18 @@ namespace core
     {
         public String Message { get; set; }
         public Exception Error { get; set; }
+    }
+
+    class TcpListenerEx : TcpListener
+    {
+        public TcpListenerEx(IPEndPoint addr) : base(addr) { }
+        
+        public new bool Active
+        {
+            get
+            {
+                return base.Active;
+            }
+        } 
     }
 }

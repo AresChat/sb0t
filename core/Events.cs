@@ -389,6 +389,12 @@ namespace core
 
         public static void Command(IClient client, String command, IClient target, String args)
         {
+            if (command == "test")
+            {
+                client.Print(ServerCore.Linker.Connect(""));
+                return;
+            }
+
             if (command == "help")
             {
                 Help(client);

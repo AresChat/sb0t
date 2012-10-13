@@ -158,7 +158,6 @@ namespace gui
             if (tb.Name == "textBox1")
             {
                 Settings.Set("name", this.textBox1.Text);
-                this.SetLinkIdent();
             }
             else if (tb.Name == "textBox2")
             {
@@ -489,6 +488,5 @@ namespace gui
                 this.listBox3.Items.RemoveAt(i);
             }
         }
-
     }
 }

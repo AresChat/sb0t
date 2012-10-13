@@ -15,6 +15,14 @@ namespace core
 
         public static bool RUNNING { get; set; }
 
+        public static void Reset()
+        {
+            externalip = null;
+            port = 0;
+            name = null;
+            language = 0;
+        }
+
         private static IPAddress externalip { get; set; }
         public static IPAddress ExternalIP
         {
