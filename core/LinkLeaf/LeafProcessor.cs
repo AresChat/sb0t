@@ -352,7 +352,7 @@ namespace core.LinkLeaf
             leaf.ExternalIP = packet;
             leaf.Port = packet;
             link.Leaves.Add(leaf);
-            Events.LinkLeafConnected(leaf);
+            Events.LeafJoined(leaf);
         }
 
         private static void HubLeafDisconnected(LinkClient link, TCPPacketReader packet)
@@ -387,7 +387,7 @@ namespace core.LinkLeaf
                     }
 
                 link.Leaves.RemoveAll(x => x.Ident == leaf_ident);
-                Events.LinkLeafDisconnected(leaf);
+                Events.LeafParted(leaf);
             }
         }
 
@@ -457,7 +457,35 @@ namespace core.LinkLeaf
 
         private static void Error(LinkClient link, TCPPacketReader packet)
         {
-            ServerCore.Log("LINK ERROR: " + ((core.LinkHub.LinkError)(byte)packet));
+            core.LinkHub.LinkError error = (core.LinkHub.LinkError)((byte)packet);
+            ServerCore.Log("LINK ERROR: " + error);
+
+            switch (error)
+            {
+                case LinkHub.LinkError.Unavailable:
+                    Events.LinkError(LinkError.HubException_NotAcceptingLeaves);
+                    break;
+
+                case LinkHub.LinkError.ExpiredProtocol:
+                    Events.LinkError(LinkError.HubException_WantsHigherProtocol);
+                    break;
+
+                case LinkHub.LinkError.Untrusted:
+                    Events.LinkError(LinkError.HubException_DoesNotTrustYou);
+                    break;
+
+                case LinkHub.LinkError.HandshakeTimeout:
+                    Events.LinkError(LinkError.HubException_HandshakeTimeout);
+                    break;
+
+                case LinkHub.LinkError.PingTimeout:
+                    Events.LinkError(LinkError.HubException_PingTimeout);
+                    break;
+
+                case LinkHub.LinkError.BadProtocol:
+                    Events.LinkError(LinkError.HubException_BadProtocol);
+                    break;
+            }
         }
 
         private static void HubAck(LinkClient link, TCPPacketReader packet, ulong time)
@@ -497,7 +525,7 @@ namespace core.LinkLeaf
             link.SendPacket(LeafOutbound.LeafUserlistEnd());
 
             if (!link.Local)
-                Events.LinkHubConnected();
+                Events.Linked();
         }
     }
 }

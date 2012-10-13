@@ -880,17 +880,22 @@ namespace core
 
         }
 
-        public static void LinkHubConnected()
+        public static void Linked()
         {
 
         }
 
-        public static void LinkLeafConnected(LinkLeaf.Leaf leaf)
+        public static void Unlinked()
         {
 
         }
 
-        public static void LinkLeafDisconnected(LinkLeaf.Leaf leaf)
+        public static void LeafJoined(LinkLeaf.Leaf leaf)
+        {
+
+        }
+
+        public static void LeafParted(LinkLeaf.Leaf leaf)
         {
 
         }

@@ -31,7 +31,17 @@ namespace core.LinkLeaf
 
         private void ClearUserlist()
         {
+            foreach (Leaf leaf in this.Leaves)
+                leaf.Users.ForEachWhere(x =>
+                {
+                    UserPool.AUsers.ForEachWhere(z => z.SendPacket(TCPOutbound.Part(z, x)),
+                        z => z.LoggedIn && !z.Quarantined && z.Vroom == x.Vroom);
 
+                    UserPool.WUsers.ForEachWhere(z => z.QueuePacket(ib0t.WebOutbound.PartTo(z, x.Name)),
+                        z => z.LoggedIn && !z.Quarantined && z.Vroom == x.Vroom);
+                }, x => x.Visible);
+
+            this.Leaves.Clear();
         }
 
         public void Service(ulong time)
@@ -107,6 +117,7 @@ namespace core.LinkLeaf
                         if (this.LoginPhase == LinkLogin.Ready)
                             this.ClearUserlist();
 
+                        Events.Unlinked();
                         return;
                     }
 
@@ -115,6 +126,7 @@ namespace core.LinkLeaf
                 if (!this.SocketConnected)
                 {
                     this.Disconnect();
+                    bool unlink_fire = this.LoginPhase == LinkLogin.Ready;
 
                     if (this.CanReconnect)
                     {
@@ -124,6 +136,9 @@ namespace core.LinkLeaf
                     else this.Busy = false;
                     
                     Events.LinkError(LinkError.RemoteDisconnect);
+
+                    if (unlink_fire)
+                        Events.Unlinked();
 
                     if (this.LoginPhase == LinkLogin.Ready)
                         this.ClearUserlist();
@@ -165,6 +180,7 @@ namespace core.LinkLeaf
 
                         Events.LinkError(LinkError.PingTimeout);
                         this.ClearUserlist();
+                        Events.Unlinked();
                     }
                 }
             }

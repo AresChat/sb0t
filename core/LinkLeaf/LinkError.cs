@@ -11,6 +11,13 @@ namespace core.LinkLeaf
         RemoteDisconnect = 1,
         HandshakeTimeout = 2,
         PingTimeout = 3,
-        BadProtocol = 4
+        BadProtocol = 4,
+
+        HubException_NotAcceptingLeaves = 10,
+        HubException_WantsHigherProtocol = 11,
+        HubException_DoesNotTrustYou = 12,
+        HubException_HandshakeTimeout = 14,
+        HubException_PingTimeout = 15,
+        HubException_BadProtocol = 16
     }
 }
