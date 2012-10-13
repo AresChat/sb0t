@@ -37,8 +37,6 @@ namespace core.LinkLeaf
         public String CustomName { get; set; }
         public bool WebClient { get; set; }
         public bool Owner { get { return false; } set { } }
-        public byte[] Avatar { get; set; }
-        public String PersonalMessage { get; set; }
         public bool Encrypted { get; set; }
         public bool Captcha { get { return true; } set { } }
         public String CaptchaWord { get; set; }
@@ -56,6 +54,36 @@ namespace core.LinkLeaf
         public ulong IdleStart { get; set; }
         public IUser IUser { get { return this; } }
         public bool Linked { get { return true; } }
+
+        public void SetAvatar(byte[] data)
+        {
+            this._avatar = data;
+        }
+
+        private byte[] _avatar;
+        public byte[] Avatar
+        {
+            get { return this._avatar; }
+            set
+            {
+                this._avatar = value;
+            }
+        }
+
+        public void SetPersonalMessage(String str)
+        {
+            this._personalmessage = str;
+        }
+
+        private String _personalmessage;
+        public String PersonalMessage
+        {
+            get { return this._personalmessage; }
+            set
+            {
+                this._personalmessage = value;
+            }
+        }
 
         public void SetName(String name)
         {
@@ -146,8 +174,8 @@ namespace core.LinkLeaf
 
         public LinkUser(uint ident)
         {
-            this.Avatar = new byte[] { };
-            this.PersonalMessage = String.Empty;
+            this._avatar = new byte[] { };
+            this._personalmessage = String.Empty;
             this.LeafIdent = ident;
         }
     }

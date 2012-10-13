@@ -445,16 +445,26 @@ namespace core
                     this.avatar = new byte[] { };
 
                     if (!this.Cloaked)
+                    {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.AvatarCleared(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                        if (ServerCore.Linker.Busy)
+                            ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, this));
+                    }
                 }
                 else
                 {
                     this.avatar = value;
 
                     if (!this.Cloaked)
+                    {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                        if (ServerCore.Linker.Busy)
+                            ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, this));
+                    }
                 }
             }
         }
@@ -467,8 +477,13 @@ namespace core
                 this.personal_message = value == null ? String.Empty : value;
 
                 if (!this.Cloaked)
+                {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, this));
+                }
             }
         }
 

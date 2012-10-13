@@ -51,6 +51,60 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_VROOM_CHANGED:
                     HubVroomChanged(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_AVATAR:
+                    HubAvatar(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PERSONAL_MESSAGE:
+                    HubAvatar(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubAvatar(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+                byte[] buffer = packet;
+
+                if (user != null)
+                    if (Events.AvatarReceived(user))
+                    {
+                        user.SetAvatar(buffer);
+
+                        if (user.Visible)
+                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, user)),
+                                x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
+            }
+        }
+
+        private static void HubPersonalMessage(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+                String text = packet.ReadString(link);
+
+                if (user != null)
+                    if (Events.PersonalMessageReceived(user, text))
+                    {
+                        user.SetPersonalMessage(text);
+
+                        if (user.Visible)
+                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, user)),
+                                x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    }
             }
         }
 
@@ -445,7 +499,5 @@ namespace core.LinkLeaf
             if (!link.Local)
                 Events.LinkHubConnected();
         }
-
-
     }
 }
