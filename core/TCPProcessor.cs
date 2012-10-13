@@ -447,6 +447,7 @@ namespace core
 
         private static void Avatar(AresClient client, TCPPacketReader packet)
         {
+            client.Print("got avatar");
             if (client.Quarantined)
                 return;
 

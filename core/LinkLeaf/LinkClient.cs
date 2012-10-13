@@ -29,6 +29,11 @@ namespace core.LinkLeaf
         public bool Local { get; set; }
         public List<Leaf> Leaves { get; set; }
 
+        public LinkClient()
+        {
+            this.Leaves = new List<Leaf>();
+        }
+
         private void ClearUserlist()
         {
             foreach (Leaf leaf in this.Leaves)

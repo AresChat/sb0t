@@ -269,6 +269,8 @@ namespace core
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked && !x.Quarantined);
 
+            // are we sending avatars to others?
+
             if (features)
             {
                 if (client.SocketConnected)

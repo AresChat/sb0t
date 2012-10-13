@@ -207,8 +207,17 @@ namespace core.LinkLeaf
 
                     if (user.Visible)
                     {
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, user)),
-                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                        UserPool.AUsers.ForEachWhere(x =>
+                        {
+                            x.SendPacket(TCPOutbound.Join(x, user));
+
+                            if (user.Avatar.Length > 0)
+                                x.SendPacket(TCPOutbound.Avatar(x, user));
+
+                            if (user.PersonalMessage.Length > 0)
+                                x.SendPacket(TCPOutbound.PersonalMessage(x, user));
+                        },
+                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
@@ -272,8 +281,17 @@ namespace core.LinkLeaf
 
                     if (user.Visible)
                     {
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, user)),
-                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                        UserPool.AUsers.ForEachWhere(x =>
+                        {
+                            x.SendPacket(TCPOutbound.Join(x, user));
+
+                            if (user.Avatar.Length > 0)
+                                x.SendPacket(TCPOutbound.Avatar(x, user));
+
+                            if (user.PersonalMessage.Length > 0)
+                                x.SendPacket(TCPOutbound.PersonalMessage(x, user));
+                        },
+                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
@@ -440,7 +458,16 @@ namespace core.LinkLeaf
 
                 if (user.Visible)
                 {
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, user)),
+                    UserPool.AUsers.ForEachWhere(x =>
+                    {
+                        x.SendPacket(TCPOutbound.Join(x, user));
+
+                        if (user.Avatar.Length > 0)
+                            x.SendPacket(TCPOutbound.Avatar(x, user));
+
+                        if (user.PersonalMessage.Length > 0)
+                            x.SendPacket(TCPOutbound.PersonalMessage(x, user));
+                    },
                         x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
