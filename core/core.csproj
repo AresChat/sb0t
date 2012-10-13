@@ -171,6 +171,7 @@
     <Content Include="Libraries\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\servers.dat" />
     <None Include="Resources\web.dat" />
   </ItemGroup>
   <ItemGroup />
