@@ -167,5 +167,56 @@ namespace core.LinkLeaf
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
 
+        public static byte[] LeafNameChanged(LinkClient x, String old_name, String new_name)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, old_name);
+            packet.WriteString(x, new_name, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_NICK_CHANGED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafVroomChanged(LinkClient x, IClient client)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, client.Name);
+            packet.WriteUInt16(client.Vroom);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_VROOM_CHANGED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafIUser(LinkClient x, LinkUser target, String command, params String[] args)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target.Link.Ident);
+            packet.WriteString(x, target.Name);
+            packet.WriteString(x, command);
+
+            foreach (String str in args)
+                packet.WriteString(x, str);
+
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_IUSER);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafIUserBin(LinkClient x, LinkUser target, String command, byte[] args)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target.Link.Ident);
+            packet.WriteString(x, target.Name);
+            packet.WriteString(x, command);
+            packet.WriteBytes(args);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_IUSER_BIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
     }
 }

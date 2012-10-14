@@ -23,6 +23,7 @@ namespace core.LinkLeaf
         AlreadyLinking = 20,
         HubMode = 21,
         InvalidHashlink = 22,
-        WasNotLinking = 23
+        WasNotLinking = 23,
+        LinkDisabled = 24
     }
 }

@@ -7,6 +7,7 @@ namespace core.LinkHub
 {
     enum LinkMsg : byte
     {
+        // linking
         MSG_LINK_ERROR = 0,
         MSG_LINK_LEAF_LOGIN = 1,
         MSG_LINK_HUB_ACK = 3,
@@ -14,6 +15,8 @@ namespace core.LinkHub
         MSG_LINK_HUB_LEAF_DISCONNECTED = 6,
         MSG_LINK_LEAF_PING = 7,
         MSG_LINK_HUB_PONG = 8,
+
+        // user pool
         MSG_LINK_LEAF_USERLIST_ITEM = 10,
         MSG_LINK_HUB_USERLIST_ITEM = 10,
         MSG_LINK_LEAF_AVATAR = 11,
@@ -28,6 +31,8 @@ namespace core.LinkHub
         MSG_LINK_HUB_USER_UPDATED = 18,
         MSG_LINK_LEAF_CUSTOM_NAME = 19,
         MSG_LINK_HUB_CUSTOM_NAME = 19,
+
+        // text
         MSG_LINK_LEAF_PUBLIC_TEXT = 20,
         MSG_LINK_HUB_PUBLIC_TEXT = 20,
         MSG_LINK_LEAF_EMOTE_TEXT = 21,
@@ -36,13 +41,23 @@ namespace core.LinkHub
         MSG_LINK_HUB_PRIVATE_TEXT = 25,
         MSG_LINK_LEAF_PRIVATE_IGNORED = 27,
         MSG_LINK_HUB_PRIVATE_IGNORED = 27,
+
+        // generic
         MSG_LINK_LEAF_RELAY = 30,
         MSG_LINK_HUB_RELAY = 30,
         MSG_LINK_LEAF_BROADCAST = 31,
         MSG_LINK_HUB_BROADCAST = 31,
+
+        // admin
         MSG_LINK_LEAF_NICK_CHANGED = 40,
         MSG_LINK_HUB_NICK_CHANGED = 40,
         MSG_LINK_LEAF_VROOM_CHANGED = 41,
-        MSG_LINK_HUB_VROOM_CHANGED = 41
+        MSG_LINK_HUB_VROOM_CHANGED = 41,
+        MSG_LINK_LEAF_IUSER = 42,
+        MSG_LINK_HUB_IUSER = 42,
+        MSG_LINK_LEAF_ADMIN = 43,
+        MSG_LINK_HUB_ADMIN = 43,
+        MSG_LINK_LEAF_IUSER_BIN = 44,
+        MSG_LINK_HUB_IUSER_BIN = 44
     }
 }

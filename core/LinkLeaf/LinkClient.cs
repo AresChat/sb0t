@@ -85,7 +85,7 @@ namespace core.LinkLeaf
                 }
                 else if (time > (this.Time + 15000))
                 {
-                    this.Disconnect();
+                    this.KillSocket();
 
                     if (this.CanReconnect)
                     {
@@ -108,7 +108,7 @@ namespace core.LinkLeaf
                     }
                     catch (Exception e)
                     {
-                        this.Disconnect();
+                        this.KillSocket();
 
                         if (this.CanReconnect)
                         {
@@ -131,7 +131,7 @@ namespace core.LinkLeaf
 
                 if (!this.SocketConnected)
                 {
-                    this.Disconnect();
+                    this.KillSocket();
                     bool unlink_fire = this.LoginPhase == LinkLogin.Ready;
 
                     if (this.CanReconnect)
@@ -153,7 +153,7 @@ namespace core.LinkLeaf
                 {
                     if (time > (this.Time + 60000))
                     {
-                        this.Disconnect();
+                        this.KillSocket();
 
                         if (this.CanReconnect)
                         {
@@ -175,7 +175,7 @@ namespace core.LinkLeaf
 
                     if (time > (this.LastPong + 240000))
                     {
-                        this.Disconnect();
+                        this.KillSocket();
                         
                         if (this.CanReconnect)
                         {
@@ -270,6 +270,12 @@ namespace core.LinkLeaf
                 return;
             }
 
+            if (((LinkHub.LinkMode)Settings.Get<int>("link_mode")) != LinkHub.LinkMode.Leaf)
+            {
+                Events.LinkError(LinkError.LinkDisabled);
+                return;
+            }
+
             this.CanReconnect = Settings.Get<bool>("link_reconnect");
             this.LoginPhase = LinkLogin.Connecting;
             this.Time = core.Time.Now;
@@ -288,7 +294,7 @@ namespace core.LinkLeaf
             catch { }
         }
 
-        public void Disconnect()
+        public void KillSocket()
         {
             if (this.Sock != null)
             {
@@ -326,7 +332,7 @@ namespace core.LinkLeaf
             }
         }
 
-        public bool EndSession()
+        public bool Disconnect()
         {
             if (this.Local)
             {
@@ -340,7 +346,7 @@ namespace core.LinkLeaf
                 return false;
             }
 
-            this.Disconnect();
+            this.KillSocket();
             this.Busy = false;
             this.ClearUserlist();
             return true;

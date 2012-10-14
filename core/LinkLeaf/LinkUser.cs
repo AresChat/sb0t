@@ -33,8 +33,6 @@ namespace core.LinkLeaf
         public IFont Font { get { return new Font(); } set { } }
         public bool CustomClient { get; set; }
         public List<String> CustomClientTags { get { return new List<String>(); } set { } }
-        public bool Muzzled { get; set; }
-        public String CustomName { get; set; }
         public bool WebClient { get; set; }
         public bool Owner { get { return false; } set { } }
         public bool Encrypted { get; set; }
@@ -45,7 +43,6 @@ namespace core.LinkLeaf
         public bool Connected { get { return true; } }
         public bool Idle { get; set; }
         public bool Quarantined { get { return false; } set { } }
-        public uint LeafIdent { get; private set; }
         public bool Visible { get; set; }
         public uint Cookie { get; set; }
         public Encryption Encryption { get; set; }
@@ -53,65 +50,78 @@ namespace core.LinkLeaf
         public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
         public IUser IUser { get { return this; } }
-        public bool Linked { get { return true; } }
+        public ILink Link { get; set; }
 
-        public void SetAvatar(byte[] data)
+        public void SetMuzzled(bool b) { this._muzzled = b; }
+        private bool _muzzled;
+        public bool Muzzled
         {
-            this._avatar = data;
+            get { return this._muzzled; }
+            set
+            {
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, value ? "muzzle" : "unmuzzle", String.Empty));
+            }
         }
 
+        public void SetCustomName(String str) { this._customname = str; }
+        private String _customname;
+        public String CustomName
+        {
+            get { return this._customname; }
+            set
+            {
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "customname", value == null ? String.Empty : value));
+            }
+        }
+
+
+        public void SetAvatar(byte[] data) { this._avatar = data; }
         private byte[] _avatar;
         public byte[] Avatar
         {
             get { return this._avatar; }
             set
             {
-                this._avatar = value;
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
+                    this, "avatar", value == null ? new byte[] { } : value));
             }
         }
 
-        public void SetPersonalMessage(String str)
-        {
-            this._personalmessage = str;
-        }
-
+        public void SetPersonalMessage(String str) { this._personalmessage = str; }
         private String _personalmessage;
         public String PersonalMessage
         {
             get { return this._personalmessage; }
             set
             {
-                this._personalmessage = value;
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "personalmessage", value == null ? String.Empty : value));
             }
         }
 
-        public void SetName(String name)
-        {
-            this._name = name;
-        }
-
+        public void SetName(String name) { this._name = name; }
         private String _name;
         public String Name
         {
             get { return this._name; }
             set
             {
-                this._name = value;
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "name", value == null ? String.Empty : value));
             }
         }
 
-        public void SetVroom(ushort vroom)
-        {
-            this._vroom = vroom;
-        }
-
+        public void SetVroom(ushort vroom) { this._vroom = vroom; }
         private ushort _vroom;
         public ushort Vroom
         {
             get { return this._vroom; }
             set
             {
-                this._vroom = value;
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
+                    this, "vroom", BitConverter.GetBytes(value)));
             }
         }
 
@@ -119,64 +129,87 @@ namespace core.LinkLeaf
 
         public void BinaryWrite(byte[] data)
         {
-
+            if (data != null)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
+                    this, "binary", data));
         }
 
         public void Print(object text)
         {
-
+            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                this, "print", text.ToString()));
         }
 
         public void Ban()
         {
-
+            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                this, "ban", String.Empty));
         }
 
         public void Disconnect()
         {
-
+            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                this, "disconnect", String.Empty));
         }
 
         public void Redirect(String hashlink)
         {
-
+            if (!String.IsNullOrEmpty(hashlink))
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "redirect", hashlink));
         }
 
         public void SendText(String text)
         {
-
+            if (!String.IsNullOrEmpty(text))
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "sendtext", text));
         }
 
         public void SendEmote(String text)
         {
-
+            if (!String.IsNullOrEmpty(text))
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "sendemote", text));
         }
 
         public void PM(String sender, String text)
         {
-
+            if (!String.IsNullOrEmpty(sender) && !String.IsNullOrEmpty(text))
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "pm", sender, text));
         }
 
         public void Topic(String text)
         {
-
+            if (text != null)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "topic", text));
         }
 
         public void RestoreAvatar()
         {
-
+            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                this, "restoreavatar", String.Empty));
         }
 
         public void URL(String address, String text)
         {
-
+            if (!String.IsNullOrEmpty(address) && !String.IsNullOrEmpty(text))
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "url", address, text));
         }
 
         public LinkUser(uint ident)
         {
             this._avatar = new byte[] { };
             this._personalmessage = String.Empty;
-            this.LeafIdent = ident;
+            
+            this.Link = new UserLinkCredentials
+            {
+                Ident = ident,
+                IsLinked = true
+            };
         }
     }
 }

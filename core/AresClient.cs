@@ -11,7 +11,6 @@ namespace core
 {
     class AresClient : IClient, IUser
     {
-        public bool Linked { get { return false; } }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
         public String DNS { get; set; }
@@ -57,6 +56,7 @@ namespace core
         public ulong IdleStart { get; set; }
         public bool Quarantined { get; set; }
         public bool IsLeaf { get; set; }
+        public ILink Link { get { return new UserLinkCredentials(); } }
 
         public Socket Sock { get; set; }
         public bool HasSecureLoginAttempted { get; set; }
@@ -335,8 +335,12 @@ namespace core
                                 x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
                         }
 
+                        String current = this._name;
                         this._name = value;
                         Helpers.FakeRejoinSequence(this, false);
+
+                        if (ServerCore.Linker.Busy)
+                            ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafNameChanged(ServerCore.Linker, current, this._name));
                     }
             }
         }
@@ -383,6 +387,9 @@ namespace core
 
                             this._vroom = value;
                             Helpers.FakeRejoinSequence(this, false);
+
+                            if (ServerCore.Linker.Busy)
+                                ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafVroomChanged(ServerCore.Linker, this));
                         }
 
                         Events.VroomChanged(this);

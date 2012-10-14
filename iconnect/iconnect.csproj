@@ -55,6 +55,7 @@
     <Compile Include="IHashlinkRoom.cs" />
     <Compile Include="IHostApp.cs" />
     <Compile Include="ILevel.cs" />
+    <Compile Include="ILink.cs" />
     <Compile Include="IPool.cs" />
     <Compile Include="IPrivateMsg.cs" />
     <Compile Include="IRecord.cs" />

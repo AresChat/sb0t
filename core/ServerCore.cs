@@ -95,7 +95,7 @@ namespace core
             core.LinkHub.LeafPool.Destroy();
 
             if (Linker != null)
-                Linker.Disconnect();
+                Linker.KillSocket();
         }
 
         private void ServerThread()

@@ -11,7 +11,6 @@ namespace core.ib0t
 {
     class ib0tClient : IClient, IUser
     {
-        public bool Linked { get { return false; } }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
         public String DNS { get; set; }
@@ -43,6 +42,7 @@ namespace core.ib0t
         public String CaptchaWord { get; set; }
         public ulong IdleStart { get; set; }
         public bool Quarantined { get; set; }
+        public ILink Link { get { return new UserLinkCredentials(); } }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }

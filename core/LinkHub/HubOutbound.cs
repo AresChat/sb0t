@@ -261,5 +261,32 @@ namespace core.LinkHub
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] HubIUser(Leaf x, String target, String command, String[] args)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, target);
+            packet.WriteString(x, command);
+
+            foreach (String str in args)
+                packet.WriteString(x, str);
+
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_HUB_IUSER);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubIUserBin(Leaf x, String target, String command, byte[] args)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, target);
+            packet.WriteString(x, command);
+            packet.WriteBytes(args);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_HUB_IUSER_BIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }

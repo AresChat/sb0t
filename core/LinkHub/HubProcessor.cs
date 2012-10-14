@@ -82,6 +82,61 @@ namespace core.LinkHub
                 case LinkMsg.MSG_LINK_LEAF_VROOM_CHANGED:
                     LeafVroomChanged(leaf, packet);
                     break;
+
+                case LinkMsg.MSG_LINK_LEAF_IUSER:
+                    LeafIUser(leaf, packet);
+                    break;
+
+                case LinkMsg.MSG_LINK_LEAF_IUSER_BIN:
+                    LeafIUserBin(leaf, packet);
+                    break;
+            }
+        }
+
+
+        private static void LeafIUser(Leaf leaf, TCPPacketReader packet)
+        {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
+            uint target_leaf = packet;
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == target_leaf && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+            {
+                String name = packet.ReadString(leaf);
+                String command = packet.ReadString(leaf);
+                List<String> args = new List<String>();
+
+                while (packet.Remaining > 0)
+                    args.Add(packet.ReadString(leaf));
+
+                l.SendPacket(HubOutbound.HubIUser(l, name, command, args.ToArray()));
+            }
+        }
+
+        private static void LeafIUserBin(Leaf leaf, TCPPacketReader packet)
+        {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
+            uint target_leaf = packet;
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == target_leaf && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+            {
+                String name = packet.ReadString(leaf);
+                String command = packet.ReadString(leaf);
+                byte[] args = packet;
+                l.SendPacket(HubOutbound.HubIUserBin(l, name, command, args));
             }
         }
 

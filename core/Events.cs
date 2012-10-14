@@ -392,7 +392,7 @@ namespace core
             // TEST START
             if (command == "unlink")
             {
-                if (ServerCore.Linker.EndSession())
+                if (ServerCore.Linker.Disconnect())
                 {
                     //test print
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "you have disconnected from the hub")), x => x.LoggedIn);

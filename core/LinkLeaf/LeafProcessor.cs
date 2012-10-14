@@ -59,6 +59,82 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_PERSONAL_MESSAGE:
                     HubPersonalMessage(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_IUSER:
+                    HubIUser(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_IUSER_BIN:
+                    HubIUserBin(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_NAME:
+                    HubCustomName(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubCustomName(LinkClient link, TCPPacketReader packet)
+        {
+            uint ident = packet;
+            String name = packet.ReadString(link);
+            String cname = packet.ReadString(link);
+            Leaf leaf = link.Leaves.Find(x => x.Ident == ident);
+
+            if (leaf != null)
+            {
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+                if (user != null)
+                    user.SetCustomName(cname);
+            }
+        }
+
+        private static void HubIUser(LinkClient link, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(link);
+            IClient client = UserPool.AUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == name);
+
+            if (client == null)
+                client = UserPool.WUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == name);
+
+            if (client != null)
+            {
+                String command = packet.ReadString(link);
+
+                switch (command)
+                {
+                    case "print":
+                        IUserPrint(link, client, packet);
+                        break;
+                }
+            }
+        }
+
+        private static void IUserPrint(LinkClient link, IClient target, TCPPacketReader packet)
+        {
+            String args = packet.ReadString(link);
+            target.Print(args);
+        }
+
+        private static void HubIUserBin(LinkClient link, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(link);
+            IClient client = UserPool.AUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == name);
+
+            if (client == null)
+                client = UserPool.WUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == name);
+
+            if (client != null)
+            {
+                String command = packet.ReadString(link);
+                byte[] args = packet;
+
+                switch (command)
+                {
+                    default:
+                        break;
+                }
             }
         }
 
@@ -320,7 +396,7 @@ namespace core.LinkLeaf
                     if (c_level != user.Level)
                         Events.AdminLevelChanged(user);
 
-                    user.Muzzled = ((byte)packet) == 1;
+                    user.SetMuzzled(((byte)packet) == 1);
 
                     bool c_bool = user.Registered;
                     user.Registered = ((byte)packet) == 1;
