@@ -162,7 +162,13 @@ namespace core
 
                 return this._customname;
             }
-            set { this._customname = value == null ? String.Empty : value; }
+            set
+            {
+                this._customname = value == null ? String.Empty : value;
+
+                if (ServerCore.Linker.Busy)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomName(ServerCore.Linker, this));
+            }
         }
 
         public void Ban()

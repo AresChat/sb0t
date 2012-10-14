@@ -421,6 +421,8 @@ namespace core.LinkHub
 
             LeafPool.Leaves.ForEachWhere(x =>
             {
+                leaf.SendPacket(HubOutbound.HubLeafConnected(leaf, x));
+
                 foreach (LinkUser u in x.Users)
                 {
                     leaf.SendPacket(HubOutbound.HubUserlistItem(leaf, x.Ident, u));

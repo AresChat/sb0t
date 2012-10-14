@@ -17,6 +17,7 @@ namespace core.LinkLeaf
         private ConcurrentQueue<byte[]> data_out = new ConcurrentQueue<byte[]>();
         private int socket_health = 0;
 
+        public String HubName { get; set; }
         public IPAddress ExternalIP { get; set; }
         public ushort Port { get; set; }
         public bool Busy { get; set; }
@@ -242,6 +243,7 @@ namespace core.LinkLeaf
             this.Local = true;
             this.ExternalIP = IPAddress.Loopback;
             this.Port = Settings.Port;
+            this.HubName = Settings.Name;
             this.Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.Sock.Blocking = false;
 
@@ -252,17 +254,30 @@ namespace core.LinkLeaf
             catch { }
         }
 
-        public bool Connect(String hashlink)
+        public void Connect(String hashlink)
         {
             if (this.Busy)
-                return false;
+            {
+                Events.LinkError(LinkError.AlreadyLinking);
+                return;
+            }
+
+            Room obj = Hashlink.DecodeHashlink(hashlink);
+
+            if (obj == null)
+            {
+                Events.LinkError(LinkError.InvalidHashlink);
+                return;
+            }
 
             this.CanReconnect = Settings.Get<bool>("link_reconnect");
+            this.LoginPhase = LinkLogin.Connecting;
+            this.Time = core.Time.Now;
             this.Busy = true;
             this.Local = false;
-
-            this.ExternalIP = IPAddress.Parse("82.24.212.216");
-            this.Port = 5555;
+            this.ExternalIP = obj.IP;
+            this.Port = obj.Port;
+            this.HubName = obj.Name;
             this.Sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.Sock.Blocking = false;
 
@@ -271,8 +286,6 @@ namespace core.LinkLeaf
                 this.Sock.Connect(new IPEndPoint(this.ExternalIP, this.Port));
             }
             catch { }
-
-            return true;
         }
 
         public void Disconnect()
@@ -313,11 +326,24 @@ namespace core.LinkLeaf
             }
         }
 
-        public void EndSession()
+        public bool EndSession()
         {
+            if (this.Local)
+            {
+                Events.LinkError(LinkError.HubMode);
+                return false;
+            }
+
+            if (!this.Busy)
+            {
+                Events.LinkError(LinkError.WasNotLinking);
+                return false;
+            }
+
             this.Disconnect();
             this.Busy = false;
             this.ClearUserlist();
+            return true;
         }
 
         private bool SocketConnected

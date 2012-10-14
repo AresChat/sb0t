@@ -57,7 +57,7 @@ namespace core.LinkLeaf
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_PERSONAL_MESSAGE:
-                    HubAvatar(link, packet);
+                    HubPersonalMessage(link, packet);
                     break;
             }
         }

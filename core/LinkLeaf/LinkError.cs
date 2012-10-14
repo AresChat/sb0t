@@ -18,6 +18,11 @@ namespace core.LinkLeaf
         HubException_DoesNotTrustYou = 12,
         HubException_HandshakeTimeout = 14,
         HubException_PingTimeout = 15,
-        HubException_BadProtocol = 16
+        HubException_BadProtocol = 16,
+
+        AlreadyLinking = 20,
+        HubMode = 21,
+        InvalidHashlink = 22,
+        WasNotLinking = 23
     }
 }

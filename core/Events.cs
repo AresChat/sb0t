@@ -389,11 +389,32 @@ namespace core
 
         public static void Command(IClient client, String command, IClient target, String args)
         {
-            if (command == "test")
+            // TEST START
+            if (command == "unlink")
             {
-                client.Print(ServerCore.Linker.Connect(""));
+                if (ServerCore.Linker.EndSession())
+                {
+                    //test print
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "you have disconnected from the hub")), x => x.LoggedIn);
+                }
+
                 return;
             }
+
+            if (command.StartsWith("link "))
+            {
+                Room obj = Hashlink.DecodeHashlink(command.Substring(5));
+
+                if (obj != null)
+                {
+                    //test print
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "connecting to hub [" + obj.Name + "] please wait...")), x => x.LoggedIn);
+                    ServerCore.Linker.Connect(command.Substring(5));
+                }
+
+                return;
+            }
+            // TEST END
 
             if (command == "help")
             {
@@ -883,27 +904,32 @@ namespace core
 
         public static void LinkError(core.LinkLeaf.LinkError e)
         {
-
+            //test print
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "link error - " + e)), x => x.LoggedIn);
         }
 
         public static void Linked()
         {
-
+            //test print
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "you are connected to hub")), x => x.LoggedIn);
         }
 
         public static void Unlinked()
         {
-
+            //test print
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "you have disconnected from hub")), x => x.LoggedIn);
         }
 
         public static void LeafJoined(LinkLeaf.Leaf leaf)
         {
-
+            //test print
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "a new leaf connected to hub - " + leaf.Name)), x => x.LoggedIn);
         }
 
         public static void LeafParted(LinkLeaf.Leaf leaf)
         {
-
+            //test print
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "a leaf disconnected from hub - " + leaf.Name)), x => x.LoggedIn);
         }
     }
 }
