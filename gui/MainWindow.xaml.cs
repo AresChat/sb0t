@@ -245,6 +245,8 @@ namespace gui
                 Settings.Set("local_host", this.checkBox19.IsChecked);
             else if (cb.Name == "checkBox20")
                 Settings.Set("link_reconnect", this.checkBox20.IsChecked);
+            else if (cb.Name == "checkBox21")
+                Settings.Set("link_admin", this.checkBox21.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)

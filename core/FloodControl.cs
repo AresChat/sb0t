@@ -97,6 +97,14 @@ namespace core
             return false;
         }
 
+        public static void LinkPost()
+        {
+            last_typer.Add(IPAddress.Any);
+
+            if (last_typer.Count > 8)
+                last_typer.RemoveAt(0);
+        }
+
         public static TCPMsg WebMsgToTCPMsg(String ident)
         {
             switch (ident)

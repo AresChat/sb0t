@@ -61,11 +61,13 @@ namespace core.LinkLeaf
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_IUSER:
-                    HubIUser(link, packet);
+                    if (Settings.Get<bool>("link_admin"))
+                        HubIUser(link, packet);
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_IUSER_BIN:
-                    HubIUserBin(link, packet);
+                    if (Settings.Get<bool>("link_admin"))
+                        HubIUserBin(link, packet);
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_NAME:
@@ -73,8 +75,81 @@ namespace core.LinkLeaf
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_ADMIN:
-                    HubAdmin(link, packet);
+                    if (Settings.Get<bool>("link_admin"))
+                        HubAdmin(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PUBLIC_TEXT:
+                    HubPublicText(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_EMOTE_TEXT:
+                    HubEmoteText(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubPublicText(LinkClient link, TCPPacketReader packet)
+        {
+            uint ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+                if (user != null)
+                {
+                    String text = packet.ReadString(link);
+                    Events.TextReceived(user, text);
+                    FloodControl.LinkPost();
+                    text = Events.TextSending(user, text);
+
+                    if (!String.IsNullOrEmpty(text))
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(user.CustomName) ?
+                            TCPOutbound.Public(x, user.Name, text) : TCPOutbound.NoSuch(x, user.CustomName + text)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(user.CustomName) ?
+                            ib0t.WebOutbound.PublicTo(x, user.Name, text) : ib0t.WebOutbound.NoSuchTo(x, user.CustomName + text)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
+
+                        Events.TextSent(user, text);
+                    }
+                }
+            }
+        }
+
+        private static void HubEmoteText(LinkClient link, TCPPacketReader packet)
+        {
+            uint ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                LinkUser user = leaf.Users.Find(x => x.Name == name);
+
+                if (user != null)
+                {
+                    String text = packet.ReadString(link);
+                    Events.EmoteReceived(user, text);
+                    FloodControl.LinkPost();
+                    text = Events.EmoteSending(user, text);
+
+                    if (!String.IsNullOrEmpty(text))
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, user.Name, text)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, user.Name, text)),
+                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
+
+                        Events.EmoteSent(user, text);
+                    }
+                }
             }
         }
 

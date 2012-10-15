@@ -201,6 +201,8 @@ namespace gui
             this.SetLinkIdent();
             //auto reconnect links
             this.checkBox20.IsChecked = Settings.Get<bool>("link_reconnect");
+            //linked admin
+            this.checkBox21.IsChecked = Settings.Get<bool>("link_admin");
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
 

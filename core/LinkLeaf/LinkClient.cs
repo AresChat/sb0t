@@ -285,6 +285,12 @@ namespace core.LinkLeaf
 
         public void Connect(String hashlink)
         {
+            if (this.Local)
+            {
+                Events.LinkError(LinkError.HubMode);
+                return;
+            }
+
             if (this.Busy)
             {
                 Events.LinkError(LinkError.AlreadyLinking);

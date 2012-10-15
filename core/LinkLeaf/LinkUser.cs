@@ -59,8 +59,9 @@ namespace core.LinkLeaf
             get { return this._muzzled; }
             set
             {
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, value ? "muzzle" : "unmuzzle", String.Empty));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, value ? "muzzle" : "unmuzzle", String.Empty));
             }
         }
 
@@ -71,8 +72,9 @@ namespace core.LinkLeaf
             get { return this._customname; }
             set
             {
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "customname", value == null ? String.Empty : value));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "customname", value == null ? String.Empty : value));
             }
         }
 
@@ -84,8 +86,9 @@ namespace core.LinkLeaf
             get { return this._avatar; }
             set
             {
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
-                    this, "avatar", value == null ? new byte[] { } : value));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
+                        this, "avatar", value == null ? new byte[] { } : value));
             }
         }
 
@@ -96,8 +99,9 @@ namespace core.LinkLeaf
             get { return this._personalmessage; }
             set
             {
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "personalmessage", value == null ? String.Empty : value));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "personalmessage", value == null ? String.Empty : value));
             }
         }
 
@@ -108,8 +112,9 @@ namespace core.LinkLeaf
             get { return this._name; }
             set
             {
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "name", value == null ? String.Empty : value));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "name", value == null ? String.Empty : value));
             }
         }
 
@@ -120,8 +125,9 @@ namespace core.LinkLeaf
             get { return this._vroom; }
             set
             {
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
-                    this, "vroom", BitConverter.GetBytes(value)));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
+                        this, "vroom", BitConverter.GetBytes(value)));
             }
         }
 
@@ -130,74 +136,85 @@ namespace core.LinkLeaf
         public void BinaryWrite(byte[] data)
         {
             if (data != null)
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
-                    this, "binary", data));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUserBin(ServerCore.Linker,
+                        this, "binary", data));
         }
 
         public void Print(object text)
         {
-            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                this, "print", text.ToString()));
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "print", text.ToString()));
         }
 
         public void Ban()
         {
-            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                this, "ban", String.Empty));
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "ban", String.Empty));
         }
 
         public void Disconnect()
         {
-            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                this, "disconnect", String.Empty));
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "disconnect", String.Empty));
         }
 
         public void Redirect(String hashlink)
         {
             if (!String.IsNullOrEmpty(hashlink))
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "redirect", hashlink));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "redirect", hashlink));
         }
 
         public void SendText(String text)
         {
             if (!String.IsNullOrEmpty(text))
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "sendtext", text));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "sendtext", text));
         }
 
         public void SendEmote(String text)
         {
             if (!String.IsNullOrEmpty(text))
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "sendemote", text));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "sendemote", text));
         }
 
         public void PM(String sender, String text)
         {
             if (!String.IsNullOrEmpty(sender) && !String.IsNullOrEmpty(text))
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "pm", sender, text));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "pm", sender, text));
         }
 
         public void Topic(String text)
         {
             if (text != null)
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "topic", text));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "topic", text));
         }
 
         public void RestoreAvatar()
         {
-            ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                this, "restoreavatar", String.Empty));
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                    this, "restoreavatar", String.Empty));
         }
 
         public void URL(String address, String text)
         {
             if (!String.IsNullOrEmpty(address) && !String.IsNullOrEmpty(text))
-                ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
-                    this, "url", address, text));
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafIUser(ServerCore.Linker,
+                        this, "url", address, text));
         }
 
         public LinkUser(uint ident)

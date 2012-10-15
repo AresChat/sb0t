@@ -110,7 +110,7 @@ namespace core
             {
                 this._muzzled = value;
 
-                if (ServerCore.Linker.Busy && this.LoggedIn)
+                if (ServerCore.Linker.Busy && this.LoggedIn && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
             }
         }
@@ -123,7 +123,7 @@ namespace core
             {
                 this._registered = value;
 
-                if (ServerCore.Linker.Busy && this.LoggedIn)
+                if (ServerCore.Linker.Busy && this.LoggedIn && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
             }
         }
@@ -136,7 +136,7 @@ namespace core
             {
                 this._idled = value;
 
-                if (ServerCore.Linker.Busy && this.LoggedIn)
+                if (ServerCore.Linker.Busy && this.LoggedIn && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
             }
         }
@@ -149,7 +149,7 @@ namespace core
             this.Quarantined = false;
             Helpers.FakeRejoinSequence(this, true);
 
-            if (ServerCore.Linker.Busy)
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                 ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, this));
         }
 
@@ -166,7 +166,7 @@ namespace core
             {
                 this._customname = value == null ? String.Empty : value;
 
-                if (ServerCore.Linker.Busy)
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomName(ServerCore.Linker, this));
             }
         }
@@ -223,6 +223,9 @@ namespace core
 
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, this.Name, text)),
                     x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
+
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafEmoteText(ServerCore.Linker, this.Name, text));
             }
         }
 
@@ -237,6 +240,9 @@ namespace core
                 UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(this.CustomName) ?
                     ib0t.WebOutbound.PublicTo(x, this.Name, text) : ib0t.WebOutbound.NoSuchTo(x, this.CustomName + text)),
                     x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
+
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPublicText(ServerCore.Linker, this.Name, text));
             }
         }
 
@@ -339,7 +345,7 @@ namespace core
                         this._name = value;
                         Helpers.FakeRejoinSequence(this, false);
 
-                        if (ServerCore.Linker.Busy)
+                        if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                             ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafNameChanged(ServerCore.Linker, current, this._name));
                     }
             }
@@ -388,7 +394,7 @@ namespace core
                             this._vroom = value;
                             Helpers.FakeRejoinSequence(this, false);
 
-                            if (ServerCore.Linker.Busy)
+                            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                                 ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafVroomChanged(ServerCore.Linker, this));
                         }
 
@@ -412,7 +418,7 @@ namespace core
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.UpdateTo(x, this.Name, this._level)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                    if (ServerCore.Linker.Busy)
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
                 }
 
@@ -462,7 +468,7 @@ namespace core
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.AvatarCleared(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                        if (ServerCore.Linker.Busy)
+                        if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                             ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, this));
                     }
                 }
@@ -475,7 +481,7 @@ namespace core
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                        if (ServerCore.Linker.Busy)
+                        if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                             ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, this));
                     }
                 }
@@ -494,7 +500,7 @@ namespace core
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                    if (ServerCore.Linker.Busy)
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, this));
                 }
             }
@@ -608,7 +614,7 @@ namespace core
                 this.LoggedIn = false;
                 Events.Parting(this);
 
-                if (ServerCore.Linker.Busy && !this.Quarantined)
+                if (ServerCore.Linker.Busy && !this.Quarantined && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPart(ServerCore.Linker, this));
 
                 Events.Parted(this);
@@ -644,7 +650,7 @@ namespace core
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.PartTo(x, this.Name) : ib0t.WebOutbound.UpdateTo(x, other.Name, other.Level)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                    if (ServerCore.Linker.Busy)
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPart(ServerCore.Linker, this));
                 }
 

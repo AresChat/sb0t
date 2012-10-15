@@ -353,7 +353,8 @@ namespace core
             if (target != null)
                 if (target.IUser.Link.IsLinked)
                 {
-                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAdmin(ServerCore.Linker, client, command, target, args));
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAdmin(ServerCore.Linker, client, command, target, args));
                     return;
                 }
 
