@@ -218,5 +218,18 @@ namespace core.LinkLeaf
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
 
+        public static byte[] LeafAdmin(LinkClient x, IClient admin, String command, IClient target, String args)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target.IUser.Link.Ident);
+            packet.WriteString(x, admin.Name);
+            packet.WriteString(x, target.Name);
+            packet.WriteString(x, command);
+            packet.WriteString(x, args, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_ADMIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }

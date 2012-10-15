@@ -82,9 +82,13 @@ namespace core
 
             str = str.Substring(str.IndexOf(" ") + 1);
             cmd.Target = UserPool.AUsers.Find(x => x.Name == str);
+            cmd.Args = String.Empty;
 
             if (cmd.Target == null)
                 cmd.Target = UserPool.WUsers.Find(x => x.Name == str);
+
+            if (cmd.Target == null)
+                cmd.Target = ServerCore.Linker.FindUser(x => x.Name == str);
 
             if (cmd.Target == null && str.Length > 0)
                 if (str.StartsWith("\"") && str.LastIndexOf("\"") > str.IndexOf("\""))
@@ -96,17 +100,24 @@ namespace core
                         cmd.Target = UserPool.WUsers.Find(x => x.Name == str.Substring(0, str.IndexOf("\"")));
 
                     if (cmd.Target == null)
+                        cmd.Target = ServerCore.Linker.FindUser(x => x.Name == str.Substring(0, str.IndexOf("\"")));
+
+                    if (cmd.Target == null)
                         cmd.Target = UserPool.AUsers.Find(x => x.Name.StartsWith(str.Substring(0, str.IndexOf("\""))));
 
                     if (cmd.Target == null)
                         cmd.Target = UserPool.WUsers.Find(x => x.Name.StartsWith(str.Substring(0, str.IndexOf("\""))));
+
+                    if (cmd.Target == null)
+                        cmd.Target = ServerCore.Linker.FindUser(x => x.Name.StartsWith(str.Substring(0, str.IndexOf("\""))));
 
                     str = str.Substring(str.IndexOf("\"") + 1);
 
                     if (str.StartsWith(" "))
                         str = str.Substring(1);
 
-                    cmd.Args = str;
+                    if (cmd.Target != null)
+                        cmd.Args = str;
                 }
                 else if (str.IndexOf(" ") > 0)
                 {
@@ -119,7 +130,13 @@ namespace core
 
                         if (cmd.Target == null)
                             cmd.Target = UserPool.WUsers.Find(x => x.ID == id);
+
+                        if (cmd.Target == null)
+                            cmd.Target = ServerCore.Linker.FindUser(x => x.ID == id);
                     }
+
+                    if (cmd.Target == null)
+                        cmd.Args = String.Empty;
                 }
                 else if (ushort.TryParse(str, out id))
                 {
@@ -127,6 +144,9 @@ namespace core
 
                     if (cmd.Target == null)
                         cmd.Target = UserPool.WUsers.Find(x => x.ID == id);
+
+                    if (cmd.Target == null)
+                        cmd.Target = ServerCore.Linker.FindUser(x => x.ID == id);
                 }
         }
 

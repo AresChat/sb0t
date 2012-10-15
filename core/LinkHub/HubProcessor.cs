@@ -90,9 +90,40 @@ namespace core.LinkHub
                 case LinkMsg.MSG_LINK_LEAF_IUSER_BIN:
                     LeafIUserBin(leaf, packet);
                     break;
+
+                case LinkMsg.MSG_LINK_LEAF_ADMIN:
+                    LeafAdmin(leaf, packet);
+                    break;
             }
         }
 
+        private static void LeafAdmin(Leaf leaf, TCPPacketReader packet)
+        {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
+            uint target_ident = packet;
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == target_ident && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+            {
+                String sender_name = packet.ReadString(leaf);
+                LinkUser admin = leaf.Users.Find(x => x.Name == sender_name);
+                String target_name = packet.ReadString(leaf);
+                LinkUser target = l.Users.Find(x => x.Name == target_name);
+
+                if (admin != null && target_name != null)
+                {
+                    String command = packet.ReadString(leaf);
+                    String args = packet.ReadString(leaf);
+                    l.SendPacket(HubOutbound.HubAdmin(l, admin, command, target, args));
+                }
+            }
+        }
 
         private static void LeafIUser(Leaf leaf, TCPPacketReader packet)
         {
@@ -317,7 +348,7 @@ namespace core.LinkHub
                 return;
             }
 
-            LinkUser user = new LinkUser();
+            LinkUser user = new LinkUser(leaf.Ident);
             user.OrgName = packet.ReadString(leaf);
             user.Name = packet.ReadString(leaf);
             user.Version = packet.ReadString(leaf);
@@ -504,7 +535,7 @@ namespace core.LinkHub
                 return;
             }
 
-            LinkUser user = new LinkUser();
+            LinkUser user = new LinkUser(leaf.Ident);
             user.OrgName = packet.ReadString(leaf);
             user.Name = packet.ReadString(leaf);
             user.Version = packet.ReadString(leaf);

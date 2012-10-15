@@ -288,5 +288,19 @@ namespace core.LinkHub
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] HubAdmin(Leaf x, LinkUser admin, String command, LinkUser target, String args)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(admin.Ident);
+            packet.WriteString(x, admin.Name);
+            packet.WriteString(x, target.Name);
+            packet.WriteString(x, command);
+            packet.WriteString(x, args);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_HUB_ADMIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }

@@ -34,5 +34,11 @@ namespace core.LinkHub
         public String CustomName { get; set; }
         public String PersonalMessage { get; set; }
         public byte[] Avatar { get; set; }
+        public uint Ident { get; private set; }
+
+        public LinkUser(uint ident)
+        {
+            this.Ident = ident;
+        }
     }
 }

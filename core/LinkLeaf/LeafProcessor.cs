@@ -71,6 +71,38 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_NAME:
                     HubCustomName(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_ADMIN:
+                    HubAdmin(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubAdmin(LinkClient link, TCPPacketReader packet)
+        {
+            uint sender_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == sender_ident);
+
+            if (leaf != null)
+            {
+                String sender_name = packet.ReadString(link);
+                LinkUser admin = leaf.Users.Find(x => x.Name == sender_name);
+
+                if (admin != null)
+                {
+                    String target_name = packet.ReadString(link);
+                    IClient target = UserPool.AUsers.Find(x => x.Name == target_name && x.LoggedIn && !x.Quarantined);
+
+                    if (target == null)
+                        target = UserPool.WUsers.Find(x => x.Name == target_name && x.LoggedIn && !x.Quarantined);
+
+                    if (target != null)
+                    {
+                        String command = packet.ReadString(link);
+                        String args = packet.ReadString(link);
+                        Events.Command(admin, command, target, args);
+                    }
+                }
             }
         }
 

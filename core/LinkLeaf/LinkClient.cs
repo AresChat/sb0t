@@ -48,6 +48,22 @@ namespace core.LinkLeaf
             return this.Leaves.Find(predicate);
         }
 
+        public IClient FindUser(Predicate<IClient> predicate)
+        {
+            IClient result = null;
+
+            if (this.Busy)
+                this.Leaves.ForEach(x =>
+                {
+                    result = x.Users.Find(predicate);
+
+                    if (result != null)
+                        return;
+                });
+
+            return result;
+        }
+
         private void ClearUserlist()
         {
             foreach (Leaf leaf in this.Leaves)

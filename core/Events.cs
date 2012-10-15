@@ -350,6 +350,13 @@ namespace core
 
         public static void Command(IClient client, String command, IClient target, String args)
         {
+            if (target != null)
+                if (target.IUser.Link.IsLinked)
+                {
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAdmin(ServerCore.Linker, client, command, target, args));
+                    return;
+                }
+
             if (command == "help")
             {
                 Help(client);
