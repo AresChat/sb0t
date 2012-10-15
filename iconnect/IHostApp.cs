@@ -28,5 +28,7 @@ namespace iconnect
         ILevel GetLevel(String command);
         /// <summary>Clear the ban list</summary>
         void ClearBans();
+        /// <summary>Link hub</summary>
+        IHub Hub { get; }
     }
 }

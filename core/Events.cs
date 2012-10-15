@@ -32,10 +32,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.ServerStarted();
-                }
+                try { x.Plugin.ServerStarted(); }
                 catch { }
             });
         }
@@ -47,10 +44,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.CycleTick();
-                }
+                try { x.Plugin.CycleTick(); }
                 catch { }
             });
         }
@@ -65,10 +59,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray());
-                }
+                try { x.Plugin.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray()); }
                 catch { }
             });
         }
@@ -108,10 +99,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Joined(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Joined(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -125,10 +113,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Rejected(client != null ? client.IUser : null, msg);
-                }
+                try { x.Plugin.Rejected(client != null ? client.IUser : null, msg); }
                 catch { }
             });
         }
@@ -140,10 +125,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Parting(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Parting(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -157,10 +139,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Parted(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Parted(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -218,10 +197,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.TextReceived(client != null ? client.IUser : null, text);
-                }
+                try { x.Plugin.TextReceived(client != null ? client.IUser : null, text); }
                 catch { }
             });
         }
@@ -258,10 +234,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.TextSent(client != null ? client.IUser : null, text);
-                }
+                try { x.Plugin.TextSent(client != null ? client.IUser : null, text); }
                 catch { }
             });
         }
@@ -273,10 +246,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.EmoteReceived(client != null ? client.IUser : null, text);
-                }
+                try { x.Plugin.EmoteReceived(client != null ? client.IUser : null, text); }
                 catch { }
             });
         }
@@ -313,10 +283,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.EmoteSent(client != null ? client.IUser : null, text);
-                }
+                try { x.Plugin.EmoteSent(client != null ? client.IUser : null, text); }
                 catch { }
             });
         }
@@ -362,10 +329,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
-                }
+                try { x.Plugin.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null); }
                 catch { }
             });
         }
@@ -379,43 +343,13 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.BotPrivateSent(client != null ? client.IUser : null, text);
-                }
+                try { x.Plugin.BotPrivateSent(client != null ? client.IUser : null, text); }
                 catch { }
             });
         }
 
         public static void Command(IClient client, String command, IClient target, String args)
         {
-            // TEST START
-            if (command == "unlink")
-            {
-                if (ServerCore.Linker.Disconnect())
-                {
-                    //test print
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "you have disconnected from the hub")), x => x.LoggedIn);
-                }
-
-                return;
-            }
-
-            if (command.StartsWith("link "))
-            {
-                Room obj = Hashlink.DecodeHashlink(command.Substring(5));
-
-                if (obj != null)
-                {
-                    //test print
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "connecting to hub [" + obj.Name + "] please wait...")), x => x.LoggedIn);
-                    ServerCore.Linker.Connect(command.Substring(5));
-                }
-
-                return;
-            }
-            // TEST END
-
             if (command == "help")
             {
                 Help(client);
@@ -495,10 +429,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
-                }
+                try { x.Plugin.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args); }
                 catch { }
             });
         }
@@ -552,10 +483,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Help(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Help(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -567,10 +495,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
-                }
+                try { x.Plugin.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime); }
                 catch { }
             });
         }
@@ -605,10 +530,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
-                }
+                try { x.Plugin.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored); }
                 catch { }
             });
         }
@@ -622,10 +544,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.InvalidLoginAttempt(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.InvalidLoginAttempt(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -637,10 +556,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.LoginGranted(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.LoginGranted(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -652,10 +568,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.AdminLevelChanged(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.AdminLevelChanged(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -690,10 +603,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Registered(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Registered(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -705,10 +615,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Unregistered(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Unregistered(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -720,10 +627,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.CaptchaSending(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.CaptchaSending(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -735,10 +639,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.CaptchaReply(client != null ? client.IUser : null, reply);
-                }
+                try { x.Plugin.CaptchaReply(client != null ? client.IUser : null, reply); }
                 catch { }
             });
         }
@@ -773,10 +674,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.VroomChanged(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.VroomChanged(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -811,10 +709,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Flooded(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Flooded(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -826,10 +721,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Logout(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Logout(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -841,10 +733,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Idled(client != null ? client.IUser : null);
-                }
+                try { x.Plugin.Idled(client != null ? client.IUser : null); }
                 catch { }
             });
         }
@@ -856,10 +745,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.Unidled(client != null ? client.IUser : null, seconds_away);
-                }
+                try { x.Plugin.Unidled(client != null ? client.IUser : null, seconds_away); }
                 catch { }
             });
         }
@@ -871,10 +757,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try
-                {
-                    x.Plugin.BansAutoCleared();
-                }
+                try { x.Plugin.BansAutoCleared(); }
                 catch { }
             });
         }
@@ -904,32 +787,62 @@ namespace core
 
         public static void LinkError(core.LinkLeaf.LinkError e)
         {
-            //test print
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "link error - " + e)), x => x.LoggedIn);
+            if (DefaultCommands)
+                commands.LinkError((ILinkError)e);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try { x.Plugin.LinkError((ILinkError)e); }
+                catch { }
+            });
         }
 
         public static void Linked()
         {
-            //test print
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "you are connected to hub")), x => x.LoggedIn);
+            if (DefaultCommands)
+                commands.Linked();
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try { x.Plugin.Linked(); }
+                catch { }
+            });
         }
 
         public static void Unlinked()
         {
-            //test print
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "you have disconnected from hub")), x => x.LoggedIn);
+            if (DefaultCommands)
+                commands.Unlinked();
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try { x.Plugin.Unlinked(); }
+                catch { }
+            });
         }
 
         public static void LeafJoined(LinkLeaf.Leaf leaf)
         {
-            //test print
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "a new leaf connected to hub - " + leaf.Name)), x => x.LoggedIn);
+            if (DefaultCommands)
+                commands.LeafJoined(leaf);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try { x.Plugin.LeafJoined(leaf); }
+                catch { }
+            });
         }
 
         public static void LeafParted(LinkLeaf.Leaf leaf)
         {
-            //test print
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "a leaf disconnected from hub - " + leaf.Name)), x => x.LoggedIn);
+            if (DefaultCommands)
+                commands.LeafParted(leaf);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try { x.Plugin.LeafParted(leaf); }
+                catch { }
+            });
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Net.Sockets;
 
 namespace core.LinkLeaf
 {
-    class LinkClient
+    class LinkClient : iconnect.IHub
     {
         private Socket Sock { get; set; }
         private bool CanReconnect { get; set; }
@@ -35,6 +35,19 @@ namespace core.LinkLeaf
             this.Leaves = new List<Leaf>();
         }
 
+        public bool IsLinked { get { return this.Busy; } }
+        public String Name { get { return this.HubName; } }
+
+        public void ForEachLeaf(Action<iconnect.ILeaf> action)
+        {
+            this.Leaves.ForEach(action);
+        }
+
+        public iconnect.ILeaf FindLeaf(Predicate<iconnect.ILeaf> predicate)
+        {
+            return this.Leaves.Find(predicate);
+        }
+
         private void ClearUserlist()
         {
             foreach (Leaf leaf in this.Leaves)
@@ -45,7 +58,7 @@ namespace core.LinkLeaf
 
                     UserPool.WUsers.ForEachWhere(z => z.QueuePacket(ib0t.WebOutbound.PartTo(z, x.Name)),
                         z => z.LoggedIn && !z.Quarantined && z.Vroom == x.Vroom);
-                }, x => x.Visible);
+                }, x => x.Link.Visible);
 
             this.Leaves.Clear();
         }
@@ -272,7 +285,7 @@ namespace core.LinkLeaf
 
             if (((LinkHub.LinkMode)Settings.Get<int>("link_mode")) != LinkHub.LinkMode.Leaf)
             {
-                Events.LinkError(LinkError.LinkDisabled);
+                Events.LinkError(LinkError.EnableLeafLinking);
                 return;
             }
 

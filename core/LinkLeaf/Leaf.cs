@@ -6,7 +6,7 @@ using System.Net;
 
 namespace core.LinkLeaf
 {
-    class Leaf
+    class Leaf : iconnect.ILeaf
     {
         public uint Ident { get; set; }
         public String Name { get; set; }
@@ -17,6 +17,11 @@ namespace core.LinkLeaf
         public Leaf()
         {
             this.Users = new List<LinkUser>();
+        }
+
+        public void ForEachUser(Action<iconnect.IUser> action)
+        {
+            this.Users.ForEach(action);
         }
     }
 }

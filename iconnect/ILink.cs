@@ -12,5 +12,7 @@ namespace iconnect
         bool IsLinked { get; }
         /// <summary>Get leaf ident</summary>
         uint Ident { get; }
+        /// <summary>Get status of link user's visibility on the user list</summary>
+        bool Visible { get; }
     }
 }

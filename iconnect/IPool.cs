@@ -14,6 +14,8 @@ namespace iconnect
         void Ares(Action<IUser> action);
         /// <summary>Action all Web Browser clients</summary>
         void Web(Action<IUser> action);
+        /// <summary>Action all Linked clients</summary>
+        void Linked(Action<IUser> action);
         /// <summary>Action all clients</summary>
         void All(Action<IUser> action);
         /// <summary>Action all banned users</summary>

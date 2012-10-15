@@ -605,11 +605,11 @@ namespace core
                     if (ServerCore.Linker.Busy)
                         foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         {
-                            other = leaf.Users.Find(x => x.Vroom == client.Vroom && x.Name == client.Name && x.Visible);
+                            other = leaf.Users.Find(x => x.Vroom == client.Vroom && x.Name == client.Name && x.Link.Visible);
 
                             if (other != null)
                             {
-                                other.Visible = false;
+                                other.LinkCredentials.Visible = false;
                                 break;
                             }
                         }
@@ -636,7 +636,7 @@ namespace core
                 if (ServerCore.Linker.Busy)
                     foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         leaf.Users.ForEachWhere(x => client.SendPacket(TCPOutbound.Userlist(client, x)),
-                            x => x.Vroom == client.Vroom && x.Visible);
+                            x => x.Vroom == client.Vroom && x.Link.Visible);
 
                 client.SendPacket(TCPOutbound.UserListEnd());
                 client.SendPacket(TCPOutbound.OpChange(client));
@@ -659,7 +659,7 @@ namespace core
                 if (ServerCore.Linker.Busy)
                     foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         leaf.Users.ForEachWhere(x => client.SendPacket(TCPOutbound.Avatar(client, x)),
-                            x => x.Vroom == client.Vroom && x.Visible && x.Avatar.Length > 0);
+                            x => x.Vroom == client.Vroom && x.Link.Visible && x.Avatar.Length > 0);
 
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0 && !x.Quarantined);
@@ -670,7 +670,7 @@ namespace core
                 if (ServerCore.Linker.Busy)
                     foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         leaf.Users.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
-                            x => x.Vroom == client.Vroom && x.Visible && x.PersonalMessage.Length > 0);
+                            x => x.Vroom == client.Vroom && x.Link.Visible && x.PersonalMessage.Length > 0);
 
                 if (client.CustomClient)
                     UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),

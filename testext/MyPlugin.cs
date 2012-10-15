@@ -109,6 +109,16 @@ namespace testext
             this.Icon = new BitmapImage(new Uri("pack://application:,,/testext;Component/Images/aliceS.png"));
         }
 
+        public void LinkError(ILinkError error) { }
+
+        public void Linked() { }
+
+        public void Unlinked() { }
+
+        public void LeafJoined(ILeaf leaf) { }
+
+        public void LeafParted(ILeaf leaf) { }
+
         public BitmapSource Icon { get; private set; }
 
         public UserControl GUI { get; private set; }

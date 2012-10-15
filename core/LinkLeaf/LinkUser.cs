@@ -43,14 +43,14 @@ namespace core.LinkLeaf
         public bool Connected { get { return true; } }
         public bool Idle { get; set; }
         public bool Quarantined { get { return false; } set { } }
-        public bool Visible { get; set; }
         public uint Cookie { get; set; }
         public Encryption Encryption { get; set; }
         public FloodRecord FloodRecord { get; set; }
         public bool Idled { get; set; }
         public ulong IdleStart { get; set; }
         public IUser IUser { get { return this; } }
-        public ILink Link { get; set; }
+        public UserLinkCredentials LinkCredentials { get; set; }
+        public ILink Link { get { return this.LinkCredentials; } set { } }
 
         public void SetMuzzled(bool b) { this._muzzled = b; }
         private bool _muzzled;
@@ -204,8 +204,8 @@ namespace core.LinkLeaf
         {
             this._avatar = new byte[] { };
             this._personalmessage = String.Empty;
-            
-            this.Link = new UserLinkCredentials
+
+            this.LinkCredentials = new UserLinkCredentials
             {
                 Ident = ident,
                 IsLinked = true

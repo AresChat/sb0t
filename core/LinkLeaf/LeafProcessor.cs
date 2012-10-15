@@ -92,29 +92,95 @@ namespace core.LinkLeaf
 
         private static void HubIUser(LinkClient link, TCPPacketReader packet)
         {
-            String name = packet.ReadString(link);
-            IClient client = UserPool.AUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == name);
+            String _name = packet.ReadString(link);
+            IClient client = UserPool.AUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == _name);
 
             if (client == null)
-                client = UserPool.WUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == name);
+                client = UserPool.WUsers.Find(x => x.LoggedIn && !x.Quarantined && x.Name == _name);
 
             if (client != null)
             {
                 String command = packet.ReadString(link);
+                String name, text;
 
                 switch (command)
                 {
                     case "print":
-                        IUserPrint(link, client, packet);
+                        text = packet.ReadString(link);
+                        client.IUser.Print(text);
+                        break;
+
+                    case "muzzle":
+                        if (client.Level == iconnect.ILevel.Regular)
+                            client.IUser.Muzzled = true;
+                        break;
+
+                    case "unmuzzle":
+                        client.IUser.Muzzled = false;
+                        break;
+
+                    case "customname":
+                        text = packet.ReadString(link);
+                        client.IUser.CustomName = text;
+                        break;
+
+                    case "personalmessage":
+                        text = packet.ReadString(link);
+                        client.IUser.PersonalMessage = text;
+                        break;
+
+                    case "name":
+                        name = packet.ReadString(link);
+                        client.IUser.Name = name;
+                        break;
+
+                    case "ban":
+                        if (client.Level == iconnect.ILevel.Regular)
+                            client.IUser.Ban();
+                        break;
+
+                    case "disconnect":
+                        if (client.Level == iconnect.ILevel.Regular)
+                            client.IUser.Disconnect();
+                        break;
+
+                    case "redirect":
+                        text = packet.ReadString(link);
+                        client.IUser.Redirect(text);
+                        break;
+
+                    case "sendtext":
+                        text = packet.ReadString(link);
+                        client.IUser.SendText(text);
+                        break;
+
+                    case "sendemote":
+                        text = packet.ReadString(link);
+                        client.IUser.SendEmote(text);
+                        break;
+
+                    case "pm":
+                        name = packet.ReadString(link);
+                        text = packet.ReadString(link);
+                        client.IUser.PM(name, text);
+                        break;
+
+                    case "topic":
+                        text = packet.ReadString(link);
+                        client.IUser.Topic(text);
+                        break;
+
+                    case "restoreavatar":
+                        client.IUser.RestoreAvatar();
+                        break;
+
+                    case "url":
+                        name = packet.ReadString(link);
+                        text = packet.ReadString(link);
+                        client.IUser.URL(name, text);
                         break;
                 }
             }
-        }
-
-        private static void IUserPrint(LinkClient link, IClient target, TCPPacketReader packet)
-        {
-            String args = packet.ReadString(link);
-            target.Print(args);
         }
 
         private static void HubIUserBin(LinkClient link, TCPPacketReader packet)
@@ -132,7 +198,16 @@ namespace core.LinkLeaf
 
                 switch (command)
                 {
-                    default:
+                    case "binary":
+                        client.IUser.BinaryWrite(args);
+                        break;
+
+                    case "avatar":
+                        client.IUser.Avatar = args;
+                        break;
+
+                    case "vroom":
+                        client.IUser.Vroom = BitConverter.ToUInt16(args, 0);
                         break;
                 }
             }
@@ -154,7 +229,7 @@ namespace core.LinkLeaf
                     {
                         user.SetAvatar(buffer);
 
-                        if (user.Visible)
+                        if (user.Link.Visible)
                             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, user)),
                                 x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
                     }
@@ -177,7 +252,7 @@ namespace core.LinkLeaf
                     {
                         user.SetPersonalMessage(text);
 
-                        if (user.Visible)
+                        if (user.Link.Visible)
                             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, user)),
                                 x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
                     }
@@ -198,7 +273,7 @@ namespace core.LinkLeaf
                 {
                     Events.Parting(user);
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                     {
                         IClient other = null;
 
@@ -209,7 +284,7 @@ namespace core.LinkLeaf
 
                                 if (other != null)
                                 {
-                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).LinkCredentials.Visible = true;
                                     break;
                                 }
                             }
@@ -242,7 +317,7 @@ namespace core.LinkLeaf
                 {
                     String new_name = packet.ReadString(link);
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                     {
                         IClient other = null;
 
@@ -253,7 +328,7 @@ namespace core.LinkLeaf
 
                                 if (other != null)
                                 {
-                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).LinkCredentials.Visible = true;
                                     break;
                                 }
                             }
@@ -266,22 +341,22 @@ namespace core.LinkLeaf
                     }
 
                     user.SetName(new_name);
-                    user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+                    user.LinkCredentials.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
-                    if (user.Visible)
-                        user.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+                    if (user.Link.Visible)
+                        user.LinkCredentials.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                         foreach (Leaf l in link.Leaves)
                             if (l.Ident != leaf.Ident)
                             {
-                                user.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
+                                user.LinkCredentials.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
 
-                                if (!user.Visible)
+                                if (!user.Link.Visible)
                                     break;
                             }
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                     {
                         UserPool.AUsers.ForEachWhere(x =>
                         {
@@ -316,7 +391,7 @@ namespace core.LinkLeaf
                 {
                     ushort new_vroom = packet;
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                     {
                         IClient other = null;
 
@@ -327,7 +402,7 @@ namespace core.LinkLeaf
 
                                 if (other != null)
                                 {
-                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).LinkCredentials.Visible = true;
                                     break;
                                 }
                             }
@@ -340,22 +415,22 @@ namespace core.LinkLeaf
                     }
 
                     user.SetVroom(new_vroom);
-                    user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+                    user.LinkCredentials.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
-                    if (user.Visible)
-                        user.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+                    if (user.Link.Visible)
+                        user.LinkCredentials.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                         foreach (Leaf l in link.Leaves)
                             if (l.Ident != leaf.Ident)
                             {
-                                user.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
+                                user.LinkCredentials.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
 
-                                if (!user.Visible)
+                                if (!user.Link.Visible)
                                     break;
                             }
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                     {
                         UserPool.AUsers.ForEachWhere(x =>
                         {
@@ -426,7 +501,7 @@ namespace core.LinkLeaf
                         }
                     }
 
-                    if (user.Visible)
+                    if (user.Link.Visible)
                     {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, user)),
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
@@ -457,7 +532,7 @@ namespace core.LinkLeaf
             if (leaf != null)
             {
                 foreach (LinkUser user in leaf.Users)
-                    if (user.Visible)
+                    if (user.Link.Visible)
                     {
                         IClient other = null;
 
@@ -468,7 +543,7 @@ namespace core.LinkLeaf
 
                                 if (other != null)
                                 {
-                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).Visible = true;
+                                    l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom).LinkCredentials.Visible = true;
                                     break;
                                 }
                             }
@@ -517,22 +592,22 @@ namespace core.LinkLeaf
                 user.Registered = ((byte)packet) == 1;
                 user.Idle = ((byte)packet) == 1;
                 user.IdleStart = Time.Now;
-                user.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+                user.LinkCredentials.Visible = UserPool.AUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
-                if (user.Visible)
-                    user.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
+                if (user.Link.Visible)
+                    user.LinkCredentials.Visible = UserPool.WUsers.Find(x => x.LoggedIn && x.Name == user.Name && !x.Quarantined && x.Vroom == user.Vroom) == null;
 
-                if (user.Visible)
+                if (user.Link.Visible)
                     foreach (Leaf l in link.Leaves)
                         if (l.Ident != leaf.Ident)
                         {
-                            user.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
+                            user.LinkCredentials.Visible = l.Users.Find(x => x.Name == user.Name && x.Vroom == user.Vroom) == null;
 
-                            if (!user.Visible)
+                            if (!user.Link.Visible)
                                 break;
                         }
 
-                if (user.Visible)
+                if (user.Link.Visible)
                 {
                     UserPool.AUsers.ForEachWhere(x =>
                     {

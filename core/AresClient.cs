@@ -319,11 +319,11 @@ namespace core
                             if (ServerCore.Linker.Busy)
                                 foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                                 {
-                                    other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Visible);
+                                    other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
 
                                     if (other != null)
                                     {
-                                        other.Visible = false;
+                                        other.LinkCredentials.Visible = false;
                                         break;
                                     }
                                 }
@@ -369,11 +369,11 @@ namespace core
                                 if (ServerCore.Linker.Busy)
                                     foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                                     {
-                                        other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Visible);
+                                        other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
 
                                         if (other != null)
                                         {
-                                            other.Visible = false;
+                                            other.LinkCredentials.Visible = false;
                                             break;
                                         }
                                     }
@@ -629,11 +629,11 @@ namespace core
                     if (ServerCore.Linker.Busy)
                         foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         {
-                            other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Visible);
+                            other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
 
                             if (other != null)
                             {
-                                other.Visible = false;
+                                other.LinkCredentials.Visible = false;
                                 break;
                             }
                         }

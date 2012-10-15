@@ -94,10 +94,20 @@ namespace iconnect
         void Unidled(IUser client, uint seconds_away);
         /// <summary>Server Event</summary>
         void BansAutoCleared();
-        /// <summary>Plugin disposing</summary>
+        /// <summary>Server Event</summary>
         void Dispose();
-        /// <summary>Plugin loaded</summary>
+        /// <summary>Server Event</summary>
         void Load();
+        /// <summary>Server Event</summary>
+        void LinkError(ILinkError error);
+        /// <summary>Server Event</summary>
+        void Linked();
+        /// <summary>Server Event</summary>
+        void Unlinked();
+        /// <summary>Server Event</summary>
+        void LeafJoined(ILeaf leaf);
+        /// <summary>Server Event</summary>
+        void LeafParted(ILeaf leaf);
         /// <summary>Icon</summary>
         BitmapSource Icon { get; }
         /// <summary>GUI</summary>

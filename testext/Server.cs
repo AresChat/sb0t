@@ -24,6 +24,14 @@ namespace testext
         }
 
         /// <summary>
+        /// Access to the link hub
+        /// </summary>
+        public static IHub Link
+        {
+            get { return Callback.Hub; }
+        }
+
+        /// <summary>
         /// Access to the user pools
         /// </summary>
         public static IPool Users

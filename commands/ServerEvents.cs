@@ -92,12 +92,61 @@ namespace commands
 
         public void Command(IUser client, String cmd, IUser target, String args)
         {
+            // TEST START
+            if (cmd == "unlink")
+            {
+                if (Server.Link.Disconnect())
+                    Server.Print("you have disconnected from the hub");
+
+                return;
+            }
+
+            if (cmd.StartsWith("link "))
+            {
+                IHashlinkRoom obj = Server.Hashlinks.Decrypt(cmd.Substring(5));
+
+                if (obj != null)
+                {
+                    Server.Print("connecting to hub [" + obj.Name + "] please wait...");
+                    Server.Link.Connect(cmd.Substring(5));
+                }
+                else Server.Print("invalid hashlink");
+
+                return;
+            }
+            // TEST END
+
             if (cmd.StartsWith("vroom "))
                 Eval.Vroom(client, cmd.Substring(6));
             else if (cmd == "admins")
                 Eval.Admins(client);
             else if (cmd == "id")
                 Eval.ID(client);
+        }
+
+        public void LinkError(ILinkError error)
+        {
+            Server.Print("link error: " + error);
+        }
+
+        public void Linked()
+        {
+            Server.Print("you are connected to a hub");
+        }
+
+        public void Unlinked()
+        {
+            Server.Print("you have disconnected from the hub");
+        }
+
+        public void LeafJoined(ILeaf leaf)
+        {
+            Server.Print("a leaf has connected to the hub - " + leaf.Name);
+        }
+
+        public void LeafParted(ILeaf leaf)
+        {
+            Server.Print("a leaf has disconnected from the hub - " + leaf.Name);
         }
     }
 }

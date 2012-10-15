@@ -10,5 +10,6 @@ namespace core
     {
         public bool IsLinked { get; set; }
         public uint Ident { get; set; }
+        public bool Visible { get; set; }
     }
 }

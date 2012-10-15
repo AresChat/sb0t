@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace core.LinkLeaf
+namespace iconnect
 {
-    enum LinkError : byte
+    public enum ILinkError : int
     {
         UnableToConnect = 0,
         RemoteDisconnect = 1,

@@ -164,11 +164,11 @@ namespace core.ib0t
                     if (ServerCore.Linker.Busy)
                         foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         {
-                            other = leaf.Users.Find(x => x.Vroom == client.Vroom && x.Name == client.Name && x.Visible);
+                            other = leaf.Users.Find(x => x.Vroom == client.Vroom && x.Name == client.Name && x.Link.Visible);
 
                             if (other != null)
                             {
-                                other.Visible = false;
+                                other.LinkCredentials.Visible = false;
                                 break;
                             }
                         }
