@@ -325,11 +325,11 @@ namespace core
                             if (ServerCore.Linker.Busy)
                                 foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                                 {
-                                    other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
+                                    other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && !x.Link.Visible);
 
                                     if (other != null)
                                     {
-                                        other.LinkCredentials.Visible = false;
+                                        other.LinkCredentials.Visible = true;
                                         break;
                                     }
                                 }
@@ -344,7 +344,7 @@ namespace core
                         String current = this._name;
                         this._name = value;
                         Helpers.FakeRejoinSequence(this, false);
-
+                        
                         if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                             ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafNameChanged(ServerCore.Linker, current, this._name));
                     }
@@ -375,11 +375,11 @@ namespace core
                                 if (ServerCore.Linker.Busy)
                                     foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                                     {
-                                        other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
+                                        other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && !x.Link.Visible);
 
                                         if (other != null)
                                         {
-                                            other.LinkCredentials.Visible = false;
+                                            other.LinkCredentials.Visible = true;
                                             break;
                                         }
                                     }
@@ -635,11 +635,11 @@ namespace core
                     if (ServerCore.Linker.Busy)
                         foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         {
-                            other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
+                            other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && !x.Link.Visible);
 
                             if (other != null)
                             {
-                                other.LinkCredentials.Visible = false;
+                                other.LinkCredentials.Visible = true;
                                 break;
                             }
                         }

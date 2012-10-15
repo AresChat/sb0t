@@ -313,12 +313,12 @@ namespace core.LinkHub
 
             uint target_leaf = packet;
             String target_name = packet.ReadString(leaf);
-            String send_name = packet.ReadString(leaf);
+            String sender_name = packet.ReadString(leaf);
             String text = packet.ReadString(leaf);
             Leaf l = LeafPool.Leaves.Find(x => x.Ident == target_leaf && x.LoginPhase == LinkLogin.Ready);
 
             if (l != null)
-                l.SendPacket(HubOutbound.HubPrivateText(l, leaf.Ident, send_name, target_name, text));
+                l.SendPacket(HubOutbound.HubPrivateText(l, leaf.Ident, sender_name, target_name, text));
         }
 
         private static void LeafPrivateIgnored(Leaf leaf, TCPPacketReader packet)
@@ -331,12 +331,12 @@ namespace core.LinkHub
             }
 
             uint sender_leaf = packet;
-            String target = packet.ReadString(leaf);
             String sender = packet.ReadString(leaf);
+            String target = packet.ReadString(leaf);
             Leaf l = LeafPool.Leaves.Find(x => x.Ident == sender_leaf && x.LoginPhase == LinkLogin.Ready);
 
             if (l != null)
-                l.SendPacket(HubOutbound.HubPrivateIgnored(l, leaf.Ident, sender, target));
+                l.SendPacket(HubOutbound.HubPrivateIgnored(l, sender, target));
         }
 
         private static void LeafJoin(Leaf leaf, TCPPacketReader packet)

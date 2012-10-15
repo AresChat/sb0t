@@ -311,6 +311,7 @@ namespace core.LinkLeaf
                 return;
             }
 
+            UserPool.AUsers.ForEachWhere(x => x.Cloaked = false, x => x.LoggedIn);
             this.CanReconnect = Settings.Get<bool>("link_reconnect");
             this.LoginPhase = LinkLogin.Connecting;
             this.Time = core.Time.Now;

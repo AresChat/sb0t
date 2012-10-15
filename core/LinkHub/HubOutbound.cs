@@ -190,12 +190,11 @@ namespace core.LinkHub
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
 
-        public static byte[] HubPrivateIgnored(Leaf x, uint ident, String ignorer, String ignored)
+        public static byte[] HubPrivateIgnored(Leaf x, String sender, String target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteUInt32(ident);
-            packet.WriteString(x, ignored);
-            packet.WriteString(x, ignorer, false);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, target, false);
             byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PRIVATE_IGNORED);
             packet = new TCPPacketWriter();
             packet.WriteBytes(buf);

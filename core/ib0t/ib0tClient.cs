@@ -257,11 +257,11 @@ namespace core.ib0t
                         if (ServerCore.Linker.Busy)
                             foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                             {
-                                other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
+                                other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && !x.Link.Visible);
 
                                 if (other != null)
                                 {
-                                    other.LinkCredentials.Visible = false;
+                                    other.LinkCredentials.Visible = true;
                                     break;
                                 }
                             }
@@ -299,11 +299,11 @@ namespace core.ib0t
                             if (ServerCore.Linker.Busy)
                                 foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                                 {
-                                    other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
+                                    other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && !x.Link.Visible);
 
                                     if (other != null)
                                     {
-                                        other.LinkCredentials.Visible = false;
+                                        other.LinkCredentials.Visible = true;
                                         break;
                                     }
                                 }
@@ -414,11 +414,11 @@ namespace core.ib0t
                 if (ServerCore.Linker.Busy)
                     foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                     {
-                        other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && x.Link.Visible);
+                        other = leaf.Users.Find(x => x.Vroom == this.Vroom && x.Name == this.Name && !x.Link.Visible);
 
                         if (other != null)
                         {
-                            other.LinkCredentials.Visible = false;
+                            other.LinkCredentials.Visible = true;
                             break;
                         }
                     }

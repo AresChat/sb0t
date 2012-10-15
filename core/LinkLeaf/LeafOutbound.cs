@@ -253,5 +253,30 @@ namespace core.LinkLeaf
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] LeafPrivateText(LinkClient x, String sender, IClient target, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target.IUser.Link.Ident);
+            packet.WriteString(x, target.Name);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, text);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PRIVATE_TEXT);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafPrivateIgnored(LinkClient x, uint sender_ident, String sender, String target)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(sender_ident);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, target, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PRIVATE_IGNORED);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }

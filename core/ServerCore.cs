@@ -272,13 +272,13 @@ namespace core
                         if (packet.Msg == TCPMsg.MSG_CHAT_CLIENTCOMPRESSED)
                             client.InsertUnzippedData(Zip.Decompress(packet.Packet.ToArray()));
                         else
-                         //   try
-                         //   {
+                            try
+                            {
                                 TCPProcessor.Eval(client, packet, time);
 
                                 if (client.IsLeaf)
                                     break;
-                           /* }
+                            }
                             catch (Exception e)
                             {
                                 client.Disconnect();
@@ -289,7 +289,7 @@ namespace core
                                     Log("packet read fail from " + client.ID + " " + (TCPMsg)packet.Packet.ToArray()[2], e);
                                 
                                 break;
-                            }*/
+                            }
 
                     if (client.IsLeaf)
                         continue;

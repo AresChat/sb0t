@@ -247,6 +247,17 @@ namespace core
                 if (target == null)
                     target = UserPool.WUsers.Find(x => x.Name == name && x.LoggedIn);
 
+                if (target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                {
+                    target = ServerCore.Linker.FindUser(x => x.Name == name);
+
+                    if (target != null)
+                    {
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPrivateText(ServerCore.Linker, client.Name, target, text));
+                        return;
+                    }
+                }
+
                 if (target == null)
                     client.SendPacket(TCPOutbound.OfflineUser(client, name));
                 else if (target.IgnoreList.Contains(client.Name) || client.Muzzled)
@@ -264,7 +275,7 @@ namespace core
                     if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
                     {
                         if (target is AresClient)
-                            target.BinaryWrite(TCPOutbound.Private(target, client.Name, args.Text));
+                            target.IUser.PM(client.Name, args.Text);
 
                         Events.PrivateSent(client, target, args.Text);
                     }

@@ -86,6 +86,65 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_EMOTE_TEXT:
                     HubEmoteText(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PRIVATE_TEXT:
+                    HubPrivateText(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PRIVATE_IGNORED:
+                    HubPrivateIgnored(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubPrivateIgnored(LinkClient link, TCPPacketReader packet)
+        {
+            String sender_name = packet.ReadString(link);
+            String target_name = packet.ReadString(link);
+            AresClient sender = UserPool.AUsers.Find(x => x.Name == sender_name && x.LoggedIn && !x.Quarantined);
+
+            if (sender != null)
+                sender.SendPacket(TCPOutbound.IsIgnoringYou(sender, target_name));
+        }
+
+        private static void HubPrivateText(LinkClient link, TCPPacketReader packet)
+        {
+            uint sender_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == sender_ident);
+
+            if (leaf != null)
+            {
+                String sender_name = packet.ReadString(link);
+                LinkUser sender = leaf.Users.Find(x => x.Name == sender_name);
+
+                if (sender != null)
+                {
+                    String target_name = packet.ReadString(link);
+                    IClient target = UserPool.AUsers.Find(x => x.Name == target_name && x.LoggedIn && !x.Quarantined);
+
+                    if (target == null)
+                        target = UserPool.WUsers.Find(x => x.Name == target_name && x.LoggedIn && !x.Quarantined);
+
+                    if (target != null)
+                    {
+                        if (target.IgnoreList.Contains(sender.Name) || sender.Muzzled)
+                            link.SendPacket(LeafOutbound.LeafPrivateIgnored(link, sender.Link.Ident, sender.Name, target.Name));
+                        else
+                        {
+                            String text = packet.ReadString(link);
+                            PMEventArgs args = new PMEventArgs { Cancel = false, Text = text };
+                            Events.PrivateSending(sender, target, args);
+
+                            if (!args.Cancel && !String.IsNullOrEmpty(args.Text))
+                            {
+                                if (target is AresClient)
+                                    target.IUser.PM(sender.Name, args.Text);
+
+                                Events.PrivateSent(sender, target, args.Text);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -477,7 +536,7 @@ namespace core.LinkLeaf
                         },
                         x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
 
-                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
+                        UserPool.WUsers.ForEachWhere(x =>x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
                     }
                 }

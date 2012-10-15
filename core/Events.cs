@@ -350,14 +350,6 @@ namespace core
 
         public static void Command(IClient client, String command, IClient target, String args)
         {
-            if (target != null)
-                if (target.IUser.Link.IsLinked)
-                {
-                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
-                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAdmin(ServerCore.Linker, client, command, target, args));
-                    return;
-                }
-
             if (command == "help")
             {
                 Help(client);
@@ -431,6 +423,14 @@ namespace core
                     return;
                 }
             }
+
+            if (target != null)
+                if (target.IUser.Link.IsLinked)
+                {
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAdmin(ServerCore.Linker, client, command, target, args));
+                    return;
+                }
 
             if (DefaultCommands)
                 commands.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
