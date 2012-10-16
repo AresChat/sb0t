@@ -87,7 +87,7 @@ namespace core
             if (cmd.Target == null)
                 cmd.Target = UserPool.WUsers.Find(x => x.Name == str);
 
-            if (cmd.Target == null)
+            if (cmd.Target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                 cmd.Target = ServerCore.Linker.FindUser(x => x.Name == str);
 
             if (cmd.Target == null && str.Length > 0)
@@ -99,7 +99,7 @@ namespace core
                     if (cmd.Target == null)
                         cmd.Target = UserPool.WUsers.Find(x => x.Name == str.Substring(0, str.IndexOf("\"")));
 
-                    if (cmd.Target == null)
+                    if (cmd.Target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         cmd.Target = ServerCore.Linker.FindUser(x => x.Name == str.Substring(0, str.IndexOf("\"")));
 
                     if (cmd.Target == null)
@@ -108,7 +108,7 @@ namespace core
                     if (cmd.Target == null)
                         cmd.Target = UserPool.WUsers.Find(x => x.Name.StartsWith(str.Substring(0, str.IndexOf("\""))));
 
-                    if (cmd.Target == null)
+                    if (cmd.Target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         cmd.Target = ServerCore.Linker.FindUser(x => x.Name.StartsWith(str.Substring(0, str.IndexOf("\""))));
 
                     str = str.Substring(str.IndexOf("\"") + 1);
@@ -131,7 +131,7 @@ namespace core
                         if (cmd.Target == null)
                             cmd.Target = UserPool.WUsers.Find(x => x.ID == id);
 
-                        if (cmd.Target == null)
+                        if (cmd.Target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                             cmd.Target = ServerCore.Linker.FindUser(x => x.ID == id);
                     }
 
@@ -145,7 +145,7 @@ namespace core
                     if (cmd.Target == null)
                         cmd.Target = UserPool.WUsers.Find(x => x.ID == id);
 
-                    if (cmd.Target == null)
+                    if (cmd.Target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         cmd.Target = ServerCore.Linker.FindUser(x => x.ID == id);
                 }
         }

@@ -118,6 +118,8 @@ namespace testext
         public void LeafJoined(ILeaf leaf) { }
 
         public void LeafParted(ILeaf leaf) { }
+        
+        public void LinkedAdminDisabled(ILeaf leaf, IUser client) { }
 
         public BitmapSource Icon { get; private set; }
 

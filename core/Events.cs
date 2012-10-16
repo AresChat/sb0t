@@ -427,7 +427,7 @@ namespace core
             if (target != null)
                 if (target.IUser.Link.IsLinked)
                 {
-                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready && client.Level > ILevel.Regular)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAdmin(ServerCore.Linker, client, command, target, args));
                     return;
                 }
@@ -849,6 +849,18 @@ namespace core
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.LeafParted(leaf); }
+                catch { }
+            });
+        }
+
+        public static void LinkedAdminDisabled(LinkLeaf.Leaf leaf, IClient client)
+        {
+            if (DefaultCommands)
+                commands.LinkedAdminDisabled(leaf, client.IUser);
+
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try { x.Plugin.LinkedAdminDisabled(leaf, client.IUser); }
                 catch { }
             });
         }

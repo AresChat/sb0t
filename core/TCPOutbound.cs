@@ -209,7 +209,7 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
         }
 
-        public static byte[] CustomData(AresClient client, String sender, String ident, byte[] data)
+        public static byte[] CustomData(IClient client, String sender, String ident, byte[] data)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, ident);

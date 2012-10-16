@@ -24,8 +24,8 @@ namespace core.ib0t
                 if (FloodControl.IsFlooding(client, ident, Encoding.UTF8.GetBytes(args), time))
                     if (Events.Flooding(client, (byte)FloodControl.WebMsgToTCPMsg(ident)))
                     {
-                        client.Disconnect();
                         Events.Flooded(client);
+                        client.Disconnect();
                         return;
                     }
 

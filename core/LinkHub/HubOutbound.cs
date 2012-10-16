@@ -238,29 +238,6 @@ namespace core.LinkHub
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
 
-        public static byte[] HubRelay(Leaf x, uint ident, String name, byte[] data)
-        {
-            TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteUInt32(ident);
-            packet.WriteString(x, name);
-            packet.WriteBytes(data);
-            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_RELAY);
-            packet = new TCPPacketWriter();
-            packet.WriteBytes(buf);
-            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
-        }
-
-        public static byte[] HubBroadcast(Leaf x, uint ident, byte[] data)
-        {
-            TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteUInt32(ident);
-            packet.WriteBytes(data);
-            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_BROADCAST);
-            packet = new TCPPacketWriter();
-            packet.WriteBytes(buf);
-            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
-        }
-
         public static byte[] HubIUser(Leaf x, String target, String command, String[] args)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
@@ -297,6 +274,55 @@ namespace core.LinkHub
             packet.WriteString(x, command);
             packet.WriteString(x, args);
             byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_HUB_ADMIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubNoAdmin(Leaf x, uint ident, String name)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, name, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_HUB_NO_ADMIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubBrowse(Leaf x, uint source, String browsee, String browser, ushort browse_ident, byte mime)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(source);
+            packet.WriteString(x, browsee);
+            packet.WriteString(x, browser);
+            packet.WriteUInt16(browse_ident);
+            packet.WriteByte(mime);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_BROWSE);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubBrowseData(Leaf x, String browser, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, browser);
+            packet.WriteBytes(data);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_BROWSE_DATA);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubCustomDataTo(Leaf x, String sender, String target, String ident, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, sender);
+            packet.WriteString(x, target);
+            packet.WriteString(x, ident);
+            packet.WriteBytes(data);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_CUSTOM_DATA_TO);
             packet = new TCPPacketWriter();
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);

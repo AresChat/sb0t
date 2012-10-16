@@ -108,6 +108,8 @@ namespace iconnect
         void LeafJoined(ILeaf leaf);
         /// <summary>Server Event</summary>
         void LeafParted(ILeaf leaf);
+        /// <summary>Server Event</summary>
+        void LinkedAdminDisabled(ILeaf leaf, IUser client);
         /// <summary>Icon</summary>
         BitmapSource Icon { get; }
         /// <summary>GUI</summary>

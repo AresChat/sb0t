@@ -148,5 +148,10 @@ namespace commands
         {
             Server.Print("a leaf has disconnected from the hub - " + leaf.Name);
         }
+
+        public void LinkedAdminDisabled(ILeaf leaf, IUser client)
+        {
+            client.Print("the room " + leaf.Name + " is not allowing linked admins");
+        }
     }
 }

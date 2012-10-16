@@ -27,7 +27,7 @@ namespace core.Extensions
 
         public void Linked(Action<IUser> action)
         {
-            if (ServerCore.Linker.Busy)
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                 ServerCore.Linker.Leaves.ForEach(x => x.Users.ForEach(action));
         }
 

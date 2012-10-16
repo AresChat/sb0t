@@ -42,11 +42,9 @@ namespace core.LinkHub
         MSG_LINK_LEAF_PRIVATE_IGNORED = 27,
         MSG_LINK_HUB_PRIVATE_IGNORED = 27,
 
-        // generic
-        MSG_LINK_LEAF_RELAY = 30,
-        MSG_LINK_HUB_RELAY = 30,
-        MSG_LINK_LEAF_BROADCAST = 31,
-        MSG_LINK_HUB_BROADCAST = 31,
+        // custom data
+        MSG_LINK_LEAF_CUSTOM_DATA_TO = 30,
+        MSG_LINK_HUB_CUSTOM_DATA_TO = 30,
 
         // admin
         MSG_LINK_LEAF_NICK_CHANGED = 40,
@@ -58,6 +56,14 @@ namespace core.LinkHub
         MSG_LINK_LEAF_ADMIN = 43,
         MSG_LINK_HUB_ADMIN = 43,
         MSG_LINK_LEAF_IUSER_BIN = 44,
-        MSG_LINK_HUB_IUSER_BIN = 44
+        MSG_LINK_HUB_IUSER_BIN = 44,
+        MSG_LINK_LEAF_NO_ADMIN = 45,
+        MSG_LINK_HUB_NO_ADMIN = 45,
+
+        // file browse
+        MSG_LINK_LEAF_BROWSE = 50,
+        MSG_LINK_HUB_BROWSE = 50,
+        MSG_LINK_LEAF_BROWSE_DATA = 51,
+        MSG_LINK_HUB_BROWSE_DATA = 51
     }
 }

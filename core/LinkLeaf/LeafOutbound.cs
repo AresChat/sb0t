@@ -278,5 +278,56 @@ namespace core.LinkLeaf
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] LeafNoAdmin(LinkClient x, uint ident, String name)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, name, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_NO_ADMIN);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafBrowse(LinkClient x, uint leaf_ident, String browsee, String browser, ushort browse_ident, byte mime)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(leaf_ident);
+            packet.WriteString(x, browsee);
+            packet.WriteString(x, browser);
+            packet.WriteUInt16(browse_ident);
+            packet.WriteByte(mime);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_BROWSE);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafBrowseData(LinkClient x, uint destination, String browser, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(destination);
+            packet.WriteString(x, browser);
+            packet.WriteBytes(data);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_BROWSE_DATA);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafCustomDataTo(LinkClient x, uint destination, String sender, String target, String ident, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(destination);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, target);
+            packet.WriteString(x, ident);
+            packet.WriteBytes(data);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_CUSTOM_DATA_TO);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }

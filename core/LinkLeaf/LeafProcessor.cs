@@ -75,8 +75,7 @@ namespace core.LinkLeaf
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_ADMIN:
-                    if (Settings.Get<bool>("link_admin"))
-                        HubAdmin(link, packet);
+                    HubAdmin(link, packet);
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_PUBLIC_TEXT:
@@ -94,6 +93,110 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_PRIVATE_IGNORED:
                     HubPrivateIgnored(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_NO_ADMIN:
+                    HubNoAdmin(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_BROWSE:
+                    HubBrowse(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_BROWSE_DATA:
+                    HubBrowseData(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_DATA_TO:
+                    HubCustomDataTo(link, packet);
+                    break;
+            }
+        }
+
+        private static void HubCustomDataTo(LinkClient link, TCPPacketReader packet)
+        {
+            String sender = packet.ReadString(link);
+            String target = packet.ReadString(link);
+            String ident = packet.ReadString(link);
+            byte[] data = packet;
+            AresClient client = UserPool.AUsers.Find(x => x.Name == target && !x.Quarantined && x.LoggedIn);
+
+            if (client != null)
+                client.SendPacket(TCPOutbound.CustomData(client, sender, ident, data));
+        }
+
+        private static void HubBrowseData(LinkClient link, TCPPacketReader packet)
+        {
+            String name = packet.ReadString(link);
+            AresClient target = UserPool.AUsers.Find(x => x.Name == name && !x.Quarantined && x.LoggedIn);
+
+            if (target != null)
+            {
+                byte[] data = packet;
+                target.SendPacket(data);
+            }
+        }
+
+        private static void HubBrowse(LinkClient link, TCPPacketReader packet)
+        {
+            uint leaf_ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == leaf_ident);
+
+            if (leaf != null)
+            {
+                String browsee = packet.ReadString(link);
+                String browser = packet.ReadString(link);
+                ushort browse_ident = packet;
+                byte mime = packet;
+                AresClient target = UserPool.AUsers.Find(x => x.Name == browsee && !x.Quarantined && x.LoggedIn);
+
+                if (target == null)
+                    link.SendPacket(LeafOutbound.LeafBrowseData(link, leaf.Ident, browser, TCPOutbound.BrowseError(browse_ident)));
+                else if (target.SharedFiles.Count == 0)
+                    link.SendPacket(LeafOutbound.LeafBrowseData(link, leaf.Ident, browser, TCPOutbound.BrowseError(browse_ident)));
+                else
+                {
+                    var linq = from x in target.SharedFiles
+                               where (mime == 0 || mime == 255) || (byte)x.Mime == (mime == 8 ? 0 : mime)
+                               select TCPOutbound.BrowseItem(browse_ident, x);
+
+                    link.SendPacket(LeafOutbound.LeafBrowseData(link, leaf.Ident, browser, TCPOutbound.StartOfBrowse(browse_ident, (ushort)linq.Count())));
+
+                    List<byte> buffer = new List<byte>();
+
+                    foreach (byte[] x in linq)
+                    {
+                        buffer.AddRange(x);
+
+                        if (buffer.Count > 1024)
+                        {
+                            link.SendPacket(LeafOutbound.LeafBrowseData(link, leaf.Ident, browser, TCPOutbound.ClientCompressed(buffer.ToArray())));
+                            buffer.Clear();
+                        }
+                    }
+
+                    if (buffer.Count > 0)
+                        link.SendPacket(LeafOutbound.LeafBrowseData(link, leaf.Ident, browser, TCPOutbound.ClientCompressed(buffer.ToArray())));
+
+                    link.SendPacket(LeafOutbound.LeafBrowseData(link, leaf.Ident, browser, TCPOutbound.EndOfBrowse(browse_ident)));
+                }
+            }
+        }
+
+        private static void HubNoAdmin(LinkClient link, TCPPacketReader packet)
+        {
+            uint ident = packet;
+            Leaf leaf = link.Leaves.Find(x => x.Ident == ident);
+
+            if (leaf != null)
+            {
+                String name = packet.ReadString(link);
+                IClient user = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn && !x.Quarantined);
+
+                if (user == null)
+                    user = UserPool.WUsers.Find(x => x.Name == name && x.LoggedIn && !x.Quarantined);
+
+                if (user != null)
+                    Events.LinkedAdminDisabled(leaf, user);
             }
         }
 
@@ -220,6 +323,13 @@ namespace core.LinkLeaf
             if (leaf != null)
             {
                 String sender_name = packet.ReadString(link);
+
+                if (!Settings.Get<bool>("link_admin"))
+                {
+                    link.SendPacket(LeafOutbound.LeafNoAdmin(link, leaf.Ident, sender_name));
+                    return;
+                }
+
                 LinkUser admin = leaf.Users.Find(x => x.Name == sender_name);
 
                 if (admin != null)

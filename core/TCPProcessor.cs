@@ -19,8 +19,8 @@ namespace core
                 if (FloodControl.IsFlooding(client, packet.Msg, packet.Packet.ToArray(), time))
                     if (Events.Flooding(client, (byte)packet.Msg))
                     {
-                        client.Disconnect();
                         Events.Flooded(client);
+                        client.Disconnect();
                         return;
                     }
 
@@ -191,6 +191,9 @@ namespace core
 
             if (target == null)
                 target = UserPool.WUsers.Find(x => x.Name == name);
+
+            if (target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                target = ServerCore.Linker.FindUser(x => x.Name == name);
 
             if (target != null)
                 if (!ignore)
@@ -444,6 +447,14 @@ namespace core
 
             if (target != null)
                 target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
+            else if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+            {
+                IClient linked = ServerCore.Linker.FindUser(x => x.Name == name && x.CustomClient);
+
+                if (linked != null)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomDataTo(ServerCore.Linker,
+                        linked.IUser.Link.Ident, client.Name, linked.Name, ident, data));
+            }
         }
 
         private static void PersonalMessage(AresClient client, TCPPacketReader packet)

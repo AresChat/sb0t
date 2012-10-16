@@ -37,6 +37,19 @@ namespace core
             String name = packet.ReadString(client);
             AresClient target = UserPool.AUsers.Find(x => x.Name == name);
 
+            if (target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+            {
+                IClient linked = ServerCore.Linker.FindUser(x => x.Name == name && x.FileCount > 0 && x.Browsable);
+
+                if (linked != null)
+                {
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafBrowse(ServerCore.Linker,
+                        linked.IUser.Link.Ident, linked.Name, client.Name, ident, mime));
+
+                    return;
+                }
+            }
+
             if (target == null)
                 client.SendPacket(TCPOutbound.BrowseError(ident));
             else if (target.SharedFiles.Count == 0)
