@@ -102,7 +102,29 @@ namespace core.LinkHub
                 case LinkMsg.MSG_LINK_LEAF_CUSTOM_DATA_TO:
                     LeafCustomDataTo(leaf, packet);
                     break;
+
+                case LinkMsg.MSG_LINK_LEAF_CUSTOM_DATA_ALL:
+                    LeafCustomDataAll(leaf, packet);
+                    break;
             }
+        }
+
+        private static void LeafCustomDataAll(Leaf leaf, TCPPacketReader packet)
+        {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
+            ushort vroom = packet;
+            String sender = packet.ReadString(leaf);
+            String ident = packet.ReadString(leaf);
+            byte[] data = packet;
+
+            LeafPool.Leaves.ForEachWhere(x => x.SendPacket(HubOutbound.HubCustomDataAll(x, vroom, sender, ident, data)),
+                x => x.Ident != leaf.Ident && x.LoginPhase == LinkLogin.Ready);
         }
 
         private static void LeafCustomDataTo(Leaf leaf, TCPPacketReader packet)

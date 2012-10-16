@@ -109,7 +109,26 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_DATA_TO:
                     HubCustomDataTo(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_DATA_ALL:
+                    HubCustomDataAll(link, packet);
+                    break;
             }
+        }
+
+        private static void HubCustomDataAll(LinkClient link, TCPPacketReader packet)
+        {
+            ushort vroom = packet;
+            String sender = packet.ReadString(link);
+            String ident = packet.ReadString(link);
+            byte[] data = packet;
+
+            if (ident.StartsWith("cb0t_scribble_"))
+                if (!Settings.Get<bool>("full_scribble"))
+                    return;
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, sender, ident, data)),
+                x => x.LoggedIn && x.Vroom == vroom && x.CustomClient && !x.Quarantined);
         }
 
         private static void HubCustomDataTo(LinkClient link, TCPPacketReader packet)

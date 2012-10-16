@@ -329,5 +329,18 @@ namespace core.LinkLeaf
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] LeafCustomDataAll(LinkClient x, ushort vroom, String sender, String ident, byte[] data)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(vroom);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, ident);
+            packet.WriteBytes(data);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_CUSTOM_DATA_ALL);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }

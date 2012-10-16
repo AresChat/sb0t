@@ -45,6 +45,8 @@ namespace core.LinkHub
         // custom data
         MSG_LINK_LEAF_CUSTOM_DATA_TO = 30,
         MSG_LINK_HUB_CUSTOM_DATA_TO = 30,
+        MSG_LINK_LEAF_CUSTOM_DATA_ALL = 31,
+        MSG_LINK_HUB_CUSTOM_DATA_ALL = 31,
 
         // admin
         MSG_LINK_LEAF_NICK_CHANGED = 40,

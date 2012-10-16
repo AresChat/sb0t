@@ -433,6 +433,9 @@ namespace core
 
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, client.Name, ident, data)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
+
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomDataAll(ServerCore.Linker, client.Vroom, client.Name, ident, data));
         }
 
         private static void CustomData(AresClient client, TCPPacketReader packet)

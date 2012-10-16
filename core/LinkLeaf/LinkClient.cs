@@ -312,6 +312,8 @@ namespace core.LinkLeaf
             }
 
             UserPool.AUsers.ForEachWhere(x => x.Cloaked = false, x => x.LoggedIn);
+            this.data_in.Clear();
+            this.data_out = new ConcurrentQueue<byte[]>();
             this.CanReconnect = Settings.Get<bool>("link_reconnect");
             this.LoginPhase = LinkLogin.Connecting;
             this.Time = core.Time.Now;
