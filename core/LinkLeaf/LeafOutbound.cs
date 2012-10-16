@@ -342,5 +342,40 @@ namespace core.LinkLeaf
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] LeafPrintAll(LinkClient x, uint ident, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PRINT_ALL);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafPrintVroom(LinkClient x, uint ident, ushort vroom, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteUInt16(vroom);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PRINT_VROOM);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafPrintLevel(LinkClient x, uint ident, iconnect.ILevel level, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(ident);
+            packet.WriteByte((byte)level);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PRINT_LEVEL);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }

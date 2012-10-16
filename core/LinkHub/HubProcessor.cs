@@ -106,6 +106,77 @@ namespace core.LinkHub
                 case LinkMsg.MSG_LINK_LEAF_CUSTOM_DATA_ALL:
                     LeafCustomDataAll(leaf, packet);
                     break;
+
+                case LinkMsg.MSG_LINK_LEAF_PRINT_ALL:
+                    LeafPrintAll(leaf, packet);
+                    break;
+
+                case LinkMsg.MSG_LINK_LEAF_PRINT_VROOM:
+                    LeafPrintVroom(leaf, packet);
+                    break;
+
+                case LinkMsg.MSG_LINK_LEAF_PRINT_LEVEL:
+                    LeafPrintLevel(leaf, packet);
+                    break;
+            }
+        }
+
+        private static void LeafPrintAll(Leaf leaf, TCPPacketReader packet)
+        {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
+            uint leaf_ident = packet;
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == leaf_ident && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+            {
+                String text = packet.ReadString(leaf);
+                l.SendPacket(HubOutbound.HubPrintAll(l, text));
+            }
+        }
+
+        private static void LeafPrintVroom(Leaf leaf, TCPPacketReader packet)
+        {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
+            uint leaf_ident = packet;
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == leaf_ident && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+            {
+                ushort vroom = packet;
+                String text = packet.ReadString(leaf);
+                l.SendPacket(HubOutbound.HubPrintVroom(l, vroom, text));
+            }
+        }
+
+        private static void LeafPrintLevel(Leaf leaf, TCPPacketReader packet)
+        {
+            if (leaf.LoginPhase != LinkLogin.Ready)
+            {
+                leaf.SendPacket(HubOutbound.LinkError(LinkError.BadProtocol));
+                leaf.Disconnect();
+                return;
+            }
+
+            uint leaf_ident = packet;
+            Leaf l = LeafPool.Leaves.Find(x => x.Ident == leaf_ident && x.LoginPhase == LinkLogin.Ready);
+
+            if (l != null)
+            {
+                iconnect.ILevel level = (iconnect.ILevel)((byte)packet);
+                String text = packet.ReadString(leaf);
+                l.SendPacket(HubOutbound.HubPrintLevel(l, level, text));
             }
         }
 

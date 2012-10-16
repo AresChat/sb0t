@@ -77,7 +77,37 @@ namespace testext
         /// <param name="text"></param>
         public static void Print(String text)
         {
-            Callback.Users.All(x => x.Print(text));
+            Callback.Users.Ares(x => x.Print(text));
+            Callback.Users.Web(x => x.Print(text));
+
+            if (Callback.Hub.IsLinked)
+                Callback.Hub.ForEachLeaf(x => x.Print(text));
+        }
+
+        /// <summary>
+        /// Send an announcement to all users in all user pools if they are in a vroom
+        /// </summary>
+        /// <param name="text"></param>
+        public static void Print(ushort vroom, String text)
+        {
+            Callback.Users.Ares(x => { if (x.Vroom == vroom) x.Print(text); });
+            Callback.Users.Web(x => { if (x.Vroom == vroom) x.Print(text); });
+
+            if (Callback.Hub.IsLinked)
+                Callback.Hub.ForEachLeaf(x => x.Print(vroom, text));
+        }
+
+        /// <summary>
+        /// Send an announcement to all users in all user pools if their admin level is high enough
+        /// </summary>
+        /// <param name="text"></param>
+        public static void Print(ILevel level, String text)
+        {
+            Callback.Users.Ares(x => { if (x.Level >= level) x.Print(text); });
+            Callback.Users.Web(x => { if (x.Level >= level) x.Print(text); });
+
+            if (Callback.Hub.IsLinked)
+                Callback.Hub.ForEachLeaf(x => x.Print(level, text));
         }
 
         /// <summary>

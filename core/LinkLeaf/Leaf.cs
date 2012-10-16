@@ -23,5 +23,23 @@ namespace core.LinkLeaf
         {
             this.Users.ForEach(action);
         }
+
+        public void Print(String text)
+        {
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafPrintAll(ServerCore.Linker, this.Ident, text));
+        }
+
+        public void Print(ushort vroom, String text)
+        {
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafPrintVroom(ServerCore.Linker, this.Ident, vroom, text));
+        }
+
+        public void Print(iconnect.ILevel level, String text)
+        {
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafPrintLevel(ServerCore.Linker, this.Ident, level, text));
+        }
     }
 }

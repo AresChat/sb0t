@@ -113,7 +113,54 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_DATA_ALL:
                     HubCustomDataAll(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PRINT_ALL:
+                    HubPrintAll(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PRINT_VROOM:
+                    HubPrintVroom(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PRINT_LEVEL:
+                    HubPrintLevel(link, packet);
+                    break;
             }
+        }
+
+        private static void HubPrintAll(LinkClient link, TCPPacketReader packet)
+        {
+            String text = packet.ReadString(link);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, text)),
+                x => x.LoggedIn && !x.Quarantined);
+
+            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.NoSuchTo(x, text)),
+                x => x.LoggedIn && !x.Quarantined);
+        }
+
+        private static void HubPrintVroom(LinkClient link, TCPPacketReader packet)
+        {
+            ushort vroom = packet;
+            String text = packet.ReadString(link);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, text)),
+                x => x.LoggedIn && !x.Quarantined && x.Vroom == vroom);
+
+            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.NoSuchTo(x, text)),
+                x => x.LoggedIn && !x.Quarantined && x.Vroom == vroom);
+        }
+
+        private static void HubPrintLevel(LinkClient link, TCPPacketReader packet)
+        {
+            iconnect.ILevel level = (iconnect.ILevel)((byte)packet);
+            String text = packet.ReadString(link);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, text)),
+                x => x.LoggedIn && !x.Quarantined && x.Level > level);
+
+            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.NoSuchTo(x, text)),
+                x => x.LoggedIn && !x.Quarantined && x.Level > level);
         }
 
         private static void HubCustomDataAll(LinkClient link, TCPPacketReader packet)

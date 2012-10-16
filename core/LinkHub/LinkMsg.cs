@@ -66,6 +66,14 @@ namespace core.LinkHub
         MSG_LINK_LEAF_BROWSE = 50,
         MSG_LINK_HUB_BROWSE = 50,
         MSG_LINK_LEAF_BROWSE_DATA = 51,
-        MSG_LINK_HUB_BROWSE_DATA = 51
+        MSG_LINK_HUB_BROWSE_DATA = 51,
+
+        // print
+        MSG_LINK_LEAF_PRINT_ALL = 60,
+        MSG_LINK_HUB_PRINT_ALL = 60,
+        MSG_LINK_LEAF_PRINT_VROOM = 61,
+        MSG_LINK_HUB_PRINT_VROOM = 61,
+        MSG_LINK_LEAF_PRINT_LEVEL = 62,
+        MSG_LINK_HUB_PRINT_LEVEL = 62
     }
 }

@@ -340,5 +340,37 @@ namespace core.LinkHub
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
+
+        public static byte[] HubPrintAll(Leaf x, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PRINT_ALL);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubPrintVroom(Leaf x, ushort vroom, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt16(vroom);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PRINT_VROOM);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubPrintLevel(Leaf x, iconnect.ILevel level, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteByte((byte)level);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PRINT_LEVEL);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
     }
 }
