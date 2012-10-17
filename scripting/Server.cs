@@ -39,7 +39,7 @@ namespace scripting
         /// </summary>
         public static String DataPath
         {
-            get { return Callback.DataPath; }
+            get { return Callback.DataPath + "Scripting\\"; }
         }
 
         public static void SetCallback(IHostApp cb)

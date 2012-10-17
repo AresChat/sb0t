@@ -112,5 +112,9 @@ namespace iconnect
         void RestoreAvatar();
         /// <summary>Set a URL tag for the user</summary>
         void URL(String address, String text);
+        /// <summary>Send a scribble to the user (if client supports this feature)</summary>
+        void Scribble(String sender, byte[] img);
+        /// <summary>Nudge the user (if client supports this feature)</summary>
+        void Nudge(String sender);
     }
 }

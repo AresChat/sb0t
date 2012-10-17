@@ -102,6 +102,16 @@ namespace core
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 
+        public void Scribble(String sender, byte[] img)
+        {
+
+        }
+
+        public void Nudge(String sender)
+        {
+
+        }
+
         private bool _muzzled;
         public bool Muzzled
         {
@@ -459,6 +469,9 @@ namespace core
             get { return this.avatar; }
             set
             {
+                if (value == null)
+                    value = new byte[] { };
+
                 if (value.Length < 10)
                 {
                     this.avatar = new byte[] { };

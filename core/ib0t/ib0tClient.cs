@@ -91,6 +91,16 @@ namespace core.ib0t
             this.FloodRecord = new FloodRecord();
         }
 
+        public void Scribble(String sender, byte[] img)
+        {
+
+        }
+
+        public void Nudge(String sender)
+        {
+
+        }
+
         private bool _muzzled;
         public bool Muzzled
         {

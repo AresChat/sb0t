@@ -52,6 +52,16 @@ namespace core.LinkLeaf
         public UserLinkCredentials LinkCredentials { get; set; }
         public ILink Link { get { return this.LinkCredentials; } set { } }
 
+        public void Scribble(String sender, byte[] img)
+        {
+
+        }
+
+        public void Nudge(String sender)
+        {
+
+        }
+
         public void SetMuzzled(bool b) { this._muzzled = b; }
         private bool _muzzled;
         public bool Muzzled
