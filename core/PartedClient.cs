@@ -18,5 +18,10 @@ namespace core
         public Guid Guid { get; set; }
         public String DNS { get; set; }
         public uint JoinTime { get; set; }
+
+        public void Ban()
+        {
+            BanSystem.AddBan(this);
+        }
     }
 }

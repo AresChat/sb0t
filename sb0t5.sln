@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iconnect", "iconnect\iconne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "testext", "testext\testext.csproj", "{10DCB8A7-729E-49B5-970F-C76473EE96A9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scripting", "scripting\scripting.csproj", "{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{10DCB8A7-729E-49B5-970F-C76473EE96A9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{10DCB8A7-729E-49B5-970F-C76473EE96A9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{10DCB8A7-729E-49B5-970F-C76473EE96A9}.Release|x86.ActiveCfg = Release|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

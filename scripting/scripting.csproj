@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FDEBC3D9-56AA-4D35-93DC-5F7F0E9023B1}</ProjectGuid>
+    <ProjectGuid>{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>iconnect</RootNamespace>
-    <AssemblyName>iconnect</AssemblyName>
+    <RootNamespace>scripting</RootNamespace>
+    <AssemblyName>scripting</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
@@ -18,11 +18,10 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\gui\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\iconnect.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +32,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="iconnect">
+      <HintPath>..\iconnect\bin\Debug\iconnect.dll</HintPath>
+    </Reference>
+    <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Desktop\Jurassic.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -46,29 +52,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IBan.cs" />
-    <Compile Include="ICommandDefault.cs" />
-    <Compile Include="ICompression.cs" />
-    <Compile Include="IExtension.cs" />
-    <Compile Include="IFont.cs" />
-    <Compile Include="IHashlink.cs" />
-    <Compile Include="IHashlinkRoom.cs" />
-    <Compile Include="IHostApp.cs" />
-    <Compile Include="IHub.cs" />
-    <Compile Include="ILeaf.cs" />
-    <Compile Include="ILevel.cs" />
-    <Compile Include="ILink.cs" />
-    <Compile Include="ILinkError.cs" />
-    <Compile Include="IPool.cs" />
-    <Compile Include="IPrivateMsg.cs" />
-    <Compile Include="IRecord.cs" />
-    <Compile Include="IRoom.cs" />
-    <Compile Include="IScripting.cs" />
-    <Compile Include="IStats.cs" />
-    <Compile Include="IUser.cs" />
-    <Compile Include="MimeType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RejectedMsg.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="ServerEvents.Callback.cs" />
+    <Compile Include="ServerEvents.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

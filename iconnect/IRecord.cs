@@ -25,5 +25,7 @@ namespace iconnect
         Guid Guid { get; }
         /// <summary>Get DNS host name</summary>
         String DNS { get; }
+        /// <summary>Add this user to the ban list</summary>
+        void Ban();
     }
 }

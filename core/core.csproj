@@ -69,6 +69,7 @@
     <Compile Include="Extensions\ExHashlink.cs" />
     <Compile Include="Extensions\ExPlugin.cs" />
     <Compile Include="Extensions\ExRoom.cs" />
+    <Compile Include="Extensions\ExScripting.cs" />
     <Compile Include="Extensions\ExStats.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
     <Compile Include="FloodControl.cs" />
@@ -160,6 +161,10 @@
       <Project>{FDEBC3D9-56AA-4D35-93DC-5F7F0E9023B1}</Project>
       <Name>iconnect</Name>
     </ProjectReference>
+    <ProjectReference Include="..\scripting\scripting.csproj">
+      <Project>{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}</Project>
+      <Name>scripting</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resource1.resx">
@@ -169,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libraries\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="Libraries\Jurassic.dll" />
     <Content Include="Libraries\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>

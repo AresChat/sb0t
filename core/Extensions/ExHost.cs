@@ -17,6 +17,7 @@ namespace core.Extensions
             this.Stats = new ExStats();
             this.Compression = new ExCompression();
             this.Hashlinks = new ExHashlink();
+            this.Scripting = new ExScripting();
 
             this.DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName;
@@ -37,6 +38,7 @@ namespace core.Extensions
         public IHashlink Hashlinks { get; private set; }
         public String DataPath { get; private set; }
         public IHub Hub { get { return ServerCore.Linker; } }
+        public IScripting Scripting { get; private set; }
 
         public void ClearBans()
         {

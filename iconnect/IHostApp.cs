@@ -8,6 +8,8 @@ namespace iconnect
     /// <summary>Server Callback</summary>
     public interface IHostApp
     {
+        /// <summary>Scripting credentials</summary>
+        IScripting Scripting { get; }
         /// <summary>User pool</summary>
         IPool Users { get; }
         /// <summary>Folder to save items for this extension</summary>

@@ -63,6 +63,48 @@ namespace core
             }
         }
 
+        public static void AddBan(IRecord record)
+        {
+            if (list.Find(x => x.ExternalIP.Equals(record.ExternalIP)) != null)
+                return;
+
+            if (list.Find(x => x.Guid.Equals(record.Guid)) != null)
+                return;
+
+            Ban ban = new Ban
+            {
+                Name = record.Name,
+                Version = record.Version,
+                Guid = record.Guid,
+                ExternalIP = record.ExternalIP,
+                LocalIP = record.LocalIP,
+                Port = record.DataPort,
+                Ident = NextIdent
+            };
+
+            list.Add(ban);
+
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                String query = @"insert into bans (name, version, guid, externalip, localip, port, ident) 
+                                 values (@name, @version, @guid, @externalip, @localip, @port, @ident)";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.Add(new SQLiteParameter("@name", ban.Name));
+                    command.Parameters.Add(new SQLiteParameter("@version", ban.Version));
+                    command.Parameters.Add(new SQLiteParameter("@guid", ban.Guid.ToString()));
+                    command.Parameters.Add(new SQLiteParameter("@externalip", ban.ExternalIP.ToString()));
+                    command.Parameters.Add(new SQLiteParameter("@localip", ban.LocalIP.ToString()));
+                    command.Parameters.Add(new SQLiteParameter("@port", (int)ban.Port));
+                    command.Parameters.Add(new SQLiteParameter("@ident", (int)ban.Ident));
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static void RemoveBan(ushort ident)
         {
             Ban ban = list.Find(x => x.Ident == ident);

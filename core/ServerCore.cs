@@ -112,7 +112,6 @@ namespace core
             AccountManager.LoadPasswords();
             BanSystem.LoadBans();
             IdleManager.Reset();
-            Events.ServerStarted();
 
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);
@@ -123,6 +122,8 @@ namespace core
 
             if (link_mode == LinkHub.LinkMode.Hub)
                 Linker.ConnectLocal();
+
+            Events.ServerStarted();
 
             while (true)
             {

@@ -11,9 +11,12 @@ namespace core
     {
         private static commands.ServerEvents commands { get; set; }
         private static bool DefaultCommands { get; set; }
+        private static scripting.ServerEvents js { get; set; }
 
         public static void InitializeCommandsExtension()
         {
+            js = new scripting.ServerEvents(new ExHost(String.Empty));
+
             if (commands == null)
                 commands = new commands.ServerEvents(new ExHost(String.Empty));
         }
@@ -30,6 +33,8 @@ namespace core
             if (DefaultCommands)
                 commands.ServerStarted();
 
+            js.ServerStarted();
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.ServerStarted(); }
@@ -41,6 +46,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.CycleTick();
+
+            js.CycleTick();
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -72,6 +79,9 @@ namespace core
                 result = commands.Joining(client != null ? client.IUser : null);
 
             if (result)
+                result = js.Joining(client != null ? client.IUser : null);
+
+            if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
@@ -97,6 +107,8 @@ namespace core
             if (DefaultCommands)
                 commands.Joined(client != null ? client.IUser : null);
 
+            js.Joined(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Joined(client != null ? client.IUser : null); }
@@ -111,6 +123,8 @@ namespace core
             if (DefaultCommands)
                 commands.Rejected(client != null ? client.IUser : null, msg);
 
+            js.Rejected(client != null ? client.IUser : null, msg);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Rejected(client != null ? client.IUser : null, msg); }
@@ -122,6 +136,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.Parting(client != null ? client.IUser : null);
+
+            js.Parting(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -137,6 +153,8 @@ namespace core
             if (DefaultCommands)
                 commands.Parted(client != null ? client.IUser : null);
 
+            js.Parted(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Parted(client != null ? client.IUser : null); }
@@ -150,6 +168,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.AvatarReceived(client != null ? client.IUser : null);
+
+            if (result)
+                result = js.AvatarReceived(client != null ? client.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
@@ -175,6 +196,9 @@ namespace core
                 result = commands.PersonalMessageReceived(client != null ? client.IUser : null, text);
 
             if (result)
+                result = js.PersonalMessageReceived(client != null ? client.IUser : null, text);
+
+            if (result)
                 ExtensionManager.Plugins.ForEach(x =>
                 {
                     try
@@ -195,6 +219,8 @@ namespace core
             if (DefaultCommands)
                 commands.TextReceived(client != null ? client.IUser : null, text);
 
+            js.TextReceived(client != null ? client.IUser : null, text);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.TextReceived(client != null ? client.IUser : null, text); }
@@ -208,6 +234,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.TextSending(client != null ? client.IUser : null, result);
+
+            if (!String.IsNullOrEmpty(result))
+                result = js.TextSending(client != null ? client.IUser : null, result);
 
             if (!String.IsNullOrEmpty(result))
                 ExtensionManager.Plugins.ForEach(x =>
@@ -232,6 +261,8 @@ namespace core
             if (DefaultCommands)
                 commands.TextSent(client != null ? client.IUser : null, text);
 
+            js.TextSent(client != null ? client.IUser : null, text);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.TextSent(client != null ? client.IUser : null, text); }
@@ -243,6 +274,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.EmoteReceived(client != null ? client.IUser : null, text);
+
+            js.EmoteReceived(client != null ? client.IUser : null, text);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -257,6 +290,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.EmoteSending(client != null ? client.IUser : null, result);
+
+            if (!String.IsNullOrEmpty(result))
+                result = js.EmoteSending(client != null ? client.IUser : null, result);
 
             if (!String.IsNullOrEmpty(result))
                 ExtensionManager.Plugins.ForEach(x =>
@@ -281,6 +317,8 @@ namespace core
             if (DefaultCommands)
                 commands.EmoteSent(client != null ? client.IUser : null, text);
 
+            js.EmoteSent(client != null ? client.IUser : null, text);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.EmoteSent(client != null ? client.IUser : null, text); }
@@ -294,6 +332,9 @@ namespace core
 
             if (DefaultCommands)
                 commands.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
+
+            if (!String.IsNullOrEmpty(pm.Text))
+                js.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
             if (!String.IsNullOrEmpty(pm.Text))
                 ExtensionManager.Plugins.ForEach(x =>
@@ -327,6 +368,8 @@ namespace core
             if (DefaultCommands)
                 commands.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
+            js.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null); }
@@ -340,6 +383,8 @@ namespace core
 
             if (DefaultCommands)
                 commands.BotPrivateSent(client != null ? client.IUser : null, text);
+
+            js.BotPrivateSent(client != null ? client.IUser : null, text);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -435,6 +480,8 @@ namespace core
             if (DefaultCommands)
                 commands.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
 
+            js.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args); }
@@ -448,6 +495,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.Nick(client != null ? client.IUser : null, name);
+
+            if (result)
+                result = js.Nick(client != null ? client.IUser : null, name);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
@@ -489,6 +539,8 @@ namespace core
             if (DefaultCommands)
                 commands.Help(client != null ? client.IUser : null);
 
+            js.Help(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Help(client != null ? client.IUser : null); }
@@ -500,6 +552,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
+
+            js.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -514,6 +568,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
+
+            if (result)
+                result = js.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
@@ -536,6 +593,8 @@ namespace core
             if (DefaultCommands)
                 commands.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
 
+            js.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored); }
@@ -550,6 +609,8 @@ namespace core
             if (DefaultCommands)
                 commands.InvalidLoginAttempt(client != null ? client.IUser : null);
 
+            js.InvalidLoginAttempt(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.InvalidLoginAttempt(client != null ? client.IUser : null); }
@@ -562,6 +623,8 @@ namespace core
             if (DefaultCommands)
                 commands.LoginGranted(client != null ? client.IUser : null);
 
+            js.LoginGranted(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.LoginGranted(client != null ? client.IUser : null); }
@@ -573,6 +636,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.AdminLevelChanged(client != null ? client.IUser : null);
+
+            js.AdminLevelChanged(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -587,6 +652,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.Registering(client != null ? client.IUser : null);
+
+            if (result)
+                result = js.Registering(client != null ? client.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
@@ -609,6 +677,8 @@ namespace core
             if (DefaultCommands)
                 commands.Registered(client != null ? client.IUser : null);
 
+            js.Registered(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Registered(client != null ? client.IUser : null); }
@@ -620,6 +690,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.Unregistered(client != null ? client.IUser : null);
+
+            js.Unregistered(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -633,6 +705,8 @@ namespace core
             if (DefaultCommands)
                 commands.CaptchaSending(client != null ? client.IUser : null);
 
+            js.CaptchaSending(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.CaptchaSending(client != null ? client.IUser : null); }
@@ -644,6 +718,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.CaptchaReply(client != null ? client.IUser : null, reply);
+
+            js.CaptchaReply(client != null ? client.IUser : null, reply);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -658,6 +734,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.VroomChanging(client != null ? client.IUser : null, vroom);
+
+            if (result)
+                result = js.VroomChanging(client != null ? client.IUser : null, vroom);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
@@ -680,6 +759,8 @@ namespace core
             if (DefaultCommands)
                 commands.VroomChanged(client != null ? client.IUser : null);
 
+            js.VroomChanged(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.VroomChanged(client != null ? client.IUser : null); }
@@ -693,6 +774,9 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.Flooding(client != null ? client.IUser : null, msg);
+
+            if (result)
+                result = js.Flooding(client != null ? client.IUser : null, msg);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
@@ -713,7 +797,9 @@ namespace core
         public static void Flooded(IClient client)
         {
             if (DefaultCommands)
-                commands.VroomChanged(client != null ? client.IUser : null);
+                commands.Flooded(client != null ? client.IUser : null);
+
+            js.Flooded(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -727,6 +813,8 @@ namespace core
             if (DefaultCommands)
                 commands.Logout(client != null ? client.IUser : null);
 
+            js.Logout(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Logout(client != null ? client.IUser : null); }
@@ -738,6 +826,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.Idled(client != null ? client.IUser : null);
+
+            js.Idled(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -751,6 +841,8 @@ namespace core
             if (DefaultCommands)
                 commands.Unidled(client != null ? client.IUser : null, seconds_away);
 
+            js.Unidled(client != null ? client.IUser : null, seconds_away);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Unidled(client != null ? client.IUser : null, seconds_away); }
@@ -762,6 +854,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.BansAutoCleared();
+
+            js.BansAutoCleared();
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -776,6 +870,8 @@ namespace core
 
             if (DefaultCommands)
                 result = commands.ProxyDetected(client != null ? client.IUser : null);
+
+            js.ProxyDetected(client != null ? client.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
@@ -798,6 +894,8 @@ namespace core
             if (DefaultCommands)
                 commands.LinkError((ILinkError)e);
 
+            js.LinkError((ILinkError)e);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.LinkError((ILinkError)e); }
@@ -809,6 +907,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.Linked();
+
+            js.Linked();
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -822,6 +922,8 @@ namespace core
             if (DefaultCommands)
                 commands.Unlinked();
 
+            js.Unlinked();
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.Unlinked(); }
@@ -833,6 +935,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.LeafJoined(leaf);
+
+            js.LeafJoined(leaf);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -846,6 +950,8 @@ namespace core
             if (DefaultCommands)
                 commands.LeafParted(leaf);
 
+            js.LeafParted(leaf);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try { x.Plugin.LeafParted(leaf); }
@@ -857,6 +963,8 @@ namespace core
         {
             if (DefaultCommands)
                 commands.LinkedAdminDisabled(leaf, client.IUser);
+
+            js.LinkedAdminDisabled(leaf, client.IUser);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
