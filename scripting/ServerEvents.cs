@@ -1750,6 +1750,10 @@ namespace scripting
         {
             if (this.CanScript)
             {
+                ScriptManager.RoomEval.leaves.FindAll(x => x.Ident == leaf.Ident).ForEach(x => x.users.Clear());
+                ScriptManager.RoomEval.leaves.RemoveAll(x => x.Ident == leaf.Ident);
+                ScriptManager.RoomEval.leaves.Add(new Objects.JSLeaf(ScriptManager.RoomEval.JS.Object.InstancePrototype, leaf, ScriptManager.RoomEval.ScriptName));
+
                 ScriptManager.Scripts.ForEach(x =>
                 {
                     x.leaves.FindAll(z => z.Ident == leaf.Ident).ForEach(z => z.users.Clear());
@@ -1822,6 +1826,9 @@ namespace scripting
                         }
                         catch { }
                 }
+
+                ScriptManager.RoomEval.leaves.FindAll(x => x.Ident == leaf.Ident).ForEach(x => x.users.Clear());
+                ScriptManager.RoomEval.leaves.RemoveAll(x => x.Ident == leaf.Ident);
 
                 ScriptManager.Scripts.ForEach(x =>
                 {

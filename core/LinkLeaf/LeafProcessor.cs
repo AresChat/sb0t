@@ -958,7 +958,7 @@ namespace core.LinkLeaf
                 user.Country = packet;
                 user.Region = packet.ReadString(link);
                 user.Level = (iconnect.ILevel)(byte)packet;
-                user.Vroom = packet;
+                user.SetVroom((ushort)packet);
                 user.CustomClient = ((byte)packet) == 1;
                 user.Muzzled = ((byte)packet) == 1;
                 user.WebClient = ((byte)packet) == 1;

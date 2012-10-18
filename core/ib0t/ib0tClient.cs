@@ -78,7 +78,6 @@ namespace core.ib0t
             this.ProtoConnected = false;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
             this.Vroom = 0;
-            this.Name = String.Empty;
             this.Version = String.Empty;
             this.IgnoreList = new List<String>();
             this.Font = new core.Font();

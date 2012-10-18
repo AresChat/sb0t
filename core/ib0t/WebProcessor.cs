@@ -155,6 +155,14 @@ namespace core.ib0t
 
             client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
 
+            if (Helpers.IsLocalHost(client))
+            {
+                client.Captcha = true;
+                client.Quarantined = false;
+                client.Registered = true;
+                client.Owner = true;
+            }
+
             if (!client.Quarantined)
             {
                 if (hijack == null || !(hijack is AresClient))
@@ -212,6 +220,9 @@ namespace core.ib0t
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, client));
 
                 Events.Joined(client);
+
+                if (client.Owner)
+                    client.Level = ILevel.Host;
             }
             else
             {

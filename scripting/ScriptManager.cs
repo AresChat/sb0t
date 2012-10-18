@@ -20,6 +20,9 @@ namespace scripting
 
         public static bool Load(FileInfo file)
         {
+            if (file.Name == "room")
+                return false;
+
             int index = Scripts.FindIndex(x => x.ScriptName == file.Name);
 
             if (index > -1)

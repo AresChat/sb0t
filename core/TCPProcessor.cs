@@ -623,6 +623,14 @@ namespace core
 
             client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
 
+            if (Helpers.IsLocalHost(client))
+            {
+                client.Captcha = true;
+                client.Quarantined = false;
+                client.Registered = true;
+                client.Owner = true;
+            }
+
             if (hijack != null)
                 if (hijack.Cloaked)
                     hijack = null;
@@ -716,6 +724,9 @@ namespace core
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, client));
 
                 Events.Joined(client);
+
+                if (client.Owner)
+                    client.Level = ILevel.Host;
             }
             else
             {

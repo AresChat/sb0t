@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Net;
 using core.ib0t;
 using iconnect;
 
@@ -10,6 +11,33 @@ namespace core
 {
     class Helpers
     {
+        public static bool IsLocalHost(IClient client)
+        {
+            if (!Settings.Get<bool>("local_host"))
+                return false;
+
+            byte[] buf = client.ExternalIP.GetAddressBytes();
+
+            switch (buf[0])
+            {
+                case 192:
+                    return buf[1] == 168;
+
+                case 127:
+                    return true;
+
+                case 10:
+                    return buf[1] == 0;
+            }
+
+            buf = Settings.Get<byte[]>("ip");
+
+            if (buf != null)
+                return client.ExternalIP.Equals(new IPAddress(buf));
+
+            return false;
+        }
+
         public static bool IsUnacceptableGender(IClient client)
         {
             switch (client.Sex)

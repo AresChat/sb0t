@@ -46,7 +46,7 @@ namespace gui
                 str = "sb0t";
 
             this.textBox3.Text = str;
-            //chat logging - TO DO
+            //chat logging
             this.checkBox1.IsChecked = Settings.Get<bool>("logging");
             //custom emoticons
             this.checkBox2.IsChecked = Settings.Get<bool>("emotes");
@@ -133,7 +133,7 @@ namespace gui
             this.checkBox18.IsChecked = Settings.Get<bool>("full_scribble");
             //preferred language
             this.comboBox3.SelectedIndex = this.AresLanguageToComboBoxLangauge();
-            //local host - TO DO
+            //local host
             this.checkBox19.IsChecked = Settings.Get<bool>("local_host");
             //udp address
             byte[] udp = Settings.Get<byte[]>("udp_address");

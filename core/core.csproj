@@ -62,6 +62,7 @@
     <Compile Include="Ban.cs" />
     <Compile Include="BanSystem.cs" />
     <Compile Include="CaptchaManager.cs" />
+    <Compile Include="ChatLog.cs" />
     <Compile Include="Crypto.cs" />
     <Compile Include="CustomEmoticon.cs" />
     <Compile Include="Events.cs" />

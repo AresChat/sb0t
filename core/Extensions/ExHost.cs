@@ -50,6 +50,11 @@ namespace core.Extensions
             ServerCore.Log(text);
         }
 
+        public void WriteChatLog(String text)
+        {
+            ChatLog.WriteLine(text);
+        }
+
         public uint Timestamp
         {
             get { return Helpers.UnixTime; }

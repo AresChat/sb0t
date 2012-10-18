@@ -86,7 +86,6 @@ namespace core
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
             this.Cookie = AccountManager.NextCookie;
             this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };
-            this.Name = String.Empty;
             this.Version = String.Empty;
             this.IgnoreList = new List<String>();
             this.Font = new core.Font();

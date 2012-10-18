@@ -37,10 +37,14 @@ namespace scripting.Objects
                 if (!this.parent.Link.IsLinked)
                     return null;
 
-                JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == this.ScriptName);
+                if (this.ScriptName != "room")
+                {
+                    JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == this.ScriptName);
 
-                if (script != null)
-                    return script.leaves.Find(x => x.Ident == this.parent.Link.Ident);
+                    if (script != null)
+                        return script.leaves.Find(x => x.Ident == this.parent.Link.Ident);
+                }
+                else return ScriptManager.RoomEval.leaves.Find(x => x.Ident == this.parent.Link.Ident);
 
                 return null;
             }

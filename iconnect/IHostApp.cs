@@ -24,6 +24,8 @@ namespace iconnect
         ICompression Compression { get; }
         /// <summary>Write to the debug log</summary>
         void WriteLog(String text);
+        /// <summary>Write to the chat log</summary>
+        void WriteChatLog(String text);
         /// <summary>Get current timestamp</summary>
         uint Timestamp { get; }
         /// <summary>Get a user defined minimum admin level for a default command</summary>

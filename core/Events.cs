@@ -114,6 +114,8 @@ namespace core
                 try { x.Plugin.Joined(client != null ? client.IUser : null); }
                 catch { }
             });
+
+            ChatLog.WriteLine("join: " + client.Name + " has joined");
         }
 
         public static void Rejected(IClient client, RejectedMsg msg)
@@ -130,6 +132,8 @@ namespace core
                 try { x.Plugin.Rejected(client != null ? client.IUser : null, msg); }
                 catch { }
             });
+
+            ChatLog.WriteLine("rejected: " + client.Name + " was rejected");
         }
 
         public static void Parting(IClient client)
@@ -160,6 +164,8 @@ namespace core
                 try { x.Plugin.Parted(client != null ? client.IUser : null); }
                 catch { }
             });
+
+            ChatLog.WriteLine("part: " + client.Name + " has parted");
         }
 
         public static bool AvatarReceived(IClient client)
@@ -268,6 +274,8 @@ namespace core
                 try { x.Plugin.TextSent(client != null ? client.IUser : null, text); }
                 catch { }
             });
+
+            ChatLog.WriteLine("text: " + client.Name + "> " + text);
         }
 
         public static void EmoteReceived(IClient client, String text)
@@ -324,6 +332,8 @@ namespace core
                 try { x.Plugin.EmoteSent(client != null ? client.IUser : null, text); }
                 catch { }
             });
+
+            ChatLog.WriteLine("emote: * " + client.Name + " " + text);
         }
 
         public static void PrivateSending(IClient client, IClient target, PMEventArgs e)
@@ -644,6 +654,8 @@ namespace core
                 try { x.Plugin.AdminLevelChanged(client != null ? client.IUser : null); }
                 catch { }
             });
+
+            ChatLog.WriteLine("level: " + client.Name + " level changed to " + client.Level);
         }
 
         public static bool Registering(IClient client)
@@ -806,6 +818,8 @@ namespace core
                 try { x.Plugin.Flooded(client != null ? client.IUser : null); }
                 catch { }
             });
+
+            ChatLog.WriteLine("flood: " + client.Name + " flooded out");
         }
 
         public static void Logout(IClient client)
@@ -968,7 +982,7 @@ namespace core
 
             ExtensionManager.Plugins.ForEach(x =>
             {
-                try { x.Plugin.LinkedAdminDisabled(leaf, client.IUser); }
+                try { x.Plugin.LinkedAdminDisabled(leaf, client != null ? client.IUser : null); }
                 catch { }
             });
         }
