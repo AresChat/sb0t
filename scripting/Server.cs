@@ -15,6 +15,9 @@ namespace scripting
         /// </summary>
         public static bool CanScript(IUser user)
         {
+            if (user.Link.IsLinked)
+                return false;
+
             switch (Scripting.ScriptLevel)
             {
                 case 4:

@@ -74,7 +74,7 @@ namespace core
         private String _name = String.Empty;
         private ushort _vroom = 0;
         private bool _cloaked = false;
-        private String _customname = null;
+        private String _customname = String.Empty;
 
         public AresClient(Socket sock, ulong time, ushort id)
         {
@@ -168,7 +168,7 @@ namespace core
             get
             {
                 if (!Settings.Get<bool>("customnames"))
-                    return null;
+                    return String.Empty;
 
                 return this._customname;
             }

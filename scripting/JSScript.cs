@@ -15,11 +15,26 @@ namespace scripting
         public List<Objects.JSUser> local_users = new List<Objects.JSUser>();
         public List<Objects.JSLeaf> leaves = new List<Objects.JSLeaf>();
 
+        public Statics.JSGlobal gbl;
+
         public JSScript(String name)
         {
             this.ScriptName = name;
             this.JS = new ScriptEngine();
             this.JS.ScriptName = name;
+
+            // set up global functions
+            this.gbl = new Statics.JSGlobal(this);
+            this.JS.SetGlobalFunction("print", new Action<object, object>((a, b) => this.gbl.Print(a, b)));
+            this.JS.Global.DefineProperty("print", new PropertyDescriptor(this.JS.Global["print"], PropertyAttributes.Sealed), throwOnError: true);
+            this.JS.SetGlobalFunction("user", new Func<object, Objects.JSUser>(a => this.gbl.User(a)));
+            this.JS.Global.DefineProperty("user", new PropertyDescriptor(this.JS.Global["user"], PropertyAttributes.Sealed), throwOnError: true);
+            this.JS.SetGlobalFunction("sendPM", new Action<object, object, object>((a, b, c) => this.gbl.SendPM(a, b, c)));
+            this.JS.Global.DefineProperty("sendPM", new PropertyDescriptor(this.JS.Global["sendPM"], PropertyAttributes.Sealed), throwOnError: true);
+            this.JS.SetGlobalFunction("clrName", new Func<object, String>(a => this.gbl.ClrName(a)));
+            this.JS.Global.DefineProperty("clrName", new PropertyDescriptor(this.JS.Global["clrName"], PropertyAttributes.Sealed), throwOnError: true);
+            this.JS.SetGlobalFunction("byteLength", new Func<object, int>(a => this.gbl.ByteLength(a)));
+            this.JS.Global.DefineProperty("byteLength", new PropertyDescriptor(this.JS.Global["byteLength"], PropertyAttributes.Sealed), throwOnError: true);
 
             // set up default events
             StringBuilder events = new StringBuilder();
@@ -29,7 +44,6 @@ namespace scripting
             events.AppendLine("function onEmoteReceived(userobj, text) { }");
             events.AppendLine("function onEmoteBefore(userobj, text) { return text; }");
             events.AppendLine("function onEmoteAfter(userobj, text) { }");
-            events.AppendLine("function onError(script, line, message) { }");
             events.AppendLine("function onJoinCheck(userobj) { return true; }");
             events.AppendLine("function onJoin(userobj) { }");
             events.AppendLine("function onPartBefore(userobj) { }");
@@ -80,14 +94,77 @@ namespace scripting
             if (client == null)
                 return null;
 
-            Objects.JSUser result = this.local_users.Find(x => x.Name == client.Name);
+            Objects.JSUser result = null;
+
+            if (!client.Link.IsLinked)
+                result = this.local_users.Find(x => x.Name == client.Name);
+            else
+                this.leaves.ForEach(x =>
+                {
+                    if (x.Ident == client.Link.Ident)
+                    {
+                        result = x.users.Find(z => z.Name == client.Name);
+
+                        if (result != null)
+                            return;
+                    }
+                });
 
             return result;
         }
 
-        public Objects.JSUser GetUser(Predicate<Objects.JSUser> predicate)
+        public Objects.JSUser GetIgnoredUser(String name)
         {
-            return this.local_users.Find(predicate);
+            Objects.JSUser result = this.local_users.Find(x => x.Name == name);
+
+            if (result == null)
+                this.leaves.ForEach(x =>
+                {
+                    result = x.users.Find(z => z.Name == name);
+
+                    if (result != null)
+                        return;
+                });
+
+            return result;
+        }
+
+        public bool LoadScript(String path)
+        {
+            Server.Users.Ares(x => this.local_users.Add(new Objects.JSUser(this.JS.Object.InstancePrototype, x, this.ScriptName)));
+            Server.Users.Web(x => this.local_users.Add(new Objects.JSUser(this.JS.Object.InstancePrototype, x, this.ScriptName)));
+
+            if (Server.Link.IsLinked)
+            {
+                Server.Link.ForEachLeaf(x =>
+                {
+                    this.leaves.Add(new Objects.JSLeaf(this.JS.Object.InstancePrototype, x, this.ScriptName));
+                    
+                    x.ForEachUser(z => this.leaves[this.leaves.Count - 1].users.Add(
+                        new Objects.JSUser(this.JS.Object.InstancePrototype, z, this.ScriptName)));
+                });
+            }
+
+            try
+            {
+                this.JS.ExecuteFile(path);
+                return true;
+            }
+            catch (JavaScriptException e)
+            {
+                ScriptManager.OnError(this.ScriptName, e.Message, e.LineNumber);
+            }
+            catch { }
+
+            return false;
+        }
+
+        public void KillScript()
+        {
+            this.local_users.Clear();
+            this.leaves.ForEach(x => x.users.Clear());
+            this.leaves.Clear();
+            this.JS = null;
         }
     }
 }

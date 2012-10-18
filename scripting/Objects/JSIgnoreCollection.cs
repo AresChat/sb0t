@@ -24,7 +24,16 @@ namespace scripting.Objects
                 foreach (String str in ignores)
                     if (!String.IsNullOrEmpty(str))
                     {
-                        JSUser u = script.GetUser(x => x.Name == str);
+                        JSUser u = script.GetIgnoredUser(str);
+
+                        if (u == null)
+                            script.leaves.ForEach(x =>
+                            {
+                                u = x.FindUser(str);
+
+                                if (u != null)
+                                    return;
+                            });
 
                         if (u != null)
                             this.SetPropertyValue((uint)this.count++, u, throwOnError: true);

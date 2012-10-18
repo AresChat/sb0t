@@ -66,10 +66,10 @@
     <Compile Include="Server.cs" />
     <Compile Include="ServerEvents.Callback.cs" />
     <Compile Include="ServerEvents.cs" />
+    <Compile Include="Statics\JSGlobal.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Instances\" />
-    <Folder Include="Statics\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

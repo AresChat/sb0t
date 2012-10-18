@@ -61,13 +61,11 @@ namespace core.LinkLeaf
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_IUSER:
-                    if (Settings.Get<bool>("link_admin"))
-                        HubIUser(link, packet);
+                    HubIUser(link, packet);
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_IUSER_BIN:
-                    if (Settings.Get<bool>("link_admin"))
-                        HubIUserBin(link, packet);
+                    HubIUserBin(link, packet);
                     break;
 
                 case LinkHub.LinkMsg.MSG_LINK_HUB_CUSTOM_NAME:
@@ -453,73 +451,105 @@ namespace core.LinkLeaf
                         break;
 
                     case "muzzle":
-                        if (client.Level == iconnect.ILevel.Regular)
-                            client.IUser.Muzzled = true;
+                        if (Settings.Get<bool>("link_admin"))
+                            if (client.Level == iconnect.ILevel.Regular)
+                                client.IUser.Muzzled = true;
                         break;
 
                     case "unmuzzle":
-                        client.IUser.Muzzled = false;
+                        if (Settings.Get<bool>("link_admin"))
+                            client.IUser.Muzzled = false;
                         break;
 
                     case "customname":
-                        text = packet.ReadString(link);
-                        client.IUser.CustomName = text;
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            text = packet.ReadString(link);
+                            client.IUser.CustomName = text;
+                        }
                         break;
 
                     case "personalmessage":
-                        text = packet.ReadString(link);
-                        client.IUser.PersonalMessage = text;
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            text = packet.ReadString(link);
+                            client.IUser.PersonalMessage = text;
+                        }
                         break;
 
                     case "name":
-                        name = packet.ReadString(link);
-                        client.IUser.Name = name;
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            name = packet.ReadString(link);
+                            client.IUser.Name = name;
+                        }
                         break;
 
                     case "ban":
-                        if (client.Level == iconnect.ILevel.Regular)
-                            client.IUser.Ban();
+                        if (Settings.Get<bool>("link_admin"))
+                            if (client.Level == iconnect.ILevel.Regular)
+                                client.IUser.Ban();
                         break;
 
                     case "disconnect":
-                        if (client.Level == iconnect.ILevel.Regular)
-                            client.IUser.Disconnect();
+                        if (Settings.Get<bool>("link_admin"))
+                            if (client.Level == iconnect.ILevel.Regular)
+                                client.IUser.Disconnect();
                         break;
 
                     case "redirect":
-                        text = packet.ReadString(link);
-                        client.IUser.Redirect(text);
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            text = packet.ReadString(link);
+                            client.IUser.Redirect(text);
+                        }
                         break;
 
                     case "sendtext":
-                        text = packet.ReadString(link);
-                        client.IUser.SendText(text);
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            text = packet.ReadString(link);
+                            client.IUser.SendText(text);
+                        }
                         break;
 
                     case "sendemote":
-                        text = packet.ReadString(link);
-                        client.IUser.SendEmote(text);
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            text = packet.ReadString(link);
+                            client.IUser.SendEmote(text);
+                        }
                         break;
 
                     case "pm":
-                        name = packet.ReadString(link);
-                        text = packet.ReadString(link);
-                        client.IUser.PM(name, text);
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            name = packet.ReadString(link);
+                            text = packet.ReadString(link);
+                            client.IUser.PM(name, text);
+                        }
                         break;
 
                     case "topic":
-                        text = packet.ReadString(link);
-                        client.IUser.Topic(text);
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            text = packet.ReadString(link);
+                            client.IUser.Topic(text);
+                        }
                         break;
 
                     case "restoreavatar":
-                        client.IUser.RestoreAvatar();
+                        if (Settings.Get<bool>("link_admin"))
+                            client.IUser.RestoreAvatar();
                         break;
 
                     case "url":
-                        name = packet.ReadString(link);
-                        text = packet.ReadString(link);
-                        client.IUser.URL(name, text);
+                        if (Settings.Get<bool>("link_admin"))
+                        {
+                            name = packet.ReadString(link);
+                            text = packet.ReadString(link);
+                            client.IUser.URL(name, text);
+                        }
                         break;
                 }
             }
@@ -545,11 +575,13 @@ namespace core.LinkLeaf
                         break;
 
                     case "avatar":
-                        client.IUser.Avatar = args;
+                        if (Settings.Get<bool>("link_admin"))
+                            client.IUser.Avatar = args;
                         break;
 
                     case "vroom":
-                        client.IUser.Vroom = BitConverter.ToUInt16(args, 0);
+                        if (Settings.Get<bool>("link_admin"))
+                            client.IUser.Vroom = BitConverter.ToUInt16(args, 0);
                         break;
                 }
             }

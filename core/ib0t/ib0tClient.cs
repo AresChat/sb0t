@@ -58,7 +58,7 @@ namespace core.ib0t
         private ILevel _level = ILevel.Regular;
         private String _name = String.Empty;
         private ushort _vroom = 0;
-        private String _customname = null;
+        private String _customname = String.Empty;
 
         public ib0tClient(AresClient client, ulong time, ushort id)
         {
@@ -157,7 +157,7 @@ namespace core.ib0t
             get
             {
                 if (!Settings.Get<bool>("customnames"))
-                    return null;
+                    return String.Empty;
 
                 return this._customname;
             }
