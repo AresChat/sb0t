@@ -67,6 +67,7 @@
     <Compile Include="ServerEvents.Callback.cs" />
     <Compile Include="ServerEvents.cs" />
     <Compile Include="Statics\JSGlobal.cs" />
+    <Compile Include="Statics\JSUsers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Instances\" />

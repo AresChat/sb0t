@@ -19,7 +19,7 @@ namespace scripting.Statics
 
         public int ByteLength(object a)
         {
-            if (a == null)
+            if (a is Undefined)
                 return -1;
 
             return Encoding.UTF8.GetByteCount(a.ToString());
@@ -27,7 +27,7 @@ namespace scripting.Statics
 
         public String ClrName(object a)
         {
-            if (a == null)
+            if (a is Undefined)
                 return null;
 
             return a.GetType().ToString();

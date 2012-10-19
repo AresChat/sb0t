@@ -49,12 +49,13 @@ namespace scripting.Objects
         [JSFunction(Name = "print", IsWritable = false, IsEnumerable = true)]
         public void Print(object a, object b)
         {
-            if (a != null && b == null)
+            if (!(a is Undefined) && b is Undefined)
             {
                 String str = a.ToString();
+                Server.Print("test");
                 this.parent.Print(str);
             }
-            else if (a != null && b != null)
+            else if (!(a is Undefined) && !(b is Undefined))
             {
                 ushort u;
 
@@ -66,7 +67,7 @@ namespace scripting.Objects
         [JSFunction(Name = "printAdmins", IsWritable = false, IsEnumerable = true)]
         public void PrintAdmins(object a, object b)
         {
-            if (a != null && b != null)
+            if (!(a is Undefined) && !(b is Undefined))
             {
                 byte z;
 
@@ -100,7 +101,7 @@ namespace scripting.Objects
         {
             JSUser result = null;
 
-            if (a != null)
+            if (!(a is Undefined))
             {
                 String str = a.ToString();
 

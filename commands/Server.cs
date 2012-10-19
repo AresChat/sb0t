@@ -11,11 +11,38 @@ namespace commands
         private static IHostApp Callback { get; set; }
 
         /// <summary>
+        /// Discover if this user is allowed to load or unload scripts
+        /// </summary>
+        public static bool CanScript(IUser user)
+        {
+            if (user.Link.IsLinked)
+                return false;
+
+            switch (Scripting.ScriptLevel)
+            {
+                case 4:
+                    return user.Owner;
+
+                case 3:
+                    return user.Level >= ILevel.Host;
+
+                case 2:
+                    return user.Level >= ILevel.Administrator;
+
+                case 1:
+                    return user.Level >= ILevel.Moderator;
+
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
         /// Path to data folder
         /// </summary>
         public static String DataPath
         {
-            get { return Callback.DataPath; }
+            get { return Callback.DataPath + "Scripting\\"; }
         }
 
         public static void SetCallback(IHostApp cb)
@@ -29,6 +56,14 @@ namespace commands
         public static IHub Link
         {
             get { return Callback.Hub; }
+        }
+
+        /// <summary>
+        /// Access to the link hub
+        /// </summary>
+        public static IScripting Scripting
+        {
+            get { return Callback.Scripting; }
         }
 
         /// <summary>
@@ -75,12 +110,12 @@ namespace commands
         /// Send an announcement to all users in all user pools
         /// </summary>
         /// <param name="text"></param>
-        public static void Print(String text)
+        public static void Print(String text, bool send_link = false)
         {
             Callback.Users.Ares(x => x.Print(text));
             Callback.Users.Web(x => x.Print(text));
 
-            if (Callback.Hub.IsLinked)
+            if (Callback.Hub.IsLinked && send_link)
                 Callback.Hub.ForEachLeaf(x => x.Print(text));
         }
 
@@ -88,12 +123,12 @@ namespace commands
         /// Send an announcement to all users in all user pools if they are in a vroom
         /// </summary>
         /// <param name="text"></param>
-        public static void Print(ushort vroom, String text)
+        public static void Print(ushort vroom, String text, bool send_link = false)
         {
             Callback.Users.Ares(x => { if (x.Vroom == vroom) x.Print(text); });
             Callback.Users.Web(x => { if (x.Vroom == vroom) x.Print(text); });
 
-            if (Callback.Hub.IsLinked)
+            if (Callback.Hub.IsLinked && send_link)
                 Callback.Hub.ForEachLeaf(x => x.Print(vroom, text));
         }
 
@@ -101,12 +136,12 @@ namespace commands
         /// Send an announcement to all users in all user pools if their admin level is high enough
         /// </summary>
         /// <param name="text"></param>
-        public static void Print(ILevel level, String text)
+        public static void Print(ILevel level, String text, bool send_link = false)
         {
             Callback.Users.Ares(x => { if (x.Level >= level) x.Print(text); });
             Callback.Users.Web(x => { if (x.Level >= level) x.Print(text); });
 
-            if (Callback.Hub.IsLinked)
+            if (Callback.Hub.IsLinked && send_link)
                 Callback.Hub.ForEachLeaf(x => x.Print(level, text));
         }
 
