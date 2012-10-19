@@ -80,7 +80,11 @@ namespace core
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_ADDSHARE:
-                    FileBrowseProcessor.AddShare(client, packet.Packet);
+                    try
+                    {
+                        FileBrowseProcessor.AddShare(client, packet.Packet);
+                    }
+                    catch { }
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_REMSHARE:

@@ -27,16 +27,6 @@ namespace scripting
                     this._second_timer = Server.Time;
                     JSScript[] scripts = ScriptManager.Scripts.ToArray();
 
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onTimer");
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
-
                     foreach (JSScript s in scripts)
                     {
                         try
@@ -62,20 +52,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-
-                try
-                {
-                    Objects.JSUser u = new Objects.JSUser(ScriptManager.RoomEval.JS.Object.InstancePrototype, client, ScriptManager.RoomEval.ScriptName);
-                    bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onJoinCheck", u);
-
-                    if (!result)
-                        return false;
-                }
-                catch (Jurassic.JavaScriptException e)
-                {
-                    ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                }
-                catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -120,36 +96,7 @@ namespace scripting
                         });
                 });
 
-                if (!client.Link.IsLinked)
-                {
-                    ScriptManager.RoomEval.local_users.RemoveAll(z => z.Name == client.Name);
-                    ScriptManager.RoomEval.local_users.Add(new Objects.JSUser(ScriptManager.RoomEval.JS.Object.InstancePrototype, client, ScriptManager.RoomEval.ScriptName));
-                }
-                else
-                {
-                    ScriptManager.RoomEval.leaves.ForEach(z =>
-                    {
-                        if (z.Ident == client.Link.Ident)
-                        {
-                            z.users.RemoveAll(y => y.Name == client.Name);
-                            z.users.Add(new Objects.JSUser(ScriptManager.RoomEval.JS.Object.InstancePrototype, client, ScriptManager.RoomEval.ScriptName));
-                        }
-                    });
-                }
-
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onJoin", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -174,18 +121,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = new Objects.JSUser(ScriptManager.RoomEval.JS.Object.InstancePrototype, client, ScriptManager.RoomEval.ScriptName);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onRejected", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -210,18 +145,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onPartBefore", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -246,18 +169,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onPart", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -286,15 +197,6 @@ namespace scripting
                                 z.users.RemoveAll(y => y.Name == client.Name);
                         });
                 });
-
-                if (!client.Link.IsLinked)
-                    ScriptManager.RoomEval.local_users.RemoveAll(z => z.Name == client.Name);
-                else
-                    ScriptManager.RoomEval.leaves.ForEach(z =>
-                    {
-                        if (z.Ident == client.Link.Ident)
-                            z.users.RemoveAll(y => y.Name == client.Name);
-                    });
             }
         }
 
@@ -303,21 +205,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onAvatar", r);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -347,21 +234,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onPersonalMessage", r, text);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -391,18 +263,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onTextReceived", r, text);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -429,7 +289,7 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
+                Objects.JSUser r = ScriptManager.Scripts[0].GetUser(client);
 
                 if (Server.Scripting.ScriptInRoom)
                     if (Server.CanScript(client))
@@ -438,7 +298,7 @@ namespace scripting
 
                         try
                         {
-                            object eval = ScriptManager.RoomEval.JS.Evaluate(js);
+                            object eval = ScriptManager.Scripts[0].JS.Evaluate(js);
 
                             if (eval is bool)
                                 js = eval.ToString().ToLower();
@@ -450,24 +310,10 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
+                            ScriptManager.OnError(ScriptManager.Scripts[0].ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                     }
-
-                if (r != null)
-                    try
-                    {
-                        result = ScriptManager.RoomEval.JS.CallGlobalFunction<String>("onTextBefore", r, result);
-
-                        if (String.IsNullOrEmpty(result))
-                            return String.Empty;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -497,18 +343,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onTextAfter", r, text);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -533,18 +367,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onEmoteReceived", r, text);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -571,21 +393,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        result = ScriptManager.RoomEval.JS.CallGlobalFunction<String>("onEmoteBefore", r, result);
-
-                        if (String.IsNullOrEmpty(result))
-                            return String.Empty;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -615,18 +422,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onEmoteAfter", r, text);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -651,26 +446,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-                Objects.JSUser w = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null && w != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onPMBefore", r, w,
-                            new Objects.JSPM(ScriptManager.RoomEval.JS.Object.InstancePrototype, msg));
-
-                        if (!result)
-                        {
-                            msg.Cancel = true;
-                            return;
-                        }
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -703,19 +478,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-                Objects.JSUser w = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null && w != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onPM", r, w);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -741,18 +503,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onBotPM", r, text);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -777,21 +527,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onNick", r, name);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -821,18 +556,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onHelp", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -857,18 +580,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onFileReceived", r, filename);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -893,22 +604,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-                Objects.JSUser w = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null && w != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onIgnoring", r, w);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -939,19 +634,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-                Objects.JSUser w = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null && w != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onIgnoredStateChanged", r, w, ignored);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -977,18 +659,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onInvalidLoginAttempt", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1013,18 +683,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onLoginGranted", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1049,18 +707,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onAdminLevelChanged", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1085,21 +731,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onRegistering", r);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1129,18 +760,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onRegistered", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1165,18 +784,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onUnregistered", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1201,18 +808,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onCaptchaSending", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1237,18 +832,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onCaptchaReply", r, reply);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1273,21 +856,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onVroomJoinCheck", r, (int)vroom);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1317,18 +885,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onVroomJoin", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1353,21 +909,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onFloodBefore", r, (int)msg);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1397,18 +938,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onFlood", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1433,21 +962,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        bool result = ScriptManager.RoomEval.JS.CallGlobalFunction<bool>("onProxyDetected", r);
-
-                        if (!result)
-                            return false;
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1477,18 +991,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onLogout", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1513,18 +1015,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onIdled", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1549,18 +1039,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onUnidled", r, (int)seconds_away);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1584,33 +1062,19 @@ namespace scripting
         {
             if (this.CanScript)
             {
-                if (Server.Time > this._second_timer)
-                {
-                    this._second_timer = Server.Time;
-                    JSScript[] scripts = ScriptManager.Scripts.ToArray();
+                JSScript[] scripts = ScriptManager.Scripts.ToArray();
 
+                foreach (JSScript s in scripts)
+                {
                     try
                     {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onBansAutoCleared");
+                        s.JS.CallGlobalFunction("onBansAutoCleared");
                     }
                     catch (Jurassic.JavaScriptException e)
                     {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
+                        ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
                     }
                     catch { }
-
-                    foreach (JSScript s in scripts)
-                    {
-                        try
-                        {
-                            s.JS.CallGlobalFunction("onBansAutoCleared");
-                        }
-                        catch (Jurassic.JavaScriptException e)
-                        {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
-                        }
-                        catch { }
-                    }
                 }
             }
         }
@@ -1620,19 +1084,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSUser r = ScriptManager.RoomEval.GetUser(client);
-                Objects.JSUser w = ScriptManager.RoomEval.GetUser(target);
-
-                if (r != null && w != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onCommand", r, cmd, w, args);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1659,16 +1110,6 @@ namespace scripting
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
 
-                try
-                {
-                    ScriptManager.RoomEval.JS.CallGlobalFunction("onLinkError", (int)error);
-                }
-                catch (Jurassic.JavaScriptException e)
-                {
-                    ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                }
-                catch { }
-
                 foreach (JSScript s in scripts)
                 {
                     try
@@ -1688,17 +1129,13 @@ namespace scripting
         {
             if (this.CanScript)
             {
-                JSScript[] scripts = ScriptManager.Scripts.ToArray();
+                ScriptManager.Scripts.ForEach(x =>
+                {
+                    x.leaves.ForEach(z => z.users.Clear());
+                    x.leaves.Clear();
+                });
 
-                try
-                {
-                    ScriptManager.RoomEval.JS.CallGlobalFunction("onLinked");
-                }
-                catch (Jurassic.JavaScriptException e)
-                {
-                    ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                }
-                catch { }
+                JSScript[] scripts = ScriptManager.Scripts.ToArray();
 
                 foreach (JSScript s in scripts)
                 {
@@ -1719,17 +1156,13 @@ namespace scripting
         {
             if (this.CanScript)
             {
-                JSScript[] scripts = ScriptManager.Scripts.ToArray();
+                ScriptManager.Scripts.ForEach(x =>
+                {
+                    x.leaves.ForEach(z => z.users.Clear());
+                    x.leaves.Clear();
+                });
 
-                try
-                {
-                    ScriptManager.RoomEval.JS.CallGlobalFunction("onUnlinked");
-                }
-                catch (Jurassic.JavaScriptException e)
-                {
-                    ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                }
-                catch { }
+                JSScript[] scripts = ScriptManager.Scripts.ToArray();
 
                 foreach (JSScript s in scripts)
                 {
@@ -1750,10 +1183,6 @@ namespace scripting
         {
             if (this.CanScript)
             {
-                ScriptManager.RoomEval.leaves.FindAll(x => x.Ident == leaf.Ident).ForEach(x => x.users.Clear());
-                ScriptManager.RoomEval.leaves.RemoveAll(x => x.Ident == leaf.Ident);
-                ScriptManager.RoomEval.leaves.Add(new Objects.JSLeaf(ScriptManager.RoomEval.JS.Object.InstancePrototype, leaf, ScriptManager.RoomEval.ScriptName));
-
                 ScriptManager.Scripts.ForEach(x =>
                 {
                     x.leaves.FindAll(z => z.Ident == leaf.Ident).ForEach(z => z.users.Clear());
@@ -1762,18 +1191,6 @@ namespace scripting
                 });
 
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSLeaf r = ScriptManager.RoomEval.leaves.Find(x => x.Ident == leaf.Ident);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onLeafJoin", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1798,18 +1215,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSLeaf r = ScriptManager.RoomEval.leaves.Find(x => x.Ident == leaf.Ident);
-
-                if (r != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onLeafPart", r);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {
@@ -1827,9 +1232,6 @@ namespace scripting
                         catch { }
                 }
 
-                ScriptManager.RoomEval.leaves.FindAll(x => x.Ident == leaf.Ident).ForEach(x => x.users.Clear());
-                ScriptManager.RoomEval.leaves.RemoveAll(x => x.Ident == leaf.Ident);
-
                 ScriptManager.Scripts.ForEach(x =>
                 {
                     x.leaves.FindAll(z => z.Ident == leaf.Ident).ForEach(z => z.users.Clear());
@@ -1843,19 +1245,6 @@ namespace scripting
             if (this.CanScript)
             {
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
-                Objects.JSLeaf r = ScriptManager.RoomEval.leaves.Find(x => x.Ident == leaf.Ident);
-                Objects.JSUser w = ScriptManager.RoomEval.GetUser(client);
-
-                if (r != null && w != null)
-                    try
-                    {
-                        ScriptManager.RoomEval.JS.CallGlobalFunction("onLinkedAdminDisabled", r, w);
-                    }
-                    catch (Jurassic.JavaScriptException e)
-                    {
-                        ScriptManager.OnError(ScriptManager.RoomEval.ScriptName, e.Message, e.LineNumber);
-                    }
-                    catch { }
 
                 foreach (JSScript s in scripts)
                 {

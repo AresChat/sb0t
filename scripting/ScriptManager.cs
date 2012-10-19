@@ -9,12 +9,11 @@ namespace scripting
     class ScriptManager
     {
         public static List<JSScript> Scripts { get; private set; }
-        public static JSScript RoomEval { get; private set; }
 
         public static void AutoRun()
         {
             Scripts = new List<JSScript>();
-            RoomEval = new JSScript("room");
+            Scripts.Add(new JSScript("room"));
 
         }
 
