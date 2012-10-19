@@ -28,7 +28,7 @@ namespace scripting.Statics
         public String ClrName(object a)
         {
             if (a == null)
-                return "null";
+                return null;
 
             return a.GetType().ToString();
         }

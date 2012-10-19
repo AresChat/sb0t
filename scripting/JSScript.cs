@@ -25,16 +25,12 @@ namespace scripting
 
             // set up global functions
             this.gbl = new Statics.JSGlobal(this);
-            this.JS.SetGlobalFunction("print", new Action<object, object>((a, b) => this.gbl.Print(a, b)));
-            this.JS.Global.DefineProperty("print", new PropertyDescriptor(this.JS.Global["print"], PropertyAttributes.Sealed), throwOnError: true);
-            this.JS.SetGlobalFunction("user", new Func<object, Objects.JSUser>(a => this.gbl.User(a)));
-            this.JS.Global.DefineProperty("user", new PropertyDescriptor(this.JS.Global["user"], PropertyAttributes.Sealed), throwOnError: true);
-            this.JS.SetGlobalFunction("sendPM", new Action<object, object, object>((a, b, c) => this.gbl.SendPM(a, b, c)));
-            this.JS.Global.DefineProperty("sendPM", new PropertyDescriptor(this.JS.Global["sendPM"], PropertyAttributes.Sealed), throwOnError: true);
-            this.JS.SetGlobalFunction("clrName", new Func<object, String>(a => this.gbl.ClrName(a)));
-            this.JS.Global.DefineProperty("clrName", new PropertyDescriptor(this.JS.Global["clrName"], PropertyAttributes.Sealed), throwOnError: true);
-            this.JS.SetGlobalFunction("byteLength", new Func<object, int>(a => this.gbl.ByteLength(a)));
-            this.JS.Global.DefineProperty("byteLength", new PropertyDescriptor(this.JS.Global["byteLength"], PropertyAttributes.Sealed), throwOnError: true);
+            this.JS.EmbedIntoGlobal("print", new Action<object, object>((a, b) => this.gbl.Print(a, b)));
+            this.JS.EmbedIntoGlobal("user", new Func<object, Objects.JSUser>(a => this.gbl.User(a)));
+            this.JS.EmbedIntoGlobal("sendPM", new Action<object, object, object>((a, b, c) => this.gbl.SendPM(a, b, c)));
+            this.JS.EmbedIntoGlobal("clrName", new Func<object, String>(a => this.gbl.ClrName(a)));
+            this.JS.EmbedIntoGlobal("byteLength", new Func<object, int>(a => this.gbl.ByteLength(a)));
+            
 
             // set up default events
             StringBuilder events = new StringBuilder();

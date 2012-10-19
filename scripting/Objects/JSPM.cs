@@ -19,7 +19,7 @@ namespace scripting.Objects
             this.PopulateFunctions();
         }
 
-        [JSFunction(Name = "contains", IsWritable = false)]
+        [JSFunction(Name = "contains", IsWritable = false, IsEnumerable = true)]
         public bool Contains(object a)
         {
             if (a != null)
@@ -29,7 +29,7 @@ namespace scripting.Objects
             return false;
         }
 
-        [JSFunction(Name = "remove", IsWritable = false)]
+        [JSFunction(Name = "remove", IsWritable = false, IsEnumerable = true)]
         public void Remove(object a)
         {
             if (a != null)
@@ -37,7 +37,7 @@ namespace scripting.Objects
                     this._PM.Remove(a.ToString());
         }
 
-        [JSFunction(Name = "replace", IsWritable = false)]
+        [JSFunction(Name = "replace", IsWritable = false, IsEnumerable = true)]
         public void Replace(object a, object b)
         {
             if (a != null)

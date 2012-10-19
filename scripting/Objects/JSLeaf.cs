@@ -46,7 +46,7 @@ namespace scripting.Objects
             get { return this.parent.Name; }
         }
 
-        [JSFunction(Name = "print", IsWritable = false)]
+        [JSFunction(Name = "print", IsWritable = false, IsEnumerable = true)]
         public void Print(object a, object b)
         {
             if (a != null && b == null)
@@ -63,7 +63,7 @@ namespace scripting.Objects
             }
         }
 
-        [JSFunction(Name = "printAdmins", IsWritable = false)]
+        [JSFunction(Name = "printAdmins", IsWritable = false, IsEnumerable = true)]
         public void PrintAdmins(object a, object b)
         {
             if (a != null && b != null)
@@ -75,7 +75,7 @@ namespace scripting.Objects
             }
         }
 
-        [JSFunction(Name = "users", IsWritable = false)]
+        [JSFunction(Name = "users", IsWritable = false, IsEnumerable = true)]
         public void Users(object a)
         {
             if (a is UserDefinedFunction)
@@ -95,7 +95,7 @@ namespace scripting.Objects
             }
         }
 
-        [JSFunction(Name = "user", IsWritable = false)]
+        [JSFunction(Name = "user", IsWritable = false, IsEnumerable = true)]
         public JSUser FindUser(object a)
         {
             JSUser result = null;

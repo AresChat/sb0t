@@ -317,19 +317,19 @@ namespace scripting.Objects
             }
         }
 
-        [JSFunction(Name = "ban", IsWritable = false)]
+        [JSFunction(Name = "ban", IsWritable = false, IsEnumerable = true)]
         public void Ban()
         {
             this.parent.Ban();
         }
 
-        [JSFunction(Name = "disconnect", IsWritable = false)]
+        [JSFunction(Name = "disconnect", IsWritable = false, IsEnumerable = true)]
         public void Disconnect()
         {
             this.parent.Disconnect();
         }
 
-        [JSFunction(Name = "nudge")]
+        [JSFunction(Name = "nudge", IsWritable = false, IsEnumerable = true)]
         public void Nudge(object a)
         {
             if (this.parent.CustomClient)
@@ -345,34 +345,34 @@ namespace scripting.Objects
             }
         }
 
-        [JSFunction(Name = "redirect", IsWritable = false)]
+        [JSFunction(Name = "redirect", IsWritable = false, IsEnumerable = true)]
         public void Redirect(object a)
         {
             if (a is String || a is ConcatenatedString)
                 this.parent.Redirect(a.ToString());
         }
 
-        [JSFunction(Name = "restoreAvatar", IsWritable = false)]
+        [JSFunction(Name = "restoreAvatar", IsWritable = false, IsEnumerable = true)]
         public void RestoreAvatar()
         {
             this.parent.RestoreAvatar();
         }
 
-        [JSFunction(Name = "sendEmote", IsWritable = false)]
+        [JSFunction(Name = "sendEmote", IsWritable = false, IsEnumerable = true)]
         public void SendEmote(object a)
         {
             if (!(a is Undefined) && a != null)
                 this.parent.SendEmote(a.ToString());
         }
 
-        [JSFunction(Name = "sendText", IsWritable = false)]
+        [JSFunction(Name = "sendText", IsWritable = false, IsEnumerable = true)]
         public void SendText(object a)
         {
             if (!(a is Undefined) && a != null)
                 this.parent.SendText(a.ToString());
         }
 
-        [JSFunction(Name = "setTopic", IsWritable = false)]
+        [JSFunction(Name = "setTopic", IsWritable = false, IsEnumerable = true)]
         public void SetTopic(object a)
         {
             if (!(a is Undefined))
@@ -381,7 +381,7 @@ namespace scripting.Objects
                 this.parent.Topic(Server.Chatroom.Topic);
         }
 
-        [JSFunction(Name = "setUrl", IsWritable = false)]
+        [JSFunction(Name = "setUrl", IsWritable = false, IsEnumerable = true)]
         public void SetUrl(object a, object b)
         {
             if (a is Undefined && b is Undefined)
@@ -391,7 +391,7 @@ namespace scripting.Objects
                     this.parent.URL(a.ToString(), b.ToString());
         }
 
-        [JSFunction(Name = "scribble", IsWritable = false)]
+        [JSFunction(Name = "scribble", IsWritable = false, IsEnumerable = true)]
         public void Scribble(object a, object b)
         {
             if (!this.parent.CustomClient)

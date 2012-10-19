@@ -36,7 +36,7 @@ namespace scripting.Objects
             set { }
         }
 
-        [JSFunction(Name = "toScribble", IsWritable = false)]
+        [JSFunction(Name = "toScribble", IsWritable = false, IsEnumerable = true)]
         public JSScribbleImage ToScribble()
         {
             if (this.Data != null)
@@ -57,7 +57,7 @@ namespace scripting.Objects
             " ",
         };
 
-        [JSFunction(Name = "save", IsWritable = false)]
+        [JSFunction(Name = "save", IsWritable = false, IsEnumerable = true)]
         public bool Save(object a)
         {
             if (this.Data == null)

@@ -37,7 +37,7 @@ namespace scripting.Objects
             set { }
         }
 
-        [JSFunction(Name = "toAvatar", IsWritable = false)]
+        [JSFunction(Name = "toAvatar", IsWritable = false, IsEnumerable = true)]
         public JSAvatarImage ToAvatar()
         {
             if (this.Data != null)
@@ -58,7 +58,7 @@ namespace scripting.Objects
             " ",
         };
 
-        [JSFunction(Name = "save", IsWritable = false)]
+        [JSFunction(Name = "save", IsWritable = false, IsEnumerable = true)]
         public bool Save(object a)
         {
             if (this.Data == null)
