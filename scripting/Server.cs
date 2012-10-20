@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using iconnect;
 
 namespace scripting
@@ -48,6 +49,13 @@ namespace scripting
         public static void SetCallback(IHostApp cb)
         {
             Callback = cb;
+
+            try
+            {
+                if (!Directory.Exists(DataPath))
+                    Directory.CreateDirectory(DataPath);
+            }
+            catch { }
         }
 
         /// <summary>

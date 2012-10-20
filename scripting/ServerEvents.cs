@@ -76,6 +76,7 @@ namespace scripting
 
         public void Joined(IUser client)
         {
+            Server.Print(Server.DataPath);
             if (this.CanScript)
             {
                 ScriptManager.Scripts.ForEach(x =>

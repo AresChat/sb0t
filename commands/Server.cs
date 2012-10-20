@@ -42,7 +42,7 @@ namespace commands
         /// </summary>
         public static String DataPath
         {
-            get { return Callback.DataPath + "Scripting\\"; }
+            get { return Callback.DataPath; }
         }
 
         public static void SetCallback(IHostApp cb)

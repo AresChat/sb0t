@@ -53,13 +53,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hashlink.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="JSGlobal.cs" />
     <Compile Include="JSScript.cs" />
     <Compile Include="Objects\JSAvatarImage.cs" />
+    <Compile Include="Objects\JSBannedUser.cs" />
     <Compile Include="Objects\JSIgnoreCollection.cs" />
     <Compile Include="Objects\JSLeaf.cs" />
     <Compile Include="Objects\JSPM.cs" />
+    <Compile Include="Objects\JSRecord.cs" />
     <Compile Include="Objects\JSScribbleImage.cs" />
     <Compile Include="Objects\JSUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +70,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="ServerEvents.Callback.cs" />
     <Compile Include="ServerEvents.cs" />
+    <Compile Include="Statics\JSLink.cs" />
     <Compile Include="Statics\JSUsers.cs" />
   </ItemGroup>
   <ItemGroup>

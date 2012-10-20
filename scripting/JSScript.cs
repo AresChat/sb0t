@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using Jurassic;
 using Jurassic.Library;
 using iconnect;
@@ -25,7 +26,16 @@ namespace scripting
             this.JS.EmbedGlobalClass(typeof(JSGlobal));
             
             //set up static classes
-            this.JS.EmbedStaticClass<Statics.JSUsers>("Users");
+            var statics = Assembly.GetExecutingAssembly().GetTypes().Where(x =>
+                x.Namespace == "scripting.Statics" && x.IsSubclassOf(typeof(ObjectInstance)));
+
+            this.JS.EmbedStaticClasses(statics.ToArray());
+
+            //set up instance classes
+            var instances = Assembly.GetExecutingAssembly().GetTypes().Where(x =>
+                x.Namespace == "scripting.Instances" && x.IsSubclassOf(typeof(ClrFunction)));
+
+            this.JS.EmbedInstances(instances.ToArray());
 
             // set up default events
             StringBuilder events = new StringBuilder();

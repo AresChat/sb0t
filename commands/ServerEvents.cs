@@ -92,30 +92,6 @@ namespace commands
 
         public void Command(IUser client, String cmd, IUser target, String args)
         {
-            // TEST START
-            if (cmd == "unlink")
-            {
-                if (Server.Link.Disconnect())
-                    Server.Print("you have disconnected from the hub");
-
-                return;
-            }
-
-            if (cmd.StartsWith("link "))
-            {
-                IHashlinkRoom obj = Server.Hashlinks.Decrypt(cmd.Substring(5));
-
-                if (obj != null)
-                {
-                    Server.Print("connecting to hub [" + obj.Name + "] please wait...");
-                    Server.Link.Connect(cmd.Substring(5));
-                }
-                else Server.Print("invalid hashlink");
-
-                return;
-            }
-            // TEST END
-
             if (cmd.StartsWith("vroom "))
                 Eval.Vroom(client, cmd.Substring(6));
             else if (cmd == "admins")

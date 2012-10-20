@@ -46,6 +46,22 @@ namespace scripting.Objects
             get { return this.parent.Name; }
         }
 
+        [JSProperty(Name = "hashlink")]
+        public String Hashlink
+        {
+            get
+            {
+                Hashlink obj = new Hashlink
+                {
+                    IP = this.parent.ExternalIP,
+                    Name = this.parent.Name,
+                    Port = this.parent.Port
+                };
+
+                return "arlnk://" + Server.Hashlinks.Encrypt(obj);
+            }
+        }
+
         [JSFunction(Name = "print", IsWritable = false, IsEnumerable = true)]
         public void Print(object a, object b)
         {
