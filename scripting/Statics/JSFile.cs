@@ -1,0 +1,164 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using Jurassic;
+using Jurassic.Library;
+
+namespace scripting.Statics
+{
+    [JSEmbed(Name = "File")]
+    class JSFile : ObjectInstance
+    {
+        public JSFile(ScriptEngine engine)
+            : base(engine)
+        {
+            this.PopulateFunctions();
+        }
+
+        private static String[] bad_chars_script = new String[]
+        {
+            "..",
+            "/",
+            "\\",
+            " ",
+        };
+
+        [JSFunction(Name = "load", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
+        public static String JSLoad(ScriptEngine eng, object a)
+        {
+            if (a is String || a is ConcatenatedString)
+            {
+                String filename = a.ToString();
+
+                if (filename.Length > 1)
+                    if (bad_chars_script.Count<String>(x => filename.Contains(x)) == 0)
+                    {
+                        String path = Path.Combine(Server.DataPath, eng.ScriptName, "data", filename);
+
+                        try
+                        {
+                            return File.ReadAllText(path);
+                        }
+                        catch { }
+                    }
+            }
+
+            return null;
+        }
+
+        [JSFunction(Name = "exists", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
+        public static bool JSExists(ScriptEngine eng, object a)
+        {
+            if (a is String || a is ConcatenatedString)
+            {
+                String filename = a.ToString();
+
+                if (filename.Length > 1)
+                    if (bad_chars_script.Count<String>(x => filename.Contains(x)) == 0)
+                    {
+                        String path = Path.Combine(Server.DataPath, eng.ScriptName, "data", filename);
+
+                        try
+                        {
+                            return File.Exists(path);
+                        }
+                        catch { }
+                    }
+            }
+
+            return false;
+        }
+
+        [JSFunction(Name = "save", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
+        public static bool JSSave(ScriptEngine eng, object a, object b)
+        {
+            if (!(a is String || a is ConcatenatedString) || !(b is String || b is ConcatenatedString))
+                return false;
+
+            String file = a.ToString();
+            String content = b.ToString();
+
+            if (file.Length > 1)
+                if (bad_chars_script.Count<String>(x => file.Contains(x)) == 0)
+                {
+                    try
+                    {
+                        String path = Path.Combine(Server.DataPath, eng.ScriptName, "data");
+
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+
+                        path = Path.Combine(Server.DataPath, eng.ScriptName, "data", file);
+                        File.WriteAllText(path, content);
+                        return true;
+                    }
+                    catch { }
+                }
+
+            return false;
+        }
+
+        [JSFunction(Name = "append", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
+        public static bool JSAppend(ScriptEngine eng, object a, object b) // file, content
+        {
+            if (!(a is String || a is ConcatenatedString) || !(b is String || b is ConcatenatedString))
+                return false;
+
+            String file = a.ToString();
+            String script = eng.ScriptName;
+            String content = b.ToString();
+
+            if (file.Length > 1)
+                if (bad_chars_script.Count<String>(x => file.Contains(x)) == 0)
+                {
+                    try
+                    {
+                        String path = Path.Combine(Server.DataPath, eng.ScriptName, "data");
+
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+
+                        path = Path.Combine(Server.DataPath, eng.ScriptName, "data", file);
+
+                        using (StreamWriter stream = File.Exists(path) ? File.AppendText(path) : File.CreateText(path))
+                            stream.Write(content);
+
+                        return true;
+                    }
+                    catch { }
+                }
+
+            return false;
+        }
+
+        [JSFunction(Name = "kill", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
+        public static bool JDDelete(ScriptEngine eng, object a)
+        {
+            if (a is String || a is ConcatenatedString)
+            {
+                String file = a.ToString();
+                String script = eng.ScriptName;
+
+                if (file.Length > 1)
+                    if (bad_chars_script.Count<String>(x => file.Contains(x)) == 0)
+                    {
+                        String path = Path.Combine(Server.DataPath, eng.ScriptName, "data", file);
+
+                        try
+                        {
+                            if (File.Exists(path))
+                            {
+                                File.Delete(path);
+                                return true;
+                            }
+                        }
+                        catch { }
+                    }
+            }
+
+            return false;
+        }
+    }
+}

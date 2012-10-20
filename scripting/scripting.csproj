@@ -70,8 +70,11 @@
     <Compile Include="Server.cs" />
     <Compile Include="ServerEvents.Callback.cs" />
     <Compile Include="ServerEvents.cs" />
+    <Compile Include="Statics\JSBase64.cs" />
+    <Compile Include="Statics\JSFile.cs" />
     <Compile Include="Statics\JSLink.cs" />
     <Compile Include="Statics\JSUsers.cs" />
+    <Compile Include="Statics\JSZip.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Instances\" />

@@ -76,7 +76,6 @@ namespace scripting
 
         public void Joined(IUser client)
         {
-            Server.Print(Server.DataPath);
             if (this.CanScript)
             {
                 ScriptManager.Scripts.ForEach(x =>
@@ -1084,6 +1083,15 @@ namespace scripting
         {
             if (this.CanScript)
             {
+                if (Server.CanScript(client))
+                {
+                    if (cmd == "test")
+                    {
+                        ScriptManager.Load("blah.js");
+                        return;
+                    }
+                }
+
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
 
                 foreach (JSScript s in scripts)

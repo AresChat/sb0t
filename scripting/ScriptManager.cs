@@ -12,19 +12,29 @@ namespace scripting
 
         public static void AutoRun()
         {
+            Destroy();
             Scripts = new List<JSScript>();
             Scripts.Add(new JSScript("room"));
 
         }
 
-        public static bool Load(FileInfo file)
+        public static bool Load(String f)
         {
+            FileInfo file = null;
+
+            try
+            {
+                file = new FileInfo(f);
+                file = new FileInfo(Path.Combine(Server.DataPath, file.Name, file.Name));
+            }
+            catch { return false; }
+
             if (file.Name == "room")
                 return false;
 
             int index = Scripts.FindIndex(x => x.ScriptName == file.Name);
 
-            if (index > -1)
+            if (index > 0)
             {
                 Scripts[index].KillScript();
                 Scripts.RemoveAt(index);
@@ -60,6 +70,13 @@ namespace scripting
             Server.Print("error: " + msg + " at line " + line);
         }
 
-
+        public static void Destroy()
+        {
+            if (Scripts != null)
+            {
+                Scripts.ForEach(x => x.KillScript());
+                Scripts.Clear();
+            }
+        }
     }
 }
