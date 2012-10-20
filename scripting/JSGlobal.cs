@@ -4,20 +4,13 @@ using System.Linq;
 using System.Text;
 using Jurassic;
 using Jurassic.Library;
-using iconnect;
 
-namespace scripting.Statics
+namespace scripting
 {
     class JSGlobal
     {
-        public JSScript parent { get; set; }
-
-        public JSGlobal(JSScript script)
-        {
-            this.parent = script;
-        }
-
-        public int ByteLength(object a)
+        [JSFunction(Name = "byteLength")]
+        public static int ByteLength(object a)
         {
             if (a is Undefined)
                 return -1;
@@ -25,7 +18,8 @@ namespace scripting.Statics
             return Encoding.UTF8.GetByteCount(a.ToString());
         }
 
-        public String ClrName(object a)
+        [JSFunction(Name = "clrName")]
+        public static String ClrName(object a)
         {
             if (a is Undefined)
                 return null;
@@ -33,35 +27,43 @@ namespace scripting.Statics
             return a.GetType().ToString();
         }
 
-        public Objects.JSUser User(object a) // name/id
+        [JSFunction(Name = "user", Flags = JSFunctionFlags.HasEngineParameter)]
+        public static Objects.JSUser User(ScriptEngine eng, object a)
         {
             if (a is Null)
                 return null;
 
+            JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.ScriptName);
+
+            if (script == null)
+                return null;
+
             Objects.JSUser result = null;
+
 
             if (a is String || a is ConcatenatedString)
             {
                 if (a.ToString().Length < 2)
                     return null;
 
-                result = this.parent.local_users.Find(x => x.Name == ((String)a));
+                result = script.local_users.Find(x => x.Name == ((String)a));
 
                 if (result == null)
-                    result = this.parent.local_users.Find(x => x.Name.StartsWith((String)a));
+                    result = script.local_users.Find(x => x.Name.StartsWith((String)a));
             }
             else if (a is int || a is double)
             {
                 int _i;
 
                 if (int.TryParse(a.ToString(), out _i))
-                    result = this.parent.local_users.Find(x => x.Id == _i);
+                    result = script.local_users.Find(x => x.Id == _i);
             }
 
             return result;
         }
 
-        public void Print(object a, object b)
+        [JSFunction(Name = "print")]
+        public static void Print(object a, object b)
         {
             if (b is Undefined) // to all local users
             {
@@ -117,7 +119,8 @@ namespace scripting.Statics
             }
         }
 
-        public void SendPM(object a, object b, object c)
+        [JSFunction(Name = "sendPM")]
+        public static void SendPM(object a, object b, object c)
         {
             if (!(a is Objects.JSUser))
                 return;

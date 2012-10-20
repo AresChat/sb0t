@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers.cs" />
+    <Compile Include="JSGlobal.cs" />
     <Compile Include="JSScript.cs" />
     <Compile Include="Objects\JSAvatarImage.cs" />
     <Compile Include="Objects\JSIgnoreCollection.cs" />
@@ -66,7 +67,6 @@
     <Compile Include="Server.cs" />
     <Compile Include="ServerEvents.Callback.cs" />
     <Compile Include="ServerEvents.cs" />
-    <Compile Include="Statics\JSGlobal.cs" />
     <Compile Include="Statics\JSUsers.cs" />
   </ItemGroup>
   <ItemGroup>

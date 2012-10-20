@@ -15,8 +15,6 @@ namespace scripting
         public List<Objects.JSUser> local_users = new List<Objects.JSUser>();
         public List<Objects.JSLeaf> leaves = new List<Objects.JSLeaf>();
 
-        public Statics.JSGlobal gbl;
-
         public JSScript(String name)
         {
             this.ScriptName = name;
@@ -24,12 +22,7 @@ namespace scripting
             this.JS.ScriptName = name;
 
             // set up global functions
-            this.gbl = new Statics.JSGlobal(this);
-            this.JS.EmbedGlobalFunction("print", new Action<object, object>((a, b) => this.gbl.Print(a, b)));
-            this.JS.EmbedGlobalFunction("user", new Func<object, Objects.JSUser>(a => this.gbl.User(a)));
-            this.JS.EmbedGlobalFunction("sendPM", new Action<object, object, object>((a, b, c) => this.gbl.SendPM(a, b, c)));
-            this.JS.EmbedGlobalFunction("clrName", new Func<object, String>(a => this.gbl.ClrName(a)));
-            this.JS.EmbedGlobalFunction("byteLength", new Func<object, int>(a => this.gbl.ByteLength(a)));
+            this.JS.EmbedGlobalClass(typeof(JSGlobal));
             
             //set up static classes
             this.JS.EmbedStaticClass<Statics.JSUsers>("Users");
@@ -53,7 +46,6 @@ namespace scripting
             events.AppendLine("function onPersonalMessage(userobj, msg) { return true; }");
             events.AppendLine("function onRejected(userobj) { }");
             events.AppendLine("function onLoad() { }");
-            events.AppendLine("function onUnload() { }");
             events.AppendLine("function onVroomJoinCheck(userobj, vroom) { return true; }");
             events.AppendLine("function onVroomJoin(userobj) { }");
             events.AppendLine("function onFileReceived(userobj, filename) { }");
