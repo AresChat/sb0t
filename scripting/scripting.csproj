@@ -43,6 +43,10 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.66.1, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\core\Libraries\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -60,8 +64,12 @@
     <Compile Include="Instances\JSAvatarInstance.cs" />
     <Compile Include="Instances\JSHttpRequest.cs" />
     <Compile Include="Instances\JSHttpRequestInstance.cs" />
+    <Compile Include="Instances\JSQuery.cs" />
+    <Compile Include="Instances\JSQueryInstance.cs" />
     <Compile Include="Instances\JSScribble.cs" />
     <Compile Include="Instances\JSScribbleInstance.cs" />
+    <Compile Include="Instances\JSSql.cs" />
+    <Compile Include="Instances\JSSqlInstance.cs" />
     <Compile Include="Instances\JSTimer.cs" />
     <Compile Include="Instances\JSTimerInstance.cs" />
     <Compile Include="Instances\JSXmlParser.cs" />
