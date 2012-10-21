@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using Jurassic;
 using Jurassic.Library;
 
@@ -9,6 +10,38 @@ namespace scripting
 {
     class JSGlobal
     {
+        private static String[] bad_chars = new String[]
+        {
+            "..",
+            "/",
+            "\\",
+            " ",
+        };
+
+        [JSFunction(Name = "scriptName", Flags = JSFunctionFlags.HasEngineParameter)]
+        public static String ScriptName(ScriptEngine eng)
+        {
+            return eng.ScriptName;
+        }
+
+        [JSFunction(Name = "include", Flags = JSFunctionFlags.HasEngineParameter)]
+        public static void Include(ScriptEngine eng, object a)
+        {
+            if (!(a is Undefined))
+            {
+                String filename = a.ToString();
+
+                if (filename.Length > 3 && filename.EndsWith(".js"))
+                    if (bad_chars.Count<String>(x => filename.Contains(x)) == 0)
+                        try
+                        {
+                            String path = Path.Combine(Server.DataPath, eng.ScriptName, filename);
+                            eng.Evaluate(File.ReadAllText(path));
+                        }
+                        catch { }
+            }
+        }
+
         [JSFunction(Name = "byteLength")]
         public static int ByteLength(object a)
         {

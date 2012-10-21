@@ -90,15 +90,29 @@ namespace core.ib0t
             this.FloodRecord = new FloodRecord();
         }
 
-        public void Scribble(String sender, byte[] img)
+        public void Scribble(String sender, byte[] img, int h)
         {
+            byte[] buf = Zip.Decompress(img);
+            String height = h.ToString();
+            String base64 = Convert.ToBase64String(buf);
+            List<String> packets = new List<String>();
 
+            while (base64.Length > 1024)
+            {
+                packets.Add(base64.Substring(0, 1024));
+                base64 = base64.Substring(1024);
+            }
+
+            if (base64.Length > 0)
+                packets.Add(base64);
+
+            this.QueuePacket(WebOutbound.ScribbleHead(this, packets.Count, height));
+
+            foreach (String str in packets)
+                this.QueuePacket(WebOutbound.ScribbleBlock(this, str));
         }
 
-        public void Nudge(String sender)
-        {
-
-        }
+        public void Nudge(String sender) { }
 
         private bool _muzzled;
         public bool Muzzled

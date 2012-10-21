@@ -101,14 +101,43 @@ namespace core
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 
-        public void Scribble(String sender, byte[] img)
+        public void Scribble(String sender, byte[] img, int height)
         {
+            List<byte> b = new List<byte>(img);
 
+            if (b.Count <= 4000)
+                this.SendPacket(TCPOutbound.CustomData(this, sender, "cb0t_scribble_once", img));
+            else
+            {
+                List<byte[]> p = new List<byte[]>();
+
+                while (b.Count > 4000)
+                {
+                    p.Add(b.GetRange(0, 4000).ToArray());
+                    b.RemoveRange(0, 4000);
+                }
+
+                if (b.Count > 0)
+                    p.Add(b.ToArray());
+
+                for (int i = 0; i < p.Count; i++)
+                {
+                    if (i == 0)
+                        this.SendPacket(TCPOutbound.CustomData(this, sender, "cb0t_scribble_first", p[i]));
+                    else if (i == (p.Count - 1))
+                        this.SendPacket(TCPOutbound.CustomData(this, sender, "cb0t_scribble_last", p[i]));
+                    else
+                        this.SendPacket(TCPOutbound.CustomData(this, sender, "cb0t_scribble_chunk", p[i]));
+                }
+            }
         }
 
         public void Nudge(String sender)
         {
-
+            byte[] buf = Encoding.UTF8.GetBytes("0" + sender);
+            buf = Crypto.e67(buf, 1488);
+            buf = Encoding.Default.GetBytes(Convert.ToBase64String(buf));
+            this.SendPacket(TCPOutbound.CustomData(this, sender, "cb0t_nudge", buf));
         }
 
         private bool _muzzled;

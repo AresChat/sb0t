@@ -9,7 +9,7 @@ using Jurassic.Library;
 
 namespace scripting.Objects
 {
-    class JSAvatarImage : ObjectInstance
+    class JSAvatarImage : ObjectInstance, ICallback
     {
         public JSAvatarImage(ObjectInstance prototype)
             : base(prototype)

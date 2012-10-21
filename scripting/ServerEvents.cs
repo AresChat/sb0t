@@ -41,9 +41,8 @@ namespace scripting
                     }
                 }
 
-                // other timers and checks here
-
-
+                ScriptManager.DequeueCallbacks();
+                TimerList.UpdateTimers();
             }
         }
 

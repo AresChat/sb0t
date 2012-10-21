@@ -186,6 +186,11 @@ namespace scripting
             get { return Callback.Timestamp; }
         }
 
+        public static ulong Ticks
+        {
+            get { return Callback.Ticks; }
+        }
+
         /// <summary>
         /// Get a user defined minimum admin level for a default command
         /// </summary>

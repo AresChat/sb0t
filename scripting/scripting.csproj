@@ -55,13 +55,28 @@
   <ItemGroup>
     <Compile Include="Hashlink.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="ICallback.cs" />
+    <Compile Include="Instances\JSAvatar.cs" />
+    <Compile Include="Instances\JSAvatarInstance.cs" />
+    <Compile Include="Instances\JSHttpRequest.cs" />
+    <Compile Include="Instances\JSHttpRequestInstance.cs" />
+    <Compile Include="Instances\JSScribble.cs" />
+    <Compile Include="Instances\JSScribbleInstance.cs" />
+    <Compile Include="Instances\JSTimer.cs" />
+    <Compile Include="Instances\JSTimerInstance.cs" />
+    <Compile Include="Instances\JSXmlParser.cs" />
+    <Compile Include="Instances\JSXmlParserInstance.cs" />
     <Compile Include="JSGlobal.cs" />
     <Compile Include="JSScript.cs" />
     <Compile Include="Objects\JSAvatarImage.cs" />
     <Compile Include="Objects\JSBannedUser.cs" />
     <Compile Include="Objects\JSHashlinkResult.cs" />
+    <Compile Include="Objects\JSHttpRequestResult.cs" />
     <Compile Include="Objects\JSIgnoreCollection.cs" />
     <Compile Include="Objects\JSLeaf.cs" />
+    <Compile Include="Objects\JSNode.cs" />
+    <Compile Include="Objects\JSNodeAttributes.cs" />
+    <Compile Include="Objects\JSNodeCollection.cs" />
     <Compile Include="Objects\JSPM.cs" />
     <Compile Include="Objects\JSRecord.cs" />
     <Compile Include="Objects\JSRegistryKeyCollection.cs" />
@@ -81,10 +96,9 @@
     <Compile Include="Statics\JSStats.cs" />
     <Compile Include="Statics\JSUsers.cs" />
     <Compile Include="Statics\JSZip.cs" />
+    <Compile Include="TimerList.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Instances\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -52,9 +52,9 @@ namespace core.LinkLeaf
         public UserLinkCredentials LinkCredentials { get; set; }
         public ILink Link { get { return this.LinkCredentials; } set { } }
 
-        public void Scribble(String sender, byte[] img)
+        public void Scribble(String sender, byte[] img, int height)
         {
-
+            
         }
 
         public void Nudge(String sender)

@@ -402,13 +402,11 @@ namespace scripting.Objects
                 JSScribbleImage scr = (JSScribbleImage)a;
                 scr.SendScribble(Server.Chatroom.BotName, this.parent);
             }
-            else if (!(a is Undefined))
-                if (a != null)
-                    if (b is JSScribbleImage)
-                    {
-                        JSScribbleImage scr = (JSScribbleImage)b;
-                        scr.SendScribble(a.ToString(), this.parent);
-                    }
+            else if (!(a is Undefined) && b is JSScribbleImage)
+            {
+                JSScribbleImage scr = (JSScribbleImage)b;
+                scr.SendScribble(a.ToString(), this.parent);
+            }
         }
 
         public override string ToString()

@@ -15,6 +15,7 @@ namespace scripting
         public ScriptEngine JS { get; private set; }
         public List<Objects.JSUser> local_users = new List<Objects.JSUser>();
         public List<Objects.JSLeaf> leaves = new List<Objects.JSLeaf>();
+        public List<ulong> timer_idents = new List<ulong>();
 
         public JSScript(String name)
         {
@@ -165,6 +166,9 @@ namespace scripting
             this.leaves.ForEach(x => x.users.Clear());
             this.leaves.Clear();
             this.JS = null;
+            ScriptManager.RemoveCallbacks(this.ScriptName);
+            this.timer_idents.Clear();
+            TimerList.RemoveScriptTimers(this.ScriptName);
         }
     }
 }

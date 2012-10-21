@@ -9,7 +9,7 @@ using iconnect;
 
 namespace scripting.Objects
 {
-    class JSScribbleImage : ObjectInstance
+    class JSScribbleImage : ObjectInstance, ICallback
     {
         public JSScribbleImage(ObjectInstance prototype)
             : base(prototype)
@@ -99,7 +99,7 @@ namespace scripting.Objects
             if (this.Data == null)
                 return;
 
-            target.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data);
+            target.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data, this.Height);
         }
 
         public override string ToString()

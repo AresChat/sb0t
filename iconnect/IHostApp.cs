@@ -34,5 +34,7 @@ namespace iconnect
         void ClearBans();
         /// <summary>Link hub</summary>
         IHub Hub { get; }
+        /// <summary>Get current tickcount</summary>
+        ulong Ticks { get; }
     }
 }

@@ -60,6 +60,11 @@ namespace core.Extensions
             get { return Helpers.UnixTime; }
         }
 
+        public ulong Ticks
+        {
+            get { return Time.Now; }
+        }
+
         public ILevel GetLevel(String command)
         {
             RegistryKey key = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\commands");
