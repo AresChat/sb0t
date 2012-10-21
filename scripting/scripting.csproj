@@ -59,10 +59,12 @@
     <Compile Include="JSScript.cs" />
     <Compile Include="Objects\JSAvatarImage.cs" />
     <Compile Include="Objects\JSBannedUser.cs" />
+    <Compile Include="Objects\JSHashlinkResult.cs" />
     <Compile Include="Objects\JSIgnoreCollection.cs" />
     <Compile Include="Objects\JSLeaf.cs" />
     <Compile Include="Objects\JSPM.cs" />
     <Compile Include="Objects\JSRecord.cs" />
+    <Compile Include="Objects\JSRegistryKeyCollection.cs" />
     <Compile Include="Objects\JSScribbleImage.cs" />
     <Compile Include="Objects\JSUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,7 +74,11 @@
     <Compile Include="ServerEvents.cs" />
     <Compile Include="Statics\JSBase64.cs" />
     <Compile Include="Statics\JSFile.cs" />
+    <Compile Include="Statics\JSHashlink.cs" />
     <Compile Include="Statics\JSLink.cs" />
+    <Compile Include="Statics\JSRegistry.cs" />
+    <Compile Include="Statics\JSRoom.cs" />
+    <Compile Include="Statics\JSStats.cs" />
     <Compile Include="Statics\JSUsers.cs" />
     <Compile Include="Statics\JSZip.cs" />
   </ItemGroup>

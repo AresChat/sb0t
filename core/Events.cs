@@ -808,6 +808,8 @@ namespace core
 
         public static void Flooded(IClient client)
         {
+            Stats.FloodCount++;
+
             if (DefaultCommands)
                 commands.Flooded(client != null ? client.IUser : null);
 
