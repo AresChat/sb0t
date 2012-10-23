@@ -14,6 +14,9 @@ namespace scripting
         {
             this._second_timer = 0;
             this.CanScript = Server.Scripting.ScriptEnabled;
+            TimerList.Reset();
+            LiveScript.Reset();
+            ErrorDispatcher.Reset();
             ScriptManager.AutoRun();
         }
 
@@ -35,7 +38,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                     }
@@ -43,6 +46,7 @@ namespace scripting
 
                 ScriptManager.DequeueCallbacks();
                 TimerList.UpdateTimers();
+                LiveScript.CheckTasks();
             }
         }
 
@@ -64,7 +68,7 @@ namespace scripting
                     }
                     catch (Jurassic.JavaScriptException e)
                     {
-                        ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                        ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                     }
                     catch { }
                 }
@@ -108,7 +112,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -132,7 +136,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -156,7 +160,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -180,7 +184,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -219,7 +223,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -248,7 +252,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -274,7 +278,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -309,7 +313,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(ScriptManager.Scripts[0].ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(ScriptManager.Scripts[0].ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                     }
@@ -328,7 +332,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -354,7 +358,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -378,7 +382,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -407,7 +411,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -433,7 +437,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -465,7 +469,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -490,7 +494,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -514,7 +518,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -541,7 +545,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -554,6 +558,16 @@ namespace scripting
         {
             if (this.CanScript)
             {
+                if (Server.CanScript(client))
+                {
+                    client.Print("/loadscript <script>");
+                    client.Print("/killscript <script>");
+                    client.Print("/listscripts");
+                    client.Print("/downloadscript <script>");
+                    client.Print("/livescripts");
+                    client.Print("/errors <on | off>");
+                }
+
                 JSScript[] scripts = ScriptManager.Scripts.ToArray();
 
                 foreach (JSScript s in scripts)
@@ -567,7 +581,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -591,7 +605,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -619,7 +633,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -646,7 +660,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -670,7 +684,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -694,7 +708,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -718,7 +732,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -745,7 +759,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -771,7 +785,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -795,7 +809,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -819,7 +833,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -843,7 +857,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -870,7 +884,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -896,7 +910,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -923,7 +937,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -949,7 +963,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -976,7 +990,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -1002,7 +1016,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -1026,7 +1040,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -1050,7 +1064,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -1071,7 +1085,7 @@ namespace scripting
                     }
                     catch (Jurassic.JavaScriptException e)
                     {
-                        ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                        ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                     }
                     catch { }
                 }
@@ -1084,9 +1098,50 @@ namespace scripting
             {
                 if (Server.CanScript(client))
                 {
-                    if (cmd == "test")
+                    if (cmd == "livescripts")
                     {
-                        ScriptManager.Load("blah.js");
+                        LiveScript.ListScripts(client);
+                        return;
+                    }
+
+                    if (cmd.StartsWith("downloadscript "))
+                    {
+                        LiveScript.Download(cmd.Substring(15));
+                        return;
+                    }
+
+                    if (cmd.StartsWith("loadscript "))
+                    {
+                        ScriptManager.Load(cmd.Substring(11), true);
+                        return;
+                    }
+
+                    if (cmd.StartsWith("killscript "))
+                    {
+                        ScriptManager.KillScript(cmd.Substring(11));
+                        return;
+                    }
+
+                    if (cmd == "listscripts")
+                    {
+                        ScriptManager.Scripts.ForEach(x =>
+                        {
+                            if (x.ScriptName != "room")
+                                client.Print(x.ScriptName);
+                        });
+
+                        return;
+                    }
+
+                    if (cmd == "errors on")
+                    {
+                        ErrorDispatcher.AddErrors(client);
+                        return;
+                    }
+
+                    if (cmd == "errors off")
+                    {
+                        ErrorDispatcher.RemoveErrors(client);
                         return;
                     }
                 }
@@ -1098,14 +1153,14 @@ namespace scripting
                     Objects.JSUser u = s.GetUser(client);
                     Objects.JSUser t = s.GetUser(target);
 
-                    if (u != null && t != null)
+                    if (u != null)
                         try
                         {
                             s.JS.CallGlobalFunction("onCommand", u, cmd, t, args);
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -1126,7 +1181,7 @@ namespace scripting
                     }
                     catch (Jurassic.JavaScriptException e)
                     {
-                        ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                        ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                     }
                     catch { }
                 }
@@ -1153,7 +1208,7 @@ namespace scripting
                     }
                     catch (Jurassic.JavaScriptException e)
                     {
-                        ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                        ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                     }
                     catch { }
                 }
@@ -1180,7 +1235,7 @@ namespace scripting
                     }
                     catch (Jurassic.JavaScriptException e)
                     {
-                        ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                        ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                     }
                     catch { }
                 }
@@ -1211,7 +1266,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -1235,7 +1290,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }
@@ -1266,7 +1321,7 @@ namespace scripting
                         }
                         catch (Jurassic.JavaScriptException e)
                         {
-                            ScriptManager.OnError(s.ScriptName, e.Message, e.LineNumber);
+                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
                         }
                         catch { }
                 }

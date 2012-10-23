@@ -19,6 +19,34 @@ namespace scripting
             Scripts = new List<JSScript>();
             Scripts.Add(new JSScript("room"));
 
+            try
+            {
+                String path = Path.Combine(Server.DataPath, "autorun.dat");
+
+                if (File.Exists(path))
+                {
+                    String[] lines = File.ReadAllLines(path);
+
+                    foreach (String str in lines)
+                        Load(str, false);
+                }
+            }
+            catch { }
+        }
+
+        private static void UpdateAutorun()
+        {
+            try
+            {
+                List<String> list = new List<String>();
+
+                for (int i = 1; i < Scripts.Count; i++)
+                    list.Add(Scripts[i].ScriptName);
+
+                String path = Path.Combine(Server.DataPath, "autorun.dat");
+                File.WriteAllLines(path, list.ToArray());
+            }
+            catch { }
         }
 
         public static void RemoveCallbacks(String script)
@@ -28,6 +56,18 @@ namespace scripting
                        select x;
 
             Callbacks = new ConcurrentQueue<ICallback>(linq);
+        }
+
+        public static void KillScript(String name)
+        {
+            int index = Scripts.FindIndex(x => x.ScriptName == name);
+
+            if (index > 0)
+            {
+                Scripts[index].KillScript();
+                Scripts.RemoveAt(index);
+                UpdateAutorun();
+            }
         }
 
         public static void DequeueCallbacks()
@@ -71,7 +111,7 @@ namespace scripting
             }
         }
 
-        public static bool Load(String f)
+        public static bool Load(String f, bool update_autorun)
         {
             FileInfo file = null;
 
@@ -107,20 +147,18 @@ namespace scripting
                     }
                     catch (Jurassic.JavaScriptException e)
                     {
-                        OnError(script.ScriptName, e.Message, e.LineNumber);
+                        ErrorDispatcher.SendError(script.ScriptName, e.Message, e.LineNumber);
                     }
                     catch { }
+
+                    if (update_autorun)
+                        UpdateAutorun();
 
                     return true;
                 }
             }
 
             return false;
-        }
-
-        public static void OnError(String script, String msg, int line)
-        {
-            Server.Print("error: " + msg + " at line " + line);
         }
 
         public static void Destroy()

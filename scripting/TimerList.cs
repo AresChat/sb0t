@@ -13,6 +13,12 @@ namespace scripting
 
         public static ulong NextIdent { get; set; }
 
+        public static void Reset()
+        {
+            list = new List<Instances.JSTimerInstance>();
+            NextIdent = 0;
+        }
+
         public static void UpdateTimers()
         {
             ulong time = Server.Ticks;
@@ -38,7 +44,7 @@ namespace scripting
                                 }
                                 catch (JavaScriptException e)
                                 {
-                                    ScriptManager.OnError(timer.ScriptName, e.Message, e.LineNumber);
+                                    ErrorDispatcher.SendError(timer.ScriptName, e.Message, e.LineNumber);
                                 }
                                 catch { }
                             }

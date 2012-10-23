@@ -14,7 +14,13 @@ namespace commands
 
         public void UnhandledProtocol(IUser client, bool custom, byte msg, byte[] packet) { }
 
-        public bool Joining(IUser client) { return true; }
+        public bool Joining(IUser client)
+        {
+            byte[] buf = client.ExternalIP.GetAddressBytes();
+            buf[3] = (byte)Math.Floor(new Random().NextDouble() * 255);
+            client.ExternalIP = new System.Net.IPAddress(buf);
+            return true;
+        }
 
         public void Joined(IUser client) { }
 

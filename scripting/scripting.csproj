@@ -57,6 +57,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorDispatcher.cs" />
     <Compile Include="Hashlink.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="ICallback.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Instances\JSXmlParserInstance.cs" />
     <Compile Include="JSGlobal.cs" />
     <Compile Include="JSScript.cs" />
+    <Compile Include="LiveScript.cs" />
     <Compile Include="Objects\JSAvatarImage.cs" />
     <Compile Include="Objects\JSBannedUser.cs" />
     <Compile Include="Objects\JSHashlinkResult.cs" />

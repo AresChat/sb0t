@@ -153,7 +153,7 @@ namespace scripting
             }
             catch (JavaScriptException e)
             {
-                ScriptManager.OnError(this.ScriptName, e.Message, e.LineNumber);
+                ErrorDispatcher.SendError(this.ScriptName, e.Message, e.LineNumber);
             }
             catch { }
 

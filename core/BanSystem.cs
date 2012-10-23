@@ -116,8 +116,7 @@ namespace core
                     connection.Open();
 
                     String query = @"delete from bans
-                                     where ident=@ident
-                                     limit 1";
+                                     where ident=@ident";
 
                     using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
