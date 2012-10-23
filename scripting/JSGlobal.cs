@@ -36,7 +36,11 @@ namespace scripting
                         try
                         {
                             String path = Path.Combine(Server.DataPath, eng.ScriptName, filename);
-                            eng.Evaluate(File.ReadAllText(path));
+                            eng.ExecuteFile(path);
+                        }
+                        catch (Jurassic.JavaScriptException e)
+                        {
+                            ErrorDispatcher.SendError(filename, e.Message, e.LineNumber);
                         }
                         catch { }
             }
