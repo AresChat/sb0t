@@ -8,7 +8,10 @@ namespace commands
 {
     public partial class ServerEvents : IExtension
     {
-        public void ServerStarted() { }
+        public void ServerStarted()
+        {
+            Motd.LoadMOTD();
+        }
 
         public void CycleTick() { }
 
@@ -22,7 +25,16 @@ namespace commands
             return true;
         }
 
-        public void Joined(IUser client) { }
+        public void Joined(IUser client)
+        {
+            if (!client.Link.IsLinked)
+            {
+                if (!client.FastPing)
+                    Motd.ViewMOTD(client);
+            }
+
+
+        }
 
         public void Rejected(IUser client, RejectedMsg msg) { }
 
