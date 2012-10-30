@@ -103,6 +103,7 @@
     <Compile Include="Statics\JSLink.cs" />
     <Compile Include="Statics\JSRegistry.cs" />
     <Compile Include="Statics\JSRoom.cs" />
+    <Compile Include="Statics\JSScriptInclude.cs" />
     <Compile Include="Statics\JSStats.cs" />
     <Compile Include="Statics\JSUsers.cs" />
     <Compile Include="Statics\JSZip.cs" />

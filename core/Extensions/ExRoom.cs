@@ -9,6 +9,17 @@ namespace core.Extensions
 {
     class ExRoom : IRoom
     {
+        public byte MinimumAge
+        {
+            get
+            {
+                if (!Settings.Get<bool>("age_restrict"))
+                    return 0;
+
+                return (byte)Settings.Get<int>("age_restrict_value");
+            }
+        }
+
         public bool CustomNamesEnabled
         {
             get { return Settings.Get<bool>("customnames"); }

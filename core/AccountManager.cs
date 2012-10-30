@@ -115,9 +115,9 @@ namespace core
                         }
                     }
 
-                var linq = from x in list
-                           where x.Guid.Equals(client.Guid)
-                           select x;
+                var linq = Settings.Get<bool>("strict") ?
+                           (from x in list where x.Guid.Equals(client.Guid) select x) :
+                           (from x in list select x);
 
                 foreach (Account a in linq)
                     foreach (IPAddress ip in addresses)
@@ -175,7 +175,10 @@ namespace core
             using (SHA1 sha1 = SHA1.Create())
             {
                 byte[] pwd = sha1.ComputeHash(Encoding.UTF8.GetBytes(password));
-                Account a = list.Find(x => x.Password.SequenceEqual(pwd) && x.Guid.Equals(client.Guid));
+                
+                Account a = Settings.Get<bool>("strict") ?
+                    list.Find(x => x.Password.SequenceEqual(pwd) && x.Guid.Equals(client.Guid)) :
+                    list.Find(x => x.Password.SequenceEqual(pwd));
 
                 if (a == null)
                     Events.InvalidLoginAttempt(client);

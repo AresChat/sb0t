@@ -35,5 +35,7 @@ namespace iconnect
         String BotName { get; }
         /// <summary>Get the timestamp when the server started</summary>
         uint StartTime { get; }
+        /// <summary>Get the minimum age to join the chatroom</summary>
+        byte MinimumAge { get; }
     }
 }

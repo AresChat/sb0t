@@ -107,6 +107,7 @@ namespace gui
             this.comboBox3.IsEnabled = !running;
             this.comboBox4.IsEnabled = !running;
             this.checkBox20.IsEnabled = !running;
+            this.checkBox22.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -158,6 +159,7 @@ namespace gui
             if (tb.Name == "textBox1")
             {
                 Settings.Set("name", this.textBox1.Text);
+                this.SetLinkIdent();
             }
             else if (tb.Name == "textBox2")
             {
@@ -247,6 +249,8 @@ namespace gui
                 Settings.Set("link_reconnect", this.checkBox20.IsChecked);
             else if (cb.Name == "checkBox21")
                 Settings.Set("link_admin", this.checkBox21.IsChecked);
+            else if (cb.Name == "checkBox22")
+                Settings.Set("strict", this.checkBox22.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)

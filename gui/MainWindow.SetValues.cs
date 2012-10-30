@@ -62,6 +62,8 @@ namespace gui
             this.checkBox8.IsChecked = Settings.Get<bool>("captcha");
             //ib0t
             this.checkBox9.IsChecked = Settings.Get<bool>("enabled", "web");
+            //strict
+            this.checkBox22.IsChecked = Settings.Get<bool>("strict");
             //title
             this.label1.Content = Settings.VERSION;
             //owner
@@ -213,12 +215,16 @@ namespace gui
         private void SetLinkIdent()
         {
             List<byte> list = new List<byte>();
-            byte[] name = Encoding.UTF8.GetBytes(Settings.Get<String>("name"));
-            list.Add((byte)name.Length);
-            list.AddRange(name);
-            list.AddRange(Settings.Get<byte[]>("guid"));
-            list.Reverse();
-            this.textBox7.Text = "sblnk://" + Convert.ToBase64String(list.ToArray());
+
+            if (Settings.Get<byte[]>("guid") != null)
+            {
+                byte[] name = Encoding.UTF8.GetBytes(Settings.Get<String>("name"));
+                list.Add((byte)name.Length);
+                list.AddRange(name);
+                list.AddRange(Settings.Get<byte[]>("guid"));
+                list.Reverse();
+                this.textBox7.Text = "sblnk://" + Convert.ToBase64String(list.ToArray());
+            }
         }
 
         private void AddLink(String name, Guid guid)

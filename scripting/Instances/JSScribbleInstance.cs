@@ -90,6 +90,9 @@ namespace scripting.Instances
                                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                                 g.DrawImage(avatar_raw, new RectangleF(0, 0, img_x, img_y));
 
+                                using (SolidBrush sb = new SolidBrush(Color.White))
+                                    g.FillRectangle(sb, new Rectangle(0, 0, img_x, img_y));
+
                                 using (MemoryStream ms = new MemoryStream())
                                 {
                                     avatar_sized.Save(ms, ImageFormat.Jpeg);

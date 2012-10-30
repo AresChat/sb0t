@@ -74,6 +74,7 @@
                                 </ListView.View>
                             </ListView>
                             <CheckBox Content="Enable built in commands" Height="16" Name="checkBox10" Canvas.Left="19" Canvas.Top="286" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="19" Canvas.Top="306" Content="Check passwords against clients (strict mode)" Height="16" Name="checkBox22" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
                     </Border>
                 </Grid>

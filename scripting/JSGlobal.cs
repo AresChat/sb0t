@@ -46,6 +46,16 @@ namespace scripting
             }
         }
 
+        [JSFunction(Name = "includeAll", Flags = JSFunctionFlags.HasEngineParameter)]
+        public static void IncludeAll(ScriptEngine eng)
+        {
+            DirectoryInfo directory = new DirectoryInfo(Path.Combine(Server.DataPath, eng.ScriptName));
+            FileInfo[] files = directory.GetFiles("*.js");
+
+            foreach (FileInfo file in files)
+                Include(eng, file.Name);
+        }
+
         [JSFunction(Name = "byteLength")]
         public static int ByteLength(object a)
         {
