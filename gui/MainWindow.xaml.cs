@@ -30,6 +30,8 @@ namespace gui
         private ServerCore server { get; set; }
 
         private OpenFileDialog fd = new OpenFileDialog();
+        private System.Windows.Forms.NotifyIcon notify;
+        private bool _hidden = false;
 
         public MainWindow()
         {
@@ -37,6 +39,22 @@ namespace gui
             this.InitializeComponent();
             this.server = new ServerCore();
             ServerCore.LogUpdate += this.LogUpdate;
+
+            this.notify = new System.Windows.Forms.NotifyIcon();
+            this.notify.Text = "sb0t";
+            this.notify.Icon = Resource1.mains;
+            this.notify.Click += new EventHandler(this.NotifyIconClicked);
+            this.notify.Visible = true;
+        }
+
+        private void NotifyIconClicked(object sender, EventArgs e)
+        {
+            if (this._hidden)
+            {
+                this.Show();
+                this.WindowState = WindowState.Normal;
+                this._hidden = false;
+            }
         }
 
         private void LogUpdate(object sender, ServerLogEventArgs e)
@@ -148,6 +166,8 @@ namespace gui
             {
                 if (this.server.Running)
                     this.server.Close();
+
+                this.notify.Dispose();
             }
             else e.Cancel = true;
         }
@@ -492,6 +512,20 @@ namespace gui
                 core.LinkHub.TrustedLeafItem item = (core.LinkHub.TrustedLeafItem)this.listBox3.Items[i];
                 core.LinkHub.TrustedLeavesManager.RemoveItem(item);
                 this.listBox3.Items.RemoveAt(i);
+            }
+        }
+
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            this.notify.Visible = false;
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.Visibility = Visibility.Hidden;
+                this._hidden = true;
             }
         }
     }

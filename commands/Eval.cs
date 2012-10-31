@@ -340,5 +340,37 @@ namespace commands
                 }
             }
         }
+
+        public static void Shout(IUser client, String text)
+        {
+            if (client.Level > ILevel.Regular || Settings.General)
+                Server.Print(Template.Text(Category.Messaging, 0).Replace("+n", client.Name).Replace("+t", text), true);
+        }
+
+        [CommandLevel("adminmsg", ILevel.Moderator)]
+        public static void AdminMsg(IUser client, String text)
+        {
+            if (client.Level >= Server.GetLevel("adminmsg"))
+            {
+                String str = Template.Text(Category.Messaging, 1).Replace("+n", client.Name).Replace("+t", text);
+                Server.Users.Ares(x => { if (x.Level > ILevel.Regular) x.Print(str); });
+                Server.Users.Web(x => { if (x.Level > ILevel.Regular) x.Print(str); });
+
+                if (Server.Link.IsLinked)
+                    Server.Link.ForEachLeaf(x => x.Print(ILevel.Moderator, str));
+            }
+        }
+
+        public static void Whisper(IUser client, IUser target, String text)
+        {
+            if (client.Level > ILevel.Regular || Settings.General)
+                if (target != null)
+                {
+                    client.Print(Template.Text(Category.Messaging, 2).Replace("+n", target.Name).Replace("+t", text));
+                    target.Print(Template.Text(Category.Messaging, 3).Replace("+n", client.Name).Replace("+t", text));
+                }
+        }
+
+
     }
 }

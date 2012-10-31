@@ -81,6 +81,11 @@ namespace commands
             list.Add(new Item { Category = Category.PmBlocking, Index = 0, Text = "PM blocking is now active for screen name: +n" });//20
             list.Add(new Item { Category = Category.PmBlocking, Index = 1, Text = "PM blocking is now inactive for screen name: +n" });//21
             list.Add(new Item { Category = Category.PmBlocking, Index = 2, Text = "Sorry +n, but +t has PM blocking active and was unable to receive your message" });//22
+
+            list.Add(new Item { Category = Category.Messaging, Index = 0, Text = "+n> [SHOUT] +t" });//26
+            list.Add(new Item { Category = Category.Messaging, Index = 1, Text = "+n> [ADMIN] +t" });//27
+            list.Add(new Item { Category = Category.Messaging, Index = 2, Text = "whisper to +n: +t" });
+            list.Add(new Item { Category = Category.Messaging, Index = 3, Text = "whisper from +n: +t" });
         }
     }
 
@@ -93,6 +98,7 @@ namespace commands
         AdminLogin = 4,
         Registration = 5,
         Idle = 6,
-        PmBlocking = 7
+        PmBlocking = 7,
+        Messaging = 8
     }
 }

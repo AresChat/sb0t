@@ -395,6 +395,12 @@ namespace commands
                 Eval.Cbans(client);
             else if (cmd.StartsWith("pmblock "))
                 Eval.PMBlock(client, cmd.Substring(8).Trim());
+            else if (cmd.StartsWith("shout "))
+                Eval.Shout(client, cmd.Substring(6));
+            else if (cmd.StartsWith("adminmsg "))
+                Eval.AdminMsg(client, cmd.Substring(9));
+            else if (cmd.StartsWith("whisper "))
+                Eval.Whisper(client, target, args);
         }
 
         public void LinkError(ILinkError error) { }
