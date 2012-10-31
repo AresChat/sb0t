@@ -212,7 +212,64 @@ namespace commands
 
         public bool Nick(IUser client, String name) { return true; }
 
-        public void Help(IUser client) { }
+        public void Help(IUser admin)
+        {
+            if (!admin.Registered)
+                return;
+
+            admin.Print("/id");
+
+            if (admin.Level > ILevel.Regular || Settings.General)
+            {
+                admin.Print("/vroom <number>");
+                admin.Print("/customname <user> <custom name>");
+                admin.Print("/uncustomname <user> <custom name>");
+                admin.Print("/pmblock <on or off>");
+                admin.Print("/shout <message>");
+                admin.Print("/whisper <user> <message>");
+            }
+
+            if (admin.Level >= Server.GetLevel("ban"))
+                admin.Print("/ban <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("unban"))
+                admin.Print("/unban <user>");
+            if (admin.Level >= Server.GetLevel("kick"))
+                admin.Print("/kick <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("muzzle"))
+                admin.Print("/muzzle <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("muzzle"))
+                admin.Print("/unmuzzle <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("kewltext"))
+                admin.Print("/addkewltext <user>");
+            if (admin.Level >= Server.GetLevel("kewltext"))
+                admin.Print("/remkewltext <user>");
+            if (admin.Level >= Server.GetLevel("lower"))
+                admin.Print("/lower <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("unlower"))
+                admin.Print("/unlower <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("kiddy"))
+                admin.Print("/kiddy <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("kiddy"))
+                admin.Print("/unkiddy <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("echo"))
+                admin.Print("/echo <user> <messasge>");
+            if (admin.Level >= Server.GetLevel("echo"))
+                admin.Print("/unecho <user>");
+            if (admin.Level >= Server.GetLevel("paint"))
+                admin.Print("/paint <user> <message>");
+            if (admin.Level >= Server.GetLevel("paint"))
+                admin.Print("/unpaint <user>");
+            if (admin.Level >= Server.GetLevel("rangeban"))
+                admin.Print("/rangeban <ip range>");
+            if (admin.Level >= Server.GetLevel("rangeunban"))
+                admin.Print("/rangeunban <ip range>");
+            if (admin.Level >= Server.GetLevel("listrangebans"))
+                admin.Print("/listrangebans");
+            if (admin.Level >= Server.GetLevel("cbans"))
+                admin.Print("/cbans");
+            if (admin.Level >= Server.GetLevel("adminmsg"))
+                admin.Print("/adminmsg <message>");
+        }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
 

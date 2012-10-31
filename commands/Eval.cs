@@ -19,11 +19,9 @@ namespace commands
             }
         }
 
-        [CommandLevel("id", ILevel.Regular)]
         public static void ID(IUser client)
         {
-            if (client.Level >= Server.GetLevel("id"))
-                client.Print("ID: " + client.ID);
+            client.Print("ID: " + client.ID);
         }
 
         [CommandLevel("ban", ILevel.Administrator)]
