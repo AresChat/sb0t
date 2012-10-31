@@ -50,13 +50,16 @@
     <Compile Include="Echo.cs" />
     <Compile Include="Eval.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="IdleTime.cs" />
     <Compile Include="JoinFilter.cs" />
     <Compile Include="KewlText.cs" />
     <Compile Include="Kiddied.cs" />
+    <Compile Include="LoginAttempts.cs" />
     <Compile Include="Lowered.cs" />
     <Compile Include="Motd.cs" />
     <Compile Include="Muzzles.cs" />
     <Compile Include="Paint.cs" />
+    <Compile Include="PMBlocking.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RangeBans.cs" />
     <Compile Include="Server.cs" />

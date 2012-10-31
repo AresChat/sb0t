@@ -30,5 +30,15 @@ namespace commands
         {
             return list.FindIndex(x => x.Equals(client.Guid)) > -1;
         }
+
+        public static bool HasExceeded(String text)
+        {
+            if (text.Length < 6)
+                return false;
+
+            List<char> letters = new List<char>(text.ToCharArray());
+            float uppers = (float)letters.FindAll(x => x >= 65 && x <= 90).Count;
+            return ((uppers / letters.Count) * 100) >= 75;
+        }
     }
 }

@@ -19,9 +19,12 @@ namespace core
             ushort len = packet;
             packet.SkipBytes(len);
             file.Data = packet;
-            PopulateMetaData(file);
-            client.SharedFiles.Add(file);
-            Events.FileReceived(client, file);
+
+            if (PopulateMetaData(file))
+            {
+                client.SharedFiles.Add(file);
+                Events.FileReceived(client, file);
+            }
         }
 
         public static void RemShare(AresClient client, TCPPacketReader packet)
@@ -132,7 +135,7 @@ namespace core
             client.SendPacket(TCPOutbound.EndOfSearch(ident));
         }
 
-        private static void PopulateMetaData(SharedFile file)
+        private static bool PopulateMetaData(SharedFile file)
         {
             TCPPacketReader packet = new TCPPacketReader(file.Data);
             packet.SkipBytes(16);
@@ -155,7 +158,7 @@ namespace core
                 byte type = packet;
 
                 if (length > packet.Remaining)
-                    throw new Exception();
+                    return false;
 
                 switch (type)
                 {
@@ -177,6 +180,8 @@ namespace core
                 if (counter >= len)
                     break;
             }
+
+            return true;
         }
     }
 }

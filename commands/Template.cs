@@ -48,6 +48,9 @@ namespace commands
 
             list.Add(new Item { Category = Category.Notification, Index = 0, Text = "you are muzzled" });
             list.Add(new Item { Category = Category.Notification, Index = 1, Text = "ban list is empty" });
+            list.Add(new Item { Category = Category.Notification, Index = 2, Text = "+n is ignored" });
+            list.Add(new Item { Category = Category.Notification, Index = 3, Text = "+n is unignored" });
+            list.Add(new Item { Category = Category.Notification, Index = 4, Text = "+n your CAPS have been auto-disabled" });//17
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -59,6 +62,25 @@ namespace commands
             list.Add(new Item { Category = Category.Rejected, Index = 7, Text = "+n you were rejected by the Join Filter!" });//8
             list.Add(new Item { Category = Category.Rejected, Index = 8, Text = "+n you must be at least +a years old to enter this room!" });//114
             list.Add(new Item { Category = Category.Rejected, Index = 9, Text = "+n your gender is not allowed in this chatroom!" });
+
+            list.Add(new Item { Category = Category.AdminLogin, Index = 0, Text = "+n has logged in as a level +l admin" });//12
+            list.Add(new Item { Category = Category.AdminLogin, Index = 1, Text = "+n attempted to log in with an invalid password!!!" });//13
+            list.Add(new Item { Category = Category.AdminLogin, Index = 2, Text = "+n has been banned for too many invalid login attempts!!!" });//14
+            list.Add(new Item { Category = Category.AdminLogin, Index = 3, Text = "+n is no longer an admin" });//16
+
+            list.Add(new Item { Category = Category.Registration, Index = 0, Text = "Your account registration was successfully created" });
+            list.Add(new Item { Category = Category.Registration, Index = 1, Text = "You are now registered" });
+            list.Add(new Item { Category = Category.Registration, Index = 2, Text = "You are no longer registered" });
+
+            list.Add(new Item { Category = Category.Idle, Index = 0, Text = "+n idles at +t" });//18
+            list.Add(new Item { Category = Category.Idle, Index = 1, Text = "+n returned at +t - away time [+s seconds]" });
+            list.Add(new Item { Category = Category.Idle, Index = 2, Text = "+n returned at +t - away time [+m minutes +s seconds]" });
+            list.Add(new Item { Category = Category.Idle, Index = 3, Text = "+n returned at +t - away time [+h hours +m minutes +s seconds]" });
+            list.Add(new Item { Category = Category.Idle, Index = 4, Text = "+n returned at +t - away time [+d days +h hours +m minutes +s seconds]" });
+
+            list.Add(new Item { Category = Category.PmBlocking, Index = 0, Text = "PM blocking is now active for screen name: +n" });//20
+            list.Add(new Item { Category = Category.PmBlocking, Index = 1, Text = "PM blocking is now inactive for screen name: +n" });//21
+            list.Add(new Item { Category = Category.PmBlocking, Index = 2, Text = "Sorry +n, but +t has PM blocking active and was unable to receive your message" });//22
         }
     }
 
@@ -68,5 +90,9 @@ namespace commands
         AdminAction = 1,
         Notification = 2,
         Rejected = 3,
+        AdminLogin = 4,
+        Registration = 5,
+        Idle = 6,
+        PmBlocking = 7
     }
 }

@@ -460,6 +460,7 @@ namespace core
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
                 }
 
+                this.SendPacket(TCPOutbound.OpChange(this));
                 Events.AdminLevelChanged(this);
             }
         }

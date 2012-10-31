@@ -8,10 +8,9 @@ namespace commands
 {
     public class Eval
     {
-        [CommandLevel("vroom", ILevel.Regular)]
         public static void Vroom(IUser client, String args)
         {
-            if (client.Level >= Server.GetLevel("vroom"))
+            if (client.Level >= ILevel.Regular || Settings.General)
             {
                 ushort vroom;
 
@@ -35,7 +34,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 0).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         target.Ban();
                     }
@@ -64,7 +63,7 @@ namespace commands
                 }
 
                 if (name != null)
-                    Server.Print(Template.Text(Category.AdminAction, 1).Replace("+n", name).Replace("+a", admin.Name));
+                    Server.Print(Template.Text(Category.AdminAction, 1).Replace("+n", name).Replace("+a", admin.Name), true);
             }
         }
 
@@ -76,7 +75,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 2).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         target.Disconnect();
                     }
@@ -90,7 +89,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 3).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         target.Muzzled = true;
                         Muzzles.AddMuzzle(target);
@@ -104,7 +103,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 4).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         target.Muzzled = false;
                         Muzzles.RemoveMuzzle(target);
@@ -119,15 +118,18 @@ namespace commands
 
             if (admin.Name == target.Name)
             {
-                target.CustomName = args;
-                CustomNames.UpdateCustomName(target);
-                Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name));
+                if (admin.Level > ILevel.Regular || Settings.General)
+                {
+                    target.CustomName = args;
+                    CustomNames.UpdateCustomName(target);
+                    Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                }
             }
             else if (admin.Level >= Server.GetLevel("customname"))
             {
                 target.CustomName = args;
                 CustomNames.UpdateCustomName(target);
-                Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name));
+                Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name), true);
             }
         }
 
@@ -139,15 +141,18 @@ namespace commands
 
             if (admin.Name == target.Name)
             {
-                target.CustomName = null;
-                CustomNames.UpdateCustomName(target);
-                Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name));
+                if (admin.Level > ILevel.Regular || Settings.General)
+                {
+                    target.CustomName = null;
+                    CustomNames.UpdateCustomName(target);
+                    Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                }
             }
             else if (admin.Level >= Server.GetLevel("uncustomname"))
             {
                 target.CustomName = null;
                 CustomNames.UpdateCustomName(target);
-                Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name));
+                Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name), true);
             }
         }
 
@@ -157,7 +162,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("kewltext"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 7).Replace("+n", target.Name).Replace("+a", admin.Name));
+                    Server.Print(Template.Text(Category.AdminAction, 7).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                     KewlText.Add(target);
                 }
         }
@@ -167,7 +172,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("kewltext"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 8).Replace("+n", target.Name).Replace("+a", admin.Name));
+                    Server.Print(Template.Text(Category.AdminAction, 8).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                     KewlText.Remove(target);
                 }
         }
@@ -180,7 +185,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 9).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         Lowered.Add(target);
                     }
@@ -193,7 +198,7 @@ namespace commands
                 if (target != null)
                 {
                     Server.Print(Template.Text(Category.AdminAction, 10).Replace("+n",
-                        target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                        target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                     Lowered.Remove(target);
                 }
@@ -207,7 +212,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 11).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         Kiddied.Add(target);
                     }
@@ -219,7 +224,7 @@ namespace commands
                 if (target != null)
                 {
                     Server.Print(Template.Text(Category.AdminAction, 12).Replace("+n",
-                        target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")));
+                        target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                     Kiddied.Remove(target);
                 }
@@ -232,7 +237,7 @@ namespace commands
                 if (target != null)
                     if (target.Level < admin.Level)
                     {
-                        Server.Print(Template.Text(Category.AdminAction, 13).Replace("+n", target.Name).Replace("+a", admin.Name));
+                        Server.Print(Template.Text(Category.AdminAction, 13).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                         commands.Echo.Add(target, args);
                     }
         }
@@ -242,7 +247,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("echo"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 14).Replace("+n", target.Name).Replace("+a", admin.Name));
+                    Server.Print(Template.Text(Category.AdminAction, 14).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                     commands.Echo.Remove(target);
                 }
         }
@@ -254,7 +259,7 @@ namespace commands
                 if (target != null)
                     if (target.Level < admin.Level)
                     {
-                        Server.Print(Template.Text(Category.AdminAction, 15).Replace("+n", target.Name).Replace("+a", admin.Name));
+                        Server.Print(Template.Text(Category.AdminAction, 15).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                         commands.Paint.Add(target, args);
                     }
         }
@@ -264,7 +269,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("paint"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 16).Replace("+n", target.Name).Replace("+a", admin.Name));
+                    Server.Print(Template.Text(Category.AdminAction, 16).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                     commands.Paint.Remove(target);
                 }
         }
@@ -278,7 +283,7 @@ namespace commands
 
                 if (!String.IsNullOrEmpty(str))
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 17).Replace("+a", client.Name).Replace("+r", str));
+                    Server.Print(Template.Text(Category.AdminAction, 17).Replace("+a", client.Name).Replace("+r", str), true);
                     RangeBans.Add(str);
                 }
             }
@@ -292,7 +297,7 @@ namespace commands
                 String str = RangeBans.Remove(args);
 
                 if (str != null)
-                    Server.Print(Template.Text(Category.AdminAction, 18).Replace("+a", client.Name).Replace("+r", str));
+                    Server.Print(Template.Text(Category.AdminAction, 18).Replace("+a", client.Name).Replace("+r", str), true);
             }
         }
 
@@ -315,7 +320,24 @@ namespace commands
                 commands.Echo.Clear();
                 commands.Paint.Clear();
                 Lowered.Clear();
-                Server.Print(Template.Text(Category.AdminAction, 19).Replace("+a", client.Name));
+                Server.Print(Template.Text(Category.AdminAction, 19).Replace("+a", client.Name), true);
+            }
+        }
+
+        public static void PMBlock(IUser client, String onoff)
+        {
+            if (client.Level > ILevel.Regular || Settings.General)
+            {
+                if (onoff == "on")
+                {
+                    PMBlocking.Add(client);
+                    Server.Print(Template.Text(Category.PmBlocking, 0).Replace("+n", client.Name), true);
+                }
+                else if (onoff == "off")
+                {
+                    PMBlocking.Remove(client);
+                    Server.Print(Template.Text(Category.PmBlocking, 1).Replace("+n", client.Name), true);
+                }
             }
         }
     }

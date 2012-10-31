@@ -20,6 +20,8 @@ namespace commands
             Echo.Clear();
             Paint.Clear();
             RangeBans.Load();
+            LoginAttempts.Clear();
+            PMBlocking.Load();
         }
 
         public void CycleTick() { }
@@ -130,6 +132,15 @@ namespace commands
                 if (Lowered.IsLowered(client))
                     text = text.ToLower();
 
+                if (Settings.CapsMonitoring && client.Level == ILevel.Regular)
+                    if (Lowered.HasExceeded(text))
+                    {
+                        text = text.ToLower();
+
+                        if (!client.Link.IsLinked)
+                            client.Print(Template.Text(Category.Notification, 4).Replace("+n", client.Name));
+                    }
+
                 String paint = Paint.IsPainted(client);
 
                 if (paint != null)
@@ -163,6 +174,15 @@ namespace commands
 
                 if (Lowered.IsLowered(client))
                     text = text.ToLower();
+
+                if (Settings.CapsMonitoring && client.Level == ILevel.Regular)
+                    if (Lowered.HasExceeded(text))
+                    {
+                        text = text.ToLower();
+
+                        if (!client.Link.IsLinked)
+                            client.Print(Template.Text(Category.Notification, 4).Replace("+n", client.Name));
+                    }
             }
 
             return text;
@@ -176,7 +196,15 @@ namespace commands
                 client.SendEmote(echo);
         }
 
-        public void PrivateSending(IUser client, IUser target, IPrivateMsg msg) { }
+        public void PrivateSending(IUser client, IUser target, IPrivateMsg msg)
+        {
+            if (PMBlocking.IsBlocking(target))
+                if (target.Level > client.Level)
+                {
+                    msg.Cancel = true;
+                    client.PM(target.Name, Template.Text(Category.PmBlocking, 2).Replace("+n", client.Name).Replace("+t", target.Name));
+                }
+        }
 
         public void PrivateSent(IUser client, IUser target) { }
 
@@ -190,19 +218,56 @@ namespace commands
 
         public bool Ignoring(IUser client, IUser target) { return true; }
 
-        public void IgnoredStateChanged(IUser client, IUser target, bool ignored) { }
+        public void IgnoredStateChanged(IUser client, IUser target, bool ignored)
+        {
+            if (target != null)
+                if (ignored)
+                    client.Print(Template.Text(Category.Notification, 2).Replace("+n", target.Name));
+                else
+                    client.Print(Template.Text(Category.Notification, 3).Replace("+n", target.Name));
+        }
 
-        public void InvalidLoginAttempt(IUser client) { }
+        public void InvalidLoginAttempt(IUser client)
+        {
+            LoginAttempts.Add(client);
 
-        public void LoginGranted(IUser client) { }
+            if (LoginAttempts.Count(client) == 3)
+            {
+                Server.Print(Template.Text(Category.AdminLogin, 2).Replace("+n",
+                    client.Name).Replace("+ip", client.ExternalIP.ToString()));
 
-        public void AdminLevelChanged(IUser client) { }
+                client.Ban();
+            }
+            else Server.Print(Template.Text(Category.AdminLogin, 1).Replace("+n",
+                client.Name).Replace("+ip", client.ExternalIP.ToString()));
+        }
+
+        public void LoginGranted(IUser client)
+        {
+            LoginAttempts.Remove(client);
+            client.Print(Template.Text(Category.Registration, 1));
+        }
+
+        public void AdminLevelChanged(IUser client)
+        {
+            if (client.Level == ILevel.Regular)
+                Server.Print(Template.Text(Category.AdminLogin, 3).Replace("+n", client.Name));
+            else
+                Server.Print(Template.Text(Category.AdminLogin, 0).Replace("+n",
+                    client.Name).Replace("+l", ((int)client.Level).ToString()));
+        }
 
         public bool Registering(IUser client) { return true; }
 
-        public void Registered(IUser client) { }
+        public void Registered(IUser client)
+        {
+            client.Print(Template.Text(Category.Registration, 0));
+        }
 
-        public void Unregistered(IUser client) { }
+        public void Unregistered(IUser client)
+        {
+            client.Print(Template.Text(Category.Registration, 2));
+        }
 
         public void CaptchaSending(IUser client) { }
 
@@ -220,9 +285,58 @@ namespace commands
 
         public void Logout(IUser client) { }
 
-        public void Idled(IUser client) { }
+        public void Idled(IUser client)
+        {
+            if (Settings.IdleMonitoring)
+            {
+                String time = Helpers.Time();
+                Server.Print(Template.Text(Category.Idle, 0).Replace("+n", client.Name).Replace("+t", time));
+            }
+        }
 
-        public void Unidled(IUser client, uint seconds_away) { }
+        public void Unidled(IUser client, uint seconds_away)
+        {
+            if (Settings.IdleMonitoring)
+            {
+                IdleTime to = Helpers.GetIdleUptime(seconds_away);
+                String time = Helpers.Time();
+
+                if (to.Days > 0)
+                {
+                    Server.Print(Template.Text(Category.Idle, 4).
+                        Replace("+n", client.Name).
+                        Replace("+t", time).
+                        Replace("+d", to.Days.ToString()).
+                        Replace("+h", to.Hours.ToString()).
+                        Replace("+m", to.Minutes.ToString()).
+                        Replace("+s", to.Seconds.ToString()));
+                }
+                else if (to.Hours > 0)
+                {
+                    Server.Print(Template.Text(Category.Idle, 3).
+                        Replace("+n", client.Name).
+                        Replace("+t", time).
+                        Replace("+h", to.Hours.ToString()).
+                        Replace("+m", to.Minutes.ToString()).
+                        Replace("+s", to.Seconds.ToString()));
+                }
+                else if (to.Minutes > 0)
+                {
+                    Server.Print(Template.Text(Category.Idle, 2).
+                        Replace("+n", client.Name).
+                        Replace("+t", time).
+                        Replace("+m", to.Minutes.ToString()).
+                        Replace("+s", to.Seconds.ToString()));
+                }
+                else
+                {
+                    Server.Print(Template.Text(Category.Idle, 1).
+                        Replace("+n", client.Name).
+                        Replace("+t", time).
+                        Replace("+s", to.Seconds.ToString()));
+                }
+            }
+        }
 
         public void BansAutoCleared() { }
 
@@ -279,6 +393,8 @@ namespace commands
                 Eval.ListRangeBans(client);
             else if (cmd == "cbans" || cmd == "clearbans")
                 Eval.Cbans(client);
+            else if (cmd.StartsWith("pmblock "))
+                Eval.PMBlock(client, cmd.Substring(8).Trim());
         }
 
         public void LinkError(ILinkError error) { }

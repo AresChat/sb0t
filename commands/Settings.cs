@@ -10,5 +10,8 @@ namespace commands
         public static bool AnonMonitoring { get; set; }
         public static bool ShareFileMonitoring { get; set; }
         public static bool Filtering { get; set; }
+        public static bool CapsMonitoring { get; set; }
+        public static bool IdleMonitoring { get; set; }
+        public static bool General { get; set; }
     }
 }

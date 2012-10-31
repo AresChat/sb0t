@@ -8,6 +8,31 @@ namespace commands
 {
     class Helpers
     {
+        public static String Time()
+        {
+            DateTime d = DateTime.Now;
+            return (d.Hour >= 10 ? d.Hour.ToString() : ("0" + d.Hour)) + ":" + (d.Minute >= 10 ? d.Minute.ToString() : ("0" + d.Minute));
+        }
+
+        public static IdleTime GetIdleUptime(uint away)
+        {
+            uint seconds = away;
+            uint minutes = (seconds / 60);
+            seconds -= (minutes * 60);
+            uint hours = (minutes / 60);
+            minutes -= (hours * 60);
+            uint days = (hours / 24);
+            hours -= (days * 24);
+
+            return new IdleTime
+            {
+                Days = days,
+                Hours = hours,
+                Minutes = minutes,
+                Seconds = seconds
+            };
+        }
+
         public static string SetColors(String text)
         {
             String outText = text;
