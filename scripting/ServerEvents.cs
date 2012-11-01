@@ -816,53 +816,9 @@ namespace scripting
             }
         }
 
-        public void CaptchaSending(IUser client)
-        {
-            if (this.CanScript)
-            {
-                JSScript[] scripts = ScriptManager.Scripts.ToArray();
+        public void CaptchaSending(IUser client) { }
 
-                foreach (JSScript s in scripts)
-                {
-                    Objects.JSUser u = s.GetUser(client);
-
-                    if (u != null)
-                        try
-                        {
-                            s.JS.CallGlobalFunction("onCaptchaSending", u);
-                        }
-                        catch (Jurassic.JavaScriptException e)
-                        {
-                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
-                        }
-                        catch { }
-                }
-            }
-        }
-
-        public void CaptchaReply(IUser client, String reply)
-        {
-            if (this.CanScript)
-            {
-                JSScript[] scripts = ScriptManager.Scripts.ToArray();
-
-                foreach (JSScript s in scripts)
-                {
-                    Objects.JSUser u = s.GetUser(client);
-
-                    if (u != null)
-                        try
-                        {
-                            s.JS.CallGlobalFunction("onCaptchaReply", u, reply);
-                        }
-                        catch (Jurassic.JavaScriptException e)
-                        {
-                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
-                        }
-                        catch { }
-                }
-            }
-        }
+        public void CaptchaReply(IUser client, String reply) { }
 
         public bool VroomChanging(IUser client, ushort vroom)
         {

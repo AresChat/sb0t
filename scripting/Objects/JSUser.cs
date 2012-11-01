@@ -262,13 +262,6 @@ namespace scripting.Objects
             set { }
         }
 
-        [JSProperty(Name = "encrypted")]
-        public bool Encrypted
-        {
-            get { return this.parent.Encrypted; }
-            set { }
-        }
-
         [JSProperty(Name = "owner")]
         public bool Owner
         {

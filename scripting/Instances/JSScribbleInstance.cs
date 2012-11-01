@@ -87,11 +87,11 @@ namespace scripting.Instances
                         {
                             using (Graphics g = Graphics.FromImage(avatar_sized))
                             {
-                                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                                g.DrawImage(avatar_raw, new RectangleF(0, 0, img_x, img_y));
-
                                 using (SolidBrush sb = new SolidBrush(Color.White))
                                     g.FillRectangle(sb, new Rectangle(0, 0, img_x, img_y));
+
+                                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                                g.DrawImage(avatar_raw, new RectangleF(0, 0, img_x, img_y));
 
                                 using (MemoryStream ms = new MemoryStream())
                                 {

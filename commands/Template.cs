@@ -86,6 +86,11 @@ namespace commands
             list.Add(new Item { Category = Category.Messaging, Index = 1, Text = "+n> [ADMIN] +t" });//27
             list.Add(new Item { Category = Category.Messaging, Index = 2, Text = "whisper to +n: +t" });
             list.Add(new Item { Category = Category.Messaging, Index = 3, Text = "whisper from +n: +t" });
+
+            list.Add(new Item { Category = Category.Captcha, Index = 0, Text = "Too many incorrect answers" });//152
+            list.Add(new Item { Category = Category.Captcha, Index = 1, Text = "+a was an incorrect answer" });
+            list.Add(new Item { Category = Category.Captcha, Index = 2, Text = "Please type this word to allow you to chat" });
+            list.Add(new Item { Category = Category.Captcha, Index = 3, Text = "Correct answer.  You may now chat" });//155
         }
     }
 
@@ -99,6 +104,7 @@ namespace commands
         Registration = 5,
         Idle = 6,
         PmBlocking = 7,
-        Messaging = 8
+        Messaging = 8,
+        Captcha = 9
     }
 }

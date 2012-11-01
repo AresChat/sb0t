@@ -74,8 +74,6 @@ namespace scripting
             events.AppendLine("function onRegistering(userobj) { return true; }");
             events.AppendLine("function onRegistered(userobj) { }");
             events.AppendLine("function onUnregistered(userobj) { }");
-            events.AppendLine("function onCaptchaSending(userobj) { }");
-            events.AppendLine("function onCaptchaReply(userobj, reply) { }");
             events.AppendLine("function onProxyDetected(userobj, reply) { return true; }");
             events.AppendLine("function onLogout(userobj) { }");
             events.AppendLine("function onIdled(userobj) { }");

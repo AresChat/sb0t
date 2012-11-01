@@ -22,6 +22,7 @@ namespace commands
             RangeBans.Load();
             LoginAttempts.Clear();
             PMBlocking.Load();
+            Captchas.Clear();
         }
 
         public void CycleTick() { }
@@ -290,6 +291,8 @@ namespace commands
 
             if (LoginAttempts.Count(client) == 3)
             {
+                LoginAttempts.Remove(client);
+
                 Server.Print(Template.Text(Category.AdminLogin, 2).Replace("+n",
                     client.Name).Replace("+ip", client.ExternalIP.ToString()));
 
@@ -326,9 +329,31 @@ namespace commands
             client.Print(Template.Text(Category.Registration, 2));
         }
 
-        public void CaptchaSending(IUser client) { }
+        public void CaptchaSending(IUser client)
+        {
+            client.Print(Template.Text(Category.Captcha, 2));
+        }
 
-        public void CaptchaReply(IUser client, String reply) { }
+        public void CaptchaReply(IUser client, String reply)
+        {
+            if (client.Captcha)
+            {
+                Captchas.Remove(client);
+                client.Print(Template.Text(Category.Captcha, 3));
+            }
+            else
+            {
+                Captchas.Add(client);
+
+                if (Captchas.Count(client) > 3)
+                {
+                    Captchas.Remove(client);
+                    client.Print(Template.Text(Category.Captcha, 0));
+                    client.Disconnect();
+                }
+                else client.Print(Template.Text(Category.Captcha, 1).Replace("+a", reply));
+            }
+        }
 
         public bool VroomChanging(IUser client, ushort vroom) { return true; }
 
