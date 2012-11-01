@@ -505,7 +505,7 @@ namespace core
                 {
                     this.avatar = new byte[] { };
 
-                    if (!this.Cloaked)
+                    if (!this.Cloaked && !this.Quarantined)
                     {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.AvatarCleared(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
@@ -518,7 +518,7 @@ namespace core
                 {
                     this.avatar = value;
 
-                    if (!this.Cloaked)
+                    if (!this.Cloaked && !this.Quarantined)
                     {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
@@ -537,7 +537,7 @@ namespace core
             {
                 this.personal_message = value == null ? String.Empty : value;
 
-                if (!this.Cloaked)
+                if (!this.Cloaked && !this.Quarantined)
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);

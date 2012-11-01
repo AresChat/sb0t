@@ -51,6 +51,7 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 2, Text = "+n is ignored" });
             list.Add(new Item { Category = Category.Notification, Index = 3, Text = "+n is unignored" });
             list.Add(new Item { Category = Category.Notification, Index = 4, Text = "+n your CAPS have been auto-disabled" });//17
+            list.Add(new Item { Category = Category.Notification, Index = 5, Text = "All ban lists have been automatically clear as scheduled" });//132
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -91,6 +92,20 @@ namespace commands
             list.Add(new Item { Category = Category.Captcha, Index = 1, Text = "+a was an incorrect answer" });
             list.Add(new Item { Category = Category.Captcha, Index = 2, Text = "Please type this word to allow you to chat" });
             list.Add(new Item { Category = Category.Captcha, Index = 3, Text = "Correct answer.  You may now chat" });//155
+
+            list.Add(new Item { Category = Category.Linking, Index = 0, Text = "\x000314--- An linking error occurred [+e]" });
+            list.Add(new Item { Category = Category.Linking, Index = 1, Text = "\x000314--- Connection to Link Hub [+n] established :)" });
+            list.Add(new Item { Category = Category.Linking, Index = 2, Text = "\x000314--- Connection to Link Hub was lost." });
+            list.Add(new Item { Category = Category.Linking, Index = 3, Text = "\x000314--- A chatroom [+n] has joined" });
+            list.Add(new Item { Category = Category.Linking, Index = 4, Text = "\x000314--- A chatroom [+n] has parted" });
+            list.Add(new Item { Category = Category.Linking, Index = 5, Text = "\x000314--- Connecting to hub [+n], please wait..." });
+            list.Add(new Item { Category = Category.Linking, Index = 6, Text = "\x000314--- Link session has now been terminated" });
+            list.Add(new Item { Category = Category.Linking, Index = 7, Text = "\x000314--- The chatroom [+n] does not allow linked admins" });
+            list.Add(new Item { Category = Category.Linking, Index = 8, Text = "\x000314--- Reconnection will be attempted in 30 seconds..." });
+
+            list.Add(new Item { Category = Category.AdminList, Index = 0, Text = "ADMIN LIST REQUESTED BY [+n]" });//50
+            list.Add(new Item { Category = Category.AdminList, Index = 1, Text = "Level +l : +n" });//51
+            list.Add(new Item { Category = Category.AdminList, Index = 2, Text = "List Complete" });//52
         }
     }
 
@@ -105,6 +120,8 @@ namespace commands
         Idle = 6,
         PmBlocking = 7,
         Messaging = 8,
-        Captcha = 9
+        Captcha = 9,
+        Linking = 10,
+        AdminList = 11
     }
 }

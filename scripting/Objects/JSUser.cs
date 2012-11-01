@@ -234,10 +234,10 @@ namespace scripting.Objects
             set { }
         }
 
-        [JSProperty(Name = "quarantined")]
-        public bool Quarantined
+        [JSProperty(Name = "captcha")]
+        public bool Captcha
         {
-            get { return this.parent.Quarantined; }
+            get { return this.parent.Captcha; }
             set { }
         }
 
@@ -252,13 +252,6 @@ namespace scripting.Objects
         public bool Registered
         {
             get { return this.parent.Registered; }
-            set { }
-        }
-
-        [JSProperty(Name = "captcha")]
-        public bool Captcha
-        {
-            get { return this.parent.Captcha; }
             set { }
         }
 

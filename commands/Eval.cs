@@ -369,6 +369,49 @@ namespace commands
                 }
         }
 
+        [CommandLevel("link", ILevel.Host)]
+        public static void Link(IUser client, String args)
+        {
+            if (client.Level >= Server.GetLevel("link"))
+            {
+                IHashlinkRoom room = Server.Hashlinks.Decrypt(args);
 
+                if (room != null)
+                {
+                    Server.Print(Template.Text(Category.Linking, 5).Replace("+n", room.Name));
+                    Server.Link.Connect(args);
+                }
+            }
+        }
+
+        [CommandLevel("unlink", ILevel.Host)]
+        public static void Unlink(IUser client)
+        {
+            if (client.Level >= Server.GetLevel("unlink"))
+                if (Server.Link.IsLinked)
+                {
+                    Server.Print(Template.Text(Category.Linking, 6));
+                    Server.Link.Disconnect();
+                }
+        }
+
+        [CommandLevel("admins", ILevel.Moderator)]
+        public static void Admins(IUser client)
+        {
+            if (client.Level >= Server.GetLevel("admins"))
+            {
+                Server.Print(Template.Text(Category.AdminList, 0).Replace("+n", client.Name), true);
+                Server.Print(String.Empty, true);
+
+                Server.Users.All(x =>
+                {
+                    if (x.Level > ILevel.Regular)
+                        Server.Print(Template.Text(Category.AdminList, 1).Replace("+n", x.Name).Replace("+l", ((byte)x.Level).ToString()), true);
+                });
+
+                Server.Print(String.Empty, true);
+                Server.Print(Template.Text(Category.AdminList, 2), true);
+            }
+        }
     }
 }

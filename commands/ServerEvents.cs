@@ -270,6 +270,12 @@ namespace commands
                 admin.Print("/cbans");
             if (admin.Level >= Server.GetLevel("adminmsg"))
                 admin.Print("/adminmsg <message>");
+            if (admin.Level >= Server.GetLevel("link"))
+                admin.Print("/link <hashlink>");
+            if (admin.Level >= Server.GetLevel("unlink"))
+                admin.Print("/unlink");
+            if (admin.Level >= Server.GetLevel("admins"))
+                admin.Print("/admins");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -420,7 +426,10 @@ namespace commands
             }
         }
 
-        public void BansAutoCleared() { }
+        public void BansAutoCleared()
+        {
+            Server.Print(Template.Text(Category.Notification, 5), true);
+        }
 
         public void Command(IUser client, String cmd, IUser target, String args)
         {
@@ -429,7 +438,7 @@ namespace commands
 
             if (cmd == "version")
                 client.Print("sb0t 5.00");
-            if (cmd.StartsWith("vroom "))
+            else if (cmd.StartsWith("vroom "))
                 Eval.Vroom(client, cmd.Substring(6));
             else if (cmd == "id")
                 Eval.ID(client);
@@ -483,18 +492,50 @@ namespace commands
                 Eval.AdminMsg(client, cmd.Substring(9));
             else if (cmd.StartsWith("whisper "))
                 Eval.Whisper(client, target, args);
+            else if (cmd.StartsWith("link "))
+                Eval.Link(client, cmd.Substring(5));
+            else if (cmd == "unlink")
+                Eval.Unlink(client);
+            else if (cmd == "admins")
+                Eval.Admins(client);
         }
 
-        public void LinkError(ILinkError error) { }
+        public void LinkError(ILinkError error)
+        {
+            Server.Print(Template.Text(Category.Linking, 0).Replace("+e", error.ToString()));
 
-        public void Linked() { }
+            if (Server.Link.IsLinked)
+                if (error == ILinkError.RemoteDisconnect || error == ILinkError.UnableToConnect)
+                    Server.Print(Template.Text(Category.Linking, 8));
+        }
 
-        public void Unlinked() { }
+        public void Linked()
+        {
+            Server.Print(Template.Text(Category.Linking, 1).Replace("+n", Server.Link.Name));
+        }
 
-        public void LeafJoined(ILeaf leaf) { }
+        public void Unlinked()
+        {
+            Server.Print(Template.Text(Category.Linking, 2));
 
-        public void LeafParted(ILeaf leaf) { }
+            if (Server.Link.IsLinked)
+                Server.Print(Template.Text(Category.Linking, 8));
+        }
 
-        public void LinkedAdminDisabled(ILeaf leaf, IUser client) { }
+        public void LeafJoined(ILeaf leaf)
+        {
+            Server.Print(Template.Text(Category.Linking, 3).Replace("+n", leaf.Name));
+        }
+
+        public void LeafParted(ILeaf leaf)
+        {
+            Server.Print(Template.Text(Category.Linking, 4).Replace("+n", leaf.Name));
+        }
+
+        public void LinkedAdminDisabled(ILeaf leaf, IUser client)
+        {
+            if (client != null)
+                client.Print(Template.Text(Category.Linking, 7).Replace("+n", leaf.Name));
+        }
     }
 }

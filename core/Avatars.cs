@@ -47,7 +47,10 @@ namespace core
                 x.OrgAvatar = default_avatar;
                 x.AvatarReceived = true;
                 x.DefaultAvatar = true;
-            }, x => !x.AvatarReceived && time > (x.AvatarTimeout + 10000));
+            },
+            x => !x.AvatarReceived &&
+                 x.LoggedIn &&
+                 time > (x.AvatarTimeout + 10000));
         }
 
         private static byte[] Default
@@ -70,6 +73,9 @@ namespace core
             using (Bitmap sized = new Bitmap(48, 48))
             using (Graphics g = Graphics.FromImage(sized))
             {
+                using (SolidBrush sb = new SolidBrush(Color.White))
+                    g.FillRectangle(sb, new Rectangle(0, 0, 48, 48));
+
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.CompositingQuality = CompositingQuality.HighQuality;
                 g.SmoothingMode = SmoothingMode.HighQuality;

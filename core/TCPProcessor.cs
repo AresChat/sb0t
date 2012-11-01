@@ -462,9 +462,6 @@ namespace core
 
         private static void PersonalMessage(AresClient client, TCPPacketReader packet)
         {
-            if (client.Quarantined)
-                return;
-
             String text = packet.ReadString(client);
 
             if (text.Length > 30)
@@ -478,9 +475,6 @@ namespace core
 
         private static void Avatar(AresClient client, TCPPacketReader packet)
         {
-            if (client.Quarantined)
-                return;
-
             byte[] avatar = packet;
 
             if (!client.Avatar.SequenceEqual(avatar))
