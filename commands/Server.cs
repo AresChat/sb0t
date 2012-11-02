@@ -45,6 +45,14 @@ namespace commands
             get { return Callback.DataPath; }
         }
 
+        /// <summary>
+        /// Spell Checker
+        /// </summary>
+        public static ISpell Spelling
+        {
+            get { return Callback.Spelling; }
+        }
+
         public static void SetCallback(IHostApp cb)
         {
             Callback = cb;

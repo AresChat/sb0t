@@ -64,6 +64,7 @@
     <Compile Include="IRecord.cs" />
     <Compile Include="IRoom.cs" />
     <Compile Include="IScripting.cs" />
+    <Compile Include="ISpell.cs" />
     <Compile Include="IStats.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="MimeType.cs" />

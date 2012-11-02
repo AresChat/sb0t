@@ -317,7 +317,25 @@ namespace core
                 UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked && !x.Quarantined);
 
-            // are we sending avatars to others?
+            if (client.Avatar.Length > 0)
+                if (!client.Cloaked)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, client));
+                }
+
+            if (!String.IsNullOrEmpty(client.PersonalMessage))
+                if (!client.Cloaked)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, client));
+                }
 
             if (features)
             {
@@ -328,7 +346,7 @@ namespace core
             }
         }
 
-        public static void FakeRejoinSequence(ib0t.ib0tClient client)
+        public static void FakeRejoinSequence(ib0t.ib0tClient client, bool features)
         {
             if (!client.Cloaked)
             {
@@ -365,9 +383,40 @@ namespace core
 
             client.QueuePacket(WebOutbound.UserlistEndTo(client));
 
+            if (features)
+                client.QueuePacket(WebOutbound.UrlTo(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
+
             if (client.CustomClient)
                 UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked && !x.Quarantined);
+
+            if (client.Avatar.Length > 0)
+                if (!client.Cloaked)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, client));
+                }
+
+            if (!String.IsNullOrEmpty(client.PersonalMessage))
+                if (!client.Cloaked)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, client));
+                }
+
+            if (features)
+            {
+                if (client.SocketConnected)
+                    IdleManager.Set(client);
+
+                Events.Joined(client);
+            }
         }
 
         public static uint UnixTime

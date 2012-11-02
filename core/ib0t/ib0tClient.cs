@@ -159,7 +159,7 @@ namespace core.ib0t
         {
             this.LoggedIn = false;
             this.Quarantined = false;
-            Helpers.FakeRejoinSequence(this);
+            Helpers.FakeRejoinSequence(this, true);
 
             if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                 ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, this));
@@ -296,7 +296,7 @@ namespace core.ib0t
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                         this._name = value;
-                        Helpers.FakeRejoinSequence(this);
+                        Helpers.FakeRejoinSequence(this, false);
                     }
             }
         }
@@ -338,7 +338,7 @@ namespace core.ib0t
                                 x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
                             this._vroom = value;
-                            Helpers.FakeRejoinSequence(this);
+                            Helpers.FakeRejoinSequence(this, false);
                         }
 
                         Events.VroomChanged(this);

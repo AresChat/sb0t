@@ -185,10 +185,11 @@ namespace core
         {
             this.LoggedIn = false;
             this.Quarantined = false;
-            Helpers.FakeRejoinSequence(this, true);
 
             if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                 ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafJoin(ServerCore.Linker, this));
+
+            Helpers.FakeRejoinSequence(this, true);
         }
 
         public String CustomName

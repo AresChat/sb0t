@@ -16,7 +16,7 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
-        [JSFunction(Name = "encode")]
+        [JSFunction(Name = "encode", IsWritable = false, IsEnumerable = true)]
         public static String Encode(object a)
         {
             if (a is Null || a is Undefined)
@@ -25,7 +25,7 @@ namespace scripting.Statics
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(a.ToString()));
         }
 
-        [JSFunction(Name = "decode")]
+        [JSFunction(Name = "decode", IsWritable = false, IsEnumerable = true)]
         public static String Decode(object a)
         {
             if (a is String || a is ConcatenatedString)

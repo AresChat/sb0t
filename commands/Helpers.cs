@@ -11,7 +11,9 @@ namespace commands
         public static String Time()
         {
             DateTime d = DateTime.Now;
-            return (d.Hour >= 10 ? d.Hour.ToString() : ("0" + d.Hour)) + ":" + (d.Minute >= 10 ? d.Minute.ToString() : ("0" + d.Minute));
+
+            return (d.Hour >= 10 ? d.Hour.ToString() : ("0" + d.Hour)) + ":" +
+                (d.Minute >= 10 ? d.Minute.ToString() : ("0" + d.Minute));
         }
 
         public static IdleTime GetIdleUptime(uint away)

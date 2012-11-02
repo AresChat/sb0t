@@ -464,8 +464,8 @@ namespace core
         {
             String text = packet.ReadString(client);
 
-            if (text.Length > 30)
-                text = text.Substring(0, 30);
+            if (text.Length > 50)
+                text = text.Substring(0, 50);
 
             if (client.PersonalMessage != text)
                 if (Events.PersonalMessageReceived(client, text))

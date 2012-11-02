@@ -37,6 +37,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="NHunspell, Version=0.9.6.0, Culture=neutral, PublicKeyToken=1ac793ea843b4366, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\gui\bin\Debug\NHunspell.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -71,6 +75,7 @@
     <Compile Include="Extensions\ExPlugin.cs" />
     <Compile Include="Extensions\ExRoom.cs" />
     <Compile Include="Extensions\ExScripting.cs" />
+    <Compile Include="Extensions\ExSpelling.cs" />
     <Compile Include="Extensions\ExStats.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
     <Compile Include="FloodControl.cs" />
@@ -123,6 +128,7 @@
     <Compile Include="ServerCore.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SharedFile.cs" />
+    <Compile Include="SpellCheck.cs" />
     <Compile Include="Stats.cs" />
     <Compile Include="TCPAdvancedProcessor.cs" />
     <Compile Include="TCPMsg.cs" />
@@ -174,18 +180,22 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libraries\Hunspellx86.dll" />
     <Content Include="Libraries\ICSharpCode.SharpZipLib.dll" />
     <Content Include="Libraries\Jurassic.dll" />
+    <Content Include="Libraries\NHunspell.dll" />
     <Content Include="Libraries\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Libraries\dictionary.aff" />
+    <None Include="Libraries\dictionary.dic" />
     <None Include="Resources\servers.dat" />
     <None Include="Resources\web.dat" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>copy "$(SolutionDir)core\Libraries\*.dll" "$(TargetDir)"</PreBuildEvent>
+    <PreBuildEvent>copy "$(SolutionDir)core\Libraries\*.*" "$(TargetDir)"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

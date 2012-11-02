@@ -36,5 +36,7 @@ namespace iconnect
         IHub Hub { get; }
         /// <summary>Get current tickcount</summary>
         ulong Ticks { get; }
+        /// <summary>Spell Checker</summary>
+        ISpell Spelling { get; }
     }
 }

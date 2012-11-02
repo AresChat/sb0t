@@ -7,11 +7,17 @@ using Jurassic.Library;
 namespace scripting.Statics
 {
     [JSEmbed(Name = "Script")]
-    class JSScriptInclude
+    class JSScriptInclude : ObjectInstance
     {
+        public JSScriptInclude(ScriptEngine engine)
+            : base(engine)
+        {
+            this.PopulateFunctions();
+        }
+
         private static String[] bad_chars = new String[] { "..", "/", "\\", " ", };
 
-        [JSFunction(Name = "include", Flags = JSFunctionFlags.HasEngineParameter)]
+        [JSFunction(Name = "include", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static void Include(ScriptEngine eng, object a)
         {
             if (!(a is Undefined))

@@ -61,6 +61,14 @@ namespace scripting
         }
 
         /// <summary>
+        /// Spell Checker
+        /// </summary>
+        public static ISpell Spelling
+        {
+            get { return Callback.Spelling; }
+        }
+
+        /// <summary>
         /// Access to the link hub
         /// </summary>
         public static IHub Link

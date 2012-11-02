@@ -70,7 +70,7 @@ namespace commands
             list.Add(new Item { Category = Category.AdminLogin, Index = 3, Text = "+n is no longer an admin" });//16
 
             list.Add(new Item { Category = Category.Registration, Index = 0, Text = "Your account registration was successfully created" });
-            list.Add(new Item { Category = Category.Registration, Index = 1, Text = "You are now registered" });
+            list.Add(new Item { Category = Category.Registration, Index = 1, Text = "Your login was successful" });
             list.Add(new Item { Category = Category.Registration, Index = 2, Text = "You are no longer registered" });
 
             list.Add(new Item { Category = Category.Idle, Index = 0, Text = "+n idles at +t" });//18
