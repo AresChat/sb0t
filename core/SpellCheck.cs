@@ -49,6 +49,23 @@ namespace core
             Engine.Add("plz");
         }
 
+        public static bool Confirm(String text)
+        {
+            if (String.IsNullOrEmpty(text))
+                return false;
+
+            if (Engine == null)
+                Init();
+
+            List<String> list = new List<String>(text.Split(new String[] { " " }, StringSplitOptions.RemoveEmptyEntries));
+
+            for (int i = 0; i < list.Count; i++)
+                if (!Engine.Spell(list[i]))
+                    return false;
+
+            return true;
+        }
+
         public static String Correct(String text)
         {
             List<String> list = new List<String>(text.Split(new String[] { " " }, StringSplitOptions.RemoveEmptyEntries));

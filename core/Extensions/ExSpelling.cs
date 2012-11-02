@@ -17,5 +17,10 @@ namespace core.Extensions
         {
             return SpellCheck.Suggest(text);
         }
+
+        public bool Confirm(String text)
+        {
+            return SpellCheck.Confirm(text);
+        }
     }
 }

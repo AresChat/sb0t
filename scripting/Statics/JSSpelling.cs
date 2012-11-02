@@ -41,5 +41,15 @@ namespace scripting.Statics
 
             return new Objects.JSSpellingSuggestionCollection(eng.Object.InstancePrototype, results.ToArray(), eng.ScriptName);
         }
+
+        [JSFunction(Name = "confirm", IsWritable = false, IsEnumerable = true)]
+        public static bool Confirm(object a)
+        {
+            if (a is Undefined)
+                return false;
+
+            String text = a.ToString();
+            return Server.Spelling.Confirm(text);
+        }
     }
 }

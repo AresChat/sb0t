@@ -10,6 +10,8 @@ namespace iconnect
     {
         /// <summary>Spell Checker</summary>
         String Check(String text);
+        /// <summary>Spell Checker</summary>
+        bool Confirm(String text);
         /// <summary>Suggestions</summary>
         String[] Suggest(String word);
     }
