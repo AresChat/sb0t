@@ -90,6 +90,20 @@ namespace core.ib0t
             this.FloodRecord = new FloodRecord();
         }
 
+        public void SetLevel(ILevel level)
+        {
+            if (!this.LoggedIn)
+                return;
+
+            this.Registered = true;
+
+            if (this.Quarantined)
+                this.Unquarantine();
+
+            this.Captcha = true;
+            this.Level = level;
+        }
+
         public void Scribble(String sender, byte[] img, int h)
         {
             byte[] buf = Zip.Decompress(img);

@@ -23,6 +23,7 @@ namespace commands
             LoginAttempts.Clear();
             PMBlocking.Load();
             Captchas.Clear();
+            AutoLogin.Load();
         }
 
         public void CycleTick() { }
@@ -59,9 +60,11 @@ namespace commands
                 }
 
             client.Print("\x000500\x000302" + Template.Text(Category.Credit, 0));
+
             byte[] buf = client.ExternalIP.GetAddressBytes();
             buf[3] = (byte)Math.Floor(new Random().NextDouble() * 255);
             client.ExternalIP = new System.Net.IPAddress(buf);
+
             return true;
         }
 
@@ -78,6 +81,10 @@ namespace commands
                     client.Muzzled = true;
 
                 CustomNames.Set(client);
+                ILevel level = AutoLogin.GetLevel(client);
+
+                if (level > ILevel.Regular)
+                    client.SetLevel(level);
             }
         }
 
@@ -276,6 +283,12 @@ namespace commands
                 admin.Print("/unlink");
             if (admin.Level >= Server.GetLevel("admins"))
                 admin.Print("/admins");
+            if (admin.Owner)
+                admin.Print("/addautologin <user> <level>");
+            if (admin.Owner)
+                admin.Print("/remautologin <id>");
+            if (admin.Owner)
+                admin.Print("/autologins");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -498,6 +511,12 @@ namespace commands
                 Eval.Unlink(client);
             else if (cmd == "admins")
                 Eval.Admins(client);
+            else if (cmd.StartsWith("addautologin "))
+                Eval.AddAutologin(client, target, args);
+            else if (cmd.StartsWith("remautologin "))
+                Eval.RemAutologin(client, cmd.Substring(13));
+            else if (cmd == "autologins")
+                Eval.Autologins(client);
         }
 
         public void LinkError(ILinkError error)

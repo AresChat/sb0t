@@ -9,6 +9,8 @@ namespace iconnect
     /// <summary>Chatroom Client</summary>
     public interface IUser
     {
+        /// <summary>Set user admin level</summary>
+        void SetLevel(ILevel level);
         /// <summary>Get user link credentials</summary>
         ILink Link { get; }
         /// <summary>Get join timestamp</summary>

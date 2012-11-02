@@ -52,6 +52,8 @@ namespace core.LinkLeaf
         public UserLinkCredentials LinkCredentials { get; set; }
         public ILink Link { get { return this.LinkCredentials; } set { } }
 
+        public void SetLevel(ILevel level) { }
+
         public void Scribble(String sender, byte[] img, int height)
         {
             

@@ -153,7 +153,13 @@ namespace scripting.Objects
         [JSProperty(Name = "id")]
         public int Id
         {
-            get { return this.parent.ID; }
+            get
+            {
+                if (this.parent.Link.IsLinked)
+                    return -1;
+
+                return this.parent.ID;
+            }
             set { }
         }
 

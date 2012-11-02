@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminTab.cs" />
+    <Compile Include="AutoLogin.cs" />
     <Compile Include="Captchas.cs" />
     <Compile Include="CustomNames.cs" />
     <Compile Include="Echo.cs" />

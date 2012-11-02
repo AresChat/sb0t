@@ -68,6 +68,8 @@ namespace commands
             list.Add(new Item { Category = Category.AdminLogin, Index = 1, Text = "+n attempted to log in with an invalid password!!!" });//13
             list.Add(new Item { Category = Category.AdminLogin, Index = 2, Text = "+n has been banned for too many invalid login attempts!!!" });//14
             list.Add(new Item { Category = Category.AdminLogin, Index = 3, Text = "+n is no longer an admin" });//16
+            list.Add(new Item { Category = Category.AdminLogin, Index = 4, Text = "+n has been added to auto login as a level +l admin" });//9
+            list.Add(new Item { Category = Category.AdminLogin, Index = 5, Text = "+n has been removed from auto login" });//10
 
             list.Add(new Item { Category = Category.Registration, Index = 0, Text = "Your account registration was successfully created" });
             list.Add(new Item { Category = Category.Registration, Index = 1, Text = "Your login was successful" });

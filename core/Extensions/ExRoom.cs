@@ -9,6 +9,11 @@ namespace core.Extensions
 {
     class ExRoom : IRoom
     {
+        public String Version
+        {
+            get { return Settings.VERSION; }
+        }
+
         public byte MinimumAge
         {
             get

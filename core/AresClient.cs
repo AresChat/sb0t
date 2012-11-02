@@ -101,6 +101,20 @@ namespace core
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
         }
 
+        public void SetLevel(ILevel level)
+        {
+            if (!this.LoggedIn)
+                return;
+
+            this.Registered = true;
+
+            if (this.Quarantined)
+                this.Unquarantine();
+
+            this.Captcha = true;
+            this.Level = level;
+        }
+
         public void Scribble(String sender, byte[] img, int height)
         {
             List<byte> b = new List<byte>(img);

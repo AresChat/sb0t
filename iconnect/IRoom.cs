@@ -37,5 +37,7 @@ namespace iconnect
         uint StartTime { get; }
         /// <summary>Get the minimum age to join the chatroom</summary>
         byte MinimumAge { get; }
+        /// <summary>Get the server version</summary>
+        String Version { get; }
     }
 }

@@ -30,12 +30,13 @@ namespace commands
             if (admin.Level >= Server.GetLevel("ban"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                    {
-                        Server.Print(Template.Text(Category.AdminAction, 0).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            Server.Print(Template.Text(Category.AdminAction, 0).Replace("+n",
+                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
-                        target.Ban();
-                    }
+                            target.Ban();
+                        }
         }
 
         [CommandLevel("unban", ILevel.Administrator)]
@@ -71,12 +72,13 @@ namespace commands
             if (admin.Level >= Server.GetLevel("kick"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                    {
-                        Server.Print(Template.Text(Category.AdminAction, 2).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            Server.Print(Template.Text(Category.AdminAction, 2).Replace("+n",
+                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
-                        target.Disconnect();
-                    }
+                            target.Disconnect();
+                        }
         }
 
         [CommandLevel("muzzle", ILevel.Moderator)]
@@ -85,13 +87,14 @@ namespace commands
             if (admin.Level >= Server.GetLevel("muzzle"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                    {
-                        Server.Print(Template.Text(Category.AdminAction, 3).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            Server.Print(Template.Text(Category.AdminAction, 3).Replace("+n",
+                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
-                        target.Muzzled = true;
-                        Muzzles.AddMuzzle(target);
-                    }
+                            target.Muzzled = true;
+                            Muzzles.AddMuzzle(target);
+                        }
         }
 
         public static void Unmuzzle(IUser admin, IUser target, String args)
@@ -412,6 +415,49 @@ namespace commands
                 Server.Print(String.Empty, true);
                 Server.Print(Template.Text(Category.AdminList, 2), true);
             }
+        }
+
+        public static void AddAutologin(IUser admin, IUser target, String args)
+        {
+            if (!admin.Link.IsLinked)
+                if (admin.Owner)
+                    if (target != null)
+                        if (!target.Link.IsLinked)
+                        {
+                            byte b;
+
+                            if (byte.TryParse(args, out b))
+                                if (b >= 1 && b <= 3)
+                                {
+                                    AutoLogin.Add(target, (ILevel)b);
+                                    Server.Print(Template.Text(Category.AdminLogin, 4).Replace("+n", target.Name).Replace("+l", b.ToString()), true);
+                                    target.SetLevel((ILevel)b);
+                                }
+                        }
+        }
+
+        public static void RemAutologin(IUser admin, String args)
+        {
+            if (!admin.Link.IsLinked)
+                if (admin.Owner)
+                {
+                    int i;
+
+                    if (int.TryParse(args, out i))
+                    {
+                        String name = AutoLogin.Remove(i);
+
+                        if (!String.IsNullOrEmpty(name))
+                            Server.Print(Template.Text(Category.AdminLogin, 5).Replace("+n", name), true);
+                    }
+                }
+        }
+
+        public static void Autologins(IUser admin)
+        {
+            if (!admin.Link.IsLinked)
+                if (admin.Owner)
+                    AutoLogin.ListAdmins(admin);
         }
     }
 }
