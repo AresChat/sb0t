@@ -105,6 +105,7 @@ namespace core
                             client.Owner = true;
                             Events.LoginGranted(client);
                             client.Level = ILevel.Host;
+                            client.Password = sha1.ComputeHash(Encoding.UTF8.GetBytes(owner));
 
                             if (client.Quarantined)
                                 client.Unquarantine();
@@ -130,6 +131,7 @@ namespace core
                             client.Captcha = true;
                             Events.LoginGranted(client);
                             client.Level = a.Level;
+                            client.Password = a.Password;
 
                             if (client.Quarantined)
                                 client.Unquarantine();
@@ -164,6 +166,9 @@ namespace core
                     Events.LoginGranted(client);
                     client.Level = ILevel.Host;
 
+                    using (SHA1 sha1 = SHA1.Create())
+                        client.Password = sha1.ComputeHash(Encoding.UTF8.GetBytes(owner));
+                    
                     if (client.Quarantined)
                         client.Unquarantine();
 
@@ -188,6 +193,7 @@ namespace core
                     client.Captcha = true;
                     Events.LoginGranted(client);
                     client.Level = a.Level;
+                    client.Password = a.Password;
 
                     if (client.Quarantined)
                         client.Unquarantine();
@@ -274,7 +280,7 @@ namespace core
 
         public static void Unregister(IClient client)
         {
-            if (!client.Registered || client.Owner)
+            if (!client.Registered || client.Owner || client.Password == null)
                 return;
 
             Account a = list.Find(x => x.Guid.Equals(client.Guid));
@@ -307,10 +313,10 @@ namespace core
 
         public static void UpdateAccount(IClient client)
         {
-            if (!client.Registered)
+            if (!client.Registered || client.Owner || client.Password == null)
                 return;
 
-            Account a = list.Find(x => x.Guid.Equals(client.Guid));
+            Account a = list.Find(x => x.Password.SequenceEqual(client.Password));
 
             if (a != null)
             {
@@ -326,7 +332,7 @@ namespace core
                     using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
                         command.Parameters.Add(new SQLiteParameter("@level", (int)(byte)client.Level));
-                        command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
+                        command.Parameters.Add(new SQLiteParameter("@guid", a.Guid.ToString()));
                         command.ExecuteNonQuery();
                     }
                 }

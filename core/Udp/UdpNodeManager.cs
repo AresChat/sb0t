@@ -117,6 +117,10 @@ namespace core.Udp
                              Ack = int.Parse(i.Element("ack").Value)
                          }).ToList<UdpNode>();
 
+
+                if (Nodes.Count == 0)
+                    return false;
+
                 ServerCore.Log("local node list loaded [" + Nodes.Count + "]");
                 return true;
             }

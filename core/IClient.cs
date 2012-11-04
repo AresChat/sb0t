@@ -91,6 +91,7 @@ namespace core
         bool Idled { get; set; }
         ulong IdleStart { get; set; }
         bool Quarantined { get; set; }
+        byte[] Password { get; set; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);

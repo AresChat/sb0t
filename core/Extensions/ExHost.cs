@@ -19,6 +19,7 @@ namespace core.Extensions
             this.Hashlinks = new ExHashlink();
             this.Scripting = new ExScripting();
             this.Spelling = new ExSpelling();
+            this.Channels = new ExChannels();
 
             this.DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName;
@@ -41,6 +42,7 @@ namespace core.Extensions
         public IHub Hub { get { return ServerCore.Linker; } }
         public IScripting Scripting { get; private set; }
         public ISpell Spelling { get; private set; }
+        public IChannels Channels { get; private set; }
 
         public void ClearBans()
         {

@@ -51,6 +51,7 @@ namespace core.LinkLeaf
         public IUser IUser { get { return this; } }
         public UserLinkCredentials LinkCredentials { get; set; }
         public ILink Link { get { return this.LinkCredentials; } set { } }
+        public byte[] Password { get; set; }
 
         public void SetLevel(ILevel level) { }
 

@@ -53,6 +53,14 @@ namespace commands
             get { return Callback.Spelling; }
         }
 
+        /// <summary>
+        /// Channel search helper
+        /// </summary>
+        public static IChannels Channels
+        {
+            get { return Callback.Channels; }
+        }
+
         public static void SetCallback(IHostApp cb)
         {
             Callback = cb;

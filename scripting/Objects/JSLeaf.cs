@@ -32,18 +32,21 @@ namespace scripting.Objects
         public String ExternalIP
         {
             get { return this.parent.ExternalIP.ToString(); }
+            set { }
         }
 
         [JSProperty(Name = "port")]
         public int Port
         {
             get { return this.parent.Port; }
+            set { }
         }
 
         [JSProperty(Name = "name")]
         public String Name
         {
             get { return this.parent.Name; }
+            set { }
         }
 
         [JSProperty(Name = "hashlink")]
@@ -60,6 +63,7 @@ namespace scripting.Objects
 
                 return "arlnk://" + Server.Hashlinks.Encrypt(obj);
             }
+            set { }
         }
 
         [JSFunction(Name = "print", IsWritable = false, IsEnumerable = true)]

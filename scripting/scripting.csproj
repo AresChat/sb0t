@@ -80,6 +80,8 @@
     <Compile Include="LiveScript.cs" />
     <Compile Include="Objects\JSAvatarImage.cs" />
     <Compile Include="Objects\JSBannedUser.cs" />
+    <Compile Include="Objects\JSChannel.cs" />
+    <Compile Include="Objects\JSChannelCollection.cs" />
     <Compile Include="Objects\JSHashlinkResult.cs" />
     <Compile Include="Objects\JSHttpRequestResult.cs" />
     <Compile Include="Objects\JSIgnoreCollection.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="ServerEvents.Callback.cs" />
     <Compile Include="ServerEvents.cs" />
     <Compile Include="Statics\JSBase64.cs" />
+    <Compile Include="Statics\JSChannels.cs" />
     <Compile Include="Statics\JSFile.cs" />
     <Compile Include="Statics\JSHashlink.cs" />
     <Compile Include="Statics\JSLink.cs" />

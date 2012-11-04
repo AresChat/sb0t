@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using iconnect;
 
 namespace core.Udp
 {
-    class UdpChannelItem
+    class UdpChannelItem : IChannelItem
     {
         public String Name { get; set; }
         public String Topic { get; set; }
@@ -16,6 +17,8 @@ namespace core.Udp
         public IPAddress IP { get; set; }
         public byte Language { get; set; }
         public IPEndPoint[] Servers { get; set; }
+
+        public UdpChannelItem() { }
 
         public UdpChannelItem(UdpNode addr)
         {
@@ -49,11 +52,6 @@ namespace core.Udp
                 this.Servers = servers.ToArray();
             }
             else this.Servers = new IPEndPoint[] { };
-        }
-
-        public IPEndPoint ToEndPoint()
-        {
-            return new IPEndPoint(this.IP, this.Port);
         }
     }
 }

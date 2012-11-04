@@ -8,6 +8,8 @@ namespace iconnect
     /// <summary>Server Callback</summary>
     public interface IHostApp
     {
+        /// <summary>Channel search helper</summary>
+        IChannels Channels { get; }
         /// <summary>Scripting credentials</summary>
         IScripting Scripting { get; }
         /// <summary>User pool</summary>

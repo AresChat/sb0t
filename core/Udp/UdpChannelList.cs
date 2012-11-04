@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
 using System.IO;
-using System.Data;
 using System.Data.SQLite;
+using iconnect;
 
 namespace core.Udp
 {
@@ -17,9 +16,40 @@ namespace core.Udp
     {
         private static bool terminate { get; set; }
         private static ConcurrentStack<UdpChannelItem> primary_list { get; set; }
+        private static String DataPath { get; set; }
+
+        public static bool Available
+        {
+            get
+            {
+                if (primary_list == null)
+                    return false;
+
+                return primary_list.Count > 0;
+            }
+        }
+
+        public static void ForEach(Action<IChannelItem> action)
+        {
+            if (primary_list != null)
+            {
+                List<UdpChannelItem> items = primary_list.ToList();
+
+                foreach (UdpChannelItem i in items)
+                    action(i);
+            }
+        }
 
         public static void Start()
         {
+            DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+               "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Dat";
+
+            if (!Directory.Exists(DataPath))
+                Directory.CreateDirectory(DataPath);
+
+            DataPath += "\\roomsearch.dat";
+
             primary_list = new ConcurrentStack<UdpChannelItem>();
             terminate = false;
             LoadLocal();
@@ -43,12 +73,83 @@ namespace core.Udp
 
         private static void LoadLocal()
         {
-            
+            if (!File.Exists(DataPath))
+                return;
+
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand("select * from roomsearch", connection))
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
+                        primary_list.Push(new UdpChannelItem
+                        {
+                            Name = (String)reader["name"],
+                            Topic = (String)reader["topic"],
+                            Version = (String)reader["version"],
+                            IP = IPAddress.Parse((String)reader["ip"]),
+                            Port = (ushort)(int)reader["port"],
+                            Users = (ushort)(int)reader["users"],
+                            Language = (byte)(int)reader["language"]
+                        });
+            }
         }
 
         private static void SaveLocal()
         {
+            CreateDatabase();
 
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+                UdpChannelItem[] rooms = primary_list.ToArray();
+
+                foreach (UdpChannelItem item in rooms)
+                {
+                    String query = @"insert into roomsearch (name, topic, version, ip, port, users, language) 
+                                 values (@name, @topic, @version, @ip, @port, @users, @language)";
+
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.Add(new SQLiteParameter("@name", item.Name));
+                        command.Parameters.Add(new SQLiteParameter("@topic", item.Topic));
+                        command.Parameters.Add(new SQLiteParameter("@version", item.Version));
+                        command.Parameters.Add(new SQLiteParameter("@ip", item.IP.ToString()));
+                        command.Parameters.Add(new SQLiteParameter("@port", (int)item.Port));
+                        command.Parameters.Add(new SQLiteParameter("@users", (int)item.Users));
+                        command.Parameters.Add(new SQLiteParameter("@language", (int)item.Language));
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        private static void CreateDatabase()
+        {
+            if (File.Exists(DataPath))
+                File.Delete(DataPath);
+
+            SQLiteConnection.CreateFile(DataPath);
+
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                String query = @"create table roomsearch
+                                 (
+                                     name text not null,
+                                     topic text not null,
+                                     version text not null,
+                                     ip text not null,
+                                     port int not null,
+                                     users int not null,
+                                     language int not null
+                                 )";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    command.ExecuteNonQuery();
+            }
         }
 
         private static void BackgroundWorker(object args)
@@ -75,14 +176,23 @@ namespace core.Udp
             while (true)
             {
                 if (terminate)
+                {
+                    sw.Stop();
                     return;
+                }
 
                 long now = sw.ElapsedMilliseconds;
 
                 if (now > (last_action + 15000))
                 {
-                    primary_list.Clear();
-                    primary_list.PushRange(servers_ponged.ToArray());
+                    sw.Stop();
+
+                    if (servers_ponged.Count > 10)
+                    {
+                        primary_list.Clear();
+                        primary_list.PushRange(servers_ponged.ToArray());
+                        SaveLocal();
+                    }
 
                     servers_to_ping.Clear();
                     servers_been_pinged.Clear();
@@ -93,7 +203,6 @@ namespace core.Udp
                     try { sock.Close(); }
                     catch { }
 
-                    SaveLocal();
                     break;
                 }
 

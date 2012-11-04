@@ -57,6 +57,7 @@ namespace core
         public bool Quarantined { get; set; }
         public bool IsLeaf { get; set; }
         public ILink Link { get { return new UserLinkCredentials(); } }
+        public byte[] Password { get; set; }
 
         public Socket Sock { get; set; }
         public bool HasSecureLoginAttempted { get; set; }

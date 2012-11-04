@@ -43,6 +43,7 @@ namespace core.ib0t
         public ulong IdleStart { get; set; }
         public bool Quarantined { get; set; }
         public ILink Link { get { return new UserLinkCredentials(); } }
+        public byte[] Password { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }

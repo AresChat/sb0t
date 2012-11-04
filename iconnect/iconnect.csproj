@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IBan.cs" />
+    <Compile Include="IChannelItem.cs" />
+    <Compile Include="IChannels.cs" />
     <Compile Include="ICommandDefault.cs" />
     <Compile Include="ICompression.cs" />
     <Compile Include="IExtension.cs" />

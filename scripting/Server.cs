@@ -61,6 +61,14 @@ namespace scripting
         }
 
         /// <summary>
+        /// Channel search helper
+        /// </summary>
+        public static IChannels Channels
+        {
+            get { return Callback.Channels; }
+        }
+
+        /// <summary>
         /// Spell Checker
         /// </summary>
         public static ISpell Spelling
