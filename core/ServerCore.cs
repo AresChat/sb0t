@@ -93,6 +93,7 @@ namespace core
 
             UserPool.Destroy();
             core.LinkHub.LeafPool.Destroy();
+            UdpChannelList.Stop();
 
             if (Linker != null)
                 Linker.KillSocket();
@@ -113,9 +114,13 @@ namespace core
             BanSystem.LoadBans();
             IdleManager.Reset();
 
+            if (Settings.Get<bool>("roomsearch"))
+                UdpChannelList.Start();
+
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);
             ulong reset_floods_timer = Time.Now;
+            ulong room_search_timer = (Time.Now - 1800000);
             bool can_web_chat = Settings.Get<bool>("enabled", "web");
             core.LinkHub.LinkMode link_mode = (core.LinkHub.LinkMode)Settings.Get<int>("link_mode");
             Linker = new LinkLeaf.LinkClient();
@@ -164,6 +169,14 @@ namespace core
                         channel_push_timer = time;
                         ib0t.ChannelPusher.Push();
                     }
+                }
+
+                if (time > (room_search_timer + 1800000))
+                {
+                    room_search_timer = time;
+
+                    if (Settings.Get<bool>("roomsearch"))
+                        UdpChannelList.Update();
                 }
 
                 Events.CycleTick();

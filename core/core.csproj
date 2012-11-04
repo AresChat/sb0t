@@ -140,6 +140,8 @@
     <Compile Include="Time.cs" />
     <Compile Include="Udp\FirewallTest.cs" />
     <Compile Include="Udp\MyFirewallTester.cs" />
+    <Compile Include="Udp\UdpChannelItem.cs" />
+    <Compile Include="Udp\UdpChannelList.cs" />
     <Compile Include="Udp\UdpListener.cs" />
     <Compile Include="Udp\UdpItem.cs" />
     <Compile Include="Udp\UdpMsg.cs" />

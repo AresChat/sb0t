@@ -126,6 +126,7 @@ namespace gui
             this.comboBox4.IsEnabled = !running;
             this.checkBox20.IsEnabled = !running;
             this.checkBox22.IsEnabled = !running;
+            this.checkBox23.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -271,6 +272,8 @@ namespace gui
                 Settings.Set("link_admin", this.checkBox21.IsChecked);
             else if (cb.Name == "checkBox22")
                 Settings.Set("strict", this.checkBox22.IsChecked);
+            else if (cb.Name == "checkBox23")
+                Settings.Set("roomsearch", this.checkBox23.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -139,6 +139,8 @@ namespace gui
             this.checkBox19.IsChecked = Settings.Get<bool>("local_host");
             //udp address
             byte[] udp = Settings.Get<byte[]>("udp_address");
+            //room search
+            this.checkBox23.IsChecked = Settings.Get<bool>("roomsearch");
 
             if (udp == null)
             {

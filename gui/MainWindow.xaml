@@ -142,7 +142,7 @@
                             <Label Background="White" Canvas.Left="20" Canvas.Top="222" Content="Restrictions" Height="28" Name="label12" />
                             <Rectangle Canvas.Left="10" Canvas.Top="22" Height="203" Name="rectangle3" Stroke="Silver" Width="321" />
                             <CheckBox Content="Captcha enabled" Height="16" Name="checkBox8" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" Canvas.Left="355" Canvas.Top="200" />
-                            <CheckBox Canvas.Left="26" Canvas.Top="46" Content="Enable file browsing" Height="16" Name="checkBox7" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="26" Canvas.Top="42" Content="Enable file browsing" Height="16" Name="checkBox7" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Grid Canvas.Left="372" Canvas.Top="245"></Grid>
                             <CheckBox Canvas.Left="355" Canvas.Top="255" Content="Enable javascript engine" Height="16" Name="checkBox11" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="355" Canvas.Top="275" Content="Enable in-room scripting" Height="16" Name="checkBox12" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
@@ -194,12 +194,13 @@
                             </ComboBox>
                             <TextBox Canvas.Left="26" Canvas.Top="139" Height="23" Name="textBox5" Width="290" TextChanged="TextBoxTextChanged" />
                             <TextBox Canvas.Left="26" Canvas.Top="183" Height="23" Name="textBox6" Width="120" TextChanged="TextBoxTextChanged" />
-                            <CheckBox Canvas.Left="26" Canvas.Top="66" Content="Enable full room scribbles" Height="16" Name="checkBox18" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="26" Canvas.Top="86" Content="Local clients auto login" Height="16" Name="checkBox19" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="26" Canvas.Top="60" Content="Enable full room scribbles" Height="16" Name="checkBox18" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="26" Canvas.Top="96" Content="Local clients auto login" Height="16" Name="checkBox19" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Label Canvas.Left="21" Canvas.Top="115" Content="ib0t channel list receiver script:" Height="28" Name="label16" />
                             <Label Canvas.Left="21" Canvas.Top="161" Content="UDP host address:" Height="28" Name="label17" />
                             <Label Canvas.Left="191" Canvas.Top="161" Content="Preferred language:" Height="28" Name="label18" />
                             <Label Content="hours" Height="28" Name="label19" Canvas.Left="470" Canvas.Top="67" />
+                            <CheckBox Content="Enable room search" Height="16" Name="checkBox23" Canvas.Left="26" Canvas.Top="78" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
                     </Border>
                 </Grid>
