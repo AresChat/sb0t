@@ -463,54 +463,84 @@ namespace commands
         [CommandLevel("roomsearch", ILevel.Administrator)]
         public static void RoomSearch(IUser client, String args)
         {
-            if (!Server.Channels.Enabled)
-                Server.Print(Template.Text(Category.RoomSearch, 0), true);
-            else if (!Server.Channels.Available)
-                Server.Print(Template.Text(Category.RoomSearch, 1), true);
-            else
-            {
-                List<IChannelItem> items = new List<IChannelItem>();
-                String str = args.ToUpper();
-
-                Server.Channels.ForEach(x =>
-                {
-                    if (x.Name.ToUpper().Contains(str))
-                        items.Add(x);
-                });
-
-                items.Sort((y, x) => x.Users.CompareTo(y.Users));
-
-                if (items.Count > 5)
-                    items = items.GetRange(0, 5);
-
-                if (items.Count == 0)
-                    Server.Print(Template.Text(Category.RoomSearch, 2).Replace("+n", str), true);
+            if (client.Level >= Server.GetLevel("roomsearch"))
+                if (!Server.Channels.Enabled)
+                    Server.Print(Template.Text(Category.RoomSearch, 0), true);
+                else if (!Server.Channels.Available)
+                    Server.Print(Template.Text(Category.RoomSearch, 1), true);
                 else
                 {
-                    Server.Print(Template.Text(Category.RoomSearch, 3).Replace("+n", str), true);
+                    List<IChannelItem> items = new List<IChannelItem>();
+                    String str = args.ToUpper();
 
-                    foreach (IChannelItem i in items)
+                    Server.Channels.ForEach(x =>
                     {
-                        Server.Print(String.Empty, true);
-                        Server.Print(Template.Text(Category.RoomSearch, 4).Replace("+n", i.Name), true);
-                        Server.Print(Template.Text(Category.RoomSearch, 5).Replace("+t", i.Topic), true);
-                        Server.Print(Template.Text(Category.RoomSearch, 6).Replace("+l",
-                            Helpers.LanguageCodeToString(i.Language)).Replace("+s", i.Version).Replace("+u", i.Users.ToString()), true);
+                        if (x.Name.ToUpper().Contains(str))
+                            items.Add(x);
+                    });
 
-                        IHashlinkRoom obj = new Hashlink
+                    items.Sort((y, x) => x.Users.CompareTo(y.Users));
+
+                    if (items.Count > 5)
+                        items = items.GetRange(0, 5);
+
+                    if (items.Count == 0)
+                        Server.Print(Template.Text(Category.RoomSearch, 2).Replace("+n", str), true);
+                    else
+                    {
+                        Server.Print(Template.Text(Category.RoomSearch, 3).Replace("+n", str), true);
+
+                        foreach (IChannelItem i in items)
                         {
-                            IP = i.IP,
-                            Name = i.Name,
-                            Port = i.Port
-                        };
+                            Server.Print(String.Empty, true);
+                            Server.Print(Template.Text(Category.RoomSearch, 4).Replace("+n", i.Name), true);
+                            Server.Print(Template.Text(Category.RoomSearch, 5).Replace("+t", i.Topic), true);
+                            Server.Print(Template.Text(Category.RoomSearch, 6).Replace("+l",
+                                Helpers.LanguageCodeToString(i.Language)).Replace("+s", i.Version).Replace("+u", i.Users.ToString()), true);
 
-                        String hashlink = Server.Hashlinks.Encrypt(obj);
+                            IHashlinkRoom obj = new Hashlink
+                            {
+                                IP = i.IP,
+                                Name = i.Name,
+                                Port = i.Port
+                            };
 
-                        if (!String.IsNullOrEmpty(hashlink))
-                            Server.Print(Template.Text(Category.RoomSearch, 7).Replace("+h", "arlnk://" + hashlink), true);
+                            String hashlink = Server.Hashlinks.Encrypt(obj);
+
+                            if (!String.IsNullOrEmpty(hashlink))
+                                Server.Print(Template.Text(Category.RoomSearch, 7).Replace("+h", "arlnk://" + hashlink), true);
+                        }
                     }
                 }
+        }
+
+        [CommandLevel("mtimeout", ILevel.Host)]
+        public static void MTimeout(IUser client, String args)
+        {
+            if (client.Level >= Server.GetLevel("mtimeout"))
+            {
+                byte b;
+
+                if (byte.TryParse(args, out b))
+                    if (b < 100)
+                    {
+                        Settings.MuzzleTimeout = b;
+                        Server.Print(Template.Text(Category.MuzzleTimeout, 0).Replace("+n",
+                            client.Name).Replace("+i", b == 0 ? "unlimited" : (b + " minutes")), true);
+                    }
             }
         }
+
+        [CommandLevel("redirect", ILevel.Administrator)]
+        public static void Redirect(IUser admin, IUser target, String args)
+        {
+            if (admin.Level >= Server.GetLevel("redirect"))
+                if (target != null)
+                    if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        if (target.Level < admin.Level)
+                            target.Redirect(args.Trim());
+        }
+
+
     }
 }

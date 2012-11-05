@@ -15,9 +15,42 @@ namespace commands
         {
             public IPAddress IP { get; set; }
             public Guid Guid { get; set; }
+            public uint Time { get; set; }
+            public String Name { get; set; }
         }
 
         private static List<Item> list { get; set; }
+
+        public static void Tick(uint time)
+        {
+            uint target = (uint)(Settings.MuzzleTimeout * 60);
+
+            if (target > 0)
+                for (int i = (list.Count - 1); i > -1; i--)
+                {
+                    Item m = list[i];
+
+                    if ((time - m.Time) > target)
+                    {
+                        list.RemoveAt(i);
+                        Server.Print(Template.Text(Category.MuzzleTimeout, 1).Replace("+n", m.Name), true);
+
+                        Server.Users.Ares(x =>
+                        {
+                            if (x.ExternalIP.Equals(m.IP) || x.Guid.Equals(m.Guid))
+                                if (x.Muzzled)
+                                    x.Muzzled = false;
+                        });
+
+                        Server.Users.Web(x =>
+                        {
+                            if (x.ExternalIP.Equals(m.IP) || x.Guid.Equals(m.Guid))
+                                if (x.Muzzled)
+                                    x.Muzzled = false;
+                        });
+                    }
+                }
+        }
 
         public static bool IsMuzzled(IUser client)
         {
@@ -48,7 +81,9 @@ namespace commands
                     list.Add(new Item
                     {
                         IP = IPAddress.Parse(e.GetElementsByTagName("ip")[0].InnerText),
-                        Guid = new Guid(e.GetElementsByTagName("guid")[0].InnerText)
+                        Guid = new Guid(e.GetElementsByTagName("guid")[0].InnerText),
+                        Time = uint.Parse(e.GetElementsByTagName("time")[0].InnerText),
+                        Name = e.GetElementsByTagName("name")[0].InnerText
                     });
             }
             catch { }
@@ -61,7 +96,9 @@ namespace commands
                 list.Add(new Item
                 {
                     Guid = client.Guid,
-                    IP = client.ExternalIP
+                    IP = client.ExternalIP,
+                    Time = Server.Time,
+                    Name = client.Name
                 });
 
                 Save();
@@ -91,6 +128,12 @@ namespace commands
                 XmlNode guid = item.OwnerDocument.CreateNode(XmlNodeType.Element, "guid", item.BaseURI);
                 item.AppendChild(guid);
                 guid.InnerText = i.Guid.ToString();
+                XmlNode time = item.OwnerDocument.CreateNode(XmlNodeType.Element, "time", item.BaseURI);
+                item.AppendChild(time);
+                time.InnerText = i.Time.ToString();
+                XmlNode name = item.OwnerDocument.CreateNode(XmlNodeType.Element, "name", item.BaseURI);
+                item.AppendChild(name);
+                name.InnerText = i.Name;
             }
 
             try { xml.Save(Path.Combine(Server.DataPath, "muzzles.xml")); }

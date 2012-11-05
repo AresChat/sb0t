@@ -45,6 +45,7 @@ namespace commands
             list.Add(new Item { Category = Category.AdminAction, Index = 17, Text = "+r has been range banned by +a" });//94
             list.Add(new Item { Category = Category.AdminAction, Index = 18, Text = "+r has been range unbanned by +a" });//95
             list.Add(new Item { Category = Category.AdminAction, Index = 19, Text = "+a has cleared the ban list" });//96
+            list.Add(new Item { Category = Category.AdminAction, Index = 20, Text = "+n has been redirected to +r by +a" });//115
 
             list.Add(new Item { Category = Category.Notification, Index = 0, Text = "you are muzzled" });
             list.Add(new Item { Category = Category.Notification, Index = 1, Text = "ban list is empty" });
@@ -117,6 +118,11 @@ namespace commands
             list.Add(new Item { Category = Category.RoomSearch, Index = 5, Text = "Topic: +t" });
             list.Add(new Item { Category = Category.RoomSearch, Index = 6, Text = "Language: +l | Server: +s | Users: +u" });
             list.Add(new Item { Category = Category.RoomSearch, Index = 7, Text = "Hashlink: \\\\+h" });
+
+            list.Add(new Item { Category = Category.MuzzleTimeout, Index = 0, Text = "+n has set the muzzle timeout to +i" });//98
+            list.Add(new Item { Category = Category.MuzzleTimeout, Index = 1, Text = "+n your muzzle timeout has expired" });//99
+
+            list.Add(new Item { Category = Category.EnableDisable, Index = 0, Text = "" });
         }
     }
 
@@ -134,6 +140,8 @@ namespace commands
         Captcha = 9,
         Linking = 10,
         AdminList = 11,
-        RoomSearch = 12
+        RoomSearch = 12,
+        MuzzleTimeout = 13,
+        EnableDisable = 14
     }
 }

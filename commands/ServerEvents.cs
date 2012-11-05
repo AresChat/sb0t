@@ -10,6 +10,8 @@ namespace commands
     {
         public void ServerStarted()
         {
+            this._second_timer = 0;
+
             Motd.LoadMOTD();
             Template.Load();
             Muzzles.Load();
@@ -26,7 +28,17 @@ namespace commands
             AutoLogin.Load();
         }
 
-        public void CycleTick() { }
+        private uint _second_timer = 0;
+        public void CycleTick()
+        {
+            uint time = Server.Time;
+
+            if (time > this._second_timer)
+            {
+                this._second_timer = time;
+                Muzzles.Tick(time);
+            }
+        }
 
         public void UnhandledProtocol(IUser client, bool custom, byte msg, byte[] packet) { }
 
@@ -292,6 +304,10 @@ namespace commands
                 admin.Print("/autologins");
             if (admin.Level >= Server.GetLevel("roomsearch"))
                 admin.Print("/roomsearch <name>");
+            if (admin.Level >= Server.GetLevel("mtimeout"))
+                admin.Print("/mtimeout <minutes>");
+            if (admin.Level >= Server.GetLevel("redirect"))
+                admin.Print("/redirect <user> <hashlink>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -522,6 +538,10 @@ namespace commands
                 Eval.Autologins(client);
             else if (cmd.StartsWith("roomsearch "))
                 Eval.RoomSearch(client, cmd.Substring(11));
+            else if (cmd.StartsWith("mtimeout "))
+                Eval.MTimeout(client, cmd.Substring(9));
+            else if (cmd.StartsWith("redirect "))
+                Eval.Redirect(client, target, args);
         }
 
         public void LinkError(ILinkError error)
