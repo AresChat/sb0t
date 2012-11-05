@@ -459,5 +459,58 @@ namespace commands
                 if (admin.Owner)
                     AutoLogin.ListAdmins(admin);
         }
+
+        [CommandLevel("roomsearch", ILevel.Administrator)]
+        public static void RoomSearch(IUser client, String args)
+        {
+            if (!Server.Channels.Enabled)
+                Server.Print(Template.Text(Category.RoomSearch, 0), true);
+            else if (!Server.Channels.Available)
+                Server.Print(Template.Text(Category.RoomSearch, 1), true);
+            else
+            {
+                List<IChannelItem> items = new List<IChannelItem>();
+                String str = args.ToUpper();
+
+                Server.Channels.ForEach(x =>
+                {
+                    if (x.Name.ToUpper().Contains(str))
+                        items.Add(x);
+                });
+
+                items.Sort((y, x) => x.Users.CompareTo(y.Users));
+
+                if (items.Count > 5)
+                    items = items.GetRange(0, 5);
+
+                if (items.Count == 0)
+                    Server.Print(Template.Text(Category.RoomSearch, 2).Replace("+n", str), true);
+                else
+                {
+                    Server.Print(Template.Text(Category.RoomSearch, 3).Replace("+n", str), true);
+
+                    foreach (IChannelItem i in items)
+                    {
+                        Server.Print(String.Empty, true);
+                        Server.Print(Template.Text(Category.RoomSearch, 4).Replace("+n", i.Name), true);
+                        Server.Print(Template.Text(Category.RoomSearch, 5).Replace("+t", i.Topic), true);
+                        Server.Print(Template.Text(Category.RoomSearch, 6).Replace("+l",
+                            Helpers.LanguageCodeToString(i.Language)).Replace("+s", i.Version).Replace("+u", i.Users.ToString()), true);
+
+                        IHashlinkRoom obj = new Hashlink
+                        {
+                            IP = i.IP,
+                            Name = i.Name,
+                            Port = i.Port
+                        };
+
+                        String hashlink = Server.Hashlinks.Encrypt(obj);
+
+                        if (!String.IsNullOrEmpty(hashlink))
+                            Server.Print(Template.Text(Category.RoomSearch, 7).Replace("+h", "arlnk://" + hashlink), true);
+                    }
+                }
+            }
+        }
     }
 }

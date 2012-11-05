@@ -169,6 +169,7 @@ namespace gui
                     this.server.Close();
 
                 this.notify.Dispose();
+                Environment.Exit(-1);
             }
             else e.Cancel = true;
         }

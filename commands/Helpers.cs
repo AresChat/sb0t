@@ -8,6 +8,53 @@ namespace commands
 {
     class Helpers
     {
+        public static String LanguageCodeToString(byte code)
+        {
+            switch (code)
+            {
+                case 11:
+                    return "Arabic";
+                case 12:
+                    return "Chinese";
+                case 14:
+                    return "Czech";
+                case 15:
+                    return "Danish";
+                case 16:
+                    return "Dutch";
+                case 10:
+                    return "English";
+                case 27:
+                    return "Finnish";
+                case 28:
+                    return "French";
+                case 29:
+                    return "German";
+                case 30:
+                    return "Italian";
+                case 17:
+                    return "Japanese";
+                case 19:
+                    return "Kirghiz";
+                case 20:
+                    return "Polish";
+                case 21:
+                    return "Portuguese";
+                case 31:
+                    return "Russian";
+                case 22:
+                    return "Slovak";
+                case 23:
+                    return "Spanish";
+                case 25:
+                    return "Swedish";
+                case 26:
+                    return "Turkish";
+                default:
+                    return "English";
+            }
+        }
+
         public static String Time()
         {
             DateTime d = DateTime.Now;

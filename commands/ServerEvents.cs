@@ -75,7 +75,8 @@ namespace commands
             if (!client.Link.IsLinked)
             {
                 if (!client.FastPing)
-                    Motd.ViewMOTD(client);
+                    if (!client.WebClient)
+                        Motd.ViewMOTD(client);
 
                 if (Muzzles.IsMuzzled(client))
                     client.Muzzled = true;
@@ -289,6 +290,8 @@ namespace commands
                 admin.Print("/remautologin <id>");
             if (admin.Owner)
                 admin.Print("/autologins");
+            if (admin.Level >= Server.GetLevel("roomsearch"))
+                admin.Print("/roomsearch <name>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -517,6 +520,8 @@ namespace commands
                 Eval.RemAutologin(client, cmd.Substring(13));
             else if (cmd == "autologins")
                 Eval.Autologins(client);
+            else if (cmd.StartsWith("roomsearch "))
+                Eval.RoomSearch(client, cmd.Substring(11));
         }
 
         public void LinkError(ILinkError error)

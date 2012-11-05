@@ -51,6 +51,7 @@
     <Compile Include="CustomNames.cs" />
     <Compile Include="Echo.cs" />
     <Compile Include="Eval.cs" />
+    <Compile Include="Hashlink.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="IdleTime.cs" />
     <Compile Include="JoinFilter.cs" />

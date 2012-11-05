@@ -31,35 +31,30 @@ namespace scripting.Statics
             set { }
         }
 
-        private static ulong last_call = 0;
-
         [JSFunction(Name = "search", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static Objects.JSChannelCollection Search(ScriptEngine eng, Object a)
         {
             List<Objects.JSChannel> results = new List<Objects.JSChannel>();
-            ulong time = Server.Ticks;
 
-            if ((last_call + 1000) < time)
+            if (!(a is Undefined))
             {
-                last_call = time;
+                String str = a.ToString().ToUpper();
+                List<IChannelItem> matches = new List<IChannelItem>();
 
-                if (Server.Channels.Enabled)
-                    if (Server.Channels.Available)
-                        if (a is UserDefinedFunction)
-                        {
-                            UserDefinedFunction f = (UserDefinedFunction)a;
+                Server.Channels.ForEach(x =>
+                {
+                    if (x.Name.ToUpper().Contains(str))
+                        if (x.Users < 200)
+                            matches.Add(x);
+                });
 
-                            Server.Channels.ForEach(x =>
-                            {
-                                Objects.JSChannel channel = new Objects.JSChannel(eng.Object.InstancePrototype, x);
-                                object obj = f.Call(eng.Global, channel);
+                matches.Sort((y, x) => x.Users.CompareTo(y.Users));
 
-                                if (obj != null)
-                                    if (obj is bool)
-                                        if ((bool)obj)
-                                            results.Add(channel);
-                            });
-                        }
+                if (matches.Count > 10)
+                    matches = matches.GetRange(0, 10);
+
+                foreach (IChannelItem m in matches)
+                    results.Add(new Objects.JSChannel(eng.Object.InstancePrototype, m));
             }
 
             return new Objects.JSChannelCollection(eng.Object.InstancePrototype, results.ToArray(), eng.ScriptName);

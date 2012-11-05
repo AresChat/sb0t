@@ -108,6 +108,15 @@ namespace commands
             list.Add(new Item { Category = Category.AdminList, Index = 0, Text = "ADMIN LIST REQUESTED BY [+n]" });//50
             list.Add(new Item { Category = Category.AdminList, Index = 1, Text = "Level +l : +n" });//51
             list.Add(new Item { Category = Category.AdminList, Index = 2, Text = "List Complete" });//52
+
+            list.Add(new Item { Category = Category.RoomSearch, Index = 0, Text = "Room search service is not enabled" });
+            list.Add(new Item { Category = Category.RoomSearch, Index = 1, Text = "Channel database is empty, try again later" });
+            list.Add(new Item { Category = Category.RoomSearch, Index = 2, Text = "Unable to find any channels containing +n" });
+            list.Add(new Item { Category = Category.RoomSearch, Index = 3, Text = "Results for +n as follows:" });
+            list.Add(new Item { Category = Category.RoomSearch, Index = 4, Text = "Name: +n" });
+            list.Add(new Item { Category = Category.RoomSearch, Index = 5, Text = "Topic: +t" });
+            list.Add(new Item { Category = Category.RoomSearch, Index = 6, Text = "Language: +l | Server: +s | Users: +u" });
+            list.Add(new Item { Category = Category.RoomSearch, Index = 7, Text = "Hashlink: \\\\+h" });
         }
     }
 
@@ -124,6 +133,7 @@ namespace commands
         Messaging = 8,
         Captcha = 9,
         Linking = 10,
-        AdminList = 11
+        AdminList = 11,
+        RoomSearch = 12
     }
 }
