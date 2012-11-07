@@ -107,8 +107,8 @@ namespace core.Extensions
 
                 Settings.Topic = str;
 
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Topic(x, str)), x => x.LoggedIn);
-                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.TopicTo(x, str)), x => x.LoggedIn);
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Topic(x, str)), x => x.LoggedIn && x.Vroom == 0);
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.TopicTo(x, str)), x => x.LoggedIn && x.Vroom == 0);
             }
         }
 

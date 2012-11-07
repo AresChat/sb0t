@@ -13,6 +13,13 @@ namespace commands
             get { return Get<byte>("mtimeout"); }
             set { Set("mtimeout", value); }
         }
+
+        public static bool Clock
+        {
+            get { return Get<bool>("clock"); }
+            set { Set("clock", value); }
+        }
+
         public static bool AnonMonitoring
         {
             get { return Get<bool>("anonmonitoring"); }

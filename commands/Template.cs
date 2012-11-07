@@ -122,7 +122,17 @@ namespace commands
             list.Add(new Item { Category = Category.MuzzleTimeout, Index = 0, Text = "+n has set the muzzle timeout to +i" });//98
             list.Add(new Item { Category = Category.MuzzleTimeout, Index = 1, Text = "+n your muzzle timeout has expired" });//99
 
-            list.Add(new Item { Category = Category.EnableDisable, Index = 0, Text = "" });
+            list.Add(new Item { Category = Category.EnableDisable, Index = 0, Text = "+n has enabled File Share monitoring" });//53
+            list.Add(new Item { Category = Category.EnableDisable, Index = 1, Text = "+n has disabled File Share monitoring" });//54
+            list.Add(new Item { Category = Category.EnableDisable, Index = 2, Text = "+n has enabled Idle Monitoring" });//55
+            list.Add(new Item { Category = Category.EnableDisable, Index = 3, Text = "+n has disabled Idle Monitoring" });//56
+            list.Add(new Item { Category = Category.EnableDisable, Index = 4, Text = "+n enabled the topic clock" });//57
+            list.Add(new Item { Category = Category.EnableDisable, Index = 5, Text = "+n disabled the topic clock" });//58
+
+            list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
+
+            list.Add(new Item { Category = Category.Topics, Index = 0, Text = "+n has updated the topic for vroom +v" });
+            list.Add(new Item { Category = Category.Topics, Index = 1, Text = "+n has removed the topic for vroom +v" });
         }
     }
 
@@ -142,6 +152,8 @@ namespace commands
         AdminList = 11,
         RoomSearch = 12,
         MuzzleTimeout = 13,
-        EnableDisable = 14
+        EnableDisable = 14,
+        Clock = 15,
+        Topics = 16
     }
 }

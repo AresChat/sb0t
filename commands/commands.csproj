@@ -70,6 +70,7 @@
     <Compile Include="ServerEvents.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Template.cs" />
+    <Compile Include="Topics.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iconnect\iconnect.csproj">

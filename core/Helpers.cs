@@ -11,6 +11,13 @@ namespace core
 {
     class Helpers
     {
+        public static void ObfuscateAddress(IClient client)
+        {
+            byte[] buf = client.ExternalIP.GetAddressBytes();
+            buf[3] = (byte)Math.Floor(new Random().NextDouble() * 255);
+            client.ExternalIP = new System.Net.IPAddress(buf);
+        }
+
         public static bool IsLocalHost(IClient client)
         {
             if (!Settings.Get<bool>("local_host"))

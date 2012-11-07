@@ -26,6 +26,7 @@ namespace commands
             PMBlocking.Load();
             Captchas.Clear();
             AutoLogin.Load();
+            Topics.LoadTopics();
         }
 
         private uint _second_timer = 0;
@@ -37,6 +38,7 @@ namespace commands
             {
                 this._second_timer = time;
                 Muzzles.Tick(time);
+                Topics.UpdateClock(time);
             }
         }
 
@@ -73,10 +75,6 @@ namespace commands
 
             client.Print("\x000500\x000302" + Template.Text(Category.Credit, 0));
 
-            byte[] buf = client.ExternalIP.GetAddressBytes();
-            buf[3] = (byte)Math.Floor(new Random().NextDouble() * 255);
-            client.ExternalIP = new System.Net.IPAddress(buf);
-
             return true;
         }
 
@@ -86,6 +84,19 @@ namespace commands
 
             if (!client.Link.IsLinked)
             {
+                if (client.Vroom == 0)
+                {
+                    if (Settings.Clock)
+                        Topics.ClockTo(client);
+                }
+                else
+                {
+                    String topic = Topics.GetTopic(client.Vroom);
+
+                    if (!String.IsNullOrEmpty(topic))
+                        client.Topic(topic);
+                }
+
                 if (!client.FastPing)
                     if (!client.WebClient)
                         Motd.ViewMOTD(client);
@@ -308,6 +319,16 @@ namespace commands
                 admin.Print("/mtimeout <minutes>");
             if (admin.Level >= Server.GetLevel("redirect"))
                 admin.Print("/redirect <user> <hashlink>");
+            if (admin.Level >= Server.GetLevel("sharefiles"))
+                admin.Print("/sharefiles <on or off>");
+            if (admin.Level >= Server.GetLevel("idle"))
+                admin.Print("/idle <on or off>");
+            if (admin.Level >= Server.GetLevel("clock"))
+                admin.Print("/clock <on or off>");
+            if (admin.Level >= Server.GetLevel("addtopic"))
+                admin.Print("/addtopic <text>");
+            if (admin.Level >= Server.GetLevel("remtopic"))
+                admin.Print("/remtopic");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -395,7 +416,23 @@ namespace commands
 
         public bool VroomChanging(IUser client, ushort vroom) { return true; }
 
-        public void VroomChanged(IUser client) { }
+        public void VroomChanged(IUser client)
+        {
+            if (client.Vroom == 0)
+            {
+                if (Settings.Clock)
+                    Topics.ClockTo(client);
+                else
+                    client.Topic(Server.Chatroom.Topic);
+            }
+            else
+            {
+                String topic = Topics.GetTopic(client.Vroom);
+
+                if (!String.IsNullOrEmpty(topic))
+                    client.Topic(topic);
+            }
+        }
 
         public bool Flooding(IUser client, byte msg) { return true; }
 
@@ -542,6 +579,16 @@ namespace commands
                 Eval.MTimeout(client, cmd.Substring(9));
             else if (cmd.StartsWith("redirect "))
                 Eval.Redirect(client, target, args);
+            else if (cmd.StartsWith("sharefiles "))
+                Eval.ShareFiles(client, cmd.Substring(11));
+            else if (cmd.StartsWith("idle "))
+                Eval.IdleMonitoring(client, cmd.Substring(5));
+            else if (cmd.StartsWith("clock "))
+                Eval.Clock(client, cmd.Substring(6));
+            else if (cmd.StartsWith("addtopic "))
+                Eval.AddTopic(client, cmd.Substring(9));
+            else if (cmd == "remtopic")
+                Eval.RemTopic(client);
         }
 
         public void LinkError(ILinkError error)

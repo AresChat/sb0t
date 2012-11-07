@@ -541,6 +541,138 @@ namespace commands
                             target.Redirect(args.Trim());
         }
 
+        [CommandLevel("sharefiles", ILevel.Host)]
+        public static void ShareFiles(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("sharefiles"))
+            {
+                if (args == "on")
+                {
+                    Settings.ShareFileMonitoring = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 0).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.ShareFileMonitoring = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 1).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("idle", ILevel.Host)]
+        public static void IdleMonitoring(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("idle"))
+            {
+                if (args == "on")
+                {
+                    Settings.IdleMonitoring = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 2).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.IdleMonitoring = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 3).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("clock", ILevel.Administrator)]
+        public static void Clock(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("clock"))
+            {
+                if (args == "on")
+                {
+                    Settings.Clock = true;
+                    Topics.EnableClock();
+                    Server.Print(Template.Text(Category.EnableDisable, 4).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.Clock = false;
+                    Topics.DisableClock();
+                    Server.Print(Template.Text(Category.EnableDisable, 5).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("addtopic", ILevel.Administrator)]
+        public static void AddTopic(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("addtopic"))
+            {
+                if (admin.Vroom == 0)
+                {
+                    Server.Chatroom.Topic = args;
+
+                    if (Settings.Clock)
+                    {
+                        String topic = Topics.ClockTopic;
+
+                        Server.Users.Ares(x =>
+                        {
+                            if (x.Vroom == admin.Vroom)
+                                x.Topic(topic);
+                        });
+
+                        Server.Users.Web(x =>
+                        {
+                            if (x.Vroom == admin.Vroom)
+                                x.Topic(topic);
+                        });
+                    }
+                }
+                else
+                {
+                    Topics.AddTopic(admin.Vroom, args);
+
+                    Server.Users.Ares(x =>
+                    {
+                        if (x.Vroom == admin.Vroom)
+                            x.Topic(args);
+                    });
+
+                    Server.Users.Web(x =>
+                    {
+                        if (x.Vroom == admin.Vroom)
+                            x.Topic(args);
+                    });
+                }
+
+                Server.Print(Template.Text(Category.Topics, 0).Replace("+n",
+                    admin.Name).Replace("+v", admin.Vroom.ToString()));
+            }
+        }
+
+        [CommandLevel("remtopic", ILevel.Administrator)]
+        public static void RemTopic(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("remtopic"))
+            {
+                if (admin.Vroom > 0)
+                {
+                    String args = Settings.Clock ? Topics.ClockTopic : Server.Chatroom.Topic;
+                    Topics.RemTopic(admin.Vroom);
+
+                    Server.Users.Ares(x =>
+                    {
+                        if (x.Vroom == admin.Vroom)
+                            x.Topic(args);
+                    });
+
+                    Server.Users.Web(x =>
+                    {
+                        if (x.Vroom == admin.Vroom)
+                            x.Topic(args);
+                    });
+                }
+
+                Server.Print(Template.Text(Category.Topics, 1).Replace("+n",
+                    admin.Name).Replace("+v", admin.Vroom.ToString()));
+            }
+        }
+
 
     }
 }

@@ -471,7 +471,7 @@ namespace core
                     return;
                 }
 
-                if (command.StartsWith("idle"))
+                if (command == "idle" || command == "idles")
                 {
                     IdleManager.Add(client);
                     Events.Idled(client);

@@ -58,6 +58,8 @@ namespace core.ib0t
 
         private static void Login(ib0tClient client, String args, ulong time)
         {
+            Helpers.ObfuscateAddress(client);
+
             byte[] g = new byte[16];
 
             for (int i = 0; i < g.Length; i++)

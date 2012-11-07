@@ -494,8 +494,9 @@ namespace core
             if (client.LoggedIn)
                 return;
 
-            client.FastPing = relogin;
+            Helpers.ObfuscateAddress(client);
 
+            client.FastPing = relogin;
             client.Guid = packet;
             client.FileCount = packet;
             byte crypto = packet;
