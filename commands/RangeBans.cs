@@ -16,14 +16,20 @@ namespace commands
         {
             if (!String.IsNullOrEmpty(str))
                 if (list.Find(x => x == str) == null)
+                {
                     list.Add(str);
+                    Update();
+                }
         }
 
         public static String Remove(String str)
         {
             if (!String.IsNullOrEmpty(str))
-                if (list.RemoveAll(x => x == str) > -1)
+                if (list.RemoveAll(x => x == str) > 0)
+                {
+                    Update();
                     return str;
+                }
 
             return null;
         }

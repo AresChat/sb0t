@@ -33,7 +33,7 @@ namespace commands
                     if ((time - m.Time) > target)
                     {
                         list.RemoveAt(i);
-                        Server.Print(Template.Text(Category.MuzzleTimeout, 1).Replace("+n", m.Name), true);
+                        Server.Print(Template.Text(Category.Timeouts, 1).Replace("+n", m.Name), true);
 
                         Server.Users.Ares(x =>
                         {

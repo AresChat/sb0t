@@ -46,6 +46,8 @@ namespace commands
             list.Add(new Item { Category = Category.AdminAction, Index = 18, Text = "+r has been range unbanned by +a" });//95
             list.Add(new Item { Category = Category.AdminAction, Index = 19, Text = "+a has cleared the ban list" });//96
             list.Add(new Item { Category = Category.AdminAction, Index = 20, Text = "+n has been redirected to +r by +a" });//115
+            list.Add(new Item { Category = Category.AdminAction, Index = 21, Text = "+n was banned for 10 minutes by +a" });
+            list.Add(new Item { Category = Category.AdminAction, Index = 22, Text = "+n was banned for 60 minutes by +a" });
 
             list.Add(new Item { Category = Category.Notification, Index = 0, Text = "you are muzzled" });
             list.Add(new Item { Category = Category.Notification, Index = 1, Text = "ban list is empty" });
@@ -105,6 +107,9 @@ namespace commands
             list.Add(new Item { Category = Category.Linking, Index = 6, Text = "\x000314--- Link session has now been terminated" });
             list.Add(new Item { Category = Category.Linking, Index = 7, Text = "\x000314--- The chatroom [+n] does not allow linked admins" });
             list.Add(new Item { Category = Category.Linking, Index = 8, Text = "\x000314--- Reconnection will be attempted in 30 seconds..." });
+            list.Add(new Item { Category = Category.Linking, Index = 9, Text = "\x000314--- This chatroom is currently unlinked" });
+            list.Add(new Item { Category = Category.Linking, Index = 10, Text = "\x000314--- Name: +n" });
+            list.Add(new Item { Category = Category.Linking, Index = 11, Text = "\x000314--- Hashlink: \\\\+h" });
 
             list.Add(new Item { Category = Category.AdminList, Index = 0, Text = "ADMIN LIST REQUESTED BY [+n]" });//50
             list.Add(new Item { Category = Category.AdminList, Index = 1, Text = "Level +l : +n" });//51
@@ -119,8 +124,9 @@ namespace commands
             list.Add(new Item { Category = Category.RoomSearch, Index = 6, Text = "Language: +l | Server: +s | Users: +u" });
             list.Add(new Item { Category = Category.RoomSearch, Index = 7, Text = "Hashlink: \\\\+h" });
 
-            list.Add(new Item { Category = Category.MuzzleTimeout, Index = 0, Text = "+n has set the muzzle timeout to +i" });//98
-            list.Add(new Item { Category = Category.MuzzleTimeout, Index = 1, Text = "+n your muzzle timeout has expired" });//99
+            list.Add(new Item { Category = Category.Timeouts, Index = 0, Text = "+n has set the muzzle timeout to +i" });//98
+            list.Add(new Item { Category = Category.Timeouts, Index = 1, Text = "+n your muzzle timeout has expired" });//99
+            list.Add(new Item { Category = Category.Timeouts, Index = 2, Text = "+n's ban timeout has expired" });
 
             list.Add(new Item { Category = Category.EnableDisable, Index = 0, Text = "+n has enabled File Share monitoring" });//53
             list.Add(new Item { Category = Category.EnableDisable, Index = 1, Text = "+n has disabled File Share monitoring" });//54
@@ -128,11 +134,28 @@ namespace commands
             list.Add(new Item { Category = Category.EnableDisable, Index = 3, Text = "+n has disabled Idle Monitoring" });//56
             list.Add(new Item { Category = Category.EnableDisable, Index = 4, Text = "+n enabled the topic clock" });//57
             list.Add(new Item { Category = Category.EnableDisable, Index = 5, Text = "+n disabled the topic clock" });//58
+            list.Add(new Item { Category = Category.EnableDisable, Index = 6, Text = "+n has enabled the greet message" });//59
+            list.Add(new Item { Category = Category.EnableDisable, Index = 7, Text = "+n has disabled the greet message" });//60
+            list.Add(new Item { Category = Category.EnableDisable, Index = 8, Text = "+n has enabled the PM greet message" });//61
+            list.Add(new Item { Category = Category.EnableDisable, Index = 9, Text = "+n has disabled the PM greet message" });//62
+            list.Add(new Item { Category = Category.EnableDisable, Index = 10, Text = "+n has enabled CAPS monitoring" });//63
+            list.Add(new Item { Category = Category.EnableDisable, Index = 11, Text = "+n has disabled CAPS monitoring" });//64
+            list.Add(new Item { Category = Category.EnableDisable, Index = 12, Text = "+n has enabled Anon monitoring" });//65
+            list.Add(new Item { Category = Category.EnableDisable, Index = 13, Text = "+n has disabled Anon monitoring" });//66
+            list.Add(new Item { Category = Category.EnableDisable, Index = 14, Text = "+n has enabled custom names" });//69
+            list.Add(new Item { Category = Category.EnableDisable, Index = 15, Text = "+n has disabled custom names" });//70
+            list.Add(new Item { Category = Category.EnableDisable, Index = 16, Text = "+n has enabled general commands" });//71
+            list.Add(new Item { Category = Category.EnableDisable, Index = 17, Text = "+n has disabled general commands" });//72
 
             list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
 
-            list.Add(new Item { Category = Category.Topics, Index = 0, Text = "+n has updated the topic for vroom +v" });
-            list.Add(new Item { Category = Category.Topics, Index = 1, Text = "+n has removed the topic for vroom +v" });
+            list.Add(new Item { Category = Category.Topics, Index = 0, Text = "+n has updated the topic for vroom +v" });//124
+            list.Add(new Item { Category = Category.Topics, Index = 1, Text = "+n has removed the topic for vroom +v" });//125
+
+            list.Add(new Item { Category = Category.Greetings, Index = 0, Text = "new greet message was added by +n" });//129
+            list.Add(new Item { Category = Category.Greetings, Index = 1, Text = "greet message was removed by +n" });//130
+            list.Add(new Item { Category = Category.Greetings, Index = 2, Text = "+n has updated the pm greeting" });
+            list.Add(new Item { Category = Category.Greetings, Index = 3, Text = "greetmsg list is empty" });
         }
     }
 
@@ -151,9 +174,10 @@ namespace commands
         Linking = 10,
         AdminList = 11,
         RoomSearch = 12,
-        MuzzleTimeout = 13,
+        Timeouts = 13,
         EnableDisable = 14,
         Clock = 15,
-        Topics = 16
+        Topics = 16,
+        Greetings = 17
     }
 }

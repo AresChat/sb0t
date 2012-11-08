@@ -27,6 +27,8 @@ namespace commands
             Captchas.Clear();
             AutoLogin.Load();
             Topics.LoadTopics();
+            Bans.Load();
+            Greets.Load();
         }
 
         private uint _second_timer = 0;
@@ -39,6 +41,7 @@ namespace commands
                 this._second_timer = time;
                 Muzzles.Tick(time);
                 Topics.UpdateClock(time);
+                Bans.Tick(time);
             }
         }
 
@@ -99,7 +102,16 @@ namespace commands
 
                 if (!client.FastPing)
                     if (!client.WebClient)
+                    {
                         Motd.ViewMOTD(client);
+
+                        if (Settings.PMGreetMsg)
+                            client.PM(Server.Chatroom.BotName, Greets.GetPM(client));
+
+                        if (!client.Quarantined)
+                            if (Settings.GreetMsg)
+                                Server.Print(client.Vroom, Greets.GetGreet(client), true);
+                    }
 
                 if (Muzzles.IsMuzzled(client))
                     client.Muzzled = true;
@@ -263,8 +275,14 @@ namespace commands
 
             if (admin.Level >= Server.GetLevel("ban"))
                 admin.Print("/ban <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("ban10"))
+                admin.Print("/ban10 <user> [<message>]");
+            if (admin.Level >= Server.GetLevel("ban60"))
+                admin.Print("/ban60 <user> [<message>]");
             if (admin.Level >= Server.GetLevel("unban"))
                 admin.Print("/unban <user>");
+            if (admin.Level >= Server.GetLevel("listbans"))
+                admin.Print("/listbans");
             if (admin.Level >= Server.GetLevel("kick"))
                 admin.Print("/kick <user> [<message>]");
             if (admin.Level >= Server.GetLevel("muzzle"))
@@ -329,6 +347,26 @@ namespace commands
                 admin.Print("/addtopic <text>");
             if (admin.Level >= Server.GetLevel("remtopic"))
                 admin.Print("/remtopic");
+            if (admin.Level >= Server.GetLevel("greetmsg"))
+                admin.Print("/greetmsg <on or off>");
+            if (admin.Level >= Server.GetLevel("addgreetmsg"))
+                admin.Print("/addgreetmsg <message>");
+            if (admin.Level >= Server.GetLevel("remgreetmsg"))
+                admin.Print("/remgreetmsg <id>");
+            if (admin.Level >= Server.GetLevel("listgreetmsg"))
+                admin.Print("/listgreetmsg");
+            if (admin.Level >= Server.GetLevel("pmgreetmsg"))
+                admin.Print("/pmgreetmsg <on or off>");
+            if (admin.Level >= Server.GetLevel("pmgreetmsg"))
+                admin.Print("/pmgreetmsg <message>");
+            if (admin.Level >= Server.GetLevel("caps"))
+                admin.Print("/caps <on or off>");
+            if (admin.Level >= Server.GetLevel("anon"))
+                admin.Print("/anon <on or off>");
+            if (admin.Level >= Server.GetLevel("customnames"))
+                admin.Print("/customnames <on or off>");
+            if (admin.Level >= Server.GetLevel("general"))
+                admin.Print("/general <on or off>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -498,6 +536,8 @@ namespace commands
         public void BansAutoCleared()
         {
             Server.Print(Template.Text(Category.Notification, 5), true);
+            Muzzles.Clear();
+            Bans.Clear();
         }
 
         public void Command(IUser client, String cmd, IUser target, String args)
@@ -513,6 +553,10 @@ namespace commands
                 Eval.ID(client);
             else if (cmd.StartsWith("ban "))
                 Eval.Ban(client, target, args);
+            else if (cmd.StartsWith("ban10 "))
+                Eval.Ban10(client, target, args);
+            else if (cmd.StartsWith("ban60 "))
+                Eval.Ban60(client, target, args);
             else if (cmd.StartsWith("unban "))
                 Eval.Unban(client, cmd.Substring(6));
             else if (cmd.StartsWith("kick ") || cmd.StartsWith("kill "))
@@ -589,6 +633,26 @@ namespace commands
                 Eval.AddTopic(client, cmd.Substring(9));
             else if (cmd == "remtopic")
                 Eval.RemTopic(client);
+            else if (cmd == "listbans")
+                Eval.ListBans(client);
+            else if (cmd.StartsWith("listgreetmsg"))
+                Eval.ListGreetMsg(client);
+            else if (cmd.StartsWith("greetmsg "))
+                Eval.GreetMsg(client, cmd.Substring(9));
+            else if (cmd.StartsWith("addgreetmsg "))
+                Eval.AddGreetMsg(client, cmd.Substring(12));
+            else if (cmd.StartsWith("remgreetmsg "))
+                Eval.RemGreetMsg(client, cmd.Substring(12));
+            else if (cmd.StartsWith("pmgreetmsg "))
+                Eval.PMGreetMsg(client, cmd.Substring(11));
+            else if (cmd.StartsWith("caps "))
+                Eval.Caps(client, cmd.Substring(5));
+            else if (cmd.StartsWith("anon "))
+                Eval.Anon(client, cmd.Substring(5));
+            else if (cmd.StartsWith("customnames "))
+                Eval.CustomNames(client, cmd.Substring(12));
+            else if (cmd.StartsWith("general "))
+                Eval.General(client, cmd.Substring(8));
         }
 
         public void LinkError(ILinkError error)

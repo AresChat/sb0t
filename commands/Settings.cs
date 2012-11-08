@@ -56,6 +56,24 @@ namespace commands
             set { Set("general", value); }
         }
 
+        public static bool GreetMsg
+        {
+            get { return Get<bool>("greetmsg"); }
+            set { Set("greetmsg", value); }
+        }
+
+        public static bool PMGreetMsg
+        {
+            get { return Get<bool>("pmgreetmsg"); }
+            set { Set("pmgreetmsg", value); }
+        }
+
+        public static String PMGreetMsgText
+        {
+            get { return Get<String>("pmgreetmsgtext"); }
+            set { Set("pmgreetmsgtext", value); }
+        }
+
         private static Type[] AcceptableTypes = 
         {
             typeof(byte),

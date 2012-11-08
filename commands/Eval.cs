@@ -39,17 +39,49 @@ namespace commands
                         }
         }
 
+        [CommandLevel("ban10", ILevel.Moderator)]
+        public static void Ban10(IUser admin, IUser target, String args)
+        {
+            if (admin.Level >= Server.GetLevel("ban10"))
+                if (target != null)
+                    if (target.Level < admin.Level)
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            Server.Print(Template.Text(Category.AdminAction, 21).Replace("+n",
+                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+
+                            Bans.AddBan(target, BanDuration.Ten);
+                            target.Ban();
+                        }
+        }
+
+        [CommandLevel("ban60", ILevel.Administrator)]
+        public static void Ban60(IUser admin, IUser target, String args)
+        {
+            if (admin.Level >= Server.GetLevel("ban60"))
+                if (target != null)
+                    if (target.Level < admin.Level)
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            Server.Print(Template.Text(Category.AdminAction, 22).Replace("+n",
+                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+
+                            Bans.AddBan(target, BanDuration.Sixty);
+                            target.Ban();
+                        }
+        }
+
         [CommandLevel("unban", ILevel.Administrator)]
         public static void Unban(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("unban"))
             {
                 String name = null;
-                Server.Users.Banned(x => { if (x.Name == args) { name = x.Name; x.Unban(); return; } });
+                Server.Users.Banned(x => { if (x.Name == args.Replace("\"", String.Empty)) { name = x.Name; x.Unban(); return; } });
 
                 if (name == null && args.Length > 0)
                 {
-                    Server.Users.Banned(x => { if (x.Name.StartsWith(args)) { name = x.Name; x.Unban(); return; } });
+                    Server.Users.Banned(x => { if (x.Name.StartsWith(args.Replace("\"", String.Empty))) { name = x.Name; x.Unban(); return; } });
 
                     if (name == null)
                     {
@@ -62,7 +94,28 @@ namespace commands
                 }
 
                 if (name != null)
+                {
+                    Bans.RemoveBan(name);
                     Server.Print(Template.Text(Category.AdminAction, 1).Replace("+n", name).Replace("+a", admin.Name), true);
+                }
+            }
+        }
+
+        [CommandLevel("listbans", ILevel.Administrator)]
+        public static void ListBans(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("listbans"))
+            {
+                bool empty = true;
+
+                Server.Users.Banned(x =>
+                {
+                    empty = false;
+                    admin.Print(x.Name);
+                });
+
+                if (empty)
+                    admin.Print(Template.Text(Category.Notification, 1));
             }
         }
 
@@ -122,14 +175,14 @@ namespace commands
                 if (admin.Level > ILevel.Regular || Settings.General)
                 {
                     target.CustomName = args;
-                    CustomNames.UpdateCustomName(target);
+                    commands.CustomNames.UpdateCustomName(target);
                     Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                 }
             }
             else if (admin.Level >= Server.GetLevel("customname"))
             {
                 target.CustomName = args;
-                CustomNames.UpdateCustomName(target);
+                commands.CustomNames.UpdateCustomName(target);
                 Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name), true);
             }
         }
@@ -145,14 +198,14 @@ namespace commands
                 if (admin.Level > ILevel.Regular || Settings.General)
                 {
                     target.CustomName = null;
-                    CustomNames.UpdateCustomName(target);
+                    commands.CustomNames.UpdateCustomName(target);
                     Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                 }
             }
             else if (admin.Level >= Server.GetLevel("uncustomname"))
             {
                 target.CustomName = null;
-                CustomNames.UpdateCustomName(target);
+                commands.CustomNames.UpdateCustomName(target);
                 Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name), true);
             }
         }
@@ -525,7 +578,7 @@ namespace commands
                     if (b < 100)
                     {
                         Settings.MuzzleTimeout = b;
-                        Server.Print(Template.Text(Category.MuzzleTimeout, 0).Replace("+n",
+                        Server.Print(Template.Text(Category.Timeouts, 0).Replace("+n",
                             client.Name).Replace("+i", b == 0 ? "unlimited" : (b + " minutes")), true);
                     }
             }
@@ -538,7 +591,17 @@ namespace commands
                 if (target != null)
                     if (!(admin.Link.IsLinked && !target.Link.IsLinked))
                         if (target.Level < admin.Level)
-                            target.Redirect(args.Trim());
+                        {
+                            IHashlinkRoom hr = Server.Hashlinks.Decrypt(args.Trim());
+
+                            if (hr != null)
+                            {
+                                Server.Print(Template.Text(Category.AdminAction, 20).Replace("+n",
+                                    target.Name).Replace("+a", admin.Name).Replace("+r", hr.Name), true);
+
+                                target.Redirect(args.Trim());
+                            }
+                        }
         }
 
         [CommandLevel("sharefiles", ILevel.Host)]
@@ -673,6 +736,153 @@ namespace commands
             }
         }
 
+        [CommandLevel("greetmsg", ILevel.Host)]
+        public static void GreetMsg(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("greetmsg"))
+                if (args == "on")
+                {
+                    Settings.GreetMsg = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 6).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.GreetMsg = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 7).Replace("+n", admin.Name));
+                }
+        }
 
+        [CommandLevel("addgreetmsg", ILevel.Host)]
+        public static void AddGreetMsg(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("addgreetmsg"))
+                if (!String.IsNullOrEmpty(args))
+                    if (args.Length > 0)
+                    {
+                        Greets.Add(args);
+                        Server.Print(Template.Text(Category.Greetings, 0).Replace("+n", admin.Name));
+                    }
+        }
+
+        [CommandLevel("remgreetmsg", ILevel.Host)]
+        public static void RemGreetMsg(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("remgreetmsg"))
+                if (!String.IsNullOrEmpty(args))
+                {
+                    int i;
+
+                    if (int.TryParse(args, out i))
+                    {
+                        String str = Greets.Remove(i);
+
+                        if (!String.IsNullOrEmpty(str))
+                            Server.Print(Template.Text(Category.Greetings, 1).Replace("+n", admin.Name));
+                    }
+                }
+        }
+
+        [CommandLevel("listgreetmsg", ILevel.Host)]
+        public static void ListGreetMsg(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("listgreetmsg"))
+                Greets.List(admin);
+        }
+
+        [CommandLevel("pmgreetmsg", ILevel.Host)]
+        public static void PMGreetMsg(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("pmgreetmsg"))
+            {
+                if (args == "on")
+                {
+                    Settings.PMGreetMsg = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 8).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.PMGreetMsg = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 9).Replace("+n", admin.Name));
+                }
+                else if (!String.IsNullOrEmpty(args))
+                {
+                    Settings.PMGreetMsg = true;
+                    Greets.SetPM(args);
+                    Server.Print(Template.Text(Category.Greetings, 2).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("caps", ILevel.Administrator)]
+        public static void Caps(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("caps"))
+            {
+                if (args == "on")
+                {
+                    Settings.CapsMonitoring = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 10).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.CapsMonitoring = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 11).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("anon", ILevel.Administrator)]
+        public static void Anon(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("anon"))
+            {
+                if (args == "on")
+                {
+                    Settings.AnonMonitoring = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 12).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.AnonMonitoring = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 13).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("customnames", ILevel.Administrator)]
+        public static void CustomNames(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("customnames"))
+            {
+                if (args == "on")
+                {
+                    Server.Chatroom.CustomNamesEnabled = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 14).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Server.Chatroom.CustomNamesEnabled = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 15).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("general", ILevel.Administrator)]
+        public static void General(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("general"))
+            {
+                if (args == "on")
+                {
+                    Settings.General = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 16).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.General = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 17).Replace("+n", admin.Name));
+                }
+            }
+        }
     }
 }

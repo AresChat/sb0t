@@ -47,10 +47,12 @@
   <ItemGroup>
     <Compile Include="AdminTab.cs" />
     <Compile Include="AutoLogin.cs" />
+    <Compile Include="Bans.cs" />
     <Compile Include="Captchas.cs" />
     <Compile Include="CustomNames.cs" />
     <Compile Include="Echo.cs" />
     <Compile Include="Eval.cs" />
+    <Compile Include="Greets.cs" />
     <Compile Include="Hashlink.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="IdleTime.cs" />

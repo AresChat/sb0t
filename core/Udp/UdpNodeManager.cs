@@ -101,6 +101,9 @@ namespace core.Udp
                 xml.Save(DataPath);
             }
             catch { }
+
+            if (UdpStats.ACKIPS == 0)
+                LoadDefaultList();
         }
 
         private static bool LoadList()
