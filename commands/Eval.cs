@@ -107,11 +107,12 @@ namespace commands
             if (admin.Level >= Server.GetLevel("listbans"))
             {
                 bool empty = true;
+                int counter = 0;
 
                 Server.Users.Banned(x =>
                 {
                     empty = false;
-                    admin.Print(x.Name);
+                    admin.Print((counter++) + " - " + x.Name);
                 });
 
                 if (empty)
@@ -884,5 +885,64 @@ namespace commands
                 }
             }
         }
+
+        [CommandLevel("url", ILevel.Host)]
+        public static void Url(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("url"))
+            {
+                if (args == "on")
+                {
+                    Settings.Url = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 18).Replace("+n", admin.Name));
+                    Urls.EnableDisable(true);
+                }
+                else if (args == "off")
+                {
+                    Settings.Url = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 19).Replace("+n", admin.Name));
+                    Urls.EnableDisable(false);
+                }
+            }
+        }
+
+        [CommandLevel("addurl", ILevel.Administrator)]
+        public static void AddUrl(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("addurl"))
+            {
+                int i = args.IndexOf(" ");
+
+                if (i > 0)
+                {
+                    String addr = args.Substring(0, i);
+                    String text = args.Substring(i + 1);
+                    Urls.Add(addr, text);
+                    Server.Print(Template.Text(Category.Urls, 1).Replace("+n", admin.Name));
+                }
+            }
+        }
+
+        [CommandLevel("remurl", ILevel.Administrator)]
+        public static void RemUrl(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("remurl"))
+            {
+                int i;
+
+                if (int.TryParse(args, out i))
+                    if (Urls.Remove(i))
+                        Server.Print(Template.Text(Category.Urls, 2).Replace("+n", admin.Name));
+            }
+        }
+
+        [CommandLevel("listurls", ILevel.Administrator)]
+        public static void ListUrls(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("listurls"))
+                Urls.List(admin);
+        }
+
+
     }
 }

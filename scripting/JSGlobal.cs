@@ -18,6 +18,12 @@ namespace scripting
             " ",
         };
 
+        [JSFunction(Name = "tick")]
+        public static double Tick()
+        {
+            return Server.Ticks;
+        }
+
         [JSFunction(Name = "scriptName", Flags = JSFunctionFlags.HasEngineParameter)]
         public static String ScriptName(ScriptEngine eng)
         {

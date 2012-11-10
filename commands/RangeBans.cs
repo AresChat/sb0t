@@ -30,17 +30,32 @@ namespace commands
                     Update();
                     return str;
                 }
+                else
+                {
+                    int id;
+
+                    if (int.TryParse(str, out id))
+                        if (id >= 0 && id < list.Count)
+                        {
+                            String result = list[id];
+                            list.RemoveAt(id);
+                            Update();
+                            return result;
+                        }
+                }
 
             return null;
         }
 
         public static void List(IUser client)
         {
+            int counter = 0;
+
             if (list.Count == 0)
                 client.Print(Template.Text(Category.Notification, 1));
 
             foreach (String str in list)
-                client.Print(str);
+                client.Print((counter++) + " - " + str);
         }
 
         public static void Clear()

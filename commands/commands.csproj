@@ -73,6 +73,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Template.cs" />
     <Compile Include="Topics.cs" />
+    <Compile Include="Urls.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iconnect\iconnect.csproj">

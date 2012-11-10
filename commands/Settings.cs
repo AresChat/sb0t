@@ -8,6 +8,12 @@ namespace commands
 {
     class Settings
     {
+        public static bool Url
+        {
+            get { return Get<bool>("url"); }
+            set { Set("url", value); }
+        }
+
         public static byte MuzzleTimeout
         {
             get { return Get<byte>("mtimeout"); }

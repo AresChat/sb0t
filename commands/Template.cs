@@ -146,6 +146,8 @@ namespace commands
             list.Add(new Item { Category = Category.EnableDisable, Index = 15, Text = "+n has disabled custom names" });//70
             list.Add(new Item { Category = Category.EnableDisable, Index = 16, Text = "+n has enabled general commands" });//71
             list.Add(new Item { Category = Category.EnableDisable, Index = 17, Text = "+n has disabled general commands" });//72
+            list.Add(new Item { Category = Category.EnableDisable, Index = 18, Text = "dynamic url tag was enabled by +n" });//116
+            list.Add(new Item { Category = Category.EnableDisable, Index = 19, Text = "dynamic url tag was disabled by +n" });//117
 
             list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
 
@@ -156,6 +158,10 @@ namespace commands
             list.Add(new Item { Category = Category.Greetings, Index = 1, Text = "greet message was removed by +n" });//130
             list.Add(new Item { Category = Category.Greetings, Index = 2, Text = "+n has updated the pm greeting" });
             list.Add(new Item { Category = Category.Greetings, Index = 3, Text = "greetmsg list is empty" });
+
+            list.Add(new Item { Category = Category.Urls, Index = 0, Text = "url list is empty" });
+            list.Add(new Item { Category = Category.Urls, Index = 1, Text = "dynamic url tag was added by +n" });//118
+            list.Add(new Item { Category = Category.Urls, Index = 2, Text = "dynamic url tag was removed by +n" });//119
         }
     }
 
@@ -178,6 +184,7 @@ namespace commands
         EnableDisable = 14,
         Clock = 15,
         Topics = 16,
-        Greetings = 17
+        Greetings = 17,
+        Urls = 18
     }
 }

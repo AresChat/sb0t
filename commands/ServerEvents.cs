@@ -29,9 +29,11 @@ namespace commands
             Topics.LoadTopics();
             Bans.Load();
             Greets.Load();
+            Urls.Load();
         }
 
         private uint _second_timer = 0;
+
         public void CycleTick()
         {
             uint time = Server.Time;
@@ -42,6 +44,7 @@ namespace commands
                 Muzzles.Tick(time);
                 Topics.UpdateClock(time);
                 Bans.Tick(time);
+                Urls.Tick(time);
             }
         }
 
@@ -367,6 +370,14 @@ namespace commands
                 admin.Print("/customnames <on or off>");
             if (admin.Level >= Server.GetLevel("general"))
                 admin.Print("/general <on or off>");
+            if (admin.Level >= Server.GetLevel("url"))
+                admin.Print("/url <on or off>");
+            if (admin.Level >= Server.GetLevel("addurl"))
+                admin.Print("/addurl <address> <text>");
+            if (admin.Level >= Server.GetLevel("remurl"))
+                admin.Print("/remurl <id>");
+            if (admin.Level >= Server.GetLevel("listurls"))
+                admin.Print("/listurls");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -653,6 +664,14 @@ namespace commands
                 Eval.CustomNames(client, cmd.Substring(12));
             else if (cmd.StartsWith("general "))
                 Eval.General(client, cmd.Substring(8));
+            else if (cmd.StartsWith("url "))
+                Eval.Url(client, cmd.Substring(4));
+            else if (cmd.StartsWith("addurl "))
+                Eval.AddUrl(client, cmd.Substring(7));
+            else if (cmd.StartsWith("remurl "))
+                Eval.RemUrl(client, cmd.Substring(7));
+            else if (cmd == "listurl" || cmd == "listurls")
+                Eval.ListUrls(client);
         }
 
         public void LinkError(ILinkError error)
