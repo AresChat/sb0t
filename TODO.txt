@@ -1,0 +1,8 @@
+public to target - interlink
+emote to target - interlink
+public to leaf
+emote to leaf
+scribble to target - interlink
+nudge to target - interlink
+scribble to leaf
+nudge to leaf

@@ -76,5 +76,33 @@ namespace core.Extensions
             key.Close();
             return (ILevel)(byte)(int)value;
         }
+
+        public void PublicToTarget(IUser client, String sender, String text)
+        {
+            if (client is AresClient)
+            {
+                AresClient obj = (AresClient)client;
+                obj.SendPacket(TCPOutbound.Public(obj, sender, text));
+            }
+            else if (client is ib0t.ib0tClient)
+            {
+                ib0t.ib0tClient obj = (ib0t.ib0tClient)client;
+                obj.QueuePacket(ib0t.WebOutbound.PublicTo(obj, sender, text));
+            }
+        }
+
+        public void EmoteToTarget(IUser client, String sender, String text)
+        {
+            if (client is AresClient)
+            {
+                AresClient obj = (AresClient)client;
+                obj.SendPacket(TCPOutbound.Emote(obj, sender, text));
+            }
+            else if (client is ib0t.ib0tClient)
+            {
+                ib0t.ib0tClient obj = (ib0t.ib0tClient)client;
+                obj.QueuePacket(ib0t.WebOutbound.EmoteTo(obj, sender, text));
+            }
+        }
     }
 }

@@ -55,6 +55,8 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 3, Text = "+n is unignored" });
             list.Add(new Item { Category = Category.Notification, Index = 4, Text = "+n your CAPS have been auto-disabled" });//17
             list.Add(new Item { Category = Category.Notification, Index = 5, Text = "All ban lists have been automatically clear as scheduled" });//132
+            list.Add(new Item { Category = Category.Notification, Index = 6, Text = "+n was last seen as +o at +t from +ip" });//103
+            list.Add(new Item { Category = Category.Notification, Index = 7, Text = "-=-=-=-=- end of chat history -=-=-=-=-" });//128
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -148,6 +150,12 @@ namespace commands
             list.Add(new Item { Category = Category.EnableDisable, Index = 17, Text = "+n has disabled general commands" });//72
             list.Add(new Item { Category = Category.EnableDisable, Index = 18, Text = "dynamic url tag was enabled by +n" });//116
             list.Add(new Item { Category = Category.EnableDisable, Index = 19, Text = "dynamic url tag was disabled by +n" });//117
+            list.Add(new Item { Category = Category.EnableDisable, Index = 20, Text = "+n has enabled Room Information Updates" });//111
+            list.Add(new Item { Category = Category.EnableDisable, Index = 21, Text = "+n has disabled Room Information Updates" });//112
+            list.Add(new Item { Category = Category.EnableDisable, Index = 22, Text = "+n has enabled Last Seen monitoring" });//101
+            list.Add(new Item { Category = Category.EnableDisable, Index = 23, Text = "+n has disabled Last Seen monitoring" });//102
+            list.Add(new Item { Category = Category.EnableDisable, Index = 24, Text = "+n has enabled chat history feature" });//126
+            list.Add(new Item { Category = Category.EnableDisable, Index = 25, Text = "+n has disabled chat history feature" });//127
 
             list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
 
@@ -162,6 +170,14 @@ namespace commands
             list.Add(new Item { Category = Category.Urls, Index = 0, Text = "url list is empty" });
             list.Add(new Item { Category = Category.Urls, Index = 1, Text = "dynamic url tag was added by +n" });//118
             list.Add(new Item { Category = Category.Urls, Index = 2, Text = "dynamic url tag was removed by +n" });//119
+
+            list.Add(new Item { Category = Category.RoomInfo, Index = 0, Text = "Room Information" });//104
+            list.Add(new Item { Category = Category.RoomInfo, Index = 1, Text = "Current hosts: +n" });//105
+            list.Add(new Item { Category = Category.RoomInfo, Index = 2, Text = "Current user count: +n" });//106
+            list.Add(new Item { Category = Category.RoomInfo, Index = 3, Text = "Current admin count: +n" });//107
+            list.Add(new Item { Category = Category.RoomInfo, Index = 4, Text = "Server uptime: +n" });//108
+            list.Add(new Item { Category = Category.RoomInfo, Index = 5, Text = "Host status: +n" });//110
+            list.Add(new Item { Category = Category.RoomInfo, Index = 6, Text = "+n has updated the host status" });//113
         }
     }
 
@@ -185,6 +201,7 @@ namespace commands
         Clock = 15,
         Topics = 16,
         Greetings = 17,
-        Urls = 18
+        Urls = 18,
+        RoomInfo = 19
     }
 }

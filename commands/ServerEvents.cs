@@ -30,6 +30,7 @@ namespace commands
             Bans.Load();
             Greets.Load();
             Urls.Load();
+            History.Reset();
         }
 
         private uint _second_timer = 0;
@@ -45,6 +46,7 @@ namespace commands
                 Topics.UpdateClock(time);
                 Bans.Tick(time);
                 Urls.Tick(time);
+                RoomInfo.Tick(time);
             }
         }
 
@@ -104,6 +106,7 @@ namespace commands
                 }
 
                 if (!client.FastPing)
+                {
                     if (!client.WebClient)
                     {
                         Motd.ViewMOTD(client);
@@ -116,6 +119,10 @@ namespace commands
                                 Server.Print(client.Vroom, Greets.GetGreet(client), true);
                     }
 
+                    if (Settings.History)
+                        History.Show(client);
+                }
+
                 if (Muzzles.IsMuzzled(client))
                     client.Muzzled = true;
 
@@ -124,6 +131,21 @@ namespace commands
 
                 if (level > ILevel.Regular)
                     client.SetLevel(level);
+
+                if (Settings.LastSeen)
+                    Server.Users.Records(x =>
+                    {
+                        if (x.ExternalIP.Equals(client.ExternalIP))
+                            if (x.Name != client.Name)
+                            {
+                                String lastseen = Template.Text(Category.Notification, 6);
+                                lastseen = lastseen.Replace("+n", client.Name);
+                                lastseen = lastseen.Replace("+ip", client.ExternalIP.ToString());
+                                lastseen = lastseen.Replace("+o", x.Name);
+                                lastseen = lastseen.Replace("+t", Helpers.UnixTimeToString(x.JoinTime));
+                                return;
+                            }
+                    });
             }
         }
 
@@ -206,6 +228,8 @@ namespace commands
 
             if (echo != null)
                 client.SendText(echo);
+
+            History.Add(client.Name, text, false);
         }
 
         public void EmoteReceived(IUser client, String text) { }
@@ -241,6 +265,8 @@ namespace commands
 
             if (echo != null)
                 client.SendEmote(echo);
+
+            History.Add(client.Name, text, true);
         }
 
         public void PrivateSending(IUser client, IUser target, IPrivateMsg msg)
@@ -378,6 +404,14 @@ namespace commands
                 admin.Print("/remurl <id>");
             if (admin.Level >= Server.GetLevel("listurls"))
                 admin.Print("/listurls");
+            if (admin.Level >= Server.GetLevel("roominfo"))
+                admin.Print("/roominfo <on or off>");
+            if (admin.Level >= Server.GetLevel("status"))
+                admin.Print("/status <host status>");
+            if (admin.Level >= Server.GetLevel("lastseen"))
+                admin.Print("/lastseen <on or off>");
+            if (admin.Level >= Server.GetLevel("history"))
+                admin.Print("/history <on or off>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -672,6 +706,14 @@ namespace commands
                 Eval.RemUrl(client, cmd.Substring(7));
             else if (cmd == "listurl" || cmd == "listurls")
                 Eval.ListUrls(client);
+            else if (cmd.StartsWith("roominfo "))
+                Eval.RoomInfo(client, cmd.Substring(9));
+            else if (cmd.StartsWith("status "))
+                Eval.Status(client, cmd.Substring(7));
+            else if (cmd.StartsWith("lastseen "))
+                Eval.LastSeen(client, cmd.Substring(9));
+            else if (cmd.StartsWith("history "))
+                Eval.History(client, cmd.Substring(8));
         }
 
         public void LinkError(ILinkError error)

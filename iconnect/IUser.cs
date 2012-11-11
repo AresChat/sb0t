@@ -18,7 +18,7 @@ namespace iconnect
         /// <summary>Get session identity</summary>
         ushort ID { get; }
         /// <summary>Get External IP Address</summary>
-        IPAddress ExternalIP { get; set; }
+        IPAddress ExternalIP { get; }
         /// <summary>Get DNS Host Name</summary>
         String DNS { get; }
         /// <summary>Get 16 byte GUID</summary>

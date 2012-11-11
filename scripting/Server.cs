@@ -14,6 +14,22 @@ namespace scripting
         private static IHostApp Callback { get; set; }
 
         /// <summary>
+        /// Send a public message to one user
+        /// </summary>
+        public static void PublicToTarget(IUser client, String name, String text)
+        {
+            Callback.PublicToTarget(client, name, text);
+        }
+
+        /// <summary>
+        /// Send an emote message to one user
+        /// </summary>
+        public static void EmoteToTarget(IUser client, String name, String text)
+        {
+            Callback.EmoteToTarget(client, name, text);
+        }
+
+        /// <summary>
         /// Discover if this user is allowed to load or unload scripts
         /// </summary>
         public static bool CanScript(IUser user)

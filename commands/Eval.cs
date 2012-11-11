@@ -382,7 +382,6 @@ namespace commands
         public static void PMBlock(IUser client, String onoff)
         {
             if (client.Level > ILevel.Regular || Settings.General)
-            {
                 if (onoff == "on")
                 {
                     PMBlocking.Add(client);
@@ -393,7 +392,6 @@ namespace commands
                     PMBlocking.Remove(client);
                     Server.Print(Template.Text(Category.PmBlocking, 1).Replace("+n", client.Name), true);
                 }
-            }
         }
 
         public static void Shout(IUser client, String text)
@@ -609,7 +607,6 @@ namespace commands
         public static void ShareFiles(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("sharefiles"))
-            {
                 if (args == "on")
                 {
                     Settings.ShareFileMonitoring = true;
@@ -620,14 +617,12 @@ namespace commands
                     Settings.ShareFileMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 1).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("idle", ILevel.Host)]
         public static void IdleMonitoring(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("idle"))
-            {
                 if (args == "on")
                 {
                     Settings.IdleMonitoring = true;
@@ -638,14 +633,12 @@ namespace commands
                     Settings.IdleMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 3).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("clock", ILevel.Administrator)]
         public static void Clock(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("clock"))
-            {
                 if (args == "on")
                 {
                     Settings.Clock = true;
@@ -658,7 +651,6 @@ namespace commands
                     Topics.DisableClock();
                     Server.Print(Template.Text(Category.EnableDisable, 5).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("addtopic", ILevel.Administrator)]
@@ -794,7 +786,6 @@ namespace commands
         public static void PMGreetMsg(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("pmgreetmsg"))
-            {
                 if (args == "on")
                 {
                     Settings.PMGreetMsg = true;
@@ -811,14 +802,12 @@ namespace commands
                     Greets.SetPM(args);
                     Server.Print(Template.Text(Category.Greetings, 2).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("caps", ILevel.Administrator)]
         public static void Caps(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("caps"))
-            {
                 if (args == "on")
                 {
                     Settings.CapsMonitoring = true;
@@ -829,14 +818,12 @@ namespace commands
                     Settings.CapsMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 11).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("anon", ILevel.Administrator)]
         public static void Anon(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("anon"))
-            {
                 if (args == "on")
                 {
                     Settings.AnonMonitoring = true;
@@ -847,14 +834,12 @@ namespace commands
                     Settings.AnonMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 13).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("customnames", ILevel.Administrator)]
         public static void CustomNames(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("customnames"))
-            {
                 if (args == "on")
                 {
                     Server.Chatroom.CustomNamesEnabled = true;
@@ -865,14 +850,12 @@ namespace commands
                     Server.Chatroom.CustomNamesEnabled = false;
                     Server.Print(Template.Text(Category.EnableDisable, 15).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("general", ILevel.Administrator)]
         public static void General(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("general"))
-            {
                 if (args == "on")
                 {
                     Settings.General = true;
@@ -883,14 +866,12 @@ namespace commands
                     Settings.General = false;
                     Server.Print(Template.Text(Category.EnableDisable, 17).Replace("+n", admin.Name));
                 }
-            }
         }
 
         [CommandLevel("url", ILevel.Host)]
         public static void Url(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("url"))
-            {
                 if (args == "on")
                 {
                     Settings.Url = true;
@@ -903,7 +884,6 @@ namespace commands
                     Server.Print(Template.Text(Category.EnableDisable, 19).Replace("+n", admin.Name));
                     Urls.EnableDisable(false);
                 }
-            }
         }
 
         [CommandLevel("addurl", ILevel.Administrator)]
@@ -941,6 +921,68 @@ namespace commands
         {
             if (admin.Level >= Server.GetLevel("listurls"))
                 Urls.List(admin);
+        }
+
+        [CommandLevel("roominfo", ILevel.Host)]
+        public static void RoomInfo(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("roominfo"))
+                if (args == "on")
+                {
+                    Settings.RoomInfo = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 20).Replace("+n", admin.Name));
+                    commands.RoomInfo.ForceUpdate();
+                }
+                else if (args == "off")
+                {
+                    Settings.RoomInfo = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 21).Replace("+n", admin.Name));
+                }
+        }
+
+        [CommandLevel("status", ILevel.Host)]
+        public static void Status(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("status"))
+            {
+                Settings.Status = args;
+                Server.Print(Template.Text(Category.RoomInfo, 6).Replace("+n", admin.Name));
+
+                if (Settings.RoomInfo)
+                    commands.RoomInfo.ForceUpdate();
+            }
+        }
+
+        [CommandLevel("lastseen", ILevel.Host)]
+        public static void LastSeen(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("lastseen"))
+                if (args == "on")
+                {
+                    Settings.LastSeen = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 22).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.LastSeen = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 23).Replace("+n", admin.Name));
+                }
+        }
+
+        [CommandLevel("history", ILevel.Host)]
+        public static void History(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("history"))
+                if (args == "on")
+                {
+                    Settings.History = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 24).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.History = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 25).Replace("+n", admin.Name));
+                }
         }
 
 

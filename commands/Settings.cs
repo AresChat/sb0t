@@ -74,10 +74,34 @@ namespace commands
             set { Set("pmgreetmsg", value); }
         }
 
+        public static bool RoomInfo
+        {
+            get { return Get<bool>("roominfo"); }
+            set { Set("roominfo", value); }
+        }
+
+        public static bool LastSeen
+        {
+            get { return Get<bool>("lastseen"); }
+            set { Set("lastseen", value); }
+        }
+
+        public static bool History
+        {
+            get { return Get<bool>("history"); }
+            set { Set("history", value); }
+        }
+
         public static String PMGreetMsgText
         {
             get { return Get<String>("pmgreetmsgtext"); }
             set { Set("pmgreetmsgtext", value); }
+        }
+
+        public static String Status
+        {
+            get { return Get<String>("status"); }
+            set { Set("status", value); }
         }
 
         private static Type[] AcceptableTypes = 

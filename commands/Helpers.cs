@@ -63,6 +63,11 @@ namespace commands
                 (d.Minute >= 10 ? d.Minute.ToString() : ("0" + d.Minute));
         }
 
+        public static String UnixTimeToString(uint time)
+        {
+            return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(time).ToShortTimeString();
+        }
+
         public static IdleTime GetIdleUptime(uint away)
         {
             uint seconds = away;
