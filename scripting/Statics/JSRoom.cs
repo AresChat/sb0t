@@ -100,5 +100,11 @@ namespace scripting.Statics
                 if (!String.IsNullOrEmpty(text))
                     Server.Chatroom.UpdateURL(addr, text);
         }
+
+        [JSFunction(Name = "clearUrl", IsWritable = false, IsEnumerable = true)]
+        public static void ClearUrl()
+        {
+            Server.Chatroom.ClearURL();
+        }
     }
 }
