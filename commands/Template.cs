@@ -48,6 +48,8 @@ namespace commands
             list.Add(new Item { Category = Category.AdminAction, Index = 20, Text = "+n has been redirected to +r by +a" });//115
             list.Add(new Item { Category = Category.AdminAction, Index = 21, Text = "+n was banned for 10 minutes by +a" });
             list.Add(new Item { Category = Category.AdminAction, Index = 22, Text = "+n was banned for 60 minutes by +a" });
+            list.Add(new Item { Category = Category.AdminAction, Index = 23, Text = "+n's avatar was disabled by +a" });
+            list.Add(new Item { Category = Category.AdminAction, Index = 24, Text = "+n's personal message was set by +a" });
 
             list.Add(new Item { Category = Category.Notification, Index = 0, Text = "you are muzzled" });
             list.Add(new Item { Category = Category.Notification, Index = 1, Text = "ban list is empty" });
@@ -57,6 +59,13 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 5, Text = "All ban lists have been automatically clear as scheduled" });//132
             list.Add(new Item { Category = Category.Notification, Index = 6, Text = "+n was last seen as +o at +t from +ip" });//103
             list.Add(new Item { Category = Category.Notification, Index = 7, Text = "-=-=-=-=- end of chat history -=-=-=-=-" });//128
+            list.Add(new Item { Category = Category.Notification, Index = 8, Text = "MOTD reloaded by +n" });
+            list.Add(new Item { Category = Category.Notification, Index = 9, Text = "Admin commands enabled by +n" });
+            list.Add(new Item { Category = Category.Notification, Index = 10, Text = "Admin commands disabled by +n" });
+            list.Add(new Item { Category = Category.Notification, Index = 11, Text = "+n has cloaked" });
+            list.Add(new Item { Category = Category.Notification, Index = 12, Text = "+n has uncloaked" });
+            list.Add(new Item { Category = Category.Notification, Index = 13, Text = "+o is now known as +n" });
+            list.Add(new Item { Category = Category.Notification, Index = 14, Text = "screen cleared by +n" });
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -156,6 +165,8 @@ namespace commands
             list.Add(new Item { Category = Category.EnableDisable, Index = 23, Text = "+n has disabled Last Seen monitoring" });//102
             list.Add(new Item { Category = Category.EnableDisable, Index = 24, Text = "+n has enabled chat history feature" });//126
             list.Add(new Item { Category = Category.EnableDisable, Index = 25, Text = "+n has disabled chat history feature" });//127
+            list.Add(new Item { Category = Category.EnableDisable, Index = 26, Text = "+n has enabled stealth mode" });
+            list.Add(new Item { Category = Category.EnableDisable, Index = 27, Text = "+n has disabled stealth mode" });
 
             list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
 
@@ -178,6 +189,14 @@ namespace commands
             list.Add(new Item { Category = Category.RoomInfo, Index = 4, Text = "Server uptime: +n" });//108
             list.Add(new Item { Category = Category.RoomInfo, Index = 5, Text = "Host status: +n" });//110
             list.Add(new Item { Category = Category.RoomInfo, Index = 6, Text = "+n has updated the host status" });//113
+
+            list.Add(new Item { Category = Category.Info, Index = 0, Text = "\x00027+r" });
+            list.Add(new Item { Category = Category.Info, Index = 1, Text = "+n [vroom: +v] [id: +i]" });
+
+            list.Add(new Item { Category = Category.Locate, Index = 0, Text = "\x00027vroom location list" });
+            list.Add(new Item { Category = Category.Locate, Index = 1, Text = "+n is currently in vroom +v" });
+            list.Add(new Item { Category = Category.Locate, Index = 2, Text = "\x00027end of list" });
+            list.Add(new Item { Category = Category.Locate, Index = 3, Text = "location list empty" });
         }
     }
 
@@ -202,6 +221,8 @@ namespace commands
         Topics = 16,
         Greetings = 17,
         Urls = 18,
-        RoomInfo = 19
+        RoomInfo = 19,
+        Info = 20,
+        Locate = 21
     }
 }

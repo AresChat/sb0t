@@ -31,6 +31,7 @@ namespace commands
             Greets.Load();
             Urls.Load();
             History.Reset();
+            AvatarPMManager.Reset();
         }
 
         private uint _second_timer = 0;
@@ -147,6 +148,11 @@ namespace commands
                             }
                     });
             }
+
+            String forced_pm = AvatarPMManager.GetPM(client);
+
+            if (forced_pm != null)
+                client.PersonalMessage = forced_pm;
         }
 
         public void Rejected(IUser client, RejectedMsg msg)
@@ -183,9 +189,21 @@ namespace commands
 
         public void Parted(IUser client) { }
 
-        public bool AvatarReceived(IUser client) { return true; }
+        public bool AvatarReceived(IUser client)
+        {
+            return AvatarPMManager.CanAvatar(client);
+        }
 
-        public bool PersonalMessageReceived(IUser client, String text) { return true; }
+        public bool PersonalMessageReceived(IUser client, String text)
+        {
+            String forced_pm = AvatarPMManager.GetPM(client);
+
+            if (forced_pm != null)
+                if (forced_pm != text)
+                    return false;
+
+            return true;
+        }
 
         public void TextReceived(IUser client, String text) { }
 
@@ -195,6 +213,14 @@ namespace commands
                 client.Print(Template.Text(Category.Notification, 0));
             else
             {
+                if (text.StartsWith("#host") || text.StartsWith("#whisper") ||
+                    text.StartsWith("#clone") || text.StartsWith("#cloak"))
+                    return String.Empty;
+
+                if (client.Level > ILevel.Regular && text.StartsWith("#"))
+                    if (Settings.Stealth)
+                        return String.Empty;
+
                 if (KewlText.IsKewlText(client))
                     text = KewlText.UnicodeText(text);
 
@@ -283,11 +309,18 @@ namespace commands
 
         public void BotPrivateSent(IUser client, String text) { }
 
-        public bool Nick(IUser client, String name) { return true; }
+        public bool Nick(IUser client, String name)
+        {
+            Server.Print(Template.Text(Category.Notification, 13).Replace("+o", client.Name).Replace("+n", name), true);
+            return true;
+        }
 
         public void Help(IUser admin)
         {
             if (!admin.Registered)
+                return;
+
+            if (Settings.DisableAdmins && admin.Level < ILevel.Host)
                 return;
 
             admin.Print("/id");
@@ -301,6 +334,8 @@ namespace commands
                 admin.Print("/pmblock <on or off>");
                 admin.Print("/shout <message>");
                 admin.Print("/whisper <user> <message>");
+                admin.Print("/locate");
+                admin.Print("/viewmotd");
             }
 
             if (admin.Level >= Server.GetLevel("ban"))
@@ -413,6 +448,38 @@ namespace commands
                 admin.Print("/lastseen <on or off>");
             if (admin.Level >= Server.GetLevel("history"))
                 admin.Print("/history <on or off>");
+            if (admin.Level >= Server.GetLevel("pmroom"))
+                admin.Print("/pmroom <text>");
+            if (admin.Level == ILevel.Host)
+                admin.Print("/hostkill <user>");
+            if (admin.Level == ILevel.Host)
+                admin.Print("/hostban <user>");
+            if (admin.Level == ILevel.Host)
+                admin.Print("/hostunban <user>");
+            if (admin.Level == ILevel.Host)
+                admin.Print("/hostmuzzle <user>");
+            if (admin.Level == ILevel.Host)
+                admin.Print("/hostunmuzzle <user>");
+            if (admin.Level == ILevel.Host)
+                admin.Print("/hostcbans");
+            if (admin.Level == ILevel.Host)
+                admin.Print("/hostclone <user> <text>");
+            if (admin.Level >= Server.GetLevel("loadmotd"))
+                admin.Print("/loadmotd");
+            if (admin.Level >= Server.GetLevel("disableadmins"))
+                admin.Print("/enableadmins");
+            if (admin.Level >= Server.GetLevel("disableadmins"))
+                admin.Print("/disableadmins");
+            if (admin.Level >= Server.GetLevel("stealth"))
+                admin.Print("/stealth <on or off>");
+            if (admin.Level >= Server.GetLevel("cloak"))
+                admin.Print("/cloak <on or off>");
+            if (admin.Level >= Server.GetLevel("disableavatar"))
+                admin.Print("/disableavatar <user>");
+            if (admin.Level >= Server.GetLevel("changemessage"))
+                admin.Print("/changemessage <user> <message>");
+            if (admin.Level >= Server.GetLevel("clearscreen"))
+                admin.Print("/clearscreen");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -591,6 +658,9 @@ namespace commands
             if (!client.Registered)
                 return;
 
+            if (Settings.DisableAdmins && client.Level < ILevel.Host)
+                return;
+
             if (cmd == "version")
                 client.Print(Server.Chatroom.Version);
             else if (cmd.StartsWith("vroom "))
@@ -717,6 +787,42 @@ namespace commands
                 Eval.LastSeen(client, cmd.Substring(9));
             else if (cmd.StartsWith("history "))
                 Eval.History(client, cmd.Substring(8));
+            else if (cmd == "locate")
+                Eval.Locate(client);
+            else if (cmd == "viewmotd")
+                Eval.ViewMotd(client);
+            else if (cmd.StartsWith("pmroom "))
+                Eval.PMRoom(client, cmd.Substring(7));
+            else if (cmd.StartsWith("hostkill ") || cmd.StartsWith("hostkick "))
+                Eval.HostKill(client, target);
+            else if (cmd.StartsWith("hostban "))
+                Eval.HostBan(client, target);
+            else if (cmd.StartsWith("hostunban "))
+                Eval.HostUnban(client, cmd.Substring(10));
+            else if (cmd.StartsWith("hostmuzzle "))
+                Eval.HostMuzzle(client, target);
+            else if (cmd.StartsWith("hostunmuzzle "))
+                Eval.HostUnmuzzle(client, target);
+            else if (cmd.StartsWith("hostcban"))
+                Eval.HostCBans(client);
+            else if (cmd.StartsWith("hostclone "))
+                Eval.HostClone(client, target, args);
+            else if (cmd == "loadmotd")
+                Eval.LoadMotd(client);
+            else if (cmd == "enableadmins")
+                Eval.EnableAdmins(client);
+            else if (cmd == "disableadmins")
+                Eval.DisableAdmins(client);
+            else if (cmd.StartsWith("stealth "))
+                Eval.Stealth(client, cmd.Substring(8));
+            else if (cmd.StartsWith("cloak "))
+                Eval.Cloak(client, cmd.Substring(6));
+            else if (cmd.StartsWith("disableavatar "))
+                Eval.DisableAvatar(client, target);
+            else if (cmd.StartsWith("changemessage "))
+                Eval.ChangeMessage(client, target, args);
+            else if (cmd == "clearscreen")
+                Eval.ClearScreen(client);
         }
 
         public void LinkError(ILinkError error)

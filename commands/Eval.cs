@@ -26,19 +26,28 @@ namespace commands
 
         public static void Info(IUser client)
         {
-            client.Print("\x07" + Server.Chatroom.Name);
+            client.Print(Template.Text(Category.Info, 0).Replace("+r", Server.Chatroom.Name));
             client.Print(String.Empty);
 
-            Server.Users.Ares(x => { if (!x.Quarantined) client.Print(x.Name + " [vroom: " + x.Vroom + "] [id: " + x.ID + "]"); });
-            Server.Users.Web(x => { if (!x.Quarantined) client.Print(x.Name + " [vroom: " + x.Vroom + "] [id: " + x.ID + "]"); });
+            Server.Users.Ares(x =>
+            {
+                if (!x.Quarantined && !x.Cloaked)
+                    client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", x.ID.ToString()));
+            });
+
+            Server.Users.Web(x =>
+            {
+                if (!x.Quarantined)
+                    client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", x.ID.ToString()));
+            });
 
             if (Server.Link.IsLinked)
                 Server.Link.ForEachLeaf(l =>
                 {
                     client.Print(String.Empty);
-                    client.Print("\x07" + l.Name);
+                    client.Print(Template.Text(Category.Info, 0).Replace("+r", l.Name));
                     client.Print(String.Empty);
-                    l.ForEachUser(x => client.Print(x.Name + " [vroom: " + x.Vroom + "] [id: " + x.ID + "]"));
+                    l.ForEachUser(x => client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", x.ID.ToString())));
                 });
         }
 
@@ -51,7 +60,7 @@ namespace commands
                         if (!(admin.Link.IsLinked && !target.Link.IsLinked))
                         {
                             Server.Print(Template.Text(Category.AdminAction, 0).Replace("+n",
-                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                             target.Ban();
                         }
@@ -66,7 +75,7 @@ namespace commands
                         if (!(admin.Link.IsLinked && !target.Link.IsLinked))
                         {
                             Server.Print(Template.Text(Category.AdminAction, 21).Replace("+n",
-                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                             Bans.AddBan(target, BanDuration.Ten);
                             target.Ban();
@@ -82,7 +91,7 @@ namespace commands
                         if (!(admin.Link.IsLinked && !target.Link.IsLinked))
                         {
                             Server.Print(Template.Text(Category.AdminAction, 22).Replace("+n",
-                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                             Bans.AddBan(target, BanDuration.Sixty);
                             target.Ban();
@@ -114,7 +123,7 @@ namespace commands
                 if (name != null)
                 {
                     Bans.RemoveBan(name);
-                    Server.Print(Template.Text(Category.AdminAction, 1).Replace("+n", name).Replace("+a", admin.Name), true);
+                    Server.Print(Template.Text(Category.AdminAction, 1).Replace("+n", name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                 }
             }
         }
@@ -147,7 +156,7 @@ namespace commands
                         if (!(admin.Link.IsLinked && !target.Link.IsLinked))
                         {
                             Server.Print(Template.Text(Category.AdminAction, 2).Replace("+n",
-                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                             target.Disconnect();
                         }
@@ -162,7 +171,7 @@ namespace commands
                         if (!(admin.Link.IsLinked && !target.Link.IsLinked))
                         {
                             Server.Print(Template.Text(Category.AdminAction, 3).Replace("+n",
-                                target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                             target.Muzzled = true;
                             Muzzles.AddMuzzle(target);
@@ -176,7 +185,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 4).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         target.Muzzled = false;
                         Muzzles.RemoveMuzzle(target);
@@ -189,20 +198,25 @@ namespace commands
             if (target == null || args.Length < 2)
                 return;
 
+            String check = args.ToUpper();
+
+            if (check.Contains("CHATROOM") || check.Contains("HTTP") || check.Contains("WWW") || check.Contains("ARLNK"))
+                return;
+
             if (admin.Name == target.Name)
             {
                 if (admin.Level > ILevel.Regular || Settings.General)
                 {
                     target.CustomName = args;
                     commands.CustomNames.UpdateCustomName(target);
-                    Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                    Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                 }
             }
             else if (admin.Level >= Server.GetLevel("customname"))
             {
                 target.CustomName = args;
                 commands.CustomNames.UpdateCustomName(target);
-                Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
             }
         }
 
@@ -218,14 +232,14 @@ namespace commands
                 {
                     target.CustomName = null;
                     commands.CustomNames.UpdateCustomName(target);
-                    Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                    Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                 }
             }
             else if (admin.Level >= Server.GetLevel("uncustomname"))
             {
                 target.CustomName = null;
                 commands.CustomNames.UpdateCustomName(target);
-                Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
             }
         }
 
@@ -235,7 +249,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("kewltext"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 7).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                    Server.Print(Template.Text(Category.AdminAction, 7).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                     KewlText.Add(target);
                 }
         }
@@ -245,7 +259,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("kewltext"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 8).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                    Server.Print(Template.Text(Category.AdminAction, 8).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                     KewlText.Remove(target);
                 }
         }
@@ -258,7 +272,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 9).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         Lowered.Add(target);
                     }
@@ -271,7 +285,7 @@ namespace commands
                 if (target != null)
                 {
                     Server.Print(Template.Text(Category.AdminAction, 10).Replace("+n",
-                        target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                        target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                     Lowered.Remove(target);
                 }
@@ -285,7 +299,7 @@ namespace commands
                     if (target.Level < admin.Level)
                     {
                         Server.Print(Template.Text(Category.AdminAction, 11).Replace("+n",
-                            target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                         Kiddied.Add(target);
                     }
@@ -297,7 +311,7 @@ namespace commands
                 if (target != null)
                 {
                     Server.Print(Template.Text(Category.AdminAction, 12).Replace("+n",
-                        target.Name).Replace("+a", admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                        target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
                     Kiddied.Remove(target);
                 }
@@ -310,7 +324,7 @@ namespace commands
                 if (target != null)
                     if (target.Level < admin.Level)
                     {
-                        Server.Print(Template.Text(Category.AdminAction, 13).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                        Server.Print(Template.Text(Category.AdminAction, 13).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                         commands.Echo.Add(target, args);
                     }
         }
@@ -320,7 +334,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("echo"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 14).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                    Server.Print(Template.Text(Category.AdminAction, 14).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                     commands.Echo.Remove(target);
                 }
         }
@@ -332,7 +346,7 @@ namespace commands
                 if (target != null)
                     if (target.Level < admin.Level)
                     {
-                        Server.Print(Template.Text(Category.AdminAction, 15).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                        Server.Print(Template.Text(Category.AdminAction, 15).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                         commands.Paint.Add(target, args);
                     }
         }
@@ -342,7 +356,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("paint"))
                 if (target != null)
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 16).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                    Server.Print(Template.Text(Category.AdminAction, 16).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                     commands.Paint.Remove(target);
                 }
         }
@@ -356,7 +370,7 @@ namespace commands
 
                 if (!String.IsNullOrEmpty(str))
                 {
-                    Server.Print(Template.Text(Category.AdminAction, 17).Replace("+a", client.Name).Replace("+r", str), true);
+                    Server.Print(Template.Text(Category.AdminAction, 17).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : client.Name).Replace("+r", str), true);
                     RangeBans.Add(str);
                 }
             }
@@ -370,7 +384,7 @@ namespace commands
                 String str = RangeBans.Remove(args);
 
                 if (str != null)
-                    Server.Print(Template.Text(Category.AdminAction, 18).Replace("+a", client.Name).Replace("+r", str), true);
+                    Server.Print(Template.Text(Category.AdminAction, 18).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : client.Name).Replace("+r", str), true);
             }
         }
 
@@ -393,7 +407,7 @@ namespace commands
                 commands.Echo.Clear();
                 commands.Paint.Clear();
                 Lowered.Clear();
-                Server.Print(Template.Text(Category.AdminAction, 19).Replace("+a", client.Name), true);
+                Server.Print(Template.Text(Category.AdminAction, 19).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : client.Name), true);
             }
         }
 
@@ -410,6 +424,332 @@ namespace commands
                     PMBlocking.Remove(client);
                     Server.Print(Template.Text(Category.PmBlocking, 1).Replace("+n", client.Name), true);
                 }
+        }
+
+        public static void Locate(IUser client)
+        {
+            if (client.Level > ILevel.Regular || Settings.General)
+            {
+                bool empty = true;
+
+                Server.Users.All(x =>
+                {
+                    if (!x.Quarantined && !x.Cloaked)
+                        if (x.Vroom > 0)
+                        {
+                            if (empty)
+                            {
+                                empty = false;
+                                client.Print(Template.Text(Category.Locate, 0));
+                                client.Print(String.Empty);
+                            }
+
+                            client.Print(Template.Text(Category.Locate, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()));
+                        }
+                });
+
+                if (!empty)
+                {
+                    client.Print(String.Empty);
+                    client.Print(Template.Text(Category.Locate, 2));
+                }
+                else client.Print(Template.Text(Category.Locate, 3));
+            }
+        }
+
+        public static void ViewMotd(IUser client)
+        {
+            if (client.Level > ILevel.Regular || Settings.General)
+                Motd.ViewMOTD(client);
+        }
+
+        [CommandLevel("pmroom", ILevel.Host)]
+        public static void PMRoom(IUser client, String args)
+        {
+            if (client.Level >= Server.GetLevel("pmroom"))
+                Server.Users.Ares(x => x.PM(client.Name, args));
+        }
+
+        public static void HostKill(IUser admin, IUser target)
+        {
+            if (admin.Level == ILevel.Host)
+                if (target != null)
+                    if (target.Level < admin.Level)
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                            target.Disconnect();
+        }
+
+        public static void HostBan(IUser admin, IUser target)
+        {
+            if (admin.Level == ILevel.Host)
+                if (target != null)
+                    if (target.Level < admin.Level)
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                            target.Ban();
+        }
+
+        public static void HostUnban(IUser admin, String args)
+        {
+            if (admin.Level == ILevel.Host)
+            {
+                String name = null;
+                Server.Users.Banned(x => { if (x.Name == args.Replace("\"", String.Empty)) { name = x.Name; x.Unban(); return; } });
+
+                if (name == null && args.Length > 0)
+                {
+                    Server.Users.Banned(x => { if (x.Name.StartsWith(args.Replace("\"", String.Empty))) { name = x.Name; x.Unban(); return; } });
+
+                    if (name == null)
+                    {
+                        uint counter = 0;
+                        uint target;
+
+                        if (uint.TryParse(args, out target))
+                            Server.Users.Banned(x => { if (counter == target) { name = x.Name; x.Unban(); return; } counter++; });
+                    }
+                }
+
+                if (name != null)
+                    Bans.RemoveBan(name);
+            }
+        }
+
+        public static void HostMuzzle(IUser admin, IUser target)
+        {
+            if (admin.Level == ILevel.Host)
+                if (target != null)
+                    if (target.Level < admin.Level)
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            target.Muzzled = true;
+                            Muzzles.AddMuzzle(target);
+                        }
+        }
+
+        public static void HostUnmuzzle(IUser admin, IUser target)
+        {
+            if (admin.Level == ILevel.Host)
+                if (target != null)
+                    if (target.Level < admin.Level)
+                    {
+                        target.Muzzled = false;
+                        Muzzles.RemoveMuzzle(target);
+                    }
+        }
+
+        public static void HostCBans(IUser admin)
+        {
+            if (admin.Level == ILevel.Host)
+            {
+                Server.ClearBans();
+                RangeBans.Clear();
+                Muzzles.Clear();
+                Kiddied.Clear();
+                commands.Echo.Clear();
+                commands.Paint.Clear();
+                Lowered.Clear();
+            }
+        }
+
+        public static void HostClone(IUser admin, IUser target, String args)
+        {
+            if (args.StartsWith("/me ") && args.Length > 4)
+                target.SendEmote(args.Substring(4));
+            else if (args.Length > 0)
+                target.SendText(args);
+        }
+
+        [CommandLevel("loadmotd", ILevel.Host)]
+        public static void LoadMotd(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("loadmotd"))
+            {
+                Motd.LoadMOTD();
+                Server.Print(Template.Text(Category.Notification, 8).Replace("+n", admin.Name));
+            }
+        }
+
+        [CommandLevel("disableadmins", ILevel.Host)]
+        public static void EnableAdmins(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("disableadmins"))
+            {
+                Settings.DisableAdmins = false;
+                Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 9).Replace("+n", admin.Name));
+            }
+        }
+
+        [CommandLevel("disableadmins", ILevel.Host)]
+        public static void DisableAdmins(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("disableadmins"))
+            {
+                Settings.DisableAdmins = true;
+                Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 10).Replace("+n", admin.Name));
+            }
+        }
+
+        [CommandLevel("stealth", ILevel.Administrator)]
+        public static void Stealth(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("stealth"))
+                if (args == "on")
+                {
+                    Settings.Stealth = true;
+                    Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 26).Replace("+n", admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.Stealth = false;
+                    Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 27).Replace("+n", admin.Name));
+                }
+        }
+
+        [CommandLevel("cloak", ILevel.Host)]
+        public static void Cloak(IUser admin, String args)
+        {
+            if (!Server.Link.IsLinked)
+                if (admin.Level >= Server.GetLevel("cloak"))
+                    if (args == "on")
+                    {
+                        admin.Cloaked = true;
+                        Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 11).Replace("+n", admin.Name));
+                    }
+                    else if (args == "off")
+                    {
+                        admin.Cloaked = false;
+                        Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 12).Replace("+n", admin.Name));
+                    }
+        }
+
+        [CommandLevel("disableavatar", ILevel.Moderator)]
+        public static void DisableAvatar(IUser admin, IUser target)
+        {
+            if (admin.Level >= Server.GetLevel("disableavatar"))
+                if (target != null)
+                    if (target.Level < admin.Level)
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            target.Avatar = null;
+                            AvatarPMManager.AddAvatar(target);
+                            Server.Print(Template.Text(Category.AdminAction, 23).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+                        }
+        }
+
+        [CommandLevel("changemessage", ILevel.Moderator)]
+        public static void ChangeMessage(IUser admin, IUser target, String args)
+        {
+            if (admin.Level >= Server.GetLevel("changemessage"))
+                if (target != null)
+                    if (target.Level < admin.Level)
+                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
+                        {
+                            target.PersonalMessage = args;
+                            AvatarPMManager.AddPM(target, args);
+                            Server.Print(Template.Text(Category.AdminAction, 24).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+                        }
+        }
+
+        [CommandLevel("clearscreen", ILevel.Moderator)]
+        public static void ClearScreen(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("clearscreen"))
+            {
+                for (int i = 0; i < 500; i++)
+                    Server.Print(String.Empty, true);
+
+                Server.Print(Template.Text(Category.Notification, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+            }
+        }
+
+        public static void BanStats(IUser admin)
+        {
+
+        }
+
+        public static void Colors(IUser admin, String args)
+        {
+
+        }
+
+        public static void Vspy(IUser admin, String args)
+        {
+
+        }
+
+        public static void CustomNames(IUser admin)
+        {
+
+        }
+
+        public static void Urban(IUser admin, String args)
+        {
+
+        }
+
+        public static void Define(IUser admin, String args)
+        {
+
+        }
+
+        public static void Trace(IUser admin, String args)
+        {
+
+        }
+
+        public static void Whois(IUser admin, IUser target)
+        {
+
+        }
+
+        public static void Announce(IUser admin, String args)
+        {
+
+        }
+
+        public static void Clone(IUser admin, IUser target, String args)
+        {
+
+        }
+
+        public static void Move(IUser admin, IUser target, String args)
+        {
+
+        }
+
+        public static void ChangeName(IUser admin, IUser target, String args)
+        {
+
+        }
+
+        public static void OldName(IUser admin, IUser target)
+        {
+
+        }
+
+        public static void BanSend(IUser admin)
+        {
+
+        }
+
+        public static void LogSend(IUser admin)
+        {
+
+        }
+
+        public static void IPSend(IUser admin)
+        {
+
+        }
+
+        public static void Stats(IUser admin)
+        {
+
+        }
+
+        public static void Whowas(IUser admin, String args)
+        {
+
         }
 
         public static void Shout(IUser client, String text)
@@ -473,7 +813,7 @@ namespace commands
         {
             if (client.Level >= Server.GetLevel("admins"))
             {
-                Server.Print(Template.Text(Category.AdminList, 0).Replace("+n", client.Name), true);
+                Server.Print(Template.Text(Category.AdminList, 0).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : client.Name), true);
                 Server.Print(String.Empty, true);
 
                 Server.Users.All(x =>
@@ -596,7 +936,7 @@ namespace commands
                     {
                         Settings.MuzzleTimeout = b;
                         Server.Print(Template.Text(Category.Timeouts, 0).Replace("+n",
-                            client.Name).Replace("+i", b == 0 ? "unlimited" : (b + " minutes")), true);
+                            Settings.Stealth ? Server.Chatroom.Name : client.Name).Replace("+i", b == 0 ? "unlimited" : (b + " minutes")), true);
                     }
             }
         }
@@ -614,7 +954,7 @@ namespace commands
                             if (hr != null)
                             {
                                 Server.Print(Template.Text(Category.AdminAction, 20).Replace("+n",
-                                    target.Name).Replace("+a", admin.Name).Replace("+r", hr.Name), true);
+                                    target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name).Replace("+r", hr.Name), true);
 
                                 target.Redirect(args.Trim());
                             }
@@ -628,12 +968,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.ShareFileMonitoring = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 0).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 0).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.ShareFileMonitoring = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 1).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 1).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -644,12 +984,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.IdleMonitoring = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 2).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 2).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.IdleMonitoring = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 3).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 3).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -661,13 +1001,13 @@ namespace commands
                 {
                     Settings.Clock = true;
                     Topics.EnableClock();
-                    Server.Print(Template.Text(Category.EnableDisable, 4).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 4).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.Clock = false;
                     Topics.DisableClock();
-                    Server.Print(Template.Text(Category.EnableDisable, 5).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 5).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -715,7 +1055,7 @@ namespace commands
                 }
 
                 Server.Print(Template.Text(Category.Topics, 0).Replace("+n",
-                    admin.Name).Replace("+v", admin.Vroom.ToString()));
+                    Settings.Stealth ? Server.Chatroom.Name : admin.Name).Replace("+v", admin.Vroom.ToString()));
             }
         }
 
@@ -743,7 +1083,7 @@ namespace commands
                 }
 
                 Server.Print(Template.Text(Category.Topics, 1).Replace("+n",
-                    admin.Name).Replace("+v", admin.Vroom.ToString()));
+                    Settings.Stealth ? Server.Chatroom.Name : admin.Name).Replace("+v", admin.Vroom.ToString()));
             }
         }
 
@@ -754,12 +1094,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.GreetMsg = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 6).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 6).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.GreetMsg = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 7).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 7).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -771,7 +1111,7 @@ namespace commands
                     if (args.Length > 0)
                     {
                         Greets.Add(args);
-                        Server.Print(Template.Text(Category.Greetings, 0).Replace("+n", admin.Name));
+                        Server.Print(Template.Text(Category.Greetings, 0).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                     }
         }
 
@@ -788,7 +1128,7 @@ namespace commands
                         String str = Greets.Remove(i);
 
                         if (!String.IsNullOrEmpty(str))
-                            Server.Print(Template.Text(Category.Greetings, 1).Replace("+n", admin.Name));
+                            Server.Print(Template.Text(Category.Greetings, 1).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                     }
                 }
         }
@@ -807,18 +1147,18 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.PMGreetMsg = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 8).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 8).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.PMGreetMsg = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 9).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 9).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (!String.IsNullOrEmpty(args))
                 {
                     Settings.PMGreetMsg = true;
                     Greets.SetPM(args);
-                    Server.Print(Template.Text(Category.Greetings, 2).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.Greetings, 2).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -829,12 +1169,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.CapsMonitoring = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 10).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 10).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.CapsMonitoring = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 11).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 11).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -845,12 +1185,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.AnonMonitoring = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 12).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 12).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.AnonMonitoring = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 13).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 13).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -861,12 +1201,12 @@ namespace commands
                 if (args == "on")
                 {
                     Server.Chatroom.CustomNamesEnabled = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 14).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Server.Chatroom.CustomNamesEnabled = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 15).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 15).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -877,12 +1217,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.General = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 16).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 16).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.General = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 17).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 17).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -893,13 +1233,13 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.Url = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 18).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 18).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                     Urls.EnableDisable(true);
                 }
                 else if (args == "off")
                 {
                     Settings.Url = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 19).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 19).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                     Urls.EnableDisable(false);
                 }
         }
@@ -916,7 +1256,7 @@ namespace commands
                     String addr = args.Substring(0, i);
                     String text = args.Substring(i + 1);
                     Urls.Add(addr, text);
-                    Server.Print(Template.Text(Category.Urls, 1).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.Urls, 1).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
             }
         }
@@ -930,7 +1270,7 @@ namespace commands
 
                 if (int.TryParse(args, out i))
                     if (Urls.Remove(i))
-                        Server.Print(Template.Text(Category.Urls, 2).Replace("+n", admin.Name));
+                        Server.Print(Template.Text(Category.Urls, 2).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
             }
         }
 
@@ -948,13 +1288,13 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.RoomInfo = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 20).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 20).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                     commands.RoomInfo.ForceUpdate();
                 }
                 else if (args == "off")
                 {
                     Settings.RoomInfo = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 21).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 21).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -964,7 +1304,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("status"))
             {
                 Settings.Status = args;
-                Server.Print(Template.Text(Category.RoomInfo, 6).Replace("+n", admin.Name));
+                Server.Print(Template.Text(Category.RoomInfo, 6).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
 
                 if (Settings.RoomInfo)
                     commands.RoomInfo.ForceUpdate();
@@ -978,12 +1318,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.LastSeen = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 22).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 22).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.LastSeen = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 23).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 23).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 
@@ -994,12 +1334,12 @@ namespace commands
                 if (args == "on")
                 {
                     Settings.History = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 24).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 24).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
                 else if (args == "off")
                 {
                     Settings.History = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 25).Replace("+n", admin.Name));
+                    Server.Print(Template.Text(Category.EnableDisable, 25).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 

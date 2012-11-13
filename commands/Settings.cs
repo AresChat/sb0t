@@ -8,6 +8,14 @@ namespace commands
 {
     class Settings
     {
+        public static bool DisableAdmins { get; set; }
+
+        public static bool Stealth
+        {
+            get { return Get<bool>("stealth"); }
+            set { Set("stealth", value); }
+        }
+
         public static bool Url
         {
             get { return Get<bool>("url"); }

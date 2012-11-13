@@ -334,7 +334,7 @@ namespace core
             set
             {
                 if (value)
-                    if (!this.LoggedIn || !this.Quarantined)
+                    if (!this.LoggedIn || this.Quarantined)
                         return;
 
                 if (ServerCore.Linker.Busy)
@@ -520,6 +520,7 @@ namespace core
                 if (value.Length < 10)
                 {
                     this.avatar = new byte[] { };
+                    this.AvatarReceived = false;
 
                     if (!this.Cloaked && !this.Quarantined)
                     {
