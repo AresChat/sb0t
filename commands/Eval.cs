@@ -21,7 +21,25 @@ namespace commands
 
         public static void ID(IUser client)
         {
-            client.Print("ID: " + client.ID);
+            client.Print(client.Name + ": " + client.ID);
+        }
+
+        public static void Info(IUser client)
+        {
+            client.Print("\x07" + Server.Chatroom.Name);
+            client.Print(String.Empty);
+
+            Server.Users.Ares(x => { if (!x.Quarantined) client.Print(x.Name + " [vroom: " + x.Vroom + "] [id: " + x.ID + "]"); });
+            Server.Users.Web(x => { if (!x.Quarantined) client.Print(x.Name + " [vroom: " + x.Vroom + "] [id: " + x.ID + "]"); });
+
+            if (Server.Link.IsLinked)
+                Server.Link.ForEachLeaf(l =>
+                {
+                    client.Print(String.Empty);
+                    client.Print("\x07" + l.Name);
+                    client.Print(String.Empty);
+                    l.ForEachUser(x => client.Print(x.Name + " [vroom: " + x.Vroom + "] [id: " + x.ID + "]"));
+                });
         }
 
         [CommandLevel("ban", ILevel.Administrator)]

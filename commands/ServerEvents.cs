@@ -291,6 +291,7 @@ namespace commands
                 return;
 
             admin.Print("/id");
+            admin.Print("/info");
 
             if (admin.Level > ILevel.Regular || Settings.General)
             {
@@ -591,11 +592,13 @@ namespace commands
                 return;
 
             if (cmd == "version")
-                client.Print("sb0t 5.00");
+                client.Print(Server.Chatroom.Version);
             else if (cmd.StartsWith("vroom "))
                 Eval.Vroom(client, cmd.Substring(6));
             else if (cmd == "id")
                 Eval.ID(client);
+            else if (cmd == "info")
+                Eval.Info(client);
             else if (cmd.StartsWith("ban "))
                 Eval.Ban(client, target, args);
             else if (cmd.StartsWith("ban10 "))
