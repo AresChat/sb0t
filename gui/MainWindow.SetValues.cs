@@ -179,6 +179,8 @@ namespace gui
                 }
             }
             catch { }
+            //unregistered clients
+            this.checkBox24.IsChecked = Settings.Get<bool>("allow_unreg");
             //extensions
             this.RefreshExtensions(null, null);
             core.Extensions.ExtensionManager.Setup();

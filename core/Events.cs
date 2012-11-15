@@ -487,6 +487,10 @@ namespace core
                     return;
                 }
 
+            if (!client.Registered)
+                if (!Settings.Get<bool>("allow_unreg"))
+                    return;
+
             if (DefaultCommands)
                 commands.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
 
@@ -545,6 +549,10 @@ namespace core
                 if (client.Owner)
                     client.Print("/setlevel <user> <level>");
             }
+
+            if (!client.Registered)
+                if (!Settings.Get<bool>("allow_unreg"))
+                    return;
 
             if (DefaultCommands)
                 commands.Help(client != null ? client.IUser : null);

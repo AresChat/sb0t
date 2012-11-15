@@ -275,6 +275,8 @@ namespace gui
                 Settings.Set("strict", this.checkBox22.IsChecked);
             else if (cb.Name == "checkBox23")
                 Settings.Set("roomsearch", this.checkBox23.IsChecked);
+            else if (cb.Name == "checkBox24")
+                Settings.Set("allow_unreg", this.checkBox24.IsChecked);
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)

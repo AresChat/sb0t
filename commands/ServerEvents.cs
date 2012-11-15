@@ -338,7 +338,7 @@ namespace commands
 
         public void Help(IUser admin)
         {
-            if (!admin.Registered)
+            if (admin.Quarantined)
                 return;
 
             if (Settings.DisableAdmins && admin.Level < ILevel.Host)
@@ -692,7 +692,7 @@ namespace commands
 
         public void Command(IUser client, String cmd, IUser target, String args)
         {
-            if (!client.Registered)
+            if (client.Quarantined)
                 return;
 
             if (Settings.DisableAdmins && client.Level < ILevel.Host)
