@@ -107,6 +107,9 @@ namespace core.ib0t
 
         public void Scribble(String sender, byte[] img, int h)
         {
+            if (!this.CanScribble)
+                return;
+
             byte[] buf = Zip.Decompress(img);
             String height = h.ToString();
             String base64 = Convert.ToBase64String(buf);

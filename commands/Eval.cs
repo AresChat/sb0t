@@ -682,9 +682,11 @@ namespace commands
 
         }
 
+        [CommandLevel("urban", ILevel.Moderator)]
         public static void Urban(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("urban"))
+                UrbanDictionary.Lookup(args);
         }
 
         public static void Define(IUser admin, String args)

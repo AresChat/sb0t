@@ -49,6 +49,14 @@ namespace commands
                 Urls.Tick(time);
                 RoomInfo.Tick(time);
             }
+
+            UrbanDictionaryResult urban;
+
+            while (UrbanDictionary.RESULTS.Count > 0)
+                if (!UrbanDictionary.RESULTS.TryDequeue(out urban))
+                    break;
+                else
+                    UrbanDictionary.Show(urban);
         }
 
         public void UnhandledProtocol(IUser client, bool custom, byte msg, byte[] packet) { }
@@ -480,6 +488,8 @@ namespace commands
                 admin.Print("/changemessage <user> <message>");
             if (admin.Level >= Server.GetLevel("clearscreen"))
                 admin.Print("/clearscreen");
+            if (admin.Level >= Server.GetLevel("urban"))
+                admin.Print("/urban <text>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -823,6 +833,8 @@ namespace commands
                 Eval.ChangeMessage(client, target, args);
             else if (cmd == "clearscreen")
                 Eval.ClearScreen(client);
+            else if (cmd.StartsWith("urban "))
+                Eval.Urban(client, cmd.Substring(6));
         }
 
         public void LinkError(ILinkError error)

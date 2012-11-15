@@ -197,6 +197,12 @@ namespace commands
             list.Add(new Item { Category = Category.Locate, Index = 1, Text = "+n is currently in vroom +v" });
             list.Add(new Item { Category = Category.Locate, Index = 2, Text = "\x00027end of list" });
             list.Add(new Item { Category = Category.Locate, Index = 3, Text = "location list empty" });
+
+            list.Add(new Item { Category = Category.UrbanDictionary, Index = 0, Text = "unable to find urban definition for: +n" });
+            list.Add(new Item { Category = Category.UrbanDictionary, Index = 1, Text = "urban definition for: +n" });
+            list.Add(new Item { Category = Category.UrbanDictionary, Index = 2, Text = "+n" });
+            list.Add(new Item { Category = Category.UrbanDictionary, Index = 3, Text = "\x00029urban example for: +n" });
+            list.Add(new Item { Category = Category.UrbanDictionary, Index = 4, Text = "\x00029+n" });
         }
     }
 
@@ -223,6 +229,7 @@ namespace commands
         Urls = 18,
         RoomInfo = 19,
         Info = 20,
-        Locate = 21
+        Locate = 21,
+        UrbanDictionary = 22
     }
 }
