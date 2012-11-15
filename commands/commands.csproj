@@ -52,6 +52,7 @@
     <Compile Include="Bans.cs" />
     <Compile Include="Captchas.cs" />
     <Compile Include="CustomNames.cs" />
+    <Compile Include="DefineDictionary.cs" />
     <Compile Include="Echo.cs" />
     <Compile Include="Eval.cs" />
     <Compile Include="Greets.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Template.cs" />
     <Compile Include="Topics.cs" />
+    <Compile Include="Trace.cs" />
     <Compile Include="UrbanDictionary.cs" />
     <Compile Include="Urls.cs" />
   </ItemGroup>

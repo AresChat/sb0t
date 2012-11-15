@@ -72,37 +72,17 @@ namespace commands
         [IgnoreDataMember]
         public String org_text { get; set; }
         [DataMember]
-        public bool has_related_words { get; set; }
-        [DataMember]
         public String result_type { get; set; }
         [DataMember]
         public List<UrbanDictionaryListItem> list { get; set; }
-        [DataMember]
-        public List<String> sounds { get; set; }
-        [DataMember]
-        public int total { get; set; }
-        [DataMember]
-        public int pages { get; set; }
     }
 
     [DataContract]
     class UrbanDictionaryListItem
     {
         [DataMember]
-        public int defid { get; set; }
-        [DataMember]
-        public String word { get; set; }
-        [DataMember]
-        public String permalink { get; set; }
-        [DataMember]
         public String definition { get; set; }
         [DataMember]
         public String example { get; set; }
-        [DataMember]
-        public int thumbs_up { get; set; }
-        [DataMember]
-        public int thumbs_down { get; set; }
-        [DataMember]
-        public String current_vote { get; set; }
     }
 }

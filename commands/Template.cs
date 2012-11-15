@@ -66,6 +66,11 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 12, Text = "+n has uncloaked" });
             list.Add(new Item { Category = Category.Notification, Index = 13, Text = "+o is now known as +n" });
             list.Add(new Item { Category = Category.Notification, Index = 14, Text = "screen cleared by +n" });
+            list.Add(new Item { Category = Category.Notification, Index = 15, Text = "+n was cloned by +a" });
+            list.Add(new Item { Category = Category.Notification, Index = 16, Text = "+n was moved to vroom +v by +a" });
+            list.Add(new Item { Category = Category.Notification, Index = 17, Text = "+n's name was changed by +a" });
+            list.Add(new Item { Category = Category.Notification, Index = 18, Text = "+n's name was restored by +a" });
+            list.Add(new Item { Category = Category.Notification, Index = 19, Text = "+a announced" });
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -201,8 +206,20 @@ namespace commands
             list.Add(new Item { Category = Category.UrbanDictionary, Index = 0, Text = "unable to find urban definition for: +n" });
             list.Add(new Item { Category = Category.UrbanDictionary, Index = 1, Text = "urban definition for: +n" });
             list.Add(new Item { Category = Category.UrbanDictionary, Index = 2, Text = "+n" });
-            list.Add(new Item { Category = Category.UrbanDictionary, Index = 3, Text = "\x00029urban example for: +n" });
+            list.Add(new Item { Category = Category.UrbanDictionary, Index = 3, Text = "urban example for: +n" });
             list.Add(new Item { Category = Category.UrbanDictionary, Index = 4, Text = "\x00029+n" });
+
+            list.Add(new Item { Category = Category.Define, Index = 0, Text = "unable to find dictionary definition for: +n" });
+            list.Add(new Item { Category = Category.Define, Index = 1, Text = "urban definition for: +n" });
+            list.Add(new Item { Category = Category.Define, Index = 2, Text = "- +n" });
+
+            list.Add(new Item { Category = Category.Trace, Index = 0, Text = "unable to find trace information for +n" });
+            list.Add(new Item { Category = Category.Trace, Index = 1, Text = "trace results for +n" });
+            list.Add(new Item { Category = Category.Trace, Index = 2, Text = "country: +n" });
+            list.Add(new Item { Category = Category.Trace, Index = 3, Text = "region: +n" });
+            list.Add(new Item { Category = Category.Trace, Index = 4, Text = "city: +n" });
+            list.Add(new Item { Category = Category.Trace, Index = 5, Text = "local time: +n" });
+            list.Add(new Item { Category = Category.Trace, Index = 6, Text = "end of trace results" });
         }
     }
 
@@ -230,6 +247,8 @@ namespace commands
         RoomInfo = 19,
         Info = 20,
         Locate = 21,
-        UrbanDictionary = 22
+        UrbanDictionary = 22,
+        Define = 23,
+        Trace = 24
     }
 }

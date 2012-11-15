@@ -656,9 +656,9 @@ namespace commands
             if (admin.Level >= Server.GetLevel("clearscreen"))
             {
                 for (int i = 0; i < 500; i++)
-                    Server.Print(String.Empty, true);
+                    Server.Print(String.Empty);
 
-                Server.Print(Template.Text(Category.Notification, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+                Server.Print(Template.Text(Category.Notification, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
             }
         }
 
@@ -689,14 +689,27 @@ namespace commands
                 UrbanDictionary.Lookup(args);
         }
 
+        [CommandLevel("define", ILevel.Moderator)]
         public static void Define(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("define"))
+                DefineDictionary.Lookup(args);
         }
 
-        public static void Trace(IUser admin, String args)
+        [CommandLevel("trace", ILevel.Administrator)]
+        public static void Trace(IUser admin, IUser target, String args)
         {
+            if (admin.Level >= Server.GetLevel("trace"))
+                if (target != null)
+                    commands.Trace.Lookup(target);
+                else
+                {
+                    String str = args.Replace("\"", String.Empty).Trim();
+                    System.Net.IPAddress ip;
 
+                    if (System.Net.IPAddress.TryParse(str, out ip))
+                        commands.Trace.Lookup(ip.ToString());
+                }
         }
 
         public static void Whois(IUser admin, IUser target)
@@ -704,29 +717,76 @@ namespace commands
 
         }
 
+        [CommandLevel("announce", ILevel.Moderator)]
         public static void Announce(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("announce"))
+            {
+                Server.Print(args, true);
+                Server.Print(ILevel.Regular, Template.Text(Category.Notification, 19).Replace("+a", admin.Name), true);
+            }
         }
 
+        [CommandLevel("clone", ILevel.Moderator)]
         public static void Clone(IUser admin, IUser target, String args)
         {
+            if (admin.Level >= Server.GetLevel("clone"))
+                if (target != null)
+                {
+                    if (args.StartsWith("/me "))
+                        target.SendEmote(args.Substring(4));
+                    else
+                        target.SendText(args);
 
+                    Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                        15).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                }
         }
 
+        [CommandLevel("move", ILevel.Administrator)]
         public static void Move(IUser admin, IUser target, String args)
         {
+            if (admin.Level >= Server.GetLevel("move"))
+                if (target != null)
+                {
+                    ushort u;
 
+                    if (ushort.TryParse(args, out u))
+                    {
+                        target.Vroom = u;
+
+                        if (target.Vroom == u)
+                            Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                                16).Replace("+n", target.Name).Replace("+a", admin.Name).Replace("+v", target.Vroom.ToString()), true);
+                    }
+                }
         }
 
+        [CommandLevel("changename", ILevel.Administrator)]
         public static void ChangeName(IUser admin, IUser target, String args)
         {
+            if (admin.Level >= Server.GetLevel("changename"))
+                if (target != null)
+                {
+                    target.Name = args;
 
+                    if (target.Name == args)
+                        Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                            17).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                }
         }
 
+        [CommandLevel("oldname", ILevel.Administrator)]
         public static void OldName(IUser admin, IUser target)
         {
+            if (admin.Level >= Server.GetLevel("oldname"))
+                if (target != null)
+                {
+                    target.Name = target.OrgName;
 
+                    Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                        18).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                }
         }
 
         public static void BanSend(IUser admin)

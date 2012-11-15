@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Security.Cryptography;
 using core.ib0t;
 using iconnect;
 
@@ -13,8 +14,20 @@ namespace core
     {
         public static void ObfuscateAddress(IClient client)
         {
+
+            // provide a method to hide the true value of the
+            // final 2 numbers in an IP address to offer protection
+            // to your users from DOS attacks.
+
             byte[] buf = client.ExternalIP.GetAddressBytes();
-            buf[3] = (byte)Math.Floor(new Random().NextDouble() * 255);
+
+            using (SHA1 sha1 = SHA1.Create())
+            {
+                byte[] s = sha1.ComputeHash(buf);
+                buf[2] = s[0];
+                buf[3] = s[19];
+            }
+
             client.ExternalIP = new System.Net.IPAddress(buf);
         }
 

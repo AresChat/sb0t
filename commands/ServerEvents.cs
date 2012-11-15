@@ -55,8 +55,21 @@ namespace commands
             while (UrbanDictionary.RESULTS.Count > 0)
                 if (!UrbanDictionary.RESULTS.TryDequeue(out urban))
                     break;
-                else
-                    UrbanDictionary.Show(urban);
+                else UrbanDictionary.Show(urban);
+
+            DictionaryResultCollection define;
+
+            while (DefineDictionary.RESULTS.Count > 0)
+                if (!DefineDictionary.RESULTS.TryDequeue(out define))
+                    break;
+                else DefineDictionary.Show(define);
+
+            TraceResult trace;
+
+            while (Trace.RESULTS.Count > 0)
+                if (!Trace.RESULTS.TryDequeue(out trace))
+                    break;
+                else Trace.Show(trace);
         }
 
         public void UnhandledProtocol(IUser client, bool custom, byte msg, byte[] packet) { }
@@ -490,6 +503,20 @@ namespace commands
                 admin.Print("/clearscreen");
             if (admin.Level >= Server.GetLevel("urban"))
                 admin.Print("/urban <text>");
+            if (admin.Level >= Server.GetLevel("define"))
+                admin.Print("/define <text>");
+            if (admin.Level >= Server.GetLevel("trace"))
+                admin.Print("/trace <user or ip>");
+            if (admin.Level >= Server.GetLevel("clone"))
+                admin.Print("/clone <user> <text>");
+            if (admin.Level >= Server.GetLevel("move"))
+                admin.Print("/move <user> <vroom>");
+            if (admin.Level >= Server.GetLevel("changename"))
+                admin.Print("/changename <user> <name>");
+            if (admin.Level >= Server.GetLevel("oldname"))
+                admin.Print("/oldname <user>");
+            if (admin.Level >= Server.GetLevel("announce"))
+                admin.Print("/announce <text>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -835,6 +862,20 @@ namespace commands
                 Eval.ClearScreen(client);
             else if (cmd.StartsWith("urban "))
                 Eval.Urban(client, cmd.Substring(6));
+            else if (cmd.StartsWith("define "))
+                Eval.Define(client, cmd.Substring(7));
+            else if (cmd.StartsWith("trace "))
+                Eval.Trace(client, target, cmd.Substring(6));
+            else if (cmd.StartsWith("clone "))
+                Eval.Clone(client, target, args);
+            else if (cmd.StartsWith("move "))
+                Eval.Move(client, target, args);
+            else if (cmd.StartsWith("changename "))
+                Eval.ChangeName(client, target, args);
+            else if (cmd.StartsWith("oldname "))
+                Eval.OldName(client, target);
+            else if (cmd.StartsWith("announce "))
+                Eval.Announce(client, cmd.Substring(9));
         }
 
         public void LinkError(ILinkError error)

@@ -6,3 +6,4 @@ scribble to target - interlink
 nudge to target - interlink
 scribble to leaf
 nudge to leaf
+allow unregistered users access to commands
