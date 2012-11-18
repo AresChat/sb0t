@@ -35,6 +35,9 @@ namespace commands
             BanStats.Reset();
             VSpy.Reset();
             Whowas.Setup();
+            IPSend.Reset();
+            BanSend.Reset();
+            LogSend.Reset();
         }
 
         private uint _second_timer = 0;
@@ -82,6 +85,7 @@ namespace commands
             if (RangeBans.IsRangeBanned(client))
             {
                 client.Print(Template.Text(Category.Rejected, 6).Replace("+n", client.Name));
+                BanSend.Rejected(client, Template.Text(Category.BanSend, 6).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                 return false;
             }
 
@@ -89,6 +93,7 @@ namespace commands
                 if (client.Name.StartsWith("anon "))
                 {
                     client.Print(Template.Text(Category.Rejected, 2).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 7).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     return false;
                 }
 
@@ -96,6 +101,7 @@ namespace commands
                 if (client.FileCount == 0)
                 {
                     client.Print(Template.Text(Category.Rejected, 3).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 8).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     return false;
                 }
 
@@ -103,6 +109,7 @@ namespace commands
                 if (JoinFilter.IsPreFiltered(client))
                 {
                     client.Print(Template.Text(Category.Rejected, 7).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 9).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     return false;
                 }
 
@@ -139,9 +146,8 @@ namespace commands
                         if (Settings.PMGreetMsg)
                             client.PM(Server.Chatroom.BotName, Greets.GetPM(client));
 
-                        if (!client.Quarantined)
-                            if (Settings.GreetMsg)
-                                Server.Print(client.Vroom, Greets.GetGreet(client), true);
+                        if (Settings.GreetMsg)
+                            Server.Print(client.Vroom, Greets.GetGreet(client), true);
                     }
 
                     if (Settings.History)
@@ -180,6 +186,7 @@ namespace commands
 
             VSpy.Join(client);
             Whowas.Add(client);
+            IPSend.Join(client);
         }
 
         public void Rejected(IUser client, RejectedMsg msg)
@@ -188,26 +195,32 @@ namespace commands
             {
                 case RejectedMsg.Banned:
                     client.Print(Template.Text(Category.Rejected, 5).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 0).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     break;
 
                 case RejectedMsg.NameInUse:
                     client.Print(Template.Text(Category.Rejected, 0).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 1).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     break;
 
                 case RejectedMsg.TooManyClients:
                     client.Print(Template.Text(Category.Rejected, 1).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 2).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     break;
 
                 case RejectedMsg.TooSoon:
                     client.Print(Template.Text(Category.Rejected, 4).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 3).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     break;
 
                 case RejectedMsg.UnacceptableGender:
                     client.Print(Template.Text(Category.Rejected, 9).Replace("+n", client.Name));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 4).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     break;
 
                 case RejectedMsg.UnderAge:
                     client.Print(Template.Text(Category.Rejected, 8).Replace("+n", client.Name).Replace("+a", Server.Chatroom.MinimumAge.ToString()));
+                    BanSend.Rejected(client, Template.Text(Category.BanSend, 5).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
                     break;
             }
         }
@@ -215,7 +228,12 @@ namespace commands
         public void Parting(IUser client)
         {
             if (!client.Link.IsLinked)
+            {
                 VSpy.Remove(client);
+                IPSend.Remove(client);
+                BanSend.Remove(client);
+                LogSend.Remove(client);
+            }
         }
 
         public void Parted(IUser client)
@@ -356,9 +374,6 @@ namespace commands
 
         public void Help(IUser admin)
         {
-            if (admin.Quarantined)
-                return;
-
             if (Settings.DisableAdmins && admin.Level < ILevel.Host)
                 return;
 
@@ -547,6 +562,12 @@ namespace commands
                 admin.Print("/stats");
             if (admin.Level >= Server.GetLevel("whowas"))
                 admin.Print("/whowas <query>");
+            if (admin.Level >= Server.GetLevel("ipsend"))
+                admin.Print("/ipsend <on or off>");
+            if (admin.Level >= Server.GetLevel("bansend"))
+                admin.Print("/bansend <on or off>");
+            if (admin.Level >= Server.GetLevel("logsend"))
+                admin.Print("/logsend <on or off>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -724,11 +745,13 @@ namespace commands
 
         public void Command(IUser client, String cmd, IUser target, String args)
         {
-            if (client.Quarantined)
-                return;
-
             if (Settings.DisableAdmins && client.Level < ILevel.Host)
                 return;
+
+            if (client.Level > ILevel.Regular)
+                if (!cmd.StartsWith("whisper"))
+                    if (!cmd.StartsWith("host"))
+                        LogSend.Log(client, cmd);
 
             if (cmd == "version")
                 client.Print(Server.Chatroom.Version);
@@ -920,6 +943,12 @@ namespace commands
                 Eval.Stats(client);
             else if (cmd.StartsWith("whowas "))
                 Eval.Whowas(client, cmd.Substring(7));
+            else if (cmd.StartsWith("ipsend "))
+                Eval.IPSend(client, cmd.Substring(7));
+            else if (cmd.StartsWith("bansend "))
+                Eval.BanSend(client, cmd.Substring(8));
+            else if (cmd.StartsWith("logsend "))
+                Eval.LogSend(client, cmd.Substring(8));
         }
 
         public void LinkError(ILinkError error)

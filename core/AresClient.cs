@@ -668,12 +668,12 @@ namespace core
 
             if (!ghost)
                 this.SendDepart();
-            else if (this.LoggedIn)
+            else if (this.LoggedIn && !this.Quarantined)
             {
                 this.LoggedIn = false;
                 Events.Parting(this);
 
-                if (ServerCore.Linker.Busy && !this.Quarantined && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                     ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPart(ServerCore.Linker, this));
 
                 Events.Parted(this);
@@ -682,12 +682,12 @@ namespace core
 
         public void SendDepart()
         {
-            if (this.LoggedIn)
+            if (this.LoggedIn && !this.Quarantined)
             {
                 this.LoggedIn = false;
                 Events.Parting(this);
 
-                if (!this.Cloaked && !this.Quarantined)
+                if (!this.Cloaked)
                 {
                     LinkLeaf.LinkUser other = null;
 

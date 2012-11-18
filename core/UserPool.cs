@@ -48,7 +48,7 @@ namespace core
         {
             for (ushort u = 700; u < ushort.MaxValue; u++)
             {
-                int index = AUsers.FindIndex(x => x.ID == u);
+                int index = WUsers.FindIndex(x => x.ID == u);
 
                 if (index == -1)
                 {

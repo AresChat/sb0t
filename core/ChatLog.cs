@@ -25,7 +25,7 @@ namespace core
                     path += ("\\" + d.Day + " " + d.Month + " " + d.Year + ".txt");
 
                     using (StreamWriter writer = File.Exists(path) ? File.AppendText(path) : File.CreateText(path))
-                        writer.WriteLine(DateTime.Now.ToShortTimeString() + " " + text);
+                        writer.WriteLine(d.ToShortTimeString() + " " + text);
                 }
                 catch { }
             }

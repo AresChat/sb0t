@@ -31,14 +31,13 @@ namespace commands
 
             Server.Users.Ares(x =>
             {
-                if (!x.Quarantined && !x.Cloaked)
+                if (!x.Cloaked)
                     client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", x.ID.ToString()));
             });
 
             Server.Users.Web(x =>
             {
-                if (!x.Quarantined)
-                    client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", x.ID.ToString()));
+                client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", x.ID.ToString()));
             });
 
             if (Server.Link.IsLinked)
@@ -437,7 +436,7 @@ namespace commands
 
                 Server.Users.All(x =>
                 {
-                    if (!x.Quarantined && !x.Cloaked)
+                    if (!x.Cloaked)
                         if (x.Vroom > 0)
                         {
                             if (empty)
@@ -695,12 +694,12 @@ namespace commands
                 if (args == "on")
                 {
                     commands.VSpy.Add(admin);
-                    Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 20).Replace("+n", admin.Name), true);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 20).Replace("+n", admin.Name), true);
                 }
                 else if (args == "off")
                 {
                     commands.VSpy.Remove(admin);
-                    Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 21).Replace("+n", admin.Name), true);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 21).Replace("+n", admin.Name), true);
                 }
         }
 
@@ -848,19 +847,52 @@ namespace commands
                 }
         }
 
-        public static void BanSend(IUser admin)
+        [CommandLevel("bansend", ILevel.Moderator)]
+        public static void BanSend(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("bansend"))
+                if (args == "on")
+                {
+                    commands.BanSend.Add(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 24).Replace("+n", admin.Name), true);
+                }
+                else if (args == "off")
+                {
+                    commands.BanSend.Remove(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 25).Replace("+n", admin.Name), true);
+                }
         }
 
-        public static void LogSend(IUser admin)
+        [CommandLevel("logsend", ILevel.Moderator)]
+        public static void LogSend(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("logsend"))
+                if (args == "on")
+                {
+                    commands.LogSend.Add(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 26).Replace("+n", admin.Name), true);
+                }
+                else if (args == "off")
+                {
+                    commands.LogSend.Remove(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 27).Replace("+n", admin.Name), true);
+                }
         }
 
-        public static void IPSend(IUser admin)
+        [CommandLevel("ipsend", ILevel.Moderator)]
+        public static void IPSend(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("ipsend"))
+                if (args == "on")
+                {
+                    commands.IPSend.Add(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 22).Replace("+n", admin.Name), true);
+                }
+                else if (args == "off")
+                {
+                    commands.IPSend.Remove(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 23).Replace("+n", admin.Name), true);
+                }
         }
 
         [CommandLevel("stats", ILevel.Moderator)]
@@ -884,9 +916,10 @@ namespace commands
                 int counter = 0;
                 Server.Users.All(x =>
                 {
-                    if (x.Quarantined)
+                    if (!x.Link.IsLinked)
                         counter++;
                 });
+                counter = (int)(Server.Stats.CurrentUserCount - counter);
                 admin.Print(Template.Text(Category.Stats, 12).Replace("+n", counter.ToString()));
                 admin.Print(Template.Text(Category.Stats, 13).Replace("+n", Server.Stats.PeakUserCount.ToString()));
                 admin.Print(Template.Text(Category.Stats, 14).Replace("+n", Server.Stats.PublicMessages.ToString()));

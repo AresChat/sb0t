@@ -146,6 +146,8 @@ namespace core.ib0t
                     throw new Exception("proxy detected");
                 }
 
+            client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
+
             if (!Events.Joining(client))
             {
                 if (hijack != null && hijack is AresClient)
@@ -154,8 +156,6 @@ namespace core.ib0t
                 Events.Rejected(client, RejectedMsg.UserDefined);
                 throw new Exception("user defined rejection");
             }
-
-            client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
 
             if (Helpers.IsLocalHost(client))
             {

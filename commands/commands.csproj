@@ -54,6 +54,7 @@
     <Compile Include="AutoLogin.cs" />
     <Compile Include="AvatarPMManager.cs" />
     <Compile Include="Bans.cs" />
+    <Compile Include="BanSend.cs" />
     <Compile Include="BanStats.cs" />
     <Compile Include="Captchas.cs" />
     <Compile Include="CustomNames.cs" />
@@ -65,10 +66,12 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="History.cs" />
     <Compile Include="IdleTime.cs" />
+    <Compile Include="IPSend.cs" />
     <Compile Include="JoinFilter.cs" />
     <Compile Include="KewlText.cs" />
     <Compile Include="Kiddied.cs" />
     <Compile Include="LoginAttempts.cs" />
+    <Compile Include="LogSend.cs" />
     <Compile Include="Lowered.cs" />
     <Compile Include="Motd.cs" />
     <Compile Include="Muzzles.cs" />

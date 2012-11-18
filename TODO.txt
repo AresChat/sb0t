@@ -7,3 +7,5 @@ nudge to target - interlink
 scribble to leaf
 nudge to leaf
 allow unregistered users access to commands
+#loadtemplate
+start with windows

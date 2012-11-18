@@ -77,8 +77,8 @@ namespace core
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteUInt16(0);
             packet.WriteUInt32(0);
-            packet.WriteIP("0.0.0.0");
-            packet.WriteUInt16(0);
+            packet.WriteIP(Settings.ExternalIP);
+            packet.WriteUInt16(Settings.Port);
             packet.WriteIP("0.0.0.0");
             packet.WriteUInt16(0);
             packet.WriteByte(0);

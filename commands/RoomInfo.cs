@@ -19,8 +19,8 @@ namespace commands
             Server.Users.Web(x => { if (x.Level == ILevel.Host) counter++; });
             Server.Print(Template.Text(Category.RoomInfo, 1).Replace("+n", counter.ToString()));
             counter = 1;
-            Server.Users.Ares(x => { if (!x.Quarantined) counter++; });
-            Server.Users.Web(x => { if (!x.Quarantined) counter++; });
+            Server.Users.Ares(x => { counter++; });
+            Server.Users.Web(x => { counter++; });
             Server.Print(Template.Text(Category.RoomInfo, 2).Replace("+n", counter.ToString()));
             counter = 0;
             Server.Users.Ares(x => { if (x.Level > ILevel.Regular) counter++; });

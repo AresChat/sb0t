@@ -33,6 +33,7 @@ namespace core
 
                 case TCPMsg.MSG_CHAT_CLIENT_UPDATE_STATUS:
                     client.Time = time;
+                    client.SendPacket(TCPOutbound.UpdateUserStatus(client, client));
                     break;
 
                 case TCPMsg.MSG_CHAT_CLIENT_AVATAR:
@@ -607,6 +608,8 @@ namespace core
                     throw new Exception("proxy detected");
                 }
 
+            client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
+
             if (!Events.Joining(client))
             {
                 if (hijack != null && hijack is AresClient)
@@ -615,8 +618,6 @@ namespace core
                 Events.Rejected(client, RejectedMsg.UserDefined);
                 throw new Exception("user defined rejection");
             }
-
-            client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
 
             if (Helpers.IsLocalHost(client))
             {

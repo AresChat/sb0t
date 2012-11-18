@@ -73,6 +73,12 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 19, Text = "+a announced" });
             list.Add(new Item { Category = Category.Notification, Index = 20, Text = "+n has been added to vspy" });
             list.Add(new Item { Category = Category.Notification, Index = 21, Text = "+n has been removed from vspy" });
+            list.Add(new Item { Category = Category.Notification, Index = 22, Text = "+n has been added to ipsend" });
+            list.Add(new Item { Category = Category.Notification, Index = 23, Text = "+n has been removed from ipsend" });
+            list.Add(new Item { Category = Category.Notification, Index = 24, Text = "+n has been added to bansend" });
+            list.Add(new Item { Category = Category.Notification, Index = 25, Text = "+n has been removed from bansend" });
+            list.Add(new Item { Category = Category.Notification, Index = 26, Text = "+n has been added to logsend" });
+            list.Add(new Item { Category = Category.Notification, Index = 27, Text = "+n has been removed from logsend" });
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -261,6 +267,17 @@ namespace commands
 
             list.Add(new Item { Category = Category.WhoWas, Index = 0, Text = "whowas: +n +ip +v +t" });
             list.Add(new Item { Category = Category.WhoWas, Index = 1, Text = "no results were found containing +n" });
+
+            list.Add(new Item { Category = Category.BanSend, Index = 0, Text = "+n was rejected for being banned" });
+            list.Add(new Item { Category = Category.BanSend, Index = 1, Text = "+n was rejected for name hijacking" });
+            list.Add(new Item { Category = Category.BanSend, Index = 2, Text = "+n was rejected for exceeding the client limit" });
+            list.Add(new Item { Category = Category.BanSend, Index = 3, Text = "+n was rejected for rejoining too quickly" });
+            list.Add(new Item { Category = Category.BanSend, Index = 4, Text = "+n was rejected for unallowed gender" });
+            list.Add(new Item { Category = Category.BanSend, Index = 5, Text = "+n was rejected for being too young" });
+            list.Add(new Item { Category = Category.BanSend, Index = 6, Text = "+n was rejected for being range banned" });
+            list.Add(new Item { Category = Category.BanSend, Index = 7, Text = "+n was rejected for being an anon" });
+            list.Add(new Item { Category = Category.BanSend, Index = 8, Text = "+n was rejected for being not sharing any files" });
+            list.Add(new Item { Category = Category.BanSend, Index = 9, Text = "+n was rejected by the join filter" });
         }
     }
 
@@ -295,6 +312,7 @@ namespace commands
         Vspy = 26,
         Whois = 27,
         Stats = 28,
-        WhoWas = 29
+        WhoWas = 29,
+        BanSend = 30
     }
 }
