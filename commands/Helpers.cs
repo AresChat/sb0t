@@ -68,6 +68,12 @@ namespace commands
             return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(time).ToShortTimeString();
         }
 
+        public static String UnixTimeToDateString(uint time)
+        {
+            DateTime d = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(time);
+            return d.ToShortDateString() + " " + d.ToShortTimeString();
+        }
+
         public static IdleTime GetIdleUptime(uint away)
         {
             uint seconds = away;

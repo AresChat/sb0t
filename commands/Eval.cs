@@ -62,6 +62,7 @@ namespace commands
                             Server.Print(Template.Text(Category.AdminAction, 0).Replace("+n",
                                 target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
+                            commands.BanStats.Add(admin, target);
                             target.Ban();
                         }
         }
@@ -77,6 +78,7 @@ namespace commands
                             Server.Print(Template.Text(Category.AdminAction, 21).Replace("+n",
                                 target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
+                            commands.BanStats.Add(admin, target);
                             Bans.AddBan(target, BanDuration.Ten);
                             target.Ban();
                         }
@@ -93,6 +95,7 @@ namespace commands
                             Server.Print(Template.Text(Category.AdminAction, 22).Replace("+n",
                                 target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
+                            commands.BanStats.Add(admin, target);
                             Bans.AddBan(target, BanDuration.Sixty);
                             target.Ban();
                         }
@@ -662,24 +665,67 @@ namespace commands
             }
         }
 
+        [CommandLevel("banstats", ILevel.Administrator)]
         public static void BanStats(IUser admin)
         {
-
+            if (admin.Level >= Server.GetLevel("banstats"))
+                commands.BanStats.View(admin);
         }
 
+        [CommandLevel("colors", ILevel.Host)]
         public static void Colors(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("colors"))
+                if (args == "on")
+                {
+                    Settings.Colors = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 28).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.Colors = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 29).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
         }
 
+        [CommandLevel("vspy", ILevel.Administrator)]
         public static void Vspy(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("vspy"))
+                if (args == "on")
+                {
+                    commands.VSpy.Add(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 20).Replace("+n", admin.Name), true);
+                }
+                else if (args == "off")
+                {
+                    commands.VSpy.Remove(admin);
+                    Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 21).Replace("+n", admin.Name), true);
+                }
         }
 
-        public static void CustomNames(IUser admin)
+        [CommandLevel("customnames", ILevel.Host)]
+        public static void CustomNames(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("customnames"))
+                if (args == " on")
+                {
+                    Server.Chatroom.CustomNamesEnabled = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
+                else if (args == " off")
+                {
+                    Server.Chatroom.CustomNamesEnabled = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 15).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
+                else if (String.IsNullOrEmpty(args))
+                {
+                    Server.Users.All(x =>
+                    {
+                        if (!String.IsNullOrEmpty(x.CustomName))
+                            admin.Print(x.Name + ": " + x.CustomName);
+                    });
+                }
         }
 
         [CommandLevel("urban", ILevel.Moderator)]
@@ -712,9 +758,22 @@ namespace commands
                 }
         }
 
+        [CommandLevel("whois", ILevel.Moderator)]
         public static void Whois(IUser admin, IUser target)
         {
-
+            if (admin.Level >= Server.GetLevel("whois"))
+                if (target != null)
+                {
+                    admin.Print(Template.Text(Category.Whois, 0).Replace("+n", target.Name));
+                    admin.Print(Template.Text(Category.Whois, 1).Replace("+n", target.OrgName));
+                    admin.Print(Template.Text(Category.Whois, 2).Replace("+n", target.ExternalIP.ToString()));
+                    admin.Print(Template.Text(Category.Whois, 3).Replace("+n", target.LocalIP.ToString()));
+                    admin.Print(Template.Text(Category.Whois, 4).Replace("+n", target.DataPort.ToString()));
+                    admin.Print(Template.Text(Category.Whois, 5).Replace("+n", target.Version));
+                    admin.Print(Template.Text(Category.Whois, 6).Replace("+n", target.Vroom.ToString()));
+                    admin.Print(Template.Text(Category.Whois, 7).Replace("+n", target.ID.ToString()));
+                    admin.Print(Template.Text(Category.Whois, 8).Replace("+n", target.Link.IsLinked.ToString()));
+                }
         }
 
         [CommandLevel("announce", ILevel.Moderator)]
@@ -804,14 +863,45 @@ namespace commands
 
         }
 
+        [CommandLevel("stats", ILevel.Moderator)]
         public static void Stats(IUser admin)
         {
-
+            if (admin.Level >= Server.GetLevel("stats"))
+            {
+                admin.Print(Template.Text(Category.Stats, 0).Replace("+n", Server.Chatroom.Name));
+                admin.Print(String.Empty);
+                admin.Print(Template.Text(Category.Stats, 1).Replace("+n", Helpers.LanguageCodeToString(Server.Chatroom.Language)));
+                admin.Print(Template.Text(Category.Stats, 2).Replace("+n", "arlnk://" + Server.Chatroom.Hashlink));
+                admin.Print(Template.Text(Category.Stats, 3).Replace("+n", Helpers.GetUptime));
+                admin.Print(Template.Text(Category.Stats, 4).Replace("+n", Server.Stats.DataReceived.ToString()));
+                admin.Print(Template.Text(Category.Stats, 5).Replace("+n", Server.Stats.DataSent.ToString()));
+                admin.Print(Template.Text(Category.Stats, 6).Replace("+n", Server.Stats.InvalidLoginAttempts.ToString()));
+                admin.Print(Template.Text(Category.Stats, 7).Replace("+n", Server.Stats.FloodCount.ToString()));
+                admin.Print(Template.Text(Category.Stats, 8).Replace("+n", Server.Stats.RejectionCount.ToString()));
+                admin.Print(Template.Text(Category.Stats, 9).Replace("+n", Server.Stats.JoinCount.ToString()));
+                admin.Print(Template.Text(Category.Stats, 10).Replace("+n", Server.Stats.PartCount.ToString()));
+                admin.Print(Template.Text(Category.Stats, 11).Replace("+n", Server.Stats.CurrentUserCount.ToString()));
+                int counter = 0;
+                Server.Users.All(x =>
+                {
+                    if (x.Quarantined)
+                        counter++;
+                });
+                admin.Print(Template.Text(Category.Stats, 12).Replace("+n", counter.ToString()));
+                admin.Print(Template.Text(Category.Stats, 13).Replace("+n", Server.Stats.PeakUserCount.ToString()));
+                admin.Print(Template.Text(Category.Stats, 14).Replace("+n", Server.Stats.PublicMessages.ToString()));
+                admin.Print(Template.Text(Category.Stats, 15).Replace("+n", Server.Stats.PrivateMessages.ToString()));
+                counter = 0;
+                Server.Channels.ForEach(x => counter++);
+                admin.Print(Template.Text(Category.Stats, 16).Replace("+n", counter.ToString()));
+            }
         }
 
+        [CommandLevel("whowas", ILevel.Moderator)]
         public static void Whowas(IUser admin, String args)
         {
-
+            if (admin.Level >= Server.GetLevel("whowas"))
+                commands.Whowas.Query(admin, args.Replace("\"", String.Empty));
         }
 
         public static void Shout(IUser client, String text)
@@ -1253,22 +1343,6 @@ namespace commands
                 {
                     Settings.AnonMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 13).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
-                }
-        }
-
-        [CommandLevel("customnames", ILevel.Administrator)]
-        public static void CustomNames(IUser admin, String args)
-        {
-            if (admin.Level >= Server.GetLevel("customnames"))
-                if (args == "on")
-                {
-                    Server.Chatroom.CustomNamesEnabled = true;
-                    Server.Print(Template.Text(Category.EnableDisable, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
-                }
-                else if (args == "off")
-                {
-                    Server.Chatroom.CustomNamesEnabled = false;
-                    Server.Print(Template.Text(Category.EnableDisable, 15).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
         }
 

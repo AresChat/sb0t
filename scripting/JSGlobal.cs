@@ -178,7 +178,7 @@ namespace scripting
             if (!(a is Objects.JSUser))
                 return;
 
-            if (b is Null || c is Null)
+            if (b is Undefined || c is Undefined)
                 return;
 
             if (b != null && c != null)
@@ -190,6 +190,48 @@ namespace scripting
                     return;
 
                 ((Objects.JSUser)a).parent.PM(sender, text);
+            }
+        }
+
+        [JSFunction(Name = "sendText")]
+        public static void SendText(object a, object b, object c)
+        {
+            if (!(a is Objects.JSUser))
+                return;
+
+            if (b is Undefined || c is Undefined)
+                return;
+
+            if (b != null && c != null)
+            {
+                String sender = b.ToString();
+                String text = c.ToString();
+
+                if (String.IsNullOrEmpty(sender) || String.IsNullOrEmpty(text))
+                    return;
+
+                Server.PublicToTarget(((Objects.JSUser)a).parent, sender, text);
+            }
+        }
+
+        [JSFunction(Name = "sendEmote")]
+        public static void SendEmote(object a, object b, object c)
+        {
+            if (!(a is Objects.JSUser))
+                return;
+
+            if (b is Undefined || c is Undefined)
+                return;
+
+            if (b != null && c != null)
+            {
+                String sender = b.ToString();
+                String text = c.ToString();
+
+                if (String.IsNullOrEmpty(sender) || String.IsNullOrEmpty(text))
+                    return;
+
+                Server.EmoteToTarget(((Objects.JSUser)a).parent, sender, text);
             }
         }
     }

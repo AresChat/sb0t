@@ -36,6 +36,10 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.66.1, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\core\Libraries\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +54,7 @@
     <Compile Include="AutoLogin.cs" />
     <Compile Include="AvatarPMManager.cs" />
     <Compile Include="Bans.cs" />
+    <Compile Include="BanStats.cs" />
     <Compile Include="Captchas.cs" />
     <Compile Include="CustomNames.cs" />
     <Compile Include="DefineDictionary.cs" />
@@ -81,6 +86,8 @@
     <Compile Include="Trace.cs" />
     <Compile Include="UrbanDictionary.cs" />
     <Compile Include="Urls.cs" />
+    <Compile Include="VSpy.cs" />
+    <Compile Include="Whowas.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iconnect\iconnect.csproj">

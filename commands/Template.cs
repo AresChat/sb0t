@@ -71,6 +71,8 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 17, Text = "+n's name was changed by +a" });
             list.Add(new Item { Category = Category.Notification, Index = 18, Text = "+n's name was restored by +a" });
             list.Add(new Item { Category = Category.Notification, Index = 19, Text = "+a announced" });
+            list.Add(new Item { Category = Category.Notification, Index = 20, Text = "+n has been added to vspy" });
+            list.Add(new Item { Category = Category.Notification, Index = 21, Text = "+n has been removed from vspy" });
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -172,6 +174,8 @@ namespace commands
             list.Add(new Item { Category = Category.EnableDisable, Index = 25, Text = "+n has disabled chat history feature" });//127
             list.Add(new Item { Category = Category.EnableDisable, Index = 26, Text = "+n has enabled stealth mode" });
             list.Add(new Item { Category = Category.EnableDisable, Index = 27, Text = "+n has disabled stealth mode" });
+            list.Add(new Item { Category = Category.EnableDisable, Index = 28, Text = "+n has enabled colors" });
+            list.Add(new Item { Category = Category.EnableDisable, Index = 29, Text = "+n has disabled colors" });
 
             list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
 
@@ -220,6 +224,43 @@ namespace commands
             list.Add(new Item { Category = Category.Trace, Index = 4, Text = "city: +n" });
             list.Add(new Item { Category = Category.Trace, Index = 5, Text = "local time: +n" });
             list.Add(new Item { Category = Category.Trace, Index = 6, Text = "end of trace results" });
+
+            list.Add(new Item { Category = Category.BanStats, Index = 0, Text = "+n [+ip] banned by +a" });
+
+            list.Add(new Item { Category = Category.Vspy, Index = 0, Text = "+n [+ip] has joined" });
+            list.Add(new Item { Category = Category.Vspy, Index = 1, Text = "+n [+ip] has parted" });
+            list.Add(new Item { Category = Category.Vspy, Index = 2, Text = "+n has moved to vroom +v" });
+
+            list.Add(new Item { Category = Category.Whois, Index = 0, Text = "Name: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 1, Text = "Originally: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 2, Text = "External IP: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 3, Text = "Local IP: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 4, Text = "Data Port: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 5, Text = "Version: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 6, Text = "Vroom: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 7, Text = "ID: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 8, Text = "Linked: +n" });
+
+            list.Add(new Item { Category = Category.Stats, Index = 0, Text = "Stats for +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 1, Text = "Language: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 2, Text = "Hashlink: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 3, Text = "Uptime: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 4, Text = "Bytes received: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 5, Text = "Bytes sent: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 6, Text = "Invalid logins: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 7, Text = "Flooded users: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 8, Text = "Rejected users: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 9, Text = "Join count: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 10, Text = "Part count: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 11, Text = "User count: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 12, Text = "Quarantined user count: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 13, Text = "Peak user count: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 14, Text = "Message count: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 15, Text = "PM count: +n" });
+            list.Add(new Item { Category = Category.Stats, Index = 16, Text = "Roomsearch size: +n" });
+
+            list.Add(new Item { Category = Category.WhoWas, Index = 0, Text = "whowas: +n +ip +v +t" });
+            list.Add(new Item { Category = Category.WhoWas, Index = 1, Text = "no results were found containing +n" });
         }
     }
 
@@ -249,6 +290,11 @@ namespace commands
         Locate = 21,
         UrbanDictionary = 22,
         Define = 23,
-        Trace = 24
+        Trace = 24,
+        BanStats = 25,
+        Vspy = 26,
+        Whois = 27,
+        Stats = 28,
+        WhoWas = 29
     }
 }

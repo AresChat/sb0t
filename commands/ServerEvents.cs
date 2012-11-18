@@ -32,6 +32,9 @@ namespace commands
             Urls.Load();
             History.Reset();
             AvatarPMManager.Reset();
+            BanStats.Reset();
+            VSpy.Reset();
+            Whowas.Setup();
         }
 
         private uint _second_timer = 0;
@@ -174,6 +177,9 @@ namespace commands
 
             if (forced_pm != null)
                 client.PersonalMessage = forced_pm;
+
+            VSpy.Join(client);
+            Whowas.Add(client);
         }
 
         public void Rejected(IUser client, RejectedMsg msg)
@@ -206,9 +212,16 @@ namespace commands
             }
         }
 
-        public void Parting(IUser client) { }
+        public void Parting(IUser client)
+        {
+            if (!client.Link.IsLinked)
+                VSpy.Remove(client);
+        }
 
-        public void Parted(IUser client) { }
+        public void Parted(IUser client)
+        {
+            VSpy.Part(client);
+        }
 
         public bool AvatarReceived(IUser client)
         {
@@ -264,6 +277,9 @@ namespace commands
 
                 if (Kiddied.IsKiddied(client))
                     text = "\x000313" + Helpers.StripColors(text) + "(A)";
+
+                if (client.Level == ILevel.Regular && !Settings.Colors)
+                    text = Helpers.StripColors(text);
             }
 
             return text;
@@ -277,6 +293,7 @@ namespace commands
                 client.SendText(echo);
 
             History.Add(client.Name, text, false);
+            VSpy.Text(client, text);
         }
 
         public void EmoteReceived(IUser client, String text) { }
@@ -314,6 +331,7 @@ namespace commands
                 client.SendEmote(echo);
 
             History.Add(client.Name, text, true);
+            VSpy.Text(client, text);
         }
 
         public void PrivateSending(IUser client, IUser target, IPrivateMsg msg)
@@ -517,6 +535,18 @@ namespace commands
                 admin.Print("/oldname <user>");
             if (admin.Level >= Server.GetLevel("announce"))
                 admin.Print("/announce <text>");
+            if (admin.Level >= Server.GetLevel("colors"))
+                admin.Print("/colors <on or off>");
+            if (admin.Level >= Server.GetLevel("banstats"))
+                admin.Print("/banstats");
+            if (admin.Level >= Server.GetLevel("vspy"))
+                admin.Print("/vspy <on or off>");
+            if (admin.Level >= Server.GetLevel("whois"))
+                admin.Print("/whois <user>");
+            if (admin.Level >= Server.GetLevel("stats"))
+                admin.Print("/stats");
+            if (admin.Level >= Server.GetLevel("whowas"))
+                admin.Print("/whowas <query>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -620,6 +650,8 @@ namespace commands
                 if (!String.IsNullOrEmpty(topic))
                     client.Topic(topic);
             }
+
+            VSpy.VroomChanged(client);
         }
 
         public bool Flooding(IUser client, byte msg) { return true; }
@@ -804,8 +836,8 @@ namespace commands
                 Eval.Caps(client, cmd.Substring(5));
             else if (cmd.StartsWith("anon "))
                 Eval.Anon(client, cmd.Substring(5));
-            else if (cmd.StartsWith("customnames "))
-                Eval.CustomNames(client, cmd.Substring(12));
+            else if (cmd.StartsWith("customnames"))
+                Eval.CustomNames(client, cmd.Substring(11));
             else if (cmd.StartsWith("general "))
                 Eval.General(client, cmd.Substring(8));
             else if (cmd.StartsWith("url "))
@@ -876,6 +908,18 @@ namespace commands
                 Eval.OldName(client, target);
             else if (cmd.StartsWith("announce "))
                 Eval.Announce(client, cmd.Substring(9));
+            else if (cmd.StartsWith("colors "))
+                Eval.Colors(client, cmd.Substring(7));
+            else if (cmd == "banstats")
+                Eval.BanStats(client);
+            else if (cmd.StartsWith("vspy "))
+                Eval.Vspy(client, cmd.Substring(5));
+            else if (cmd.StartsWith("whois ")) //93
+                Eval.Whois(client, target);
+            else if (cmd == "stats")
+                Eval.Stats(client);
+            else if (cmd.StartsWith("whowas "))
+                Eval.Whowas(client, cmd.Substring(7));
         }
 
         public void LinkError(ILinkError error)
