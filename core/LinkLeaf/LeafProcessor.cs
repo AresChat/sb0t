@@ -123,7 +123,83 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_PRINT_LEVEL:
                     HubPrintLevel(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PUBLIC_TO_USER:
+                    HubPublicToUser(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_EMOTE_TO_USER:
+                    HubEmoteToUser(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_PUBLIC_TO_LEAF:
+                    HubPublicToLeaf(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_EMOTE_TO_LEAF:
+                    HubEmoteToLeaf(link, packet);
+                    break;
             }
+        }
+
+        private static void HubPublicToUser(LinkClient link, TCPPacketReader packet)
+        {
+            String target = packet.ReadString(link);
+            String sender = packet.ReadString(link);
+            String text = packet.ReadString(link);
+            AresClient ac = UserPool.AUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
+
+            if (ac != null)
+                ac.SendPacket(TCPOutbound.Public(ac, sender, text));
+            else
+            {
+                ib0t.ib0tClient ic = UserPool.WUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
+
+                if (ic != null)
+                    ic.QueuePacket(ib0t.WebOutbound.PublicTo(ic, sender, text));
+            }
+        }
+
+        private static void HubEmoteToUser(LinkClient link, TCPPacketReader packet)
+        {
+            String target = packet.ReadString(link);
+            String sender = packet.ReadString(link);
+            String text = packet.ReadString(link);
+            AresClient ac = UserPool.AUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
+
+            if (ac != null)
+                ac.SendPacket(TCPOutbound.Emote(ac, sender, text));
+            else
+            {
+                ib0t.ib0tClient ic = UserPool.WUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
+
+                if (ic != null)
+                    ic.QueuePacket(ib0t.WebOutbound.EmoteTo(ic, sender, text));
+            }
+        }
+
+        private static void HubPublicToLeaf(LinkClient link, TCPPacketReader packet)
+        {
+            String sender = packet.ReadString(link);
+            String text = packet.ReadString(link);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Public(x, sender, text)),
+                x => x.LoggedIn && !x.Quarantined);
+
+            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PublicTo(x, sender, text)),
+                x => x.LoggedIn && !x.Quarantined);
+        }
+
+        private static void HubEmoteToLeaf(LinkClient link, TCPPacketReader packet)
+        {
+            String sender = packet.ReadString(link);
+            String text = packet.ReadString(link);
+
+            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, sender, text)),
+                x => x.LoggedIn && !x.Quarantined);
+
+            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, sender, text)),
+                x => x.LoggedIn && !x.Quarantined);
         }
 
         private static void HubPrintAll(LinkClient link, TCPPacketReader packet)

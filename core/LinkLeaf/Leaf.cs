@@ -41,5 +41,17 @@ namespace core.LinkLeaf
             if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
                 ServerCore.Linker.SendPacket(LeafOutbound.LeafPrintLevel(ServerCore.Linker, this.Ident, level, text));
         }
+
+        public void SendText(String sender, String text)
+        {
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafPublicTextToLeaf(ServerCore.Linker, this.Ident, sender, text));
+        }
+
+        public void SendEmote(String sender, String text)
+        {
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafEmoteTextToLeaf(ServerCore.Linker, this.Ident, sender, text));
+        }
     }
 }

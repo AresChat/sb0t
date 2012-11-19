@@ -137,6 +137,30 @@ namespace scripting.Objects
             return result;
         }
 
+        [JSFunction(Name = "sendText", IsWritable = false, IsEnumerable = true)]
+        public void SendText(object a, object b)
+        {
+            if (!(a is Undefined))
+                if (!(b is Undefined))
+                {
+                    String sender = a.ToString();
+                    String text = b.ToString();
+                    this.parent.SendText(sender, text);
+                }
+        }
+
+        [JSFunction(Name = "sendEmote", IsWritable = false, IsEnumerable = true)]
+        public void SendEmote(object a, object b)
+        {
+            if (!(a is Undefined))
+                if (!(b is Undefined))
+                {
+                    String sender = a.ToString();
+                    String text = b.ToString();
+                    this.parent.SendEmote(sender, text);
+                }
+        }
+
         public override string ToString()
         {
             return "[object Leaf]";

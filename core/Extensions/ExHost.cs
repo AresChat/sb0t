@@ -89,6 +89,14 @@ namespace core.Extensions
                 ib0t.ib0tClient obj = (ib0t.ib0tClient)client;
                 obj.QueuePacket(ib0t.WebOutbound.PublicTo(obj, sender, text));
             }
+            else if (client is LinkLeaf.LinkUser)
+            {
+                LinkLeaf.LinkUser obj = (LinkLeaf.LinkUser)client;
+
+                if (ServerCore.Linker.IsLinked)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPublicTextToUser(ServerCore.Linker,
+                        obj.LinkCredentials.Ident, obj.Name, sender, text));
+            }
         }
 
         public void EmoteToTarget(IUser client, String sender, String text)
@@ -102,6 +110,14 @@ namespace core.Extensions
             {
                 ib0t.ib0tClient obj = (ib0t.ib0tClient)client;
                 obj.QueuePacket(ib0t.WebOutbound.EmoteTo(obj, sender, text));
+            }
+            else if (client is LinkLeaf.LinkUser)
+            {
+                LinkLeaf.LinkUser obj = (LinkLeaf.LinkUser)client;
+
+                if (ServerCore.Linker.IsLinked)
+                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafEmoteTextToUser(ServerCore.Linker,
+                        obj.LinkCredentials.Ident, obj.Name, sender, text));
             }
         }
     }

@@ -25,5 +25,9 @@ namespace iconnect
         void Print(ushort vroom, String text);
         /// <summary>Print to all users in this leaf if their admin level is high enough</summary>
         void Print(ILevel level, String text);
+        /// <summary>Send a text to the users of this leaf</summary>
+        void SendText(String sender, String text);
+        /// <summary>Send an emote to the users of this leaf</summary>
+        void SendEmote(String sender, String text); 
     }
 }

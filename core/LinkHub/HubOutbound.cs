@@ -238,6 +238,52 @@ namespace core.LinkHub
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
 
+        public static byte[] HubPublicToUser(Leaf x, String target, String sender, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, target);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PUBLIC_TO_USER);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubEmoteToUser(Leaf x, String target, String sender, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, target);
+            packet.WriteString(x, sender);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_EMOTE_TO_USER);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubPublicToLeaf(Leaf x, String sender, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, sender);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_PUBLIC_TO_LEAF);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubEmoteToLeaf(Leaf x, String sender, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, sender);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_EMOTE_TO_LEAF);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
         public static byte[] HubIUser(Leaf x, String target, String command, String[] args)
         {
             TCPPacketWriter packet = new TCPPacketWriter();

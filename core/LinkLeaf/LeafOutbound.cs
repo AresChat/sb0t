@@ -254,6 +254,56 @@ namespace core.LinkLeaf
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
 
+        public static byte[] LeafPublicTextToUser(LinkClient x, uint target_ident, String target, String name, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target_ident);
+            packet.WriteString(x, target);
+            packet.WriteString(x, name);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PUBLIC_TO_USER);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafEmoteTextToUser(LinkClient x, uint target_ident, String target, String name, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target_ident);
+            packet.WriteString(x, target);
+            packet.WriteString(x, name);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_EMOTE_TO_USER);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafPublicTextToLeaf(LinkClient x, uint target_ident, String name, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target_ident);
+            packet.WriteString(x, name);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_PUBLIC_TO_LEAF);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] LeafEmoteTextToLeaf(LinkClient x, uint target_ident, String name, String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteUInt32(target_ident);
+            packet.WriteString(x, name);
+            packet.WriteString(x, text, false);
+            byte[] buf = packet.ToLinkPacket(LinkHub.LinkMsg.MSG_LINK_LEAF_EMOTE_TO_LEAF);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
         public static byte[] LeafPrivateText(LinkClient x, String sender, IClient target, String text)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
