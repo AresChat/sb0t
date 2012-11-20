@@ -1,5 +1,2 @@
-scribble to target - interlink
-nudge to target - interlink
-scribble to leaf
 #loadtemplate
 start with windows

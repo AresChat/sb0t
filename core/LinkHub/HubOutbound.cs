@@ -311,6 +311,42 @@ namespace core.LinkHub
             return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
         }
 
+        public static byte[] HubNudge(Leaf x, String target, String sender)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, target);
+            packet.WriteString(x, sender, false);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_NUDGE);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubScribbleUser(Leaf x, String target, String sender, uint height, byte[] img)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, target);
+            packet.WriteString(x, sender);
+            packet.WriteUInt32(height);
+            packet.WriteBytes(img);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_SCRIBBLE_USER);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
+        public static byte[] HubScribbleLeaf(Leaf x, String sender, uint height, byte[] img)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(x, sender);
+            packet.WriteUInt32(height);
+            packet.WriteBytes(img);
+            byte[] buf = packet.ToLinkPacket(LinkMsg.MSG_LINK_HUB_SCRIBBLE_LEAF);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_LINK_PROTO);
+        }
+
         public static byte[] HubAdmin(Leaf x, LinkUser admin, String command, LinkUser target, String args)
         {
             TCPPacketWriter packet = new TCPPacketWriter();

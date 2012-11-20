@@ -28,6 +28,8 @@ namespace iconnect
         /// <summary>Send a text to the users of this leaf</summary>
         void SendText(String sender, String text);
         /// <summary>Send an emote to the users of this leaf</summary>
-        void SendEmote(String sender, String text); 
+        void SendEmote(String sender, String text);
+        /// <summary>Send a scribble to this leaf</summary>
+        void Scribble(String sender, byte[] img, int height);
     }
 }

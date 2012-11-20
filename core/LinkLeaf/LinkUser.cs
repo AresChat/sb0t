@@ -57,12 +57,16 @@ namespace core.LinkLeaf
 
         public void Scribble(String sender, byte[] img, int height)
         {
-            
+            if (this.CustomClient)
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafScribbleUser(ServerCore.Linker, this, sender, height, img));
         }
 
         public void Nudge(String sender)
         {
-
+            if (this.CustomClient)
+                if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                    ServerCore.Linker.SendPacket(LeafOutbound.LeafNudge(ServerCore.Linker, this, sender));
         }
 
         public void SetMuzzled(bool b) { this._muzzled = b; }

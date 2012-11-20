@@ -139,7 +139,65 @@ namespace core.LinkLeaf
                 case LinkHub.LinkMsg.MSG_LINK_HUB_EMOTE_TO_LEAF:
                     HubEmoteToLeaf(link, packet);
                     break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_NUDGE:
+                    HubNudge(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_SCRIBBLE_USER:
+                    HubScribbleUser(link, packet);
+                    break;
+
+                case LinkHub.LinkMsg.MSG_LINK_HUB_SCRIBBLE_LEAF:
+                    HubScribbleLeaf(link, packet);
+                    break;
             }
+        }
+
+        private static void HubScribbleUser(LinkClient link, TCPPacketReader packet)
+        {
+            String target = packet.ReadString(link);
+            String sender = packet.ReadString(link);
+            int height = (int)((uint)packet);
+            byte[] img = packet;
+            AresClient ac = UserPool.AUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
+
+            if (ac != null)
+            {
+                if (ac.CustomClient)
+                    ac.Scribble(sender, img, height);
+            }
+            else
+            {
+                ib0t.ib0tClient ic = UserPool.WUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
+
+                if (ic != null)
+                    if (ic.CanScribble)
+                        ic.Scribble(sender, img, height);
+            }
+        }
+
+        private static void HubScribbleLeaf(LinkClient link, TCPPacketReader packet)
+        {
+            String sender = packet.ReadString(link);
+            int height = (int)((uint)packet);
+            byte[] img = packet;
+
+            UserPool.AUsers.ForEachWhere(x => x.Scribble(sender, img, height),
+                x => x.LoggedIn && !x.Quarantined && x.CustomClient);
+
+            UserPool.WUsers.ForEachWhere(x => x.Scribble(sender, img, height),
+                x => x.LoggedIn && !x.Quarantined && x.CanScribble);
+        }
+
+        private static void HubNudge(LinkClient link, TCPPacketReader packet)
+        {
+            String target = packet.ReadString(link);
+            String sender = packet.ReadString(link);
+            AresClient ac = UserPool.AUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
+
+            if (ac != null)
+                ac.Nudge(sender);
         }
 
         private static void HubPublicToUser(LinkClient link, TCPPacketReader packet)

@@ -53,5 +53,11 @@ namespace core.LinkLeaf
             if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
                 ServerCore.Linker.SendPacket(LeafOutbound.LeafEmoteTextToLeaf(ServerCore.Linker, this.Ident, sender, text));
         }
+
+        public void Scribble(String sender, byte[] img, int height)
+        {
+            if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLogin.Ready)
+                ServerCore.Linker.SendPacket(LeafOutbound.LeafScribbleLeaf(ServerCore.Linker, this.Ident, sender, height, img));
+        }
     }
 }

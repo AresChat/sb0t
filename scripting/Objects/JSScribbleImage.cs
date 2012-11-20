@@ -102,6 +102,14 @@ namespace scripting.Objects
             target.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data, this.Height);
         }
 
+        public void SendScribble(String sender, ILeaf leaf)
+        {
+            if (this.Data == null)
+                return;
+
+            leaf.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data, this.Height);
+        }
+
         public override string ToString()
         {
             return "[object ScribbleImage]";

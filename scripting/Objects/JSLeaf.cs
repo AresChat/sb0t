@@ -161,6 +161,21 @@ namespace scripting.Objects
                 }
         }
 
+        [JSFunction(Name = "scribble", IsWritable = false, IsEnumerable = true)]
+        public void Scribble(object a, object b)
+        {
+            if (a is JSScribbleImage)
+            {
+                JSScribbleImage scr = (JSScribbleImage)a;
+                scr.SendScribble(Server.Chatroom.BotName, this.parent);
+            }
+            else if (!(a is Undefined) && b is JSScribbleImage)
+            {
+                JSScribbleImage scr = (JSScribbleImage)b;
+                scr.SendScribble(a.ToString(), this.parent);
+            }
+        }
+
         public override string ToString()
         {
             return "[object Leaf]";

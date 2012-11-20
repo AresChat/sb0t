@@ -103,7 +103,7 @@
                             <Label Canvas.Left="394" Canvas.Top="228" Content="Link mode:" Height="28" Name="label24" />
                             <TextBox Canvas.Left="34" Canvas.Top="253" Height="64" Name="textBox7" Width="292" IsReadOnly="True" TextWrapping="Wrap" />
                             <Label Canvas.Left="29" Canvas.Top="228" Content="Your leaf identifier:" Height="28" Name="label25" />
-                            <Label Background="White" Canvas.Left="44" Canvas.Top="15" Content="Trusted leaves" Height="28" Name="label26" />
+                            <Label Background="White" Canvas.Left="44" Canvas.Top="15" Content="Trusted leaves (Hub Mode)" Height="28" Name="label26" />
                             <ListBox Height="140" Name="listBox3" Width="208" Canvas.Left="53" Canvas.Top="49">
                                 <ListBox.ContextMenu>
                                     <ContextMenu>
