@@ -278,6 +278,10 @@ namespace commands
             list.Add(new Item { Category = Category.BanSend, Index = 7, Text = "+n was rejected for being an anon" });
             list.Add(new Item { Category = Category.BanSend, Index = 8, Text = "+n was rejected for being not sharing any files" });
             list.Add(new Item { Category = Category.BanSend, Index = 9, Text = "+n was rejected by the join filter" });
+
+            list.Add(new Item { Category = Category.Filter, Index = 0, Text = "Join filter added by +n - [trigger: +t] [filter type: +f]" });//40
+            list.Add(new Item { Category = Category.Filter, Index = 1, Text = "Join filter [+t] removed by +n" });//41
+            list.Add(new Item { Category = Category.Filter, Index = 2, Text = "filter list is empty" });
         }
     }
 
@@ -313,6 +317,7 @@ namespace commands
         Whois = 27,
         Stats = 28,
         WhoWas = 29,
-        BanSend = 30
+        BanSend = 30,
+        Filter = 31
     }
 }

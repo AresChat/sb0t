@@ -38,6 +38,7 @@ namespace commands
             IPSend.Reset();
             BanSend.Reset();
             LogSend.Reset();
+            JoinFilter.Load();
         }
 
         private uint _second_timer = 0;
