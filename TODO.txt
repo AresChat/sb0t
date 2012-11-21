@@ -1,2 +1,3 @@
 #loadtemplate
 start with windows
+tor

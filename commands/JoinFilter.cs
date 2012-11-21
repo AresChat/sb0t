@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
 using System.Xml;
 using iconnect;
@@ -12,7 +11,133 @@ namespace commands
     {
         public static bool IsPreFiltered(IUser client)
         {
+            String ip = client.ExternalIP.ToString();
+            ushort u;
+
+            foreach (Item item in list)
+            {
+                switch (item.Type)
+                {
+                    case FilterType.Censor:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()))
+                            client.Name = Regex.Replace(client.Name, Regex.Escape(item.Trigger), String.Empty, RegexOptions.IgnoreCase);
+                        break;
+
+                    case FilterType.PortBan:
+                        if (ushort.TryParse(item.Trigger, out u))
+                            if (client.DataPort == u)
+                                return true;
+                        break;
+
+                    case FilterType.IPBan:
+                        if (ip.StartsWith(item.Trigger))
+                            return true;
+                        break;
+
+                    case FilterType.NameBan:
+                        if (client.Name == item.Trigger)
+                            return true;
+                        break;
+
+                    case FilterType.DNSBan:
+                        if (client.DNS.ToUpper().Contains(item.Trigger.ToUpper()))
+                            return true;
+                        break;
+
+                    case FilterType.Move:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            if (ushort.TryParse(item.Args, out u))
+                                client.Vroom = u;
+                        break;
+
+                    case FilterType.Redirect:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                        {
+                            client.Redirect(item.Args);
+                            return true;
+                        }
+                        break;
+
+                    case FilterType.ChangeName:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            client.Name = item.Args;
+                        break;
+
+                    case FilterType.VersionBan:
+                        if (client.Version.ToUpper().Contains(item.Args.ToUpper()))
+                            return true;
+                        break;
+                }
+            }
+
             return false;
+        }
+
+        public static void DoPostFilter(IUser client)
+        {
+            String ip = client.ExternalIP.ToString();
+
+            foreach (Item item in list)
+            {
+                switch (item.Type)
+                {
+                    case FilterType.DisableAvatar:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            AvatarPMManager.AddAvatar(client);
+                        break;
+
+                    case FilterType.Vspy:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            VSpy.Add(client);
+                        break;
+
+                    case FilterType.AntiFlood:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            AntiFlood.Add(client);
+                        break;
+
+                    case FilterType.IPSend:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            IPSend.Add(client);
+                        break;
+
+                    case FilterType.LogSend:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            LogSend.Add(client);
+                        break;
+
+                    case FilterType.BanSend:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            BanSend.Add(client);
+                        break;
+
+                    case FilterType.PM:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            client.PM(Server.Chatroom.BotName, item.Args.Replace("+n", client.Name).Replace("+ip", ip));
+                        break;
+
+                    case FilterType.Announce:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            client.Print(item.Args.Replace("+n", client.Name).Replace("+ip", ip));
+                        break;
+
+                    case FilterType.Clone:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            if (item.Args.StartsWith("/me "))
+                                client.SendEmote(item.Args.Substring(4).Replace("+n", client.Name).Replace("+ip", ip));
+                            else
+                                client.SendText(item.Args.Replace("+n", client.Name).Replace("+ip", ip));
+                        break;
+
+                    case FilterType.ChangeMessage:
+                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                        {
+                            AvatarPMManager.AddPM(client, item.Args);
+                            client.PersonalMessage = item.Args;
+                        }
+                        break;
+                }
+            }
         }
 
         private class Item
@@ -90,6 +215,7 @@ namespace commands
             IPBan,
             NameBan,
             DNSBan,
+            VersionBan,
 
             // with args
             Move,
@@ -98,7 +224,8 @@ namespace commands
             Announce,
             Clone,
             ChangeName,
-            ReserveName
+            ReserveName,
+            ChangeMessage
         }
 
         public static void Add(IUser admin, String args)
@@ -117,12 +244,17 @@ namespace commands
                 for (int i = 0; i < types.Length; i++)
                     if (types[i].ToUpper() == split[1].ToUpper())
                     {
-                        if (i > 10)
+                        if (i > 11)
                             if (split.Length > 2)
+                            {
                                 item.Args = String.Join(", ", new List<String>(split).GetRange(2, (split.Length - 2)).ToArray());
+
+                                if (item.Args.Length == 0)
+                                    break;
+                            }
                             else break;
 
-                        item.Type = (FilterType)Enum.Parse(typeof(FilterType), types[i]);
+                        item.Type = (FilterType)Enum.Parse(typeof(FilterType), types[i], true);
                         list.RemoveAll(x => x.Trigger == item.Trigger);
                         list.Add(item);
                         Save();

@@ -79,6 +79,7 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 25, Text = "+n has been removed from bansend" });
             list.Add(new Item { Category = Category.Notification, Index = 26, Text = "+n has been added to logsend" });
             list.Add(new Item { Category = Category.Notification, Index = 27, Text = "+n has been removed from logsend" });
+            list.Add(new Item { Category = Category.Notification, Index = 28, Text = "+n has flooded (code: +c)" });
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2
@@ -182,6 +183,8 @@ namespace commands
             list.Add(new Item { Category = Category.EnableDisable, Index = 27, Text = "+n has disabled stealth mode" });
             list.Add(new Item { Category = Category.EnableDisable, Index = 28, Text = "+n has enabled colors" });
             list.Add(new Item { Category = Category.EnableDisable, Index = 29, Text = "+n has disabled colors" });
+            list.Add(new Item { Category = Category.EnableDisable, Index = 30, Text = "+n has enabled room filters" });
+            list.Add(new Item { Category = Category.EnableDisable, Index = 31, Text = "+n has disabled room filters" });
 
             list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
 

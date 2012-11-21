@@ -1512,6 +1512,44 @@ namespace commands
                 }
         }
 
+        [CommandLevel("filter", ILevel.Administrator)]
+        public static void AddJoinFilter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+                JoinFilter.Add(admin, args);
+        }
+
+        public static void RemJoinFilter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+            {
+                int i;
+
+                if (int.TryParse(args, out i))
+                    JoinFilter.Remove(admin, i);
+            }
+        }
+
+        public static void JoinFilters(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+                JoinFilter.View(admin);
+        }
+
+        public static void Filter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+                if (args == "on")
+                {
+                    Settings.Filtering = true;
+                    Server.Print(Template.Text(Category.EnableDisable, 30).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.Filtering = false;
+                    Server.Print(Template.Text(Category.EnableDisable, 31).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
+        }
 
     }
 }

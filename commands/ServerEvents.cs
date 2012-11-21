@@ -39,6 +39,7 @@ namespace commands
             BanSend.Reset();
             LogSend.Reset();
             JoinFilter.Load();
+            AntiFlood.Reset();
         }
 
         private uint _second_timer = 0;
@@ -178,6 +179,9 @@ namespace commands
                                 return;
                             }
                     });
+
+                if (Settings.Filtering)
+                    JoinFilter.DoPostFilter(client);
             }
 
             String forced_pm = AvatarPMManager.GetPM(client);
@@ -234,6 +238,7 @@ namespace commands
                 IPSend.Remove(client);
                 BanSend.Remove(client);
                 LogSend.Remove(client);
+                AntiFlood.Remove(client);
             }
         }
 
@@ -569,6 +574,14 @@ namespace commands
                 admin.Print("/bansend <on or off>");
             if (admin.Level >= Server.GetLevel("logsend"))
                 admin.Print("/logsend <on or off>");
+
+            if (admin.Level >= Server.GetLevel("filter"))
+            {
+                admin.Print("/filter <on or off>");
+                admin.Print("/addjoinfilter <trigger>, <type>[, <args>]");
+                admin.Print("/remjoinfilter <ident>");
+                admin.Print("/joinfilters");
+            }
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type) { }
@@ -676,9 +689,19 @@ namespace commands
             VSpy.VroomChanged(client);
         }
 
-        public bool Flooding(IUser client, byte msg) { return true; }
+        private byte last_flood { get; set; }
 
-        public void Flooded(IUser client) { }
+        public bool Flooding(IUser client, byte msg)
+        {
+            this.last_flood = msg;
+            return !AntiFlood.CanFlood(client);
+        }
+
+        public void Flooded(IUser client)
+        {
+            String text = Template.Text(Category.Notification, 28).Replace("+n", client.Name).Replace("+c", this.last_flood.ToString());
+            Server.Print(ILevel.Moderator, text, true);
+        }
 
         public bool ProxyDetected(IUser client) { return true; }
 
@@ -950,6 +973,14 @@ namespace commands
                 Eval.BanSend(client, cmd.Substring(8));
             else if (cmd.StartsWith("logsend "))
                 Eval.LogSend(client, cmd.Substring(8));
+            else if (cmd.StartsWith("addjoinfilter "))
+                Eval.AddJoinFilter(client, cmd.Substring(14));
+            else if (cmd.StartsWith("remjoinfilter "))
+                Eval.RemJoinFilter(client, cmd.Substring(14));
+            else if (cmd == "joinfilters")
+                Eval.JoinFilters(client);
+            else if (cmd.StartsWith("filter "))
+                Eval.Filter(client, cmd.Substring(7));
         }
 
         public void LinkError(ILinkError error)
