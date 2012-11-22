@@ -1551,5 +1551,28 @@ namespace commands
                 }
         }
 
+        public static void AddFileFilter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+                FileFilter.Add(admin, args);
+        }
+
+        public static void RemFileFilter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+            {
+                int i;
+
+                if (int.TryParse(args, out i))
+                    FileFilter.Remove(admin, i);
+            }
+        }
+
+        public static void FileFilters(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+                FileFilter.View(admin);
+        }
+
     }
 }

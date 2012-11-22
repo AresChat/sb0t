@@ -18,7 +18,7 @@ namespace core
 
         public bool Contains(String text)
         {
-            return this.Text.ToUpper().Contains(text.ToUpper());
+            return Helpers.StripColors(this.Text.ToUpper()).Contains(text.ToUpper());
         }
 
         public void Replace(String x, String y)

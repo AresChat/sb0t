@@ -39,6 +39,8 @@ namespace commands
             BanSend.Reset();
             LogSend.Reset();
             JoinFilter.Load();
+            FileFilter.Load();
+            WordFilter.Load();
             AntiFlood.Reset();
         }
 
@@ -304,6 +306,9 @@ namespace commands
 
                 if (client.Level == ILevel.Regular && !Settings.Colors)
                     text = Helpers.StripColors(text);
+
+                if (Settings.Filtering)
+                    text = WordFilter.FilterBefore(client, text);
             }
 
             return text;
@@ -318,6 +323,9 @@ namespace commands
 
             History.Add(client.Name, text, false);
             VSpy.Text(client, text);
+
+            if (Settings.Filtering)
+                WordFilter.FilterAfter(client, text);
         }
 
         public void EmoteReceived(IUser client, String text) { }
@@ -342,6 +350,9 @@ namespace commands
                         if (!client.Link.IsLinked)
                             client.Print(Template.Text(Category.Notification, 4).Replace("+n", client.Name));
                     }
+
+                if (Settings.Filtering)
+                    text = WordFilter.FilterBefore(client, text);
             }
 
             return text;
@@ -356,6 +367,9 @@ namespace commands
 
             History.Add(client.Name, text, true);
             VSpy.Text(client, text);
+
+            if (Settings.Filtering)
+                WordFilter.FilterAfter(client, text);
         }
 
         public void PrivateSending(IUser client, IUser target, IPrivateMsg msg)
@@ -365,7 +379,11 @@ namespace commands
                 {
                     msg.Cancel = true;
                     client.PM(target.Name, Template.Text(Category.PmBlocking, 2).Replace("+n", client.Name).Replace("+t", target.Name));
+                    return;
                 }
+
+            if (Settings.Filtering)
+                WordFilter.FilterPM(client, msg);
         }
 
         public void PrivateSent(IUser client, IUser target) { }
@@ -581,10 +599,22 @@ namespace commands
                 admin.Print("/addjoinfilter <trigger>, <type>[, <args>]");
                 admin.Print("/remjoinfilter <ident>");
                 admin.Print("/joinfilters");
+                admin.Print("/addfilefilter <trigger>, <type>[, <args>]");
+                admin.Print("/remfilefilter <ident>");
+                admin.Print("/filefilters");
             }
         }
 
-        public void FileReceived(IUser client, String filename, String title, MimeType type) { }
+        public void FileReceived(IUser client, String filename, String title, MimeType type)
+        {
+            if (client.Level > ILevel.Regular)
+                if (type == MimeType.ARES_MIME_IMAGE ||
+                    type == MimeType.ARES_MIME_OTHER ||
+                    type == MimeType.ARES_MIME_SOFTWARE ||
+                    type == MimeType.ARES_MIME_VIDEO)
+                    if (Settings.Filtering)
+                        FileFilter.DoFilter(client, filename);
+        }
 
         public bool Ignoring(IUser client, IUser target) { return true; }
 
@@ -981,6 +1011,12 @@ namespace commands
                 Eval.JoinFilters(client);
             else if (cmd.StartsWith("filter "))
                 Eval.Filter(client, cmd.Substring(7));
+            else if (cmd.StartsWith("addfilefilter "))
+                Eval.AddFileFilter(client, cmd.Substring(14));
+            else if (cmd.StartsWith("remfilefilter "))
+                Eval.RemFileFilter(client, cmd.Substring(14));
+            else if (cmd == "filefilters")
+                Eval.FileFilters(client);
         }
 
         public void LinkError(ILinkError error)

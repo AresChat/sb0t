@@ -183,8 +183,8 @@ namespace commands
             list.Add(new Item { Category = Category.EnableDisable, Index = 27, Text = "+n has disabled stealth mode" });
             list.Add(new Item { Category = Category.EnableDisable, Index = 28, Text = "+n has enabled colors" });
             list.Add(new Item { Category = Category.EnableDisable, Index = 29, Text = "+n has disabled colors" });
-            list.Add(new Item { Category = Category.EnableDisable, Index = 30, Text = "+n has enabled room filters" });
-            list.Add(new Item { Category = Category.EnableDisable, Index = 31, Text = "+n has disabled room filters" });
+            list.Add(new Item { Category = Category.EnableDisable, Index = 30, Text = "+n has enabled room filters" });//73
+            list.Add(new Item { Category = Category.EnableDisable, Index = 31, Text = "+n has disabled room filters" });//74
 
             list.Add(new Item { Category = Category.Clock, Index = 0, Text = "[+c] +t [+c]" });//100
 
@@ -285,6 +285,23 @@ namespace commands
             list.Add(new Item { Category = Category.Filter, Index = 0, Text = "Join filter added by +n - [trigger: +t] [filter type: +f]" });//40
             list.Add(new Item { Category = Category.Filter, Index = 1, Text = "Join filter [+t] removed by +n" });//41
             list.Add(new Item { Category = Category.Filter, Index = 2, Text = "filter list is empty" });
+            list.Add(new Item { Category = Category.Filter, Index = 3, Text = "File filter added by +n - [trigger: +t] [filter type: +f]" });//42
+            list.Add(new Item { Category = Category.Filter, Index = 4, Text = "File filter [+t] removed by +n" });//43
+            list.Add(new Item { Category = Category.Filter, Index = 5, Text = "+n was killed for sharing [+f]" });//44
+            list.Add(new Item { Category = Category.Filter, Index = 6, Text = "+n was banned for sharing [+f]" });//45
+            list.Add(new Item { Category = Category.Filter, Index = 7, Text = "Word filter added by +n - [trigger: +t] [filter type: +f]" });//28
+            list.Add(new Item { Category = Category.Filter, Index = 8, Text = "Word filter [+t] removed by +n" });//29
+
+            list.Add(new Item { Category = Category.Filter, Index = 9, Text = "+n was muzzled for typing a filtered word" });//33
+            list.Add(new Item { Category = Category.Filter, Index = 10, Text = "+n was killed for typing a filtered word" });//35
+            list.Add(new Item { Category = Category.Filter, Index = 11, Text = "+n was banned for typing a filtered word" });//36
+            list.Add(new Item { Category = Category.Filter, Index = 12, Text = "+n your text was censored for typing a filtered word" });//37
+            list.Add(new Item { Category = Category.Filter, Index = 13, Text = "+n was moved for typing a filtered word" });//38
+            list.Add(new Item { Category = Category.Filter, Index = 14, Text = "+n was redirected for typing a filtered word" });//39
+
+            list.Add(new Item { Category = Category.Filter, Index = 15, Text = "+n was killed for typing a filtered word in PM" });//48
+            list.Add(new Item { Category = Category.Filter, Index = 16, Text = "+n was banned for typing a filtered word in PM" });//49
+            list.Add(new Item { Category = Category.Filter, Index = 17, Text = "+n was redirected for typing a filtered word in PM" });
         }
     }
 

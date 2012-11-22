@@ -88,27 +88,32 @@ namespace commands
 
                     case FilterType.Vspy:
                         if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
-                            VSpy.Add(client);
+                            if (!client.Link.IsLinked)
+                                VSpy.Add(client);
                         break;
 
                     case FilterType.AntiFlood:
                         if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
-                            AntiFlood.Add(client);
+                            if (!client.Link.IsLinked)
+                                AntiFlood.Add(client);
                         break;
 
                     case FilterType.IPSend:
                         if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
-                            IPSend.Add(client);
+                            if (!client.Link.IsLinked)
+                                IPSend.Add(client);
                         break;
 
                     case FilterType.LogSend:
                         if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
-                            LogSend.Add(client);
+                            if (!client.Link.IsLinked)
+                                LogSend.Add(client);
                         break;
 
                     case FilterType.BanSend:
                         if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
-                            BanSend.Add(client);
+                            if (!client.Link.IsLinked)
+                                BanSend.Add(client);
                         break;
 
                     case FilterType.PM:
@@ -251,8 +256,14 @@ namespace commands
 
                                 if (item.Args.Length == 0)
                                     break;
+
+                                if (i == 13)
+                                    if (Server.Hashlinks.Decrypt(item.Args) == null)
+                                        break;
                             }
                             else break;
+                        else if (split.Length != 2)
+                            break;
 
                         item.Type = (FilterType)Enum.Parse(typeof(FilterType), types[i], true);
                         list.RemoveAll(x => x.Trigger == item.Trigger);

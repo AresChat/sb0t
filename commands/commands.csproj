@@ -62,6 +62,7 @@
     <Compile Include="DefineDictionary.cs" />
     <Compile Include="Echo.cs" />
     <Compile Include="Eval.cs" />
+    <Compile Include="FileFilter.cs" />
     <Compile Include="Greets.cs" />
     <Compile Include="Hashlink.cs" />
     <Compile Include="Helpers.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Urls.cs" />
     <Compile Include="VSpy.cs" />
     <Compile Include="Whowas.cs" />
+    <Compile Include="WordFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iconnect\iconnect.csproj">
