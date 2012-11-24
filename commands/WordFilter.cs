@@ -149,7 +149,7 @@ namespace commands
                                     break;
 
                             if (client.Level > ILevel.Regular)
-                                if (text.StartsWith("#addline") || text.StartsWith("remline"))
+                                if (text.StartsWith("#addline") || text.StartsWith("remline") || text.StartsWith("addwordfilter"))
                                     break;
 
                             String[] lines = item.Args.Split(new String[] { "\r\n" }, StringSplitOptions.None);
@@ -338,7 +338,6 @@ namespace commands
 
         public static void Add(IUser admin, String args)
         {
-            Server.Print("blah");
             String[] split = args.Split(new String[] { ", " }, StringSplitOptions.None);
 
             if (split.Length < 2)
