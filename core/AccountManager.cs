@@ -137,7 +137,7 @@ namespace core
                                 client.Unquarantine();
 
                             CaptchaManager.AddCaptcha(client);
-                            ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
+                            ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account [level designation: " + a.Level + "]");
                             return;
                         }
                     }
@@ -199,7 +199,7 @@ namespace core
                         client.Unquarantine();
 
                     CaptchaManager.AddCaptcha(client);
-                    ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account");
+                    ServerCore.Log(client.Name + " logged in with " + a.Name + "'s account [level designation: " + a.Level + "]");
                     return;
                 }
             }

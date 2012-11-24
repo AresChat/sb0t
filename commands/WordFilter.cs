@@ -149,7 +149,7 @@ namespace commands
                                     break;
 
                             if (client.Level > ILevel.Regular)
-                                if (text.StartsWith("#addline") || text.StartsWith("remline") || text.StartsWith("addwordfilter"))
+                                if (text.StartsWith("#addline") || text.StartsWith("#remline") || text.StartsWith("#addwordfilter"))
                                     break;
 
                             String[] lines = item.Args.Split(new String[] { "\r\n" }, StringSplitOptions.None);

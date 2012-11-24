@@ -252,7 +252,7 @@ namespace core
                         catch (Exception e)
                         {
                             client.Disconnect();
-                            Log("packet read fail from " + client.ID + " " + ident, e);
+                            Log("packet read fail from " + client.ExternalIP + " " + ident, e);
                             break;
                         }
                     }
@@ -298,9 +298,9 @@ namespace core
                                 client.Disconnect();
 
                                 if (packet.Msg != TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL)
-                                    Log("packet read fail from " + client.ID + " " + packet.Msg, e);
+                                    Log("packet read fail from " + client.ExternalIP + " " + packet.Msg, e);
                                 else
-                                    Log("packet read fail from " + client.ID + " " + (TCPMsg)packet.Packet.ToArray()[2], e);
+                                    Log("packet read fail from " + client.ExternalIP + " " + (TCPMsg)packet.Packet.ToArray()[2], e);
                                 
                                 break;
                             }
