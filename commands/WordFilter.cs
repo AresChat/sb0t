@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
 using System.Xml;
 using iconnect;
@@ -67,34 +68,105 @@ namespace commands
             String ip = client.ExternalIP.ToString();
 
             foreach (Item item in list)
-            {
-                switch (item.Type)
-                {
-                    case FilterType.Muzzle:
-                        break;
+                if (text.ToUpper().Contains(item.Trigger.ToUpper()))
+                    switch (item.Type)
+                    {
+                        case FilterType.Muzzle:
+                            if (client.Link.IsLinked && client.Level == ILevel.Regular)
+                                return String.Empty;
+                            else if (client.Level == ILevel.Regular)
+                            {
+                                Server.Print(Template.Text(Category.Filter, 9).Replace("+n", client.Name), true);
+                                client.Muzzled = true;
+                                return String.Empty;
+                            }
+                            break;
 
-                    case FilterType.Kill:
-                        break;
+                        case FilterType.Kill:
+                            if (client.Link.IsLinked && client.Level == ILevel.Regular)
+                                return String.Empty;
+                            else if (client.Level == ILevel.Regular)
+                            {
+                                Server.Print(Template.Text(Category.Filter, 10).Replace("+n", client.Name), true);
+                                client.Disconnect();
+                                return String.Empty;
+                            }
+                            break;
 
-                    case FilterType.Ban:
-                        break;
+                        case FilterType.Ban:
+                            if (client.Link.IsLinked && client.Level == ILevel.Regular)
+                                return String.Empty;
+                            else if (client.Level == ILevel.Regular)
+                            {
+                                Server.Print(Template.Text(Category.Filter, 11).Replace("+n", client.Name), true);
+                                client.Ban();
+                                return String.Empty;
+                            }
+                            break;
 
-                    case FilterType.Censor:
-                        break;
+                        case FilterType.Censor:
+                            if (client.Link.IsLinked && client.Level == ILevel.Regular)
+                                return String.Empty;
+                            else if (client.Level == ILevel.Regular)
+                            {
+                                client.Print(Template.Text(Category.Filter, 12).Replace("+n", client.Name));
+                                return String.Empty;
+                            }
+                            break;
 
-                    case FilterType.Move:
-                        break;
+                        case FilterType.Move:
+                            if (client.Link.IsLinked && client.Level == ILevel.Regular)
+                                return String.Empty;
+                            else if (client.Level == ILevel.Regular)
+                            {
+                                ushort u;
 
-                    case FilterType.Redirect:
-                        break;
+                                if (ushort.TryParse(item.Args, out u))
+                                {
+                                    Server.Print(Template.Text(Category.Filter, 13).Replace("+n", client.Name), true);
+                                    client.Vroom = u;
+                                }
 
-                    case FilterType.Announce:
-                        break;
+                                return String.Empty;
+                            }
+                            break;
 
-                    case FilterType.Replace:
-                        break;
-                }
-            }
+                        case FilterType.Redirect:
+                            if (client.Link.IsLinked && client.Level == ILevel.Regular)
+                                return String.Empty;
+                            else if (client.Level == ILevel.Regular)
+                            {
+                                Server.Print(Template.Text(Category.Filter, 14).Replace("+n", client.Name), true);
+                                client.Redirect(item.Args);
+                                client.Disconnect();
+                                return String.Empty;
+                            }
+                            break;
+
+                        case FilterType.Announce:
+                            if (Settings.AdminAnnounce)
+                                if (client.Level == ILevel.Regular)
+                                    break;
+
+                            if (client.Level > ILevel.Regular)
+                                if (text.StartsWith("#addline") || text.StartsWith("remline"))
+                                    break;
+
+                            String[] lines = item.Args.Split(new String[] { "\r\n" }, StringSplitOptions.None);
+                            String reply = String.Empty;
+
+                            if (text.StartsWith(item.Trigger) && text.Length > item.Trigger.Length)
+                                reply = text.Substring(item.Trigger.Length + 1);
+
+                            foreach (String str in lines)
+                                Server.Print(str.Replace("+n", client.Name).Replace("+ip", ip).Replace("+r", reply), true);
+                            break;
+
+                        case FilterType.Replace:
+                            if (client.Level == ILevel.Regular)
+                                text = Regex.Replace(text, Regex.Escape(item.Trigger), item.Args, RegexOptions.IgnoreCase);
+                            break;
+                    }
 
             return text;
         }
@@ -104,19 +176,28 @@ namespace commands
             String ip = client.ExternalIP.ToString();
 
             foreach (Item item in list)
-            {
-                switch (item.Type)
-                {
-                    case FilterType.PM:
-                        break;
+                if (text.ToUpper().Contains(item.Trigger.ToUpper()))
+                    switch (item.Type)
+                    {
+                        case FilterType.PM:
+                            client.PM(Server.Chatroom.BotName, item.Args.Replace("+n", client.Name).Replace("+ip", ip));
+                            break;
 
-                    case FilterType.Clone:
-                        break;
+                        case FilterType.Clone:
+                            if (client.Level == ILevel.Regular)
+                            {
+                                if (item.Args.StartsWith("/me "))
+                                    client.SendEmote(item.Args.Substring(4).Replace("+n", client.Name).Replace("+ip", ip));
+                                else
+                                    client.SendText(item.Args.Replace("+n", client.Name).Replace("+ip", ip));
+                            }
+                            break;
 
-                    case FilterType.Echo:
-                        break;
-                }
-            }
+                        case FilterType.Echo:
+                            if (!client.Link.IsLinked && client.Level == ILevel.Regular)
+                                Echo.Add(client, item.Args);
+                            break;
+                    }
         }
 
         private class Item
@@ -196,6 +277,63 @@ namespace commands
             Clone,
             Replace,
             Echo
+        }
+
+        public static void AddLine(IUser admin, int ident, String text)
+        {
+            if (ident >= 0 && ident < list.Count)
+                if (list[ident].Type == FilterType.Announce)
+                {
+                    list[ident].Args += "\r\n" + text;
+                    Save();
+
+                    Server.Print(Template.Text(Category.Filter, 20).Replace("+t",
+                        list[ident].Trigger).Replace("+n", Settings.Stealth ? Server.Chatroom.BotName : admin.Name), true);
+                }
+        }
+
+        public static void RemLine(IUser admin, int ident, int line)
+        {
+            if (ident >= 0 && ident < list.Count)
+                if (list[ident].Type == FilterType.Announce)
+                {
+                    List<String> lines = new List<String>(list[ident].Args.Split(new String[] { "\r\n" }, StringSplitOptions.None));
+
+                    if (line >= 0 && line < lines.Count)
+                    {
+                        String name = list[ident].Trigger;
+                        lines.RemoveAt(line);
+
+                        if (lines.Count == 0)
+                        {
+                            list.RemoveAt(ident);
+                            Save();
+
+                            Server.Print(Template.Text(Category.Filter, 8).Replace("+t",
+                                name).Replace("+n", Settings.Stealth ? Server.Chatroom.BotName : admin.Name), true);
+                        }
+                        else
+                        {
+                            list[ident].Args = String.Join("\r\n", lines.ToArray());
+                            Save();
+
+                            Server.Print(Template.Text(Category.Filter, 21).Replace("+t",
+                                list[ident].Trigger).Replace("+n", Settings.Stealth ? Server.Chatroom.BotName : admin.Name), true);
+                        }
+                    }
+                }
+        }
+
+        public static void ViewFilter(IUser admin, int ident)
+        {
+            if (ident >= 0 && ident < list.Count)
+                if (list[ident].Type == FilterType.Announce)
+                {
+                    String[] lines = list[ident].Args.Split(new String[] { "\r\n" }, StringSplitOptions.None);
+
+                    for (int i = 0; i < lines.Length; i++)
+                        admin.Print("line " + i + ": " + lines[i]);
+                }
         }
 
         public static void Add(IUser admin, String args)

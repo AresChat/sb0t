@@ -10,6 +10,12 @@ namespace commands
     {
         public static bool DisableAdmins { get; set; }
 
+        public static bool AdminAnnounce
+        {
+            get { return Get<bool>("adminannounce"); }
+            set { Set("adminannounce", value); }
+        }
+
         public static bool Colors
         {
             get { return Get<bool>("colors"); }

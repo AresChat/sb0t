@@ -123,18 +123,18 @@ namespace commands
             list.Add(new Item { Category = Category.Captcha, Index = 2, Text = "Please type this word to allow you to chat" });
             list.Add(new Item { Category = Category.Captcha, Index = 3, Text = "Correct answer.  You may now chat" });//155
 
-            list.Add(new Item { Category = Category.Linking, Index = 0, Text = "\x000314--- An linking error occurred [+e]" });
-            list.Add(new Item { Category = Category.Linking, Index = 1, Text = "\x000314--- Connection to Link Hub [+n] established :)" });
-            list.Add(new Item { Category = Category.Linking, Index = 2, Text = "\x000314--- Connection to Link Hub was lost." });
-            list.Add(new Item { Category = Category.Linking, Index = 3, Text = "\x000314--- A chatroom [+n] has joined" });
-            list.Add(new Item { Category = Category.Linking, Index = 4, Text = "\x000314--- A chatroom [+n] has parted" });
-            list.Add(new Item { Category = Category.Linking, Index = 5, Text = "\x000314--- Connecting to hub [+n], please wait..." });
-            list.Add(new Item { Category = Category.Linking, Index = 6, Text = "\x000314--- Link session has now been terminated" });
-            list.Add(new Item { Category = Category.Linking, Index = 7, Text = "\x000314--- The chatroom [+n] does not allow linked admins" });
-            list.Add(new Item { Category = Category.Linking, Index = 8, Text = "\x000314--- Reconnection will be attempted in 30 seconds..." });
-            list.Add(new Item { Category = Category.Linking, Index = 9, Text = "\x000314--- This chatroom is currently unlinked" });
-            list.Add(new Item { Category = Category.Linking, Index = 10, Text = "\x000314--- Name: +n" });
-            list.Add(new Item { Category = Category.Linking, Index = 11, Text = "\x000314--- Hashlink: \\\\+h" });
+            list.Add(new Item { Category = Category.Linking, Index = 0, Text = "\x0002314--- An linking error occurred [+e]" });
+            list.Add(new Item { Category = Category.Linking, Index = 1, Text = "\x0002314--- Connection to Link Hub [+n] established :)" });
+            list.Add(new Item { Category = Category.Linking, Index = 2, Text = "\x0002314--- Connection to Link Hub was lost." });
+            list.Add(new Item { Category = Category.Linking, Index = 3, Text = "\x0002314--- A chatroom [+n] has joined" });
+            list.Add(new Item { Category = Category.Linking, Index = 4, Text = "\x0002314--- A chatroom [+n] has parted" });
+            list.Add(new Item { Category = Category.Linking, Index = 5, Text = "\x0002314--- Connecting to hub [+n], please wait..." });
+            list.Add(new Item { Category = Category.Linking, Index = 6, Text = "\x0002314--- Link session has now been terminated" });
+            list.Add(new Item { Category = Category.Linking, Index = 7, Text = "\x0002314--- The chatroom [+n] does not allow linked admins" });
+            list.Add(new Item { Category = Category.Linking, Index = 8, Text = "\x0002314--- Reconnection will be attempted in 30 seconds..." });
+            list.Add(new Item { Category = Category.Linking, Index = 9, Text = "\x0002314--- This chatroom is currently unlinked" });
+            list.Add(new Item { Category = Category.Linking, Index = 10, Text = "\x0002314--- Name: +n" });
+            list.Add(new Item { Category = Category.Linking, Index = 11, Text = "\x0002314--- Hashlink: \\\\+h" });
 
             list.Add(new Item { Category = Category.AdminList, Index = 0, Text = "ADMIN LIST REQUESTED BY [+n]" });//50
             list.Add(new Item { Category = Category.AdminList, Index = 1, Text = "Level +l : +n" });//51
@@ -291,17 +291,19 @@ namespace commands
             list.Add(new Item { Category = Category.Filter, Index = 6, Text = "+n was banned for sharing [+f]" });//45
             list.Add(new Item { Category = Category.Filter, Index = 7, Text = "Word filter added by +n - [trigger: +t] [filter type: +f]" });//28
             list.Add(new Item { Category = Category.Filter, Index = 8, Text = "Word filter [+t] removed by +n" });//29
-
             list.Add(new Item { Category = Category.Filter, Index = 9, Text = "+n was muzzled for typing a filtered word" });//33
             list.Add(new Item { Category = Category.Filter, Index = 10, Text = "+n was killed for typing a filtered word" });//35
             list.Add(new Item { Category = Category.Filter, Index = 11, Text = "+n was banned for typing a filtered word" });//36
             list.Add(new Item { Category = Category.Filter, Index = 12, Text = "+n your text was censored for typing a filtered word" });//37
             list.Add(new Item { Category = Category.Filter, Index = 13, Text = "+n was moved for typing a filtered word" });//38
             list.Add(new Item { Category = Category.Filter, Index = 14, Text = "+n was redirected for typing a filtered word" });//39
-
             list.Add(new Item { Category = Category.Filter, Index = 15, Text = "+n was killed for typing a filtered word in PM" });//48
             list.Add(new Item { Category = Category.Filter, Index = 16, Text = "+n was banned for typing a filtered word in PM" });//49
             list.Add(new Item { Category = Category.Filter, Index = 17, Text = "+n was redirected for typing a filtered word in PM" });
+            list.Add(new Item { Category = Category.Filter, Index = 18, Text = "Announce filters set to admin only by +n" });//75
+            list.Add(new Item { Category = Category.Filter, Index = 19, Text = "Announce filters set to all users by +n" });//76
+            list.Add(new Item { Category = Category.Filter, Index = 20, Text = "Line added to [filter: +t] by +n" });//30
+            list.Add(new Item { Category = Category.Filter, Index = 21, Text = "Line removed from [filter: +t] by +n" });//31
         }
     }
 

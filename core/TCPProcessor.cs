@@ -495,8 +495,6 @@ namespace core
             if (client.LoggedIn)
                 return;
 
-            Helpers.ObfuscateAddress(client);
-
             client.FastPing = relogin;
             client.Guid = packet;
             client.FileCount = packet;
@@ -509,6 +507,10 @@ namespace core
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
+
+            if (client.Version.Contains("cb0t"))
+                Helpers.ObfuscateAddress(client);
+
             client.CustomClient = !client.Version.StartsWith("Ares 2.");
             client.LocalIP = packet;
             packet.SkipBytes(4);

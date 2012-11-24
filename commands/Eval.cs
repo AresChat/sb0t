@@ -1574,5 +1574,90 @@ namespace commands
                 FileFilter.View(admin);
         }
 
+        public static void AddWordFilter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+                WordFilter.Add(admin, args);
+        }
+
+        public static void RemWordFilter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+            {
+                int i;
+
+                if (int.TryParse(args, out i))
+                    WordFilter.Remove(admin, i);
+            }
+        }
+
+        public static void WordFilters(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+                WordFilter.View(admin);
+        }
+
+        [CommandLevel("adminannounce", ILevel.Host)]
+        public static void AdminAnnounce(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("adminannounce"))
+                if (args == "on")
+                {
+                    Settings.AdminAnnounce = true;
+                    Server.Print(Template.Text(Category.Filter, 18).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
+                else if (args == "off")
+                {
+                    Settings.AdminAnnounce = false;
+                    Server.Print(Template.Text(Category.Filter, 19).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
+                }
+        }
+
+        public static void AddLine(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+            {
+                String[] split = args.Split(new String[] { ", " }, StringSplitOptions.None);
+
+                if (split.Length > 1)
+                {
+                    int i;
+
+                    if (int.TryParse(split[0], out i))
+                    {
+                        String str = String.Join(", ", split.Skip(1).ToArray());
+                        WordFilter.AddLine(admin, i, str);
+                    }
+                }
+            }
+        }
+
+        public static void RemLine(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+            {
+                String[] split = args.Split(new String[] { ", " }, StringSplitOptions.None);
+
+                if (split.Length == 2)
+                {
+                    int i1, i2;
+
+                    if (int.TryParse(split[0], out i1))
+                        if (int.TryParse(split[1], out i2))
+                            WordFilter.RemLine(admin, i1, i2);
+                }
+            }
+        }
+
+        public static void ViewFilter(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("filter"))
+            {
+                int i;
+
+                if (int.TryParse(args, out i))
+                    WordFilter.ViewFilter(admin, i);
+            }
+        }
     }
 }

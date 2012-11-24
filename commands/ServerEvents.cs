@@ -592,7 +592,8 @@ namespace commands
                 admin.Print("/bansend <on or off>");
             if (admin.Level >= Server.GetLevel("logsend"))
                 admin.Print("/logsend <on or off>");
-
+            if (admin.Level >= Server.GetLevel("adminannounce"))
+                admin.Print("/adminannounce <on or off>");
             if (admin.Level >= Server.GetLevel("filter"))
             {
                 admin.Print("/filter <on or off>");
@@ -602,6 +603,12 @@ namespace commands
                 admin.Print("/addfilefilter <trigger>, <type>[, <args>]");
                 admin.Print("/remfilefilter <ident>");
                 admin.Print("/filefilters");
+                admin.Print("/addwordfilter <trigger>, <type>[, <args>]");
+                admin.Print("/remwordfilter <ident>");
+                admin.Print("/wordfilters");
+                admin.Print("/addline <ident>, <text>");
+                admin.Print("/remline <ident>, <line ident>");
+                admin.Print("/viewfilter <ident>");
             }
         }
 
@@ -1017,6 +1024,20 @@ namespace commands
                 Eval.RemFileFilter(client, cmd.Substring(14));
             else if (cmd == "filefilters")
                 Eval.FileFilters(client);
+            else if (cmd.StartsWith("addwordfilter "))
+                Eval.AddWordFilter(client, cmd.Substring(14));
+            else if (cmd.StartsWith("remwordfilter "))
+                Eval.RemWordFilter(client, cmd.Substring(14));
+            else if (cmd == "wordfilters")
+                Eval.WordFilters(client);
+            else if (cmd.StartsWith("adminannounce "))
+                Eval.AdminAnnounce(client, cmd.Substring(14));
+            else if (cmd.StartsWith("addline "))
+                Eval.AddLine(client, cmd.Substring(8));
+            else if (cmd.StartsWith("remline "))
+                Eval.RemLine(client, cmd.Substring(8));
+            else if (cmd.StartsWith("viewfilter "))
+                Eval.ViewFilter(client, cmd.Substring(11));
         }
 
         public void LinkError(ILinkError error)
