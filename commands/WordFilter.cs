@@ -338,6 +338,7 @@ namespace commands
 
         public static void Add(IUser admin, String args)
         {
+            Server.Print("blah");
             String[] split = args.Split(new String[] { ", " }, StringSplitOptions.None);
 
             if (split.Length < 2)
@@ -352,8 +353,8 @@ namespace commands
                 for (int i = 0; i < types.Length; i++)
                     if (types[i].ToUpper() == split[1].ToUpper())
                     {
-                        if (i > 11)
-                            if (split.Length > 3)
+                        if (i > 3)
+                            if (split.Length > 2)
                             {
                                 item.Args = String.Join(", ", new List<String>(split).GetRange(2, (split.Length - 2)).ToArray());
 
