@@ -32,4 +32,15 @@ _ReSharper.*
 controller.cs
 sb0t5
 scripting
+</Value></Property><Property><Name>svn:ignore</Name><Value>*.suo
+*.ncb
+*.sdf
+*.opensdf
+ipch
+*.user
+_ReSharper.*
+controller.cs
+sb0t5
+scripting
+testext
 </Value></Property></Properties></ItemProperties>
