@@ -24,6 +24,8 @@ namespace commands
 
         public static void Load(bool announce_loaded)
         {
+            list = new List<Item>();
+
             list.Add(new Item { Category = Category.Credit, Index = 0, Text = "Default Template" });//97
 
             list.Add(new Item { Category = Category.AdminAction, Index = 0, Text = "+n was banned by +a" });//90
@@ -510,6 +512,7 @@ namespace commands
             catch { }
 
             if (lines.Count > 0)
+            {
                 for (int i = 0; i < lines.Count; i++)
                 {
                     String str = lines[i];
@@ -538,6 +541,7 @@ namespace commands
                         }
                     }
                 }
+            }
 
             Save();
         }
