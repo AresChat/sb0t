@@ -59,7 +59,6 @@ namespace core.ib0t
         private static void Login(ib0tClient client, String args, ulong time)
         {
             Helpers.ObfuscateAddress(client);
-
             byte[] g = new byte[16];
 
             for (int i = 0; i < g.Length; i++)
@@ -105,19 +104,21 @@ namespace core.ib0t
             }
 
             IClient hijack = UserPool.AUsers.Find(x => (x.Name == client.Name ||
-                x.OrgName == client.OrgName) && x.ID != client.ID);
+                x.OrgName == client.OrgName) && x.ID != client.ID && x.LoggedIn);
 
             if (hijack == null)
                 hijack = UserPool.WUsers.Find(x => (x.Name == client.Name ||
-                    x.OrgName == client.OrgName) && x.ID != client.ID);
+                    x.OrgName == client.OrgName) && x.ID != client.ID && x.LoggedIn);
 
             if (hijack != null)
                 if (hijack.ExternalIP.Equals(client.ExternalIP))
                 {
-                    if (hijack is AresClient)
+                    if (!hijack.WebClient)
                         ((AresClient)hijack).Disconnect(true);
                     else
                         ((ib0t.ib0tClient)hijack).Disconnect();
+
+                    client.Name = client.OrgName;
                 }
                 else
                 {

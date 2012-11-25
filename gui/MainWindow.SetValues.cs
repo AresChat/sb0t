@@ -212,8 +212,44 @@ namespace gui
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
 
+            this.CreateImporter();
+
             if ((bool)this.checkBox3.IsChecked)
                 this.ServerStartStop(null, null);
+        }
+
+        private void CreateImporter()
+        {
+            String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                              "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\TEMPLATE IMPORTER";
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            path = Path.Combine(path, "README.txt");
+
+            if (!File.Exists(path))
+            {
+                List<String> lines = new List<String>();
+                lines.Add("sb0t 5 - TEMPLATE IMPORTER");
+                lines.Add(String.Empty);
+                lines.Add("You can import template files from old version of sb0t.");
+                lines.Add(String.Empty);
+                lines.Add("- To do this, simply paste your old template into this folder.");
+                lines.Add("- Then start sb0t.");
+                lines.Add("- Or type #loadtemplate");
+                lines.Add("- sb0t will then attempt to read your old template.txt file.");
+                lines.Add("- A file called LOG.txt will be created.");
+                lines.Add("- This log file will confirm the success of the import.");
+                lines.Add("- sb0t will then delete the old template from this import folder.");
+                lines.Add(String.Empty);
+                lines.Add("The new template file for this version of sb0t is called strings.txt");
+                lines.Add("and is located in the main data folder.");
+                lines.Add(String.Empty);
+
+                try { File.WriteAllLines(path, lines.ToArray()); }
+                catch { }
+            }
         }
 
         private void SetLinkIdent()

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net;
+using System.IO;
+using System.Threading;
 
 namespace core
 {
@@ -76,7 +79,124 @@ namespace core
                 if (client.DNS.ToLower().Contains(dns))
                     return true;
 
-            return false;
+            bool result = false;
+
+            lock (list)
+                result = list.FindIndex(x => x.Equals(client.ExternalIP)) > -1;
+
+            return result;
         }
+
+
+
+        /* TOR BEGINS */
+
+
+        private static uint last { get; set; }
+        private static List<IPAddress> list { get; set; }
+        private static uint offset { get; set; }
+
+        public static void Start(uint time)
+        {
+            list = new List<IPAddress>();
+            last = 0;
+            offset = (uint)new Random().Next(20000, 43200);
+
+            uint tmp = Settings.Get<uint>("tor_time");
+
+            if (tmp != 0)
+            {
+                last = tmp;
+
+                String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                  "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\tor.dat";
+
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                        {
+                            byte[] buf = new byte[4];
+
+                            lock (list)
+                                while (stream.Read(buf, 0, 4) == 4)
+                                    list.Add(new IPAddress(buf));
+                        }
+                    }
+                    catch { }
+
+                    lock (list)
+                        ServerCore.Log("Loaded " + list.Count + " tor addresses from local collection");
+                }
+                else last = 0;
+            }
+            else
+            {
+                Settings.Set("tor_time", time);
+                DownloadTor();
+            }
+        }
+
+        private static void DownloadTor()
+        {
+            new Thread(new ThreadStart(() =>
+            {
+                try
+                {
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.dan.me.uk/torlist/");
+                    request.Host = "www.dan.me.uk";
+                    request.UserAgent = String.Empty;
+
+                    using (WebResponse response = request.GetResponse())
+                    using (Stream stream = response.GetResponseStream())
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        String page = reader.ReadToEnd();
+                        String[] split = page.Split(new String[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+                        lock (list)
+                        {
+                            list.Clear();
+                            IPAddress ip;
+
+                            for (int i = 0; i < split.Length; i++)
+                                if (IPAddress.TryParse(split[i], out ip))
+                                    list.Add(ip);
+                        }
+
+                        String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                          "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\tor.dat";
+
+                        try
+                        {
+                            lock (list)
+                            {
+                                List<byte> buf = new List<byte>();
+
+                                foreach (IPAddress ip in list)
+                                    buf.AddRange(ip.GetAddressBytes());
+
+                                File.WriteAllBytes(path, buf.ToArray());
+                                ServerCore.Log("Downloaded " + list.Count + " tor addresses from remote collection");
+                            }
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+            })).Start();
+        }
+
+        public static void Updater(uint time)
+        {
+            if (time > (last + offset))
+            {
+                Settings.Set("tor_time", time);
+                last = time;
+                DownloadTor();
+            }
+        }
+
     }
 }

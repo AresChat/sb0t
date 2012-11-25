@@ -13,7 +13,7 @@ namespace commands
             this._second_timer = 0;
 
             Motd.LoadMOTD();
-            Template.Load();
+            Template.Load(false);
             Muzzles.Load();
             CustomNames.Load();
             KewlText.Clear();
@@ -610,6 +610,8 @@ namespace commands
                 admin.Print("/remline <ident>, <line ident>");
                 admin.Print("/viewfilter <ident>");
             }
+            if (admin.Level >= Server.GetLevel("loadtemplate"))
+                admin.Print("/loadtemplate");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type)
@@ -1038,6 +1040,8 @@ namespace commands
                 Eval.RemLine(client, cmd.Substring(8));
             else if (cmd.StartsWith("viewfilter "))
                 Eval.ViewFilter(client, cmd.Substring(11));
+            else if (cmd == "loadtemplate")
+                Eval.LoadTemplate(client);
         }
 
         public void LinkError(ILinkError error)

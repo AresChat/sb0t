@@ -78,7 +78,7 @@ namespace core.ib0t
             this.Time = time;
             this.ProtoConnected = false;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
-            this.Vroom = 0;
+            this._vroom = 0;
             this.Version = String.Empty;
             this.IgnoreList = new List<String>();
             this.Font = new core.Font();
@@ -107,7 +107,7 @@ namespace core.ib0t
 
         public void Scribble(String sender, byte[] img, int h)
         {
-            if (!this.CanScribble)
+            if (!this.CanScribble || !this.ProtoConnected)
                 return;
 
             byte[] buf = Zip.Decompress(img);
@@ -247,15 +247,16 @@ namespace core.ib0t
 
         public void Topic(String text)
         {
-            if (text != null)
+            if (text != null && this.ProtoConnected)
                 if (Encoding.UTF8.GetByteCount(text) <= 180)
                     this.QueuePacket(WebOutbound.TopicFirstTo(this, text));
         }
 
         public void URL(String address, String text)
         {
-            if (address != null && text != null)
-                this.QueuePacket(WebOutbound.UrlTo(this, address, text));
+            if (this.ProtoConnected)
+                if (address != null && text != null)
+                    this.QueuePacket(WebOutbound.UrlTo(this, address, text));
         }
 
         public IUser IUser
@@ -369,27 +370,31 @@ namespace core.ib0t
             get { return this._level; }
             set
             {
-                this._level = value;
-
-                if (this.LoggedIn)
+                if (value != this._level)
                 {
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+                    this._level = value;
 
-                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.UpdateTo(x, this.Name, this._level)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+                    if (this.LoggedIn)
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
-                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.UpdateTo(x, this.Name, this._level)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                        if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                            ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+                    }
+
+                    Events.AdminLevelChanged(this);
                 }
-
-                Events.AdminLevelChanged(this);
             }
         }
 
         public void Print(object text)
         {
-            this.QueuePacket(WebOutbound.NoSuchTo(this, text.ToString()));
+            if (this.ProtoConnected)
+                this.QueuePacket(WebOutbound.NoSuchTo(this, text.ToString()));
         }
 
         public String PersonalMessage
@@ -441,6 +446,7 @@ namespace core.ib0t
 
             this.SocketConnected = false;
             this.SendDepart();
+            this.LoggedIn = false;
         }
 
         public void SendDepart()

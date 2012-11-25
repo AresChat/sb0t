@@ -507,11 +507,11 @@ namespace core
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
+            client.CustomClient = !client.Version.StartsWith("Ares 2.");
 
-            if (client.Version.Contains("cb0t"))
+            if (client.CustomClient) // client doesn't support file sharing
                 Helpers.ObfuscateAddress(client);
 
-            client.CustomClient = !client.Version.StartsWith("Ares 2.");
             client.LocalIP = packet;
             packet.SkipBytes(4);
             client.Browsable = ((byte)packet) > 2 && Settings.Get<bool>("files");
@@ -549,19 +549,21 @@ namespace core
             }
 
             IClient hijack = UserPool.AUsers.Find(x => (x.Name == client.Name ||
-                x.OrgName == client.OrgName) && x.ID != client.ID);
+                x.OrgName == client.OrgName) && x.ID != client.ID && x.LoggedIn);
 
             if (hijack == null)
                 hijack = UserPool.WUsers.Find(x => (x.Name == client.Name ||
-                    x.OrgName == client.OrgName) && x.ID != client.ID);
+                    x.OrgName == client.OrgName) && x.ID != client.ID && x.LoggedIn);
 
             if (hijack != null)
                 if (hijack.ExternalIP.Equals(client.ExternalIP))
                 {
-                    if (hijack is AresClient)
+                    if (!hijack.WebClient)
                         ((AresClient)hijack).Disconnect(true);
                     else
                         ((ib0t.ib0tClient)hijack).Disconnect();
+
+                    client.Name = client.OrgName;
                 }
                 else
                 {

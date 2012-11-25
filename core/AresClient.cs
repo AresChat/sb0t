@@ -462,22 +462,25 @@ namespace core
             get { return this._level; }
             set
             {
-                this._level = value;
-
-                if (this.LoggedIn && !this.Cloaked)
+                if (value != this._level)
                 {
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+                    this._level = value;
 
-                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.UpdateTo(x, this.Name, this._level)),
-                        x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+                    if (this.LoggedIn && !this.Cloaked)
+                    {
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.UpdateUserStatus(x, this)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
-                    if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
-                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.UpdateTo(x, this.Name, this._level)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                        if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                            ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafUserUpdated(ServerCore.Linker, this));
+                    }
+
+                    this.SendPacket(TCPOutbound.OpChange(this));
+                    Events.AdminLevelChanged(this);
                 }
-
-                this.SendPacket(TCPOutbound.OpChange(this));
-                Events.AdminLevelChanged(this);
             }
         }
 
@@ -678,6 +681,8 @@ namespace core
 
                 Events.Parted(this);
             }
+
+            this.LoggedIn = false;
         }
 
         public void SendDepart()

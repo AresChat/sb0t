@@ -113,6 +113,7 @@ namespace core
             AccountManager.LoadPasswords();
             BanSystem.LoadBans();
             IdleManager.Reset();
+            Proxies.Start(Helpers.UnixTime);
 
             if (Settings.Get<bool>("roomsearch"))
                 UdpChannelList.Start();
@@ -152,6 +153,7 @@ namespace core
                 {
                     reset_floods_timer = time;
                     FloodControl.Reset();
+                    Proxies.Updater(Helpers.UnixTime);
                 }
 
                 this.udp.ServiceUdp(time);

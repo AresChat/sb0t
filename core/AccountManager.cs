@@ -271,6 +271,7 @@ namespace core
                     }
                 }
 
+                client.Password = pwd;
                 Events.Registered(client);
                 client.Registered = true;
                 Events.LoginGranted(client);

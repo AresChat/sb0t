@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace commands
 {
@@ -21,7 +22,7 @@ namespace commands
 
         private static List<Item> list = new List<Item>();
 
-        public static void Load()
+        public static void Load(bool announce_loaded)
         {
             list.Add(new Item { Category = Category.Credit, Index = 0, Text = "Default Template" });//97
 
@@ -304,7 +305,261 @@ namespace commands
             list.Add(new Item { Category = Category.Filter, Index = 19, Text = "Announce filters set to all users by +n" });//76
             list.Add(new Item { Category = Category.Filter, Index = 20, Text = "Line added to [filter: +t] by +n" });//30
             list.Add(new Item { Category = Category.Filter, Index = 21, Text = "Line removed from [filter: +t] by +n" });//31
+
+            CheckImport(announce_loaded);
+            Load();
+
+            if (announce_loaded)
+                Server.Print("Loaded: " + Template.Text(Category.Credit, 0));
         }
+
+        private static void CheckImport(bool announce_loaded)
+        {
+            String path = Path.Combine(Server.DataPath, "TEMPLATE IMPORTER", "template.txt");
+            List<String> lines = new List<String>();
+
+            try
+            {
+                if (File.Exists(path))
+                {
+                    String[] tmp = File.ReadAllLines(path);
+
+                    foreach (String s in tmp)
+                        if (s.StartsWith("string="))
+                            lines.Add(s.Substring(7));
+                }
+            }
+            catch { }
+
+            int success = 0;
+
+            Alter(ref lines, 97, Category.Credit, 0, ref success);
+            Alter(ref lines, 90, Category.AdminAction, 0, ref success);
+            Alter(ref lines, 91, Category.AdminAction, 1, ref success);
+            Alter(ref lines, 89, Category.AdminAction, 2, ref success);
+            Alter(ref lines, 92, Category.AdminAction, 3, ref success);
+            Alter(ref lines, 93, Category.AdminAction, 4, ref success);
+            Alter(ref lines, 77, Category.AdminAction, 5, ref success);
+            Alter(ref lines, 78, Category.AdminAction, 6, ref success);
+            Alter(ref lines, 79, Category.AdminAction, 7, ref success);
+            Alter(ref lines, 80, Category.AdminAction, 8, ref success);
+            Alter(ref lines, 81, Category.AdminAction, 9, ref success);
+            Alter(ref lines, 82, Category.AdminAction, 10, ref success);
+            Alter(ref lines, 83, Category.AdminAction, 11, ref success);
+            Alter(ref lines, 84, Category.AdminAction, 12, ref success);
+            Alter(ref lines, 85, Category.AdminAction, 13, ref success);
+            Alter(ref lines, 86, Category.AdminAction, 14, ref success);
+            Alter(ref lines, 87, Category.AdminAction, 15, ref success);
+            Alter(ref lines, 88, Category.AdminAction, 16, ref success);
+            Alter(ref lines, 94, Category.AdminAction, 17, ref success);
+            Alter(ref lines, 95, Category.AdminAction, 18, ref success);
+            Alter(ref lines, 96, Category.AdminAction, 19, ref success);
+            Alter(ref lines, 115, Category.AdminAction, 20, ref success);
+            Alter(ref lines, 17, Category.Notification, 4, ref success);
+            Alter(ref lines, 132, Category.Notification, 5, ref success);
+            Alter(ref lines, 103, Category.Notification, 6, ref success);
+            Alter(ref lines, 128, Category.Notification, 7, ref success);
+            Alter(ref lines, 1, Category.Rejected, 0, ref success);
+            Alter(ref lines, 2, Category.Rejected, 1, ref success);
+            Alter(ref lines, 3, Category.Rejected, 2, ref success);
+            Alter(ref lines, 4, Category.Rejected, 3, ref success);
+            Alter(ref lines, 5, Category.Rejected, 4, ref success);
+            Alter(ref lines, 6, Category.Rejected, 5, ref success);
+            Alter(ref lines, 7, Category.Rejected, 6, ref success);
+            Alter(ref lines, 8, Category.Rejected, 7, ref success);
+            Alter(ref lines, 114, Category.Rejected, 8, ref success);
+            Alter(ref lines, 12, Category.AdminLogin, 0, ref success);
+            Alter(ref lines, 13, Category.AdminLogin, 1, ref success);
+            Alter(ref lines, 14, Category.AdminLogin, 2, ref success);
+            Alter(ref lines, 16, Category.AdminLogin, 3, ref success);
+            Alter(ref lines, 9, Category.AdminLogin, 4, ref success);
+            Alter(ref lines, 10, Category.AdminLogin, 5, ref success);
+            Alter(ref lines, 18, Category.Idle, 0, ref success);
+            Alter(ref lines, 20, Category.PmBlocking, 0, ref success);
+            Alter(ref lines, 21, Category.PmBlocking, 1, ref success);
+            Alter(ref lines, 22, Category.PmBlocking, 2, ref success);
+            Alter(ref lines, 26, Category.Messaging, 0, ref success);
+            Alter(ref lines, 27, Category.Messaging, 1, ref success);
+            Alter(ref lines, 152, Category.Captcha, 0, ref success);
+            Alter(ref lines, 155, Category.Captcha, 3, ref success);
+            Alter(ref lines, 50, Category.AdminList, 0, ref success);
+            Alter(ref lines, 51, Category.AdminList, 1, ref success);
+            Alter(ref lines, 52, Category.AdminList, 2, ref success);
+            Alter(ref lines, 98, Category.Timeouts, 0, ref success);
+            Alter(ref lines, 99, Category.Timeouts, 1, ref success);
+            Alter(ref lines, 53, Category.EnableDisable, 0, ref success);
+            Alter(ref lines, 54, Category.EnableDisable, 1, ref success);
+            Alter(ref lines, 55, Category.EnableDisable, 2, ref success);
+            Alter(ref lines, 56, Category.EnableDisable, 3, ref success);
+            Alter(ref lines, 57, Category.EnableDisable, 4, ref success);
+            Alter(ref lines, 58, Category.EnableDisable, 5, ref success);
+            Alter(ref lines, 59, Category.EnableDisable, 6, ref success);
+            Alter(ref lines, 60, Category.EnableDisable, 7, ref success);
+            Alter(ref lines, 61, Category.EnableDisable, 8, ref success);
+            Alter(ref lines, 62, Category.EnableDisable, 9, ref success);
+            Alter(ref lines, 63, Category.EnableDisable, 10, ref success);
+            Alter(ref lines, 64, Category.EnableDisable, 11, ref success);
+            Alter(ref lines, 65, Category.EnableDisable, 12, ref success);
+            Alter(ref lines, 66, Category.EnableDisable, 13, ref success);
+            Alter(ref lines, 69, Category.EnableDisable, 14, ref success);
+            Alter(ref lines, 70, Category.EnableDisable, 15, ref success);
+            Alter(ref lines, 71, Category.EnableDisable, 16, ref success);
+            Alter(ref lines, 72, Category.EnableDisable, 17, ref success);
+            Alter(ref lines, 116, Category.EnableDisable, 18, ref success);
+            Alter(ref lines, 117, Category.EnableDisable, 19, ref success);
+            Alter(ref lines, 111, Category.EnableDisable, 20, ref success);
+            Alter(ref lines, 112, Category.EnableDisable, 21, ref success);
+            Alter(ref lines, 101, Category.EnableDisable, 22, ref success);
+            Alter(ref lines, 102, Category.EnableDisable, 23, ref success);
+            Alter(ref lines, 126, Category.EnableDisable, 24, ref success);
+            Alter(ref lines, 127, Category.EnableDisable, 25, ref success);
+            Alter(ref lines, 73, Category.EnableDisable, 30, ref success);
+            Alter(ref lines, 74, Category.EnableDisable, 31, ref success);
+            Alter(ref lines, 100, Category.Clock, 0, ref success);
+            Alter(ref lines, 124, Category.Topics, 0, ref success);
+            Alter(ref lines, 125, Category.Topics, 1, ref success);
+            Alter(ref lines, 129, Category.Greetings, 0, ref success);
+            Alter(ref lines, 130, Category.Greetings, 1, ref success);
+            Alter(ref lines, 118, Category.Urls, 1, ref success);
+            Alter(ref lines, 119, Category.Urls, 2, ref success);
+            Alter(ref lines, 104, Category.RoomInfo, 0, ref success);
+            Alter(ref lines, 105, Category.RoomInfo, 1, ref success);
+            Alter(ref lines, 106, Category.RoomInfo, 2, ref success);
+            Alter(ref lines, 107, Category.RoomInfo, 3, ref success);
+            Alter(ref lines, 108, Category.RoomInfo, 4, ref success);
+            Alter(ref lines, 110, Category.RoomInfo, 5, ref success);
+            Alter(ref lines, 113, Category.RoomInfo, 6, ref success);
+            Alter(ref lines, 40, Category.Filter, 0, ref success);
+            Alter(ref lines, 41, Category.Filter, 1, ref success);
+            Alter(ref lines, 42, Category.Filter, 3, ref success);
+            Alter(ref lines, 43, Category.Filter, 4, ref success);
+            Alter(ref lines, 44, Category.Filter, 5, ref success);
+            Alter(ref lines, 45, Category.Filter, 6, ref success);
+            Alter(ref lines, 28, Category.Filter, 7, ref success);
+            Alter(ref lines, 29, Category.Filter, 8, ref success);
+            Alter(ref lines, 33, Category.Filter, 9, ref success);
+            Alter(ref lines, 35, Category.Filter, 10, ref success);
+            Alter(ref lines, 36, Category.Filter, 11, ref success);
+            Alter(ref lines, 37, Category.Filter, 12, ref success);
+            Alter(ref lines, 38, Category.Filter, 13, ref success);
+            Alter(ref lines, 39, Category.Filter, 14, ref success);
+            Alter(ref lines, 48, Category.Filter, 15, ref success);
+            Alter(ref lines, 49, Category.Filter, 16, ref success);
+            Alter(ref lines, 75, Category.Filter, 18, ref success);
+            Alter(ref lines, 76, Category.Filter, 19, ref success);
+            Alter(ref lines, 30, Category.Filter, 20, ref success);
+            Alter(ref lines, 31, Category.Filter, 21, ref success);
+
+            if (success > 1)
+            {
+                try { File.Delete(path); }
+                catch { }
+
+                if (announce_loaded)
+                    Server.Print("Successfully imported " + success + " template items");
+
+                path = Path.Combine(Server.DataPath, "TEMPLATE IMPORTER", "LOG.txt");
+
+                try { File.WriteAllText(path, "Successfully imported " + success + " template items at " + DateTime.Now); }
+                catch { }
+
+                Save();
+            }
+        }
+
+        private static void Save()
+        {
+            List<String> lines = new List<String>();
+            int current = -1;
+
+            foreach (Item i in list)
+            {
+                String x = ((int)i.Category).ToString();
+
+                if ((int)i.Category != current)
+                {
+                    current = (int)i.Category;
+                    lines.Add(String.Empty);
+                    lines.Add("[" + i.Category + "]");
+                }
+
+                while (x.Length < 3)
+                    x = "0" + x;
+
+                String y = i.Index.ToString();
+
+                while (y.Length < 3)
+                    y = "0" + y;
+
+                lines.Add(x + "|" + y + "|" + i.Text);
+            }
+
+            lines.RemoveAt(0);
+            String path = Path.Combine(Server.DataPath, "strings.txt");
+
+            try { File.WriteAllLines(path, lines.ToArray(), Encoding.UTF8); }
+            catch { }
+        }
+
+        private static void Load()
+        {
+            List<String> lines = new List<String>();
+            String path = Path.Combine(Server.DataPath, "strings.txt");
+
+            try { lines.AddRange(File.ReadAllLines(path, Encoding.UTF8)); }
+            catch { }
+
+            if (lines.Count > 0)
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    String str = lines[i];
+                    int id = str.IndexOf("|");
+
+                    if (id > -1)
+                    {
+                        String x = str.Substring(0, id);
+                        str = str.Substring(id + 1);
+                        id = str.IndexOf("|");
+
+                        if (id > -1)
+                        {
+                            String y = str.Substring(0, id);
+                            str = str.Substring(id + 1);
+                            int ix, iy;
+
+                            if (int.TryParse(x, out ix))
+                                if (int.TryParse(y, out iy))
+                                {
+                                    Item item = list.Find(q => (int)q.Category == ix && q.Index == iy);
+
+                                    if (item != null)
+                                        item.Text = str;
+                                }
+                        }
+                    }
+                }
+
+            Save();
+        }
+
+        private static void Alter(ref List<String> l, int src_index, Category c, int dest_index, ref int success)
+        {
+            int ud = (src_index - 1);
+            
+            if (l.Count > 0 && ud < l.Count)
+            {
+                String text = l[ud];
+                Item i = list.Find(x => x.Category == c && x.Index == dest_index);
+
+                if (i != null)
+                {
+                    i.Text = text;
+                    success++;
+                }
+            }
+        }
+
+
     }
 
     enum Category : int

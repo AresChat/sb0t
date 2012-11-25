@@ -1659,5 +1659,12 @@ namespace commands
                     WordFilter.ViewFilter(admin, i);
             }
         }
+
+        [CommandLevel("loadtemplate", ILevel.Host)]
+        public static void LoadTemplate(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("loadtemplate"))
+                Template.Load(true);
+        }
     }
 }
