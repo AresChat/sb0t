@@ -18,8 +18,8 @@ namespace scripting
             " ",
         };
 
-        [JSFunction(Name = "tick")]
-        public static double Tick()
+        [JSFunction(Name = "tickCount")]
+        public static double TickCount()
         {
             return Server.Ticks;
         }

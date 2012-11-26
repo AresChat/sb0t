@@ -60,7 +60,9 @@ namespace commands
         {
             DateTime dt = DateTime.Now;
             bool am = dt.Hour < 12;
-            String clock = dt.Hour == 0 ? "12:" : (dt.Hour + ":");
+            int h = dt.Hour;
+            h = h > 12 ? (h - 12) : h;
+            String clock = h == 0 ? "12:" : (h + ":");
             clock += dt.Minute > 9 ? (dt.Minute + " ") : ("0" + dt.Minute + " ");
             clock += am ? "AM" : "PM";
             String str = Server.Chatroom.Topic;
@@ -76,7 +78,9 @@ namespace commands
             {
                 DateTime dt = DateTime.Now;
                 bool am = dt.Hour < 12;
-                String clock = dt.Hour == 0 ? "12:" : (dt.Hour + ":");
+                int h = dt.Hour;
+                h = h > 12 ? (h - 12) : h;
+                String clock = h == 0 ? "12:" : (h + ":");
                 clock += dt.Minute > 9 ? (dt.Minute + " ") : ("0" + dt.Minute + " ");
                 clock += am ? "AM" : "PM";
                 String str = Server.Chatroom.Topic;
@@ -91,7 +95,9 @@ namespace commands
         {
             DateTime dt = DateTime.Now;
             bool am = dt.Hour < 12;
-            String clock = dt.Hour == 0 ? "12:" : (dt.Hour + ":");
+            int h = dt.Hour;
+            h = h > 12 ? (h - 12) : h;
+            String clock = h == 0 ? "12:" : (h + ":");
             clock += dt.Minute > 9 ? (dt.Minute + " ") : ("0" + dt.Minute + " ");
             clock += am ? "AM" : "PM";
             String str = Server.Chatroom.Topic;

@@ -56,14 +56,17 @@ namespace commands
             if (admin.Level >= Server.GetLevel("ban"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            Server.Print(Template.Text(Category.AdminAction, 0).Replace("+n",
-                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
 
-                            commands.BanStats.Add(admin, target);
-                            target.Ban();
-                        }
+                        Server.Print(Template.Text(Category.AdminAction, 0).Replace("+n",
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+
+                        commands.BanStats.Add(admin, target);
+                        target.Ban();
+                    }
         }
 
         [CommandLevel("ban10", ILevel.Moderator)]
@@ -72,15 +75,18 @@ namespace commands
             if (admin.Level >= Server.GetLevel("ban10"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            Server.Print(Template.Text(Category.AdminAction, 21).Replace("+n",
-                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
 
-                            commands.BanStats.Add(admin, target);
-                            Bans.AddBan(target, BanDuration.Ten);
-                            target.Ban();
-                        }
+                        Server.Print(Template.Text(Category.AdminAction, 21).Replace("+n",
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+
+                        commands.BanStats.Add(admin, target);
+                        Bans.AddBan(target, BanDuration.Ten);
+                        target.Ban();
+                    }
         }
 
         [CommandLevel("ban60", ILevel.Administrator)]
@@ -89,15 +95,18 @@ namespace commands
             if (admin.Level >= Server.GetLevel("ban60"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            Server.Print(Template.Text(Category.AdminAction, 22).Replace("+n",
-                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
 
-                            commands.BanStats.Add(admin, target);
-                            Bans.AddBan(target, BanDuration.Sixty);
-                            target.Ban();
-                        }
+                        Server.Print(Template.Text(Category.AdminAction, 22).Replace("+n",
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+
+                        commands.BanStats.Add(admin, target);
+                        Bans.AddBan(target, BanDuration.Sixty);
+                        target.Ban();
+                    }
         }
 
         [CommandLevel("unban", ILevel.Administrator)]
@@ -155,13 +164,16 @@ namespace commands
             if (admin.Level >= Server.GetLevel("kick"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            Server.Print(Template.Text(Category.AdminAction, 2).Replace("+n",
-                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
 
-                            target.Disconnect();
-                        }
+                        Server.Print(Template.Text(Category.AdminAction, 2).Replace("+n",
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+
+                        target.Disconnect();
+                    }
         }
 
         [CommandLevel("muzzle", ILevel.Moderator)]
@@ -170,28 +182,30 @@ namespace commands
             if (admin.Level >= Server.GetLevel("muzzle"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            Server.Print(Template.Text(Category.AdminAction, 3).Replace("+n",
-                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
 
-                            target.Muzzled = true;
-                            Muzzles.AddMuzzle(target);
-                        }
+                        Server.Print(Template.Text(Category.AdminAction, 3).Replace("+n",
+                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+
+                        target.Muzzled = true;
+                        Muzzles.AddMuzzle(target);
+                    }
         }
 
         public static void Unmuzzle(IUser admin, IUser target, String args)
         {
             if (admin.Level >= Server.GetLevel("muzzle"))
                 if (target != null)
-                    if (target.Level < admin.Level)
-                    {
-                        Server.Print(Template.Text(Category.AdminAction, 4).Replace("+n",
-                            target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
+                {
+                    Server.Print(Template.Text(Category.AdminAction, 4).Replace("+n",
+                        target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name) + (args.Length == 0 ? "" : (" [" + args + "]")), true);
 
-                        target.Muzzled = false;
-                        Muzzles.RemoveMuzzle(target);
-                    }
+                    target.Muzzled = false;
+                    Muzzles.RemoveMuzzle(target);
+                }
         }
 
         [CommandLevel("customname", ILevel.Moderator)]
@@ -477,8 +491,13 @@ namespace commands
             if (admin.Level == ILevel.Host)
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                            target.Disconnect();
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
+
+                        target.Disconnect();
+                    }
         }
 
         public static void HostBan(IUser admin, IUser target)
@@ -486,8 +505,13 @@ namespace commands
             if (admin.Level == ILevel.Host)
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                            target.Ban();
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
+
+                        target.Ban();
+                    }
         }
 
         public static void HostUnban(IUser admin, String args)
@@ -521,11 +545,14 @@ namespace commands
             if (admin.Level == ILevel.Host)
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            target.Muzzled = true;
-                            Muzzles.AddMuzzle(target);
-                        }
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
+
+                        target.Muzzled = true;
+                        Muzzles.AddMuzzle(target);
+                    }
         }
 
         public static void HostUnmuzzle(IUser admin, IUser target)
@@ -630,12 +657,15 @@ namespace commands
             if (admin.Level >= Server.GetLevel("disableavatar"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            target.Avatar = null;
-                            AvatarPMManager.AddAvatar(target);
-                            Server.Print(Template.Text(Category.AdminAction, 23).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
-                        }
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
+
+                        target.Avatar = null;
+                        AvatarPMManager.AddAvatar(target);
+                        Server.Print(Template.Text(Category.AdminAction, 23).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+                    }
         }
 
         [CommandLevel("changemessage", ILevel.Moderator)]
@@ -644,12 +674,15 @@ namespace commands
             if (admin.Level >= Server.GetLevel("changemessage"))
                 if (target != null)
                     if (target.Level < admin.Level)
-                        if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        {
-                            target.PersonalMessage = args;
-                            AvatarPMManager.AddPM(target, args);
-                            Server.Print(Template.Text(Category.AdminAction, 24).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
-                        }
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
+
+                        target.PersonalMessage = args;
+                        AvatarPMManager.AddPM(target, args);
+                        Server.Print(Template.Text(Category.AdminAction, 24).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+                    }
         }
 
         [CommandLevel("clearscreen", ILevel.Moderator)]
@@ -1131,19 +1164,22 @@ namespace commands
         {
             if (admin.Level >= Server.GetLevel("redirect"))
                 if (target != null)
-                    if (!(admin.Link.IsLinked && !target.Link.IsLinked))
-                        if (target.Level < admin.Level)
+                    if (target.Level < admin.Level)
+                    {
+                        if (!target.Link.IsLinked && admin.Link.IsLinked)
+                            if (target.Level != ILevel.Regular)
+                                return;
+
+                        IHashlinkRoom hr = Server.Hashlinks.Decrypt(args.Trim());
+
+                        if (hr != null)
                         {
-                            IHashlinkRoom hr = Server.Hashlinks.Decrypt(args.Trim());
+                            Server.Print(Template.Text(Category.AdminAction, 20).Replace("+n",
+                                target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name).Replace("+r", hr.Name), true);
 
-                            if (hr != null)
-                            {
-                                Server.Print(Template.Text(Category.AdminAction, 20).Replace("+n",
-                                    target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name).Replace("+r", hr.Name), true);
-
-                                target.Redirect(args.Trim());
-                            }
+                            target.Redirect(args.Trim());
                         }
+                    }
         }
 
         [CommandLevel("sharefiles", ILevel.Host)]

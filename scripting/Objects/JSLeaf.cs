@@ -72,7 +72,6 @@ namespace scripting.Objects
             if (!(a is Undefined) && b is Undefined)
             {
                 String str = a.ToString();
-                Server.Print("test");
                 this.parent.Print(str);
             }
             else if (!(a is Undefined) && !(b is Undefined))
@@ -92,8 +91,15 @@ namespace scripting.Objects
                 byte z;
 
                 if (byte.TryParse(a.ToString(), out z))
+                {
+                    if (z < 1 || z > 3)
+                        z = 1;
+
                     this.parent.Print((ILevel)z, b.ToString());
+                }
             }
+            else if (!(a is Undefined))
+                this.parent.Print(ILevel.Moderator, a.ToString());
         }
 
         [JSFunction(Name = "users", IsWritable = false, IsEnumerable = true)]
