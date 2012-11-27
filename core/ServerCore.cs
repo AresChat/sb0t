@@ -219,7 +219,7 @@ namespace core
                         catch { client.SocketConnected = false; }
                     }
 
-                    if (client.SocketConnected || (client.Time + 10000) < time)
+                    if (!client.SocketConnected || (client.Time + 10000) < time)
                         client.Disconnect();
                 }
                 else

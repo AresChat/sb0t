@@ -125,7 +125,7 @@ namespace core
                 byte[] data = packet;
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatFirst(x, client.Name, data)),
-                    x => x.ID != client.ID && client.VoiceChatPublic && !x.Quarantined);
+                    x => x.ID != client.ID && x.VoiceChatPublic && !x.Quarantined);
             }
         }
 
@@ -154,7 +154,7 @@ namespace core
                 byte[] data = packet;
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatChunk(x, client.Name, data)),
-                    x => x.ID != client.ID && client.VoiceChatPublic && !x.Quarantined);
+                    x => x.ID != client.ID && x.VoiceChatPublic && !x.Quarantined);
             }
         }
 

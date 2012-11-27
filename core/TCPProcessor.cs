@@ -214,6 +214,9 @@ namespace core
 
         private static void Command(AresClient client, String text)
         {
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
+
             Command cmd = new Command { Text = text, Args = String.Empty };
             Helpers.PopulateCommand(cmd);
             Events.Command(client, text, cmd.Target, cmd.Args);
@@ -223,6 +226,10 @@ namespace core
         {
             String name = packet.ReadString(client);
             String text = packet.ReadString(client);
+
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
+
             PMEventArgs args = new PMEventArgs { Cancel = false, Text = text };
 
             if (name == Settings.Get<String>("bot"))
@@ -290,6 +297,9 @@ namespace core
         private static void Public(AresClient client, TCPPacketReader packet)
         {
             String text = packet.ReadString(client);
+
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
 
             if (text.StartsWith("#login") || text.StartsWith("#register"))
             {
@@ -379,6 +389,10 @@ namespace core
                 return;
 
             String text = packet.ReadString(client);
+
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
+
             Events.EmoteReceived(client, text);
 
             if (client.SocketConnected)

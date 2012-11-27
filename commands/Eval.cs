@@ -814,7 +814,7 @@ namespace commands
             if (admin.Level >= Server.GetLevel("announce"))
             {
                 Server.Print(args, true);
-                Server.Print(ILevel.Regular, Template.Text(Category.Notification, 19).Replace("+a", admin.Name), true);
+                Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 19).Replace("+a", admin.Name), true);
             }
         }
 
@@ -829,7 +829,7 @@ namespace commands
                     else
                         target.SendText(args);
 
-                    Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification,
                         15).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                 }
         }
@@ -847,7 +847,7 @@ namespace commands
                         target.Vroom = u;
 
                         if (target.Vroom == u)
-                            Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                            Server.Print(ILevel.Moderator, Template.Text(Category.Notification,
                                 16).Replace("+n", target.Name).Replace("+a", admin.Name).Replace("+v", target.Vroom.ToString()), true);
                     }
                 }
@@ -862,7 +862,7 @@ namespace commands
                     target.Name = args;
 
                     if (target.Name == args)
-                        Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                        Server.Print(ILevel.Moderator, Template.Text(Category.Notification,
                             17).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                 }
         }
@@ -875,7 +875,7 @@ namespace commands
                 {
                     target.Name = target.OrgName;
 
-                    Server.Print(ILevel.Regular, Template.Text(Category.Notification,
+                    Server.Print(ILevel.Moderator, Template.Text(Category.Notification,
                         18).Replace("+n", target.Name).Replace("+a", admin.Name), true);
                 }
         }

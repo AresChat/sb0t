@@ -1,1 +1,7 @@
 start with windows
+show muzzle text to hosts
+script file encoding
+check for livescript as well
+secret js @
+needlessly resending the url
+import all files
