@@ -248,7 +248,7 @@ namespace core.ib0t
         public void Topic(String text)
         {
             if (text != null && this.ProtoConnected)
-                if (Encoding.UTF8.GetByteCount(text) <= 180)
+                if (Encoding.UTF8.GetByteCount(text) <= 500)
                     this.QueuePacket(WebOutbound.TopicFirstTo(this, text));
         }
 

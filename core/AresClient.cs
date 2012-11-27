@@ -303,7 +303,7 @@ namespace core
         public void Topic(String text)
         {
             if (text != null)
-                if (Encoding.UTF8.GetByteCount(text) <= 180)
+                if (Encoding.UTF8.GetByteCount(text) <= 500)
                     this.SendPacket(TCPOutbound.TopicFirst(this, text));
         }
 
