@@ -754,6 +754,8 @@ namespace scripting
             }
         }
 
+        public void InvalidRegistration(IUser client) { }
+
         public bool Registering(IUser client)
         {
             if (this.CanScript)

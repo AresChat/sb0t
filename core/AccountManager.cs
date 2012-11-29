@@ -17,6 +17,11 @@ namespace core
         private static List<Account> list;
         private static String DataPath { get; set; }
 
+        public static IPassword[] Passwords
+        {
+            get { return list.ToArray(); }
+        }
+
         public static void LoadPasswords()
         {
             DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
@@ -185,9 +190,7 @@ namespace core
                     list.Find(x => x.Password.SequenceEqual(pwd) && x.Guid.Equals(client.Guid)) :
                     list.Find(x => x.Password.SequenceEqual(pwd));
 
-                if (a == null)
-                    Events.InvalidLoginAttempt(client);
-                else
+                if (a != null)
                 {
                     client.Registered = true;
                     client.Captcha = true;
@@ -217,8 +220,20 @@ namespace core
 
         public static void Register(IClient client, String password)
         {
-            if (password.Length < 3)
+            if (password.Length < 2)
+            {
+                Events.InvalidRegistration(client);
                 return;
+            }
+
+            int number_count = password.Count(Char.IsDigit);
+            int letter_count = password.Count(Char.IsLetter);
+
+            if (number_count == 0 || letter_count == 0)
+            {
+                Events.InvalidRegistration(client);
+                return;
+            }
 
             if (Events.Registering(client))
             {
@@ -279,6 +294,29 @@ namespace core
             }
         }
 
+        public static void Remove(IPassword password)
+        {
+            if (password != null)
+            {
+                Account a = (Account)password;
+                list.RemoveAll(x => x.Guid.Equals(a.Guid));
+
+                using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+                {
+                    connection.Open();
+
+                    String query = @"delete from accounts
+                                     where guid=@guid";
+
+                    using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.Add(new SQLiteParameter("@guid", a.Guid.ToString()));
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
         public static void Unregister(IClient client)
         {
             if (!client.Registered || client.Owner || client.Password == null)
@@ -301,7 +339,6 @@ namespace core
 
                     using (SQLiteCommand command = new SQLiteCommand(query, connection))
                     {
-                        command.Parameters.Add(new SQLiteParameter("@level", (int)(byte)client.Level));
                         command.Parameters.Add(new SQLiteParameter("@guid", client.Guid.ToString()));
                         command.ExecuteNonQuery();
                     }

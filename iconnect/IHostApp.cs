@@ -40,6 +40,8 @@ namespace iconnect
         ulong Ticks { get; }
         /// <summary>Spell Checker</summary>
         ISpell Spelling { get; }
+        /// <summary>Password Accounts</summary>
+        IAccounts Accounts { get; }
         /// <summary>Send a public message to one user</summary>
         void PublicToTarget(IUser client, String sender, String text);
         /// <summary>Send an emote message to one user</summary>

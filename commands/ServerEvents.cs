@@ -488,6 +488,10 @@ namespace commands
                 admin.Print("/remautologin <id>");
             if (admin.Owner)
                 admin.Print("/autologins");
+            if (admin.Owner)
+                admin.Print("/listpasswords");
+            if (admin.Owner)
+                admin.Print("/rempassword <id>");
             if (admin.Level >= Server.GetLevel("roomsearch"))
                 admin.Print("/roomsearch <name>");
             if (admin.Level >= Server.GetLevel("mtimeout"))
@@ -680,6 +684,11 @@ namespace commands
             else
                 Server.Print(Template.Text(Category.AdminLogin, 0).Replace("+n",
                     client.Name).Replace("+l", ((int)client.Level).ToString()));
+        }
+
+        public void InvalidRegistration(IUser client)
+        {
+            client.Print(Template.Text(Category.AdminLogin, 6).Replace("+n", client.Name));
         }
 
         public bool Registering(IUser client) { return true; }
@@ -1056,6 +1065,10 @@ namespace commands
                 Eval.ViewFilter(client, cmd.Substring(11));
             else if (cmd == "loadtemplate")
                 Eval.LoadTemplate(client);
+            else if (cmd == "listpasswords")
+                Eval.ListPasswords(client);
+            else if (cmd.StartsWith("rempassword "))
+                Eval.RemovePassword(client, cmd.Substring(12));
         }
 
         public void LinkError(ILinkError error)

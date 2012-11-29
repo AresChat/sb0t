@@ -1,3 +1,2 @@
 start with windows
 import all old sbot files
-passwords must include 1 letter 1 number

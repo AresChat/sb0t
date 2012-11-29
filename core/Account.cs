@@ -6,7 +6,7 @@ using iconnect;
 
 namespace core
 {
-    class Account
+    class Account : IPassword
     {
         public String Name { get; set; }
         public ILevel Level { get; set; }

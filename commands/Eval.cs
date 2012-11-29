@@ -150,7 +150,7 @@ namespace commands
                 Server.Users.Banned(x =>
                 {
                     empty = false;
-                    admin.Print((counter++) + " - " + x.Name);
+                    admin.Print((counter++) + " - " + x.Name + " [" + x.ExternalIP + "]");
                 });
 
                 if (empty)
@@ -1701,6 +1701,30 @@ namespace commands
         {
             if (admin.Level >= Server.GetLevel("loadtemplate"))
                 Template.Load(true);
+        }
+
+        public static void ListPasswords(IUser admin)
+        {
+            IPassword[] passwords = Server.Accounts.GetPasswords();
+
+            for (int i = 0; i < passwords.Length; i++)
+                admin.Print(i + " - " + passwords[i].Name + " [" + passwords[i].Level + "]");
+        }
+
+        public static void RemovePassword(IUser admin, String args)
+        {
+            int index;
+
+            if (int.TryParse(args, out index))
+            {
+                IPassword[] passwords = Server.Accounts.GetPasswords();
+
+                if (index >= 0 && index < passwords.Length)
+                {
+                    admin.Print(Template.Text(Category.AdminLogin, 7).Replace("+n", passwords[index].Name));
+                    Server.Accounts.Remove(passwords[index]);
+                }
+            }
         }
     }
 }

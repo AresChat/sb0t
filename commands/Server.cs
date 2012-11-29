@@ -70,6 +70,14 @@ namespace commands
         }
 
         /// <summary>
+        /// Password Accounts
+        /// </summary>
+        public static IAccounts Accounts
+        {
+            get { return Callback.Accounts; }
+        }
+
+        /// <summary>
         /// Channel search helper
         /// </summary>
         public static IChannels Channels

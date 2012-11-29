@@ -101,6 +101,8 @@ namespace commands
             list.Add(new Item { Category = Category.AdminLogin, Index = 3, Text = "+n is no longer an admin" });//16
             list.Add(new Item { Category = Category.AdminLogin, Index = 4, Text = "+n has been added to auto login as a level +l admin" });//9
             list.Add(new Item { Category = Category.AdminLogin, Index = 5, Text = "+n has been removed from auto login" });//10
+            list.Add(new Item { Category = Category.AdminLogin, Index = 6, Text = "+n your password must include at least one letter and one number!!" });
+            list.Add(new Item { Category = Category.AdminLogin, Index = 7, Text = "+n's password and account has been removed" });
 
             list.Add(new Item { Category = Category.Registration, Index = 0, Text = "Your account registration was successfully created" });
             list.Add(new Item { Category = Category.Registration, Index = 1, Text = "Your login was successful" });
@@ -226,7 +228,7 @@ namespace commands
             list.Add(new Item { Category = Category.UrbanDictionary, Index = 4, Text = "\x00029+n" });
 
             list.Add(new Item { Category = Category.Define, Index = 0, Text = "unable to find dictionary definition for: +n" });
-            list.Add(new Item { Category = Category.Define, Index = 1, Text = "urban definition for: +n" });
+            list.Add(new Item { Category = Category.Define, Index = 1, Text = "dictionary definition for: +n" });
             list.Add(new Item { Category = Category.Define, Index = 2, Text = "- +n" });
 
             list.Add(new Item { Category = Category.Trace, Index = 0, Text = "unable to find trace information for +n" });

@@ -500,13 +500,13 @@ namespace core
                 try
                 {
                     IPHostEntry i = Dns.EndGetHostEntry(result);
-                    this.DNS = i.HostName;
+                    this.DNS = Helpers.ObfuscateDns(i.HostName);
                 }
                 catch
                 {
                     try
                     {
-                        this.DNS = this.ExternalIP.ToString();
+                        this.DNS = Helpers.ObfuscateDns(this.ExternalIP.ToString());
                     }
                     catch { }
                 }

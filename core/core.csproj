@@ -70,6 +70,7 @@
     <Compile Include="Crypto.cs" />
     <Compile Include="CustomEmoticon.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Extensions\ExAccounts.cs" />
     <Compile Include="Extensions\ExChannels.cs" />
     <Compile Include="Extensions\ExCompression.cs" />
     <Compile Include="Extensions\ExHashlink.cs" />

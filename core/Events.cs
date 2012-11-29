@@ -663,6 +663,19 @@ namespace core
             ChatLog.WriteLine("level: " + client.Name + " level changed to " + client.Level);
         }
 
+        public static void InvalidRegistration(IClient client)
+        {
+            ExtensionManager.Plugins.ForEach(x =>
+            {
+                try
+                {
+                    if (client != null)
+                        x.Plugin.InvalidRegistration(client.IUser);
+                }
+                catch { }
+            });
+        }
+
         public static bool Registering(IClient client)
         {
             bool result = true;

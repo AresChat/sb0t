@@ -20,6 +20,7 @@ namespace core.Extensions
             this.Scripting = new ExScripting();
             this.Spelling = new ExSpelling();
             this.Channels = new ExChannels();
+            this.Accounts = new ExAccounts();
 
             this.DataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName;
@@ -43,6 +44,7 @@ namespace core.Extensions
         public IScripting Scripting { get; private set; }
         public ISpell Spelling { get; private set; }
         public IChannels Channels { get; private set; }
+        public IAccounts Accounts { get; private set; }
 
         public void ClearBans()
         {

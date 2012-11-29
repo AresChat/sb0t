@@ -67,6 +67,8 @@ namespace iconnect
         /// <summary>Server Event</summary>
         void AdminLevelChanged(IUser client);
         /// <summary>Server Event</summary>
+        void InvalidRegistration(IUser client);
+        /// <summary>Server Event</summary>
         bool Registering(IUser client);
         /// <summary>Server Event</summary>
         void Registered(IUser client);

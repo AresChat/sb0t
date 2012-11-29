@@ -28,11 +28,6 @@ namespace core
 
         public static void ObfuscateAddress(IClient client)
         {
-
-            // provide a method to hide the true value of the
-            // final 2 numbers in an IP address to offer protection
-            // to your users from DOS attacks.
-
             byte[] buf = client.ExternalIP.GetAddressBytes();
 
             using (SHA1 sha1 = SHA1.Create())
@@ -43,6 +38,33 @@ namespace core
             }
 
             client.ExternalIP = new System.Net.IPAddress(buf);
+        }
+
+        public static String ObfuscateDns(String dns)
+        {
+            char[] chrs = dns.ToCharArray();
+            String[] results = new String[chrs.Length];
+
+            using (SHA1 sha1 = SHA1.Create())
+            {
+                byte[] buf = sha1.ComputeHash(Encoding.UTF8.GetBytes(dns));
+                int counter = 0;
+
+                for (int i = (chrs.Length - 1); i > -1; i--)
+                {
+                    int c = chrs[i];
+
+                    if (c >= 49 && c <= 57)
+                        results[i] = buf[++counter].ToString();
+                    else
+                        results[i] = chrs[i].ToString();
+
+                    if (counter == 20)
+                        counter = 0;
+                }
+            }
+
+            return String.Join(String.Empty, results);
         }
 
         public static bool IsLocalHost(IClient client)

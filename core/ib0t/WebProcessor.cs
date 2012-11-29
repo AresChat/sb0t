@@ -58,7 +58,6 @@ namespace core.ib0t
 
         private static void Login(ib0tClient client, String args, ulong time)
         {
-            Helpers.ObfuscateAddress(client);
             byte[] g = new byte[16];
 
             for (int i = 0; i < g.Length; i++)
@@ -69,6 +68,7 @@ namespace core.ib0t
             using (MD5 md5 = MD5.Create())
                 client.Guid = new Guid(md5.ComputeHash(g));
 
+            Helpers.ObfuscateAddress(client);
             client.OrgName = args.Substring(32);
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
