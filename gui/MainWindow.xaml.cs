@@ -98,7 +98,14 @@ namespace gui
 
                 this.SetupValues();
                 SETTING_UP = false;
+
+                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(this.LogUnhandledException);
             }
+        }
+
+        private void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            LogUpdate(sender, new ServerLogEventArgs { Error = (Exception)e.ExceptionObject });
         }
 
         private void RunMode(bool running)

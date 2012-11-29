@@ -266,9 +266,9 @@ namespace core.ib0t
             {
                 if (!client.Captcha)
                 {
-                    if (String.IsNullOrEmpty(client.CaptchaWord) || (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != text.ToUpper()))
+                    if (String.IsNullOrEmpty(client.CaptchaWord) || (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != Helpers.StripColors(text).Trim().ToUpper()))
                     {
-                        if (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != text.ToUpper())
+                        if (client.CaptchaWord.Length > 0 && client.CaptchaWord.ToUpper() != Helpers.StripColors(text).Trim().ToUpper())
                         {
                             Events.CaptchaReply(client, text);
 

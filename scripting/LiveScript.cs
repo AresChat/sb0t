@@ -178,7 +178,7 @@ namespace scripting
                         receiver.AddRange(buf.Take(size));
 
                     buf = receiver.ToArray();
-                    result = Encoding.Default.GetString(buf);
+                    result = Encoding.UTF8.GetString(buf);
                 }
             }
             catch { }

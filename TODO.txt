@@ -1,7 +1,3 @@
 start with windows
-show muzzle text to hosts
-script file encoding
-check for livescript as well
-secret js @
-needlessly resending the url
-import all files
+import all old sbot files
+passwords must include 1 letter 1 number

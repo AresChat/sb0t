@@ -58,9 +58,6 @@ namespace core
 
         public static void UnhandledProtocol(IClient client, bool custom, TCPMsg msg, TCPPacketReader packet, ulong tick)
         {
-            UserPool.AUsers.ForEachWhere(x =>
-                x.SendPacket(TCPOutbound.NoSuch(x, "Unhandled : " + client.Name + " : " + msg)), x => x.LoggedIn);
-
             if (DefaultCommands)
                 commands.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray());
 

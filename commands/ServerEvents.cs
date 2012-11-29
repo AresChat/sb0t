@@ -265,7 +265,14 @@ namespace commands
             return true;
         }
 
-        public void TextReceived(IUser client, String text) { }
+        public void TextReceived(IUser client, String text)
+        {
+            if (client.Muzzled)
+            {
+                String str = "\x000314[muzzled] " + client.Name + "> " + Helpers.StripColors(text);
+                Server.Print(ILevel.Host, str);
+            }
+        }
 
         public String TextSending(IUser client, String text)
         {
@@ -328,7 +335,14 @@ namespace commands
                 WordFilter.FilterAfter(client, text);
         }
 
-        public void EmoteReceived(IUser client, String text) { }
+        public void EmoteReceived(IUser client, String text)
+        {
+            if (client.Muzzled)
+            {
+                String str = "\x000314[muzzled] * " + client.Name + " " + Helpers.StripColors(text);
+                Server.Print(ILevel.Host, str);
+            }
+        }
 
         public String EmoteSending(IUser client, String text)
         {

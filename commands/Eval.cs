@@ -46,7 +46,7 @@ namespace commands
                     client.Print(String.Empty);
                     client.Print(Template.Text(Category.Info, 0).Replace("+r", l.Name));
                     client.Print(String.Empty);
-                    l.ForEachUser(x => client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", x.ID.ToString())));
+                    l.ForEachUser(x => client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", "linked")));
                 });
         }
 
@@ -803,7 +803,7 @@ namespace commands
                     admin.Print(Template.Text(Category.Whois, 4).Replace("+n", target.DataPort.ToString()));
                     admin.Print(Template.Text(Category.Whois, 5).Replace("+n", target.Version));
                     admin.Print(Template.Text(Category.Whois, 6).Replace("+n", target.Vroom.ToString()));
-                    admin.Print(Template.Text(Category.Whois, 7).Replace("+n", target.ID.ToString()));
+                    admin.Print(Template.Text(Category.Whois, 7).Replace("+n", target.Link.IsLinked ? "linked" : target.ID.ToString()));
                     admin.Print(Template.Text(Category.Whois, 8).Replace("+n", target.Link.IsLinked.ToString()));
                 }
         }

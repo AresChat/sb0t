@@ -297,25 +297,40 @@ namespace scripting
                 if (Server.Scripting.ScriptInRoom)
                     if (Server.CanScript(client))
                     {
-                        String js = "userobj = user(" + client.ID + "); null; " + text;
-
-                        try
+                        if (text.StartsWith("@"))
                         {
-                            object eval = ScriptManager.Scripts[0].JS.Evaluate(js);
+                            String js = "userobj = user(" + client.ID + "); null; " + text.Substring(1);
 
-                            if (eval is bool)
-                                js = eval.ToString().ToLower();
-                            else
-                                js = eval.ToString();
+                            try
+                            {
+                                ScriptManager.Scripts[0].JS.Evaluate(js);
+                            }
+                            catch { }
 
-                            if (js != "undefined")
-                                Server.Print(js);
+                            return String.Empty;
                         }
-                        catch (Jurassic.JavaScriptException e)
+                        else
                         {
-                            ErrorDispatcher.SendError(ScriptManager.Scripts[0].ScriptName, e.Message, e.LineNumber);
+                            String js = "userobj = user(" + client.ID + "); null; " + text;
+
+                            try
+                            {
+                                object eval = ScriptManager.Scripts[0].JS.Evaluate(js);
+
+                                if (eval is bool)
+                                    js = eval.ToString().ToLower();
+                                else
+                                    js = eval.ToString();
+
+                                if (js != "undefined")
+                                    Server.Print(js);
+                            }
+                            catch (Jurassic.JavaScriptException e)
+                            {
+                                ErrorDispatcher.SendError(ScriptManager.Scripts[0].ScriptName, e.Message, e.LineNumber);
+                            }
+                            catch { }
                         }
-                        catch { }
                     }
 
                 foreach (JSScript s in scripts)

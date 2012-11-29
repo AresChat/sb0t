@@ -21,6 +21,9 @@ namespace commands
 
         private static List<Item> list { get; set; }
 
+        private static String l_addr = String.Empty;
+        private static String l_text = String.Empty;
+
         public static void Tick(uint time)
         {
             if (time > (last + 15))
@@ -33,7 +36,12 @@ namespace commands
                         if (++position >= list.Count)
                             position = 0;
 
+                        if (list[position].Address == l_addr && list[position].Text == l_text)
+                            return;
+
                         Server.Chatroom.UpdateURL(list[position].Address, list[position].Text);
+                        l_addr = list[position].Address;
+                        l_text = list[position].Text;
                     }
             }
         }
@@ -42,6 +50,8 @@ namespace commands
         {
             if (enable)
             {
+                l_addr = String.Empty;
+                l_text = String.Empty;
                 last = 16;
                 Tick(Server.Time);
             }
@@ -88,6 +98,8 @@ namespace commands
         public static void Load()
         {
             list = new List<Item>();
+            l_addr = String.Empty;
+            l_text = String.Empty;
 
             try
             {

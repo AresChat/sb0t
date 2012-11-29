@@ -35,7 +35,7 @@ namespace commands
                 if (x.Vroom != client.Vroom)
                     if (list.FindIndex(z => z.Equals(x.Guid)) > -1)
                         if (x.Level >= level)
-                            Server.PublicToTarget(x, client.Name, "[vroom: " + client.Vroom + "] " + text);
+                            Server.PublicToTarget(x, client.Name, "\x000314[vroom: " + client.Vroom + "] " + text);
             });
 
             Server.Users.Web(x =>
@@ -43,7 +43,7 @@ namespace commands
                 if (x.Vroom != client.Vroom)
                     if (list.FindIndex(z => z.Equals(x.Guid)) > -1)
                         if (x.Level >= level)
-                            Server.PublicToTarget(x, client.Name, "[vroom: " + client.Vroom + "] " + text);
+                            Server.PublicToTarget(x, client.Name, "\x000314[vroom: " + client.Vroom + "] " + text);
             });
         }
 
@@ -56,7 +56,7 @@ namespace commands
                 if (x.Vroom != client.Vroom)
                     if (list.FindIndex(z => z.Equals(x.Guid)) > -1)
                         if (x.Level >= level)
-                            Server.EmoteToTarget(x, client.Name, "[vroom: " + client.Vroom + "] " + text);
+                            Server.EmoteToTarget(x, client.Name, "\x000314[vroom: " + client.Vroom + "] " + text);
             });
 
             Server.Users.Web(x =>
@@ -64,7 +64,7 @@ namespace commands
                 if (x.Vroom != client.Vroom)
                     if (list.FindIndex(z => z.Equals(x.Guid)) > -1)
                         if (x.Level >= level)
-                            Server.EmoteToTarget(x, client.Name, "[vroom: " + client.Vroom + "] " + text);
+                            Server.EmoteToTarget(x, client.Name, "\x000314[vroom: " + client.Vroom + "] " + text);
             });
         }
 

@@ -91,7 +91,7 @@ namespace scripting.Statics
                             Directory.CreateDirectory(path);
 
                         path = Path.Combine(Server.DataPath, eng.ScriptName, "data", file);
-                        File.WriteAllText(path, content);
+                        File.WriteAllText(path, content, Encoding.UTF8);
                         return true;
                     }
                     catch { }
