@@ -630,6 +630,10 @@ namespace commands
             }
             if (admin.Level >= Server.GetLevel("loadtemplate"))
                 admin.Print("/loadtemplate");
+            if (admin.Level >= Server.GetLevel("listquarantined"))
+                admin.Print("/listquarantined");
+            if (admin.Level >= Server.GetLevel("unquarantine"))
+                admin.Print("/unquarantine <id>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type)
@@ -1069,6 +1073,10 @@ namespace commands
                 Eval.ListPasswords(client);
             else if (cmd.StartsWith("rempassword "))
                 Eval.RemovePassword(client, cmd.Substring(12));
+            else if (cmd == "listquarantined")
+                Eval.ListQuarantined(client);
+            else if (cmd.StartsWith("unquarantine "))
+                Eval.Unquarantine(client, cmd.Substring(13));
         }
 
         public void LinkError(ILinkError error)

@@ -9,7 +9,7 @@ using iconnect;
 
 namespace core
 {
-    class AresClient : IClient, IUser
+    class AresClient : IClient, IUser, IQuarantined
     {
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
@@ -100,6 +100,11 @@ namespace core
             this.FloodRecord = new core.FloodRecord();
             this.AvatarTimeout = time;
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+        }
+
+        public void Release()
+        {
+            this.Unquarantine();
         }
 
         public void SetLevel(ILevel level)

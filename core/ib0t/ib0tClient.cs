@@ -9,7 +9,7 @@ using iconnect;
 
 namespace core.ib0t
 {
-    class ib0tClient : IClient, IUser
+    class ib0tClient : IClient, IUser, IQuarantined
     {
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
@@ -173,6 +173,11 @@ namespace core.ib0t
 
         public bool Idle { get { return this.Idled; } }
 
+        public void Release()
+        {
+            this.Unquarantine();
+        }
+        
         public void Unquarantine()
         {
             this.LoggedIn = false;

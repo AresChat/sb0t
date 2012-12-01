@@ -115,11 +115,33 @@ namespace commands
             if (admin.Level >= Server.GetLevel("unban"))
             {
                 String name = null;
-                Server.Users.Banned(x => { if (x.Name == args.Replace("\"", String.Empty)) { name = x.Name; x.Unban(); return; } });
+                bool done = false;
+
+                Server.Users.Banned(x =>
+                {
+                    if (!done)
+                        if (x.Name == args.Replace("\"", String.Empty))
+                        {
+                            name = x.Name;
+                            x.Unban();
+                            done = true;
+                        }
+                });
 
                 if (name == null && args.Length > 0)
                 {
-                    Server.Users.Banned(x => { if (x.Name.StartsWith(args.Replace("\"", String.Empty))) { name = x.Name; x.Unban(); return; } });
+                    done = false;
+
+                    Server.Users.Banned(x =>
+                    {
+                        if (!done)
+                            if (x.Name.StartsWith(args.Replace("\"", String.Empty)))
+                            {
+                                name = x.Name;
+                                x.Unban();
+                                done = true;
+                            }
+                    });
 
                     if (name == null)
                     {
@@ -127,7 +149,14 @@ namespace commands
                         uint target;
 
                         if (uint.TryParse(args, out target))
-                            Server.Users.Banned(x => { if (counter == target) { name = x.Name; x.Unban(); return; } counter++; });
+                            Server.Users.Banned(x =>
+                            {
+                                if (counter++ == target)
+                                {
+                                    name = x.Name;
+                                    x.Unban();
+                                }
+                            });
                     }
                 }
 
@@ -519,11 +548,33 @@ namespace commands
             if (admin.Level == ILevel.Host)
             {
                 String name = null;
-                Server.Users.Banned(x => { if (x.Name == args.Replace("\"", String.Empty)) { name = x.Name; x.Unban(); return; } });
+                bool done = false;
+
+                Server.Users.Banned(x =>
+                {
+                    if (!done)
+                        if (x.Name == args.Replace("\"", String.Empty))
+                        {
+                            name = x.Name;
+                            x.Unban();
+                            done = true;
+                        }
+                });
 
                 if (name == null && args.Length > 0)
                 {
-                    Server.Users.Banned(x => { if (x.Name.StartsWith(args.Replace("\"", String.Empty))) { name = x.Name; x.Unban(); return; } });
+                    done = false;
+
+                    Server.Users.Banned(x =>
+                    {
+                        if (!done)
+                            if (x.Name.StartsWith(args.Replace("\"", String.Empty)))
+                            {
+                                name = x.Name;
+                                x.Unban();
+                                done = true;
+                            }
+                    });
 
                     if (name == null)
                     {
@@ -531,7 +582,14 @@ namespace commands
                         uint target;
 
                         if (uint.TryParse(args, out target))
-                            Server.Users.Banned(x => { if (counter == target) { name = x.Name; x.Unban(); return; } counter++; });
+                            Server.Users.Banned(x =>
+                            {
+                                if (counter++ == target)
+                                {
+                                    name = x.Name;
+                                    x.Unban();
+                                }
+                            });
                     }
                 }
 
@@ -1726,5 +1784,51 @@ namespace commands
                 }
             }
         }
+
+        [CommandLevel("listquarantined", ILevel.Host)]
+        public static void ListQuarantined(IUser admin)
+        {
+            if (admin.Level >= Server.GetLevel("listquarantined"))
+            {
+                bool empty = true;
+                int counter = 0;
+
+                Server.Users.Quarantined(x =>
+                {
+                    empty = false;
+                    admin.Print((counter++) + " - " + x.Name);
+                });
+
+                if (empty)
+                    admin.Print(Template.Text(Category.Quarantined, 1));
+            }
+        }
+
+        [CommandLevel("unquarantine", ILevel.Host)]
+        public static void Unquarantine(IUser admin, String args)
+        {
+            if (admin.Level >= Server.GetLevel("unquarantine"))
+            {
+                int target;
+
+                if (int.TryParse(args, out target))
+                {
+                    int counter = 0;
+
+                    Server.Users.Quarantined(x =>
+                    {
+                        if (counter++ == target)
+                        {
+                            Server.Print(Template.Text(Category.Quarantined, 0).Replace("+n",
+                                x.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+
+                            x.Release();
+                        }
+                    });
+                }
+            }
+        }
+
+
     }
 }

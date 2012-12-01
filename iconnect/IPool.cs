@@ -22,5 +22,7 @@ namespace iconnect
         void Banned(Action<IBan> action);
         /// <summary>Action all user records from this session</summary>
         void Records(Action<IRecord> action);
+        /// <summary>Action all quarantined users</summary>
+        void Quarantined(Action<IQuarantined> action);
     }
 }

@@ -15,6 +15,12 @@ namespace core.Extensions
             Linked(action);
         }
 
+        public void Quarantined(Action<IQuarantined> action)
+        {
+            UserPool.AUsers.ForEachWhere(action, x => x.LoggedIn && x.Quarantined);
+            UserPool.WUsers.ForEachWhere(action, x => x.LoggedIn && x.Quarantined);
+        }
+
         public void Ares(Action<IUser> action)
         {
             UserPool.AUsers.ForEachWhere(action, x => x.LoggedIn && !x.Quarantined);

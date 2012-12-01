@@ -310,6 +310,9 @@ namespace commands
             list.Add(new Item { Category = Category.Filter, Index = 20, Text = "Line added to [filter: +t] by +n" });//30
             list.Add(new Item { Category = Category.Filter, Index = 21, Text = "Line removed from [filter: +t] by +n" });//31
 
+            list.Add(new Item { Category = Category.Quarantined, Index = 0, Text = "+n was unquarantined by +a" });
+            list.Add(new Item { Category = Category.Quarantined, Index = 1, Text = "there are currently no quarantined users" });
+
             CheckImport(announce_loaded);
             Load();
 
@@ -601,6 +604,7 @@ namespace commands
         Stats = 28,
         WhoWas = 29,
         BanSend = 30,
-        Filter = 31
+        Filter = 31,
+        Quarantined = 32
     }
 }

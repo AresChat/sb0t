@@ -65,6 +65,7 @@
     <Compile Include="IPassword.cs" />
     <Compile Include="IPool.cs" />
     <Compile Include="IPrivateMsg.cs" />
+    <Compile Include="IQuarantined.cs" />
     <Compile Include="IRecord.cs" />
     <Compile Include="IRoom.cs" />
     <Compile Include="IScripting.cs" />
