@@ -39,7 +39,6 @@ namespace gui
             this.InitializeComponent();
             this.server = new ServerCore();
             ServerCore.LogUpdate += this.LogUpdate;
-
             this.notify = new System.Windows.Forms.NotifyIcon();
             this.notify.Text = "sb0t";
             this.notify.Icon = Resource1.mains;

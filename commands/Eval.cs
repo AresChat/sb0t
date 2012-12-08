@@ -1171,10 +1171,10 @@ namespace commands
                         items = items.GetRange(0, 5);
 
                     if (items.Count == 0)
-                        Server.Print(Template.Text(Category.RoomSearch, 2).Replace("+n", str), true);
+                        Server.Print(Template.Text(Category.RoomSearch, 2).Replace("+n", args), true);
                     else
                     {
-                        Server.Print(Template.Text(Category.RoomSearch, 3).Replace("+n", str), true);
+                        Server.Print(Template.Text(Category.RoomSearch, 3).Replace("+n", args), true);
 
                         foreach (IChannelItem i in items)
                         {

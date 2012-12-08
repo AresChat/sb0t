@@ -57,9 +57,11 @@ namespace scripting
         {
             DirectoryInfo directory = new DirectoryInfo(Path.Combine(Server.DataPath, eng.ScriptName));
             FileInfo[] files = directory.GetFiles("*.js");
+            String main = ScriptName(eng);
 
             foreach (FileInfo file in files)
-                Include(eng, file.Name);
+                if (file.Name != main)
+                    Include(eng, file.Name);
         }
 
         [JSFunction(Name = "byteLength")]

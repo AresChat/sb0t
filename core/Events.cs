@@ -665,6 +665,9 @@ namespace core
 
         public static void InvalidRegistration(IClient client)
         {
+            if (DefaultCommands)
+                commands.InvalidRegistration(client != null ? client.IUser : null);
+
             ExtensionManager.Plugins.ForEach(x =>
             {
                 try

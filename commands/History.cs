@@ -61,7 +61,7 @@ namespace commands
                         uint s = (offset - (m * 60));
 
                         text += "00:" +
-                            (m < 10 ? ("0" + m) : m.ToString()) +
+                            (m < 10 ? ("0" + m) : m.ToString()) + ":" +
                             (s < 10 ? ("0" + s) : s.ToString());
                     }
                     else
@@ -71,8 +71,8 @@ namespace commands
                         uint h = (m / 60);
                         m -= (h * 60);
 
-                        text += (h < 10 ? ("0" + h) : h.ToString()) +
-                            (m < 10 ? ("0" + m) : m.ToString()) +
+                        text += (h < 10 ? ("0" + h) : h.ToString()) + ":" +
+                            (m < 10 ? ("0" + m) : m.ToString()) + ":" +
                             (s < 10 ? ("0" + s) : s.ToString());
                     }
 
