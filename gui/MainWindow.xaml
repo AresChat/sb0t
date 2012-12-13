@@ -12,7 +12,7 @@
                                 <BitmapImage UriSource="Images/Main-icon.png" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="Main" Margin="2,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Main" Margin="2,0,0,0" VerticalAlignment="Center" Name="tab1" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>
@@ -39,6 +39,8 @@
                             <Button Style="{DynamicResource GlassButton}" FontSize="12" Canvas.Left="439" Canvas.Top="278" Content="cb0t join" Height="28" Name="button4" Width="95" IsEnabled="False" Click="button4_Click" />
                             <Label Canvas.Left="4" Canvas.Bottom="4" Content="Status:  Server stopped." Height="28" Name="statusLabel" FontWeight="Bold" />
                             <CheckBox Canvas.Left="350" Canvas.Top="165" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <Image Canvas.Left="548" Canvas.Top="313" Height="32" Name="image3" Stretch="Fill" Width="32" Source="/sb0t;component/Images/Spain-icon.png" Cursor="Hand" MouseUp="SpanishClicked" ToolTip="Para Usuarios Españoles" />
+                            <Image Canvas.Left="515" Canvas.Top="313" Height="32" Name="image4" Stretch="Fill" Width="32" Source="/sb0t;component/Images/England-icon.png" Cursor="Hand" MouseUp="EnglishClicked" ToolTip="For English Users" />
                             <Canvas.Background>
                                 <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
                                     <GradientStop Color="White" Offset="0"/>
@@ -57,7 +59,7 @@
                                 <BitmapImage UriSource="Images/Admin-icon.png" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="Admin" Margin="2,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Admin" Margin="2,0,0,0" VerticalAlignment="Center" Name="tab2" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>
@@ -100,7 +102,7 @@
                                 <BitmapImage UriSource="Images/Link-icon.png" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="Linking" Margin="2,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Linking" Margin="2,0,0,0" VerticalAlignment="Center" Name="tab3" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>
@@ -131,7 +133,7 @@
                             </ListBox>
                             <Label Background="{x:Null}" Canvas.Left="324" Canvas.Top="56" Content="Trusted leaf identifier:" Height="28" Name="label27" />
                             <TextBox Canvas.Left="328" Canvas.Top="81" Height="57" Name="textBox8" Width="183" TextWrapping="Wrap" />
-                            <Button Canvas.Left="471" Canvas.Top="144" Content="Add" Height="23" Name="button7" Width="40" Click="button7_Click" Focusable="False" />
+                            <Button Canvas.Left="454" Canvas.Top="144" Content="Add" Height="23" Name="button7" Width="57" Click="button7_Click" Focusable="False" />
                             <CheckBox Content="Auto reconnect" Height="16" Name="checkBox20" Canvas.Left="399" Canvas.Top="283" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Content="Allow linked admin" Height="16" Name="checkBox21" Canvas.Left="399" Canvas.Top="303" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
@@ -146,7 +148,7 @@
                                 <BitmapImage UriSource="Images/Advanced-icon.png" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="Advanced" Margin="2,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Advanced" Margin="2,0,0,0" VerticalAlignment="Center" Name="tab4" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>
@@ -183,7 +185,7 @@
                             <Label Background="{x:Null}" Canvas.Left="352" Canvas.Top="8" Content="Ban lists" Height="28" Name="label10" />
                             <my:NumericUpDown Canvas.Left="425" Canvas.Top="50" x:Name="numericUpDown1" MinValue="1" MaxValue="96" Value="1" ValueChanged="numericUpDown1_ValueChanged" />
                             <CheckBox Canvas.Left="355" Canvas.Top="93" Content="Auto clear bans" Height="16" Name="checkBox13" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <Label Canvas.Left="368" Canvas.Top="48" Content="Interval:" Height="28" Name="label11" />
+                            <Label Canvas.Left="369" Canvas.Top="48" Content="Interval:" Height="28" Name="label11" />
                             <Label Background="{x:Null}" Canvas.Left="20" Canvas.Top="8" Content="Advanced settings" Height="28" Name="label9" Foreground="#FF320000" />
                             <ComboBox Canvas.Left="425" Canvas.Top="158" Height="23" Name="comboBox2" Width="101" SelectionChanged="CaptchaModeSelectionChanged">
                                 <ComboBoxItem Content="Regular" />
@@ -192,9 +194,9 @@
                             <Label Canvas.Left="376" Canvas.Top="155" Content="Mode:" Height="28" Name="label13" />
                             <my:NumericUpDown x:Name="numericUpDown2" Canvas.Left="26" Canvas.Top="271" Value="18" MaxValue="99" MinValue="1" ValueChanged="numericUpDown2_ValueChanged" />
                             <Label Canvas.Left="21" Canvas.Top="249" Content="Minimum age:" Height="28" Name="label14" />
-                            <CheckBox Content="Reject unknown users" Height="16" Name="checkBox16" Canvas.Left="173" Canvas.Top="299" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Content="Reject male users" Height="16" Name="checkBox15" Canvas.Left="173" Canvas.Top="265" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Content="Reject female users" Height="16" Name="checkBox14" Canvas.Left="173" Canvas.Top="282" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Content="Reject unknown" Height="16" Name="checkBox16" Canvas.Left="173" Canvas.Top="299" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Content="Reject male" Height="16" Name="checkBox15" Canvas.Left="173" Canvas.Top="265" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Content="Reject female" Height="16" Name="checkBox14" Canvas.Left="173" Canvas.Top="282" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="26" Canvas.Top="298" Content="Enable" Height="16" Name="checkBox17" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <ComboBox Height="23" Name="comboBox3" Width="120" Canvas.Left="196" Canvas.Top="183" SelectionChanged="comboBox3_SelectionChanged">
                                 <ComboBoxItem Content="Arabic" />
@@ -238,7 +240,7 @@
                                 <BitmapImage UriSource="Images/Avatar-icon.png" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="Avatars" Margin="2,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Avatars" Margin="2,0,0,0" VerticalAlignment="Center" Name="tab5" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>
@@ -270,7 +272,7 @@
                                 <BitmapImage UriSource="Images/Plugin-icon.png" />
                             </Image.Source>
                         </Image>
-                        <TextBlock Text="Extensions" Margin="2,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Extensions" Margin="2,0,0,0" VerticalAlignment="Center" Name="tab6" />
                     </StackPanel>
                 </TabItem.Header>
                 <Grid>

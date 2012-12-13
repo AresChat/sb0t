@@ -57,7 +57,6 @@ namespace core
             "center",
             "centre",
             "softlayer",
-            "server",
             "choopa",
             "lstn.net",
             "kryptote",
@@ -73,16 +72,23 @@ namespace core
         {
             foreach (String ip in bad_ranges)
                 if (client.ExternalIP.ToString().StartsWith(ip))
+                {
                     return true;
+                }
 
             foreach (String dns in bad_dns)
                 if (client.DNS.ToLower().Contains(dns))
+                {
                     return true;
+                }
 
             bool result = false;
 
             lock (list)
-                result = list.FindIndex(x => x.Equals(client.ExternalIP)) > -1;
+            {
+                int i = list.FindIndex(x => x.Equals(client.ExternalIP));
+                result = i > -1;
+            }
 
             return result;
         }

@@ -128,7 +128,7 @@ namespace commands
             list.Add(new Item { Category = Category.Captcha, Index = 2, Text = "Please type this word to allow you to chat" });
             list.Add(new Item { Category = Category.Captcha, Index = 3, Text = "Correct answer.  You may now chat" });//155
 
-            list.Add(new Item { Category = Category.Linking, Index = 0, Text = "\x0002314--- An linking error occurred [+e]" });
+            list.Add(new Item { Category = Category.Linking, Index = 0, Text = "\x0002314--- A linking error occurred [+e]" });
             list.Add(new Item { Category = Category.Linking, Index = 1, Text = "\x0002314--- Connection to Link Hub [+n] established :)" });
             list.Add(new Item { Category = Category.Linking, Index = 2, Text = "\x0002314--- Connection to Link Hub was lost." });
             list.Add(new Item { Category = Category.Linking, Index = 3, Text = "\x0002314--- A chatroom [+n] has joined" });
@@ -254,6 +254,7 @@ namespace commands
             list.Add(new Item { Category = Category.Whois, Index = 6, Text = "Vroom: +n" });
             list.Add(new Item { Category = Category.Whois, Index = 7, Text = "ID: +n" });
             list.Add(new Item { Category = Category.Whois, Index = 8, Text = "Linked: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 9, Text = "Registered: +n" });
 
             list.Add(new Item { Category = Category.Stats, Index = 0, Text = "Stats for +n" });
             list.Add(new Item { Category = Category.Stats, Index = 1, Text = "Language: +n" });

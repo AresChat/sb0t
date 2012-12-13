@@ -617,14 +617,15 @@ namespace core
             }
 
             if (Proxies.Check(client))
-                if (Events.ProxyDetected(client))
-                {
-                    if (hijack != null && hijack is AresClient)
-                        ((AresClient)hijack).SendDepart();
+                if (!Helpers.IsLocalHost(client))
+                    if (Events.ProxyDetected(client))
+                    {
+                        if (hijack != null && hijack is AresClient)
+                            ((AresClient)hijack).SendDepart();
 
-                    Events.Rejected(client, RejectedMsg.Proxy);
-                    throw new Exception("proxy detected");
-                }
+                        Events.Rejected(client, RejectedMsg.Proxy);
+                        throw new Exception("proxy detected");
+                    }
 
             client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
 

@@ -83,7 +83,7 @@ namespace core
                     return true;
 
                 case 10:
-                    return buf[1] == 0;
+                    return buf[1] == 0 || buf[1] == 1;
             }
 
             buf = Settings.Get<byte[]>("ip");

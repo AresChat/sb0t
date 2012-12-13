@@ -461,7 +461,7 @@ namespace core
                                 if (level <= 3)
                                 {
                                     target.Level = (ILevel)level;
-                                    AccountManager.UpdateAccount(target);
+                                    AccountManager.UpdateAccount(client, target);
                                 }
                         }
 

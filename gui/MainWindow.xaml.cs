@@ -44,6 +44,7 @@ namespace gui
             this.notify.Icon = Resource1.mains;
             this.notify.Click += new EventHandler(this.NotifyIconClicked);
             this.notify.Visible = true;
+            GUILabels.Setup(this);
         }
 
         private void NotifyIconClicked(object sender, EventArgs e)
@@ -147,18 +148,36 @@ namespace gui
                 case "Start server":
                     if (this.server.Open())
                     {
-                        this.button1.Content = "Stop server";
-                        this.statusLabel.Content = "Status: Server running.";
+                        this.button1.Content = GUILabels.english["button1b"];
+                        this.statusLabel.Content = GUILabels.english["statuslabelb"];
                         this.RunMode(true);
                     }
-                    else MessageBox.Show("Unable to start server - please check your settings",
+                    else MessageBox.Show(GUILabels.english["mboxa"],
                         "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
                     break;
 
                 case "Stop server":
                     this.server.Close();
-                    this.button1.Content = "Start server";
-                    this.statusLabel.Content = "Status: Server stopped.";
+                    this.button1.Content = GUILabels.english["button1a"];
+                    this.statusLabel.Content = GUILabels.english["statuslabela"];
+                    this.RunMode(false);
+                    break;
+
+                case "Comenzar el servidor":
+                    if (this.server.Open())
+                    {
+                        this.button1.Content = GUILabels.spanish["button1b"];
+                        this.statusLabel.Content = GUILabels.spanish["statuslabelb"];
+                        this.RunMode(true);
+                    }
+                    else MessageBox.Show(GUILabels.spanish["mboxa"],
+                        "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
+
+                case "Detener el servidor":
+                    this.server.Close();
+                    this.button1.Content = GUILabels.spanish["button1a"];
+                    this.statusLabel.Content = GUILabels.spanish["statuslabela"];
                     this.RunMode(false);
                     break;
             }
@@ -166,7 +185,7 @@ namespace gui
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Are you sure you want to quit sb0t?",
+            MessageBoxResult result = MessageBox.Show(GUILabels.IsSpanish ? GUILabels.spanish["mboxb"] : GUILabels.english["mboxb"],
                 "sb0t", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             if (result == MessageBoxResult.Yes)
@@ -505,7 +524,7 @@ namespace gui
             }
             catch
             {
-                MessageBox.Show("Invalid leaf identifier",
+                MessageBox.Show(GUILabels.IsSpanish ? GUILabels.spanish["mboxc"] : GUILabels.english["mboxc"],
                     "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -539,6 +558,16 @@ namespace gui
                 this.Visibility = Visibility.Hidden;
                 this._hidden = true;
             }
+        }
+
+        private void SpanishClicked(object sender, MouseButtonEventArgs e)
+        {
+            GUILabels.SetSpanish(this);
+        }
+
+        private void EnglishClicked(object sender, MouseButtonEventArgs e)
+        {
+            GUILabels.SetEnglish(this);
         }
     }
 }

@@ -349,9 +349,15 @@ namespace core
             }
         }
 
-        public static void UpdateAccount(IClient client)
+        public static void UpdateAccount(IClient admin, IClient client)
         {
-            if (!client.Registered || client.Owner || client.Password == null)
+            if (!client.Registered || client.Password == null)
+            {
+                admin.Print(client.Name + " has not registered a password or has not logged in using that password");
+                return;
+            }
+
+            if (client.Owner)
                 return;
 
             Account a = list.Find(x => x.Password.SequenceEqual(client.Password));

@@ -863,6 +863,7 @@ namespace commands
                     admin.Print(Template.Text(Category.Whois, 6).Replace("+n", target.Vroom.ToString()));
                     admin.Print(Template.Text(Category.Whois, 7).Replace("+n", target.Link.IsLinked ? "linked" : target.ID.ToString()));
                     admin.Print(Template.Text(Category.Whois, 8).Replace("+n", target.Link.IsLinked.ToString()));
+                    admin.Print(Template.Text(Category.Whois, 9).Replace("+n", target.Registered.ToString()));
                 }
         }
 
@@ -917,11 +918,12 @@ namespace commands
             if (admin.Level >= Server.GetLevel("changename"))
                 if (target != null)
                 {
+                    String org_name = target.Name;
                     target.Name = args;
 
                     if (target.Name == args)
                         Server.Print(ILevel.Moderator, Template.Text(Category.Notification,
-                            17).Replace("+n", target.Name).Replace("+a", admin.Name), true);
+                            17).Replace("+n", org_name).Replace("+a", admin.Name), true);
                 }
         }
 
@@ -1095,7 +1097,8 @@ namespace commands
                 Server.Users.All(x =>
                 {
                     if (x.Level > ILevel.Regular)
-                        Server.Print(Template.Text(Category.AdminList, 1).Replace("+n", x.Name).Replace("+l", ((byte)x.Level).ToString()), true);
+                        if (x.Link.Visible)
+                            Server.Print(Template.Text(Category.AdminList, 1).Replace("+n", x.Name).Replace("+l", ((byte)x.Level).ToString()), true);
                 });
 
                 Server.Print(String.Empty, true);

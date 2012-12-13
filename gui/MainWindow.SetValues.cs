@@ -276,7 +276,7 @@ namespace gui
             };
 
             if (!core.LinkHub.TrustedLeavesManager.AddItem(item))
-                MessageBox.Show("This leaf already exists in your trusted leaf list",
+                MessageBox.Show(GUILabels.IsSpanish ? GUILabels.spanish["mboxd"] : GUILabels.english["mboxd"],
                     "sb0t", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             else
                 this.listBox3.Items.Add(item);
@@ -322,7 +322,7 @@ namespace gui
                 this.listBox2.SelectedIndex = this.listBox2.Items.Count - 1;
                 ExtAutorun.AddItem(name);
             }
-            else MessageBox.Show("Invalid sb0t extension",
+            else MessageBox.Show(GUILabels.IsSpanish ? GUILabels.spanish["mboxe"] : GUILabels.english["mboxe"],
                 "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 

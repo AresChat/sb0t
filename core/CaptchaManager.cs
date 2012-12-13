@@ -15,7 +15,33 @@ namespace core
 
         public static bool HasCaptcha(IClient client)
         {
-            return list.Find(x => x.Guid.Equals(client.Guid)) != null;
+            CaptchaRecord record = list.Find(x => x.Guid.Equals(client.Guid));
+
+            if (record != null)
+            {
+                int time = (int)(uint)(Helpers.UnixTime - 1000000000);
+
+                if (record.Time < (time - 604800))
+                {
+                    record.Time = time;
+
+                    using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+                    {
+                        connection.Open();
+
+                        String query = @"update captchas set time=@time where guid=@guid";
+
+                        using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                        {
+                            command.Parameters.Add(new SQLiteParameter("@time", record.Time));
+                            command.Parameters.Add(new SQLiteParameter("@guid", record.Guid.ToString()));
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+
+            return record != null;
         }
 
         public static void AddCaptcha(IClient client)
