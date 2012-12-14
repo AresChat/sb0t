@@ -522,10 +522,6 @@ namespace core
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
             client.CustomClient = !client.Version.StartsWith("Ares 2.");
-
-            if (client.CustomClient) // client doesn't support file sharing
-                Helpers.ObfuscateAddress(client);
-
             client.LocalIP = packet;
             packet.SkipBytes(4);
             client.Browsable = ((byte)packet) > 2 && Settings.Get<bool>("files");
@@ -537,6 +533,10 @@ namespace core
             client.Country = packet;
             client.Region = packet.ReadString(client);
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
+
+            if (client.CustomClient) // client doesn't support file sharing
+                ObSalt.GetSalt(client);
+
             client.Captcha = !Settings.Get<bool>("captcha");
 
             if (!client.Captcha)

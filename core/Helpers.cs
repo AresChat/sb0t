@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Net;
@@ -24,20 +22,6 @@ namespace core
             input = input.Replace("­", "");
 
             return input;
-        }
-
-        public static void ObfuscateAddress(IClient client)
-        {
-            byte[] buf = client.ExternalIP.GetAddressBytes();
-
-            using (SHA1 sha1 = SHA1.Create())
-            {
-                byte[] s = sha1.ComputeHash(buf);
-                buf[2] = s[0];
-                buf[3] = s[19];
-            }
-
-            client.ExternalIP = new System.Net.IPAddress(buf);
         }
 
         public static String ObfuscateDns(String dns)

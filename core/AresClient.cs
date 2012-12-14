@@ -270,6 +270,9 @@ namespace core
 
         public void RestoreAvatar()
         {
+            if (this.rest_av != null)
+                this.OrgAvatar = this.rest_av;
+
             this.Avatar = this.OrgAvatar;
         }
 
@@ -517,13 +520,21 @@ namespace core
                 }
         }
 
+        private byte[] rest_av = null;
+
         public byte[] Avatar
         {
             get { return this.avatar; }
             set
             {
                 if (value == null)
+                {
                     value = new byte[] { };
+
+                    if (this.avatar != null)
+                        if (this.avatar.Length >= 10)
+                            this.rest_av = this.avatar;
+                }
 
                 if (value.Length < 10)
                 {

@@ -212,13 +212,14 @@ namespace gui
             //auto start
             this.checkBox3.IsChecked = Settings.Get<bool>("autostart");
 
-            this.CreateImporter();
+            this.CreateImporter1();
+            this.CreateImporter2();
 
             if ((bool)this.checkBox3.IsChecked)
                 this.ServerStartStop(null, null);
         }
 
-        private void CreateImporter()
+        private void CreateImporter1()
         {
             String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                               "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\TEMPLATE IMPORTER";
@@ -245,6 +246,39 @@ namespace gui
                 lines.Add(String.Empty);
                 lines.Add("The new template file for this version of sb0t is called strings.txt");
                 lines.Add("and is located in the main data folder.");
+                lines.Add(String.Empty);
+
+                try { File.WriteAllLines(path, lines.ToArray()); }
+                catch { }
+            }
+        }
+
+        private void CreateImporter2()
+        {
+            String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                              "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\FILTER IMPORTER";
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            path = Path.Combine(path, "README.txt");
+
+            if (!File.Exists(path))
+            {
+                List<String> lines = new List<String>();
+                lines.Add("sb0t 5 - FILTER IMPORTER");
+                lines.Add(String.Empty);
+                lines.Add("You can import filter files from old version of sb0t (4.xx).");
+                lines.Add(String.Empty);
+                lines.Add("- To do this, simply paste your old filter files (wordfilters.xml, joinfilters.xml,");
+                lines.Add("  filefilters.xml, pmfilters.xml) into this folder then start sb0t.");
+                lines.Add("- sb0t will then attempt to read your old filter files.");
+                lines.Add("- A file called LOG.txt will be created.");
+                lines.Add("- This log file will confirm the success of the import.");
+                lines.Add("- sb0t will then delete the old filter files from this import folder.");
+                lines.Add(String.Empty);
+                lines.Add("The new filter files for this version of sb0t will be");
+                lines.Add("located in the main data folder.");
                 lines.Add(String.Empty);
 
                 try { File.WriteAllLines(path, lines.ToArray()); }

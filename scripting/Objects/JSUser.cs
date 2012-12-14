@@ -22,6 +22,19 @@ namespace scripting.Objects
 
         internal IUser parent;
 
+        [JSProperty(Name = "visible")]
+        public bool Visible
+        {
+            get
+            {
+                if (this.parent.Link.IsLinked)
+                    return this.parent.Link.Visible;
+
+                return !this.parent.Cloaked;
+            }
+            set { }
+        }
+
         [JSProperty(Name = "age")]
         public int Age
         {
@@ -53,7 +66,9 @@ namespace scripting.Objects
             get { return new JSAvatarImage(this.Engine.Object.InstancePrototype) { Data = this.parent.Avatar }; }
             set
             {
-                if (value is JSAvatarImage)
+                if (value == null)
+                    this.parent.Avatar = null;
+                else if (value is JSAvatarImage)
                     this.parent.Avatar = value.Data;
                 else
                     this.parent.Avatar = null;

@@ -61,7 +61,7 @@ namespace gui
             spanish["checkBox2"] = "Emoticons personalizados habilitado";
 
             english["checkBox3"] = "Start server when sb0t starts";
-            spanish["checkBox3"] = "Comienza el servidor cuando empieza";
+            spanish["checkBox3"] = "Servidor on cuando sb0t esté on";
 
             english["checkBox4"] = "Load sb0t when windows starts";
             spanish["checkBox4"] = "Cargar sb0t cuando windows comience";

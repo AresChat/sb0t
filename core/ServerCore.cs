@@ -103,6 +103,8 @@ namespace core
         {
             this.terminate = false;
 
+            FilterImporter.DoTasks();
+            ObSalt.Init();
             CaptchaManager.Load();
             FloodControl.Reset();
             Stats.Reset();

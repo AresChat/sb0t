@@ -1097,7 +1097,7 @@ namespace commands
                 Server.Users.All(x =>
                 {
                     if (x.Level > ILevel.Regular)
-                        if (x.Link.Visible)
+                        if (x.Link.Visible || !x.Link.IsLinked)
                             Server.Print(Template.Text(Category.AdminList, 1).Replace("+n", x.Name).Replace("+l", ((byte)x.Level).ToString()), true);
                 });
 

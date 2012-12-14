@@ -9,7 +9,7 @@ using iconnect;
 
 namespace commands
 {
-    class WordFilter
+    public class WordFilter
     {
         public static void FilterPM(IUser client, IPrivateMsg msg)
         {
@@ -375,6 +375,52 @@ namespace commands
 
                         Server.Print(Template.Text(Category.Filter, 7).Replace("+t", item.Trigger).Replace("+f",
                             item.Type.ToString()).Replace("+n", Settings.Stealth ? Server.Chatroom.BotName : admin.Name), true);
+
+                        break;
+                    }
+        }
+
+        public static void Add(String args, bool save)
+        {
+            if (list == null)
+                list = new List<Item>();
+
+            String[] split = args.Split(new String[] { ", " }, StringSplitOptions.None);
+
+            if (split.Length < 2)
+                return;
+
+            Item item = new Item();
+            item.Trigger = split[0];
+            item.Args = String.Empty;
+            String[] types = Enum.GetNames(typeof(FilterType));
+
+            if (item.Trigger.Length > 0)
+                for (int i = 0; i < types.Length; i++)
+                    if (types[i].ToUpper() == split[1].ToUpper())
+                    {
+                        if (i > 3)
+                            if (split.Length > 2)
+                            {
+                                item.Args = String.Join(", ", new List<String>(split).GetRange(2, (split.Length - 2)).ToArray());
+
+                                if (item.Args.Length == 0)
+                                    break;
+
+                                if (i == 6)
+                                    if (Server.Hashlinks.Decrypt(item.Args) == null)
+                                        break;
+                            }
+                            else break;
+                        else if (split.Length != 2)
+                            break;
+
+                        item.Type = (FilterType)Enum.Parse(typeof(FilterType), types[i], true);
+                        list.RemoveAll(x => x.Trigger == item.Trigger);
+                        list.Add(item);
+
+                        if (save)
+                            Save();
 
                         break;
                     }

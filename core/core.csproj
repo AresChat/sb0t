@@ -80,6 +80,7 @@
     <Compile Include="Extensions\ExSpelling.cs" />
     <Compile Include="Extensions\ExStats.cs" />
     <Compile Include="Extensions\ExtensionManager.cs" />
+    <Compile Include="FilterImporter.cs" />
     <Compile Include="FloodControl.cs" />
     <Compile Include="FloodRecord.cs" />
     <Compile Include="IdleManager.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="LinkLeaf\LinkError.cs" />
     <Compile Include="LinkLeaf\LinkLogin.cs" />
     <Compile Include="LinkLeaf\LinkUser.cs" />
+    <Compile Include="ObSalt.cs" />
     <Compile Include="Prototypes.cs" />
     <Compile Include="Extensions\ExHost.cs" />
     <Compile Include="Extensions\ExUsers.cs" />

@@ -9,7 +9,7 @@ namespace core
 {
     class Events
     {
-        private static commands.ServerEvents commands { get; set; }
+        private static commands.ServerEvents cmds { get; set; }
         private static bool DefaultCommands { get; set; }
         private static scripting.ServerEvents js { get; set; }
 
@@ -17,13 +17,31 @@ namespace core
         {
             js = new scripting.ServerEvents(new ExHost(String.Empty));
 
-            if (commands == null)
-                commands = new commands.ServerEvents(new ExHost(String.Empty));
+            if (cmds == null)
+                cmds = new commands.ServerEvents(new ExHost(String.Empty));
+        }
+
+        public static void ImportJoinFilters(String[] filters)
+        {
+            for (int i = 0; i < filters.Length; i++)
+                commands.JoinFilter.Add(filters[i], i == (filters.Length - 1));
+        }
+
+        public static void ImportWordFilters(String[] filters)
+        {
+            for (int i = 0; i < filters.Length; i++)
+                commands.WordFilter.Add(filters[i], i == (filters.Length - 1));
+        }
+
+        public static void ImportFileFilters(String[] filters)
+        {
+            for (int i = 0; i < filters.Length; i++)
+                commands.FileFilter.Add(filters[i], i == (filters.Length - 1));
         }
 
         public static ICommandDefault[] DefaultCommandLevels
         {
-            get { return commands.DefaultCommandLevels; }
+            get { return cmds.DefaultCommandLevels; }
         }
 
         public static void ServerStarted()
@@ -31,7 +49,7 @@ namespace core
             DefaultCommands = Settings.Get<bool>("commands");
 
             if (DefaultCommands)
-                commands.ServerStarted();
+                cmds.ServerStarted();
 
             js.ServerStarted();
 
@@ -45,7 +63,7 @@ namespace core
         public static void CycleTick()
         {
             if (DefaultCommands)
-                commands.CycleTick();
+                cmds.CycleTick();
 
             js.CycleTick();
 
@@ -59,7 +77,7 @@ namespace core
         public static void UnhandledProtocol(IClient client, bool custom, TCPMsg msg, TCPPacketReader packet, ulong tick)
         {
             if (DefaultCommands)
-                commands.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray());
+                cmds.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray());
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -73,7 +91,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Joining(client != null ? client.IUser : null);
+                result = cmds.Joining(client != null ? client.IUser : null);
 
             if (result)
                 result = js.Joining(client != null ? client.IUser : null);
@@ -102,7 +120,7 @@ namespace core
                 Stats.PeakUserCount = Stats.CurrentUserCount;
 
             if (DefaultCommands)
-                commands.Joined(client != null ? client.IUser : null);
+                cmds.Joined(client != null ? client.IUser : null);
 
             js.Joined(client != null ? client.IUser : null);
 
@@ -120,7 +138,7 @@ namespace core
             Stats.RejectionCount++;
 
             if (DefaultCommands)
-                commands.Rejected(client != null ? client.IUser : null, msg);
+                cmds.Rejected(client != null ? client.IUser : null, msg);
 
             js.Rejected(client != null ? client.IUser : null, msg);
 
@@ -136,7 +154,7 @@ namespace core
         public static void Parting(IClient client)
         {
             if (DefaultCommands)
-                commands.Parting(client != null ? client.IUser : null);
+                cmds.Parting(client != null ? client.IUser : null);
 
             js.Parting(client != null ? client.IUser : null);
 
@@ -152,7 +170,7 @@ namespace core
             Stats.PartCount++;
 
             if (DefaultCommands)
-                commands.Parted(client != null ? client.IUser : null);
+                cmds.Parted(client != null ? client.IUser : null);
 
             js.Parted(client != null ? client.IUser : null);
 
@@ -170,7 +188,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.AvatarReceived(client != null ? client.IUser : null);
+                result = cmds.AvatarReceived(client != null ? client.IUser : null);
 
             if (result)
                 result = js.AvatarReceived(client != null ? client.IUser : null);
@@ -196,7 +214,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.PersonalMessageReceived(client != null ? client.IUser : null, text);
+                result = cmds.PersonalMessageReceived(client != null ? client.IUser : null, text);
 
             if (result)
                 result = js.PersonalMessageReceived(client != null ? client.IUser : null, text);
@@ -220,7 +238,7 @@ namespace core
         public static void TextReceived(IClient client, String text)
         {
             if (DefaultCommands)
-                commands.TextReceived(client != null ? client.IUser : null, text);
+                cmds.TextReceived(client != null ? client.IUser : null, text);
 
             js.TextReceived(client != null ? client.IUser : null, text);
 
@@ -236,7 +254,7 @@ namespace core
             String result = text;
 
             if (DefaultCommands)
-                result = commands.TextSending(client != null ? client.IUser : null, result);
+                result = cmds.TextSending(client != null ? client.IUser : null, result);
 
             if (!String.IsNullOrEmpty(result))
                 result = js.TextSending(client != null ? client.IUser : null, result);
@@ -262,7 +280,7 @@ namespace core
             Stats.PublicMessages++;
 
             if (DefaultCommands)
-                commands.TextSent(client != null ? client.IUser : null, text);
+                cmds.TextSent(client != null ? client.IUser : null, text);
 
             js.TextSent(client != null ? client.IUser : null, text);
 
@@ -278,7 +296,7 @@ namespace core
         public static void EmoteReceived(IClient client, String text)
         {
             if (DefaultCommands)
-                commands.EmoteReceived(client != null ? client.IUser : null, text);
+                cmds.EmoteReceived(client != null ? client.IUser : null, text);
 
             js.EmoteReceived(client != null ? client.IUser : null, text);
 
@@ -294,7 +312,7 @@ namespace core
             String result = text;
 
             if (DefaultCommands)
-                result = commands.EmoteSending(client != null ? client.IUser : null, result);
+                result = cmds.EmoteSending(client != null ? client.IUser : null, result);
 
             if (!String.IsNullOrEmpty(result))
                 result = js.EmoteSending(client != null ? client.IUser : null, result);
@@ -320,7 +338,7 @@ namespace core
             Stats.PublicMessages++;
 
             if (DefaultCommands)
-                commands.EmoteSent(client != null ? client.IUser : null, text);
+                cmds.EmoteSent(client != null ? client.IUser : null, text);
 
             js.EmoteSent(client != null ? client.IUser : null, text);
 
@@ -338,7 +356,7 @@ namespace core
             PrivateMsg pm = new PrivateMsg(e.Text);
 
             if (DefaultCommands)
-                commands.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
+                cmds.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
             if (!String.IsNullOrEmpty(pm.Text))
                 js.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
@@ -373,7 +391,7 @@ namespace core
             Stats.PrivateMessages++;
 
             if (DefaultCommands)
-                commands.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
+                cmds.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
             js.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
@@ -389,7 +407,7 @@ namespace core
             Stats.PrivateMessages++;
 
             if (DefaultCommands)
-                commands.BotPrivateSent(client != null ? client.IUser : null, text);
+                cmds.BotPrivateSent(client != null ? client.IUser : null, text);
 
             js.BotPrivateSent(client != null ? client.IUser : null, text);
 
@@ -489,7 +507,7 @@ namespace core
                     return;
 
             if (DefaultCommands)
-                commands.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
+                cmds.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
 
             js.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
 
@@ -505,7 +523,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Nick(client != null ? client.IUser : null, name);
+                result = cmds.Nick(client != null ? client.IUser : null, name);
 
             if (result)
                 result = js.Nick(client != null ? client.IUser : null, name);
@@ -552,7 +570,7 @@ namespace core
                     return;
 
             if (DefaultCommands)
-                commands.Help(client != null ? client.IUser : null);
+                cmds.Help(client != null ? client.IUser : null);
 
             js.Help(client != null ? client.IUser : null);
 
@@ -566,7 +584,7 @@ namespace core
         public static void FileReceived(IClient client, SharedFile file)
         {
             if (DefaultCommands)
-                commands.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
+                cmds.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
 
             js.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
 
@@ -582,7 +600,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
+                result = cmds.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
             if (result)
                 result = js.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
@@ -606,7 +624,7 @@ namespace core
         public static void IgnoredStateChanged(IClient client, IClient target, bool ignored)
         {
             if (DefaultCommands)
-                commands.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
+                cmds.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
 
             js.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
 
@@ -622,7 +640,7 @@ namespace core
             Stats.InvalidLoginAttempts++;
 
             if (DefaultCommands)
-                commands.InvalidLoginAttempt(client != null ? client.IUser : null);
+                cmds.InvalidLoginAttempt(client != null ? client.IUser : null);
 
             js.InvalidLoginAttempt(client != null ? client.IUser : null);
 
@@ -636,7 +654,7 @@ namespace core
         public static void LoginGranted(IClient client)
         {
             if (DefaultCommands)
-                commands.LoginGranted(client != null ? client.IUser : null);
+                cmds.LoginGranted(client != null ? client.IUser : null);
 
             js.LoginGranted(client != null ? client.IUser : null);
 
@@ -650,7 +668,7 @@ namespace core
         public static void AdminLevelChanged(IClient client)
         {
             if (DefaultCommands)
-                commands.AdminLevelChanged(client != null ? client.IUser : null);
+                cmds.AdminLevelChanged(client != null ? client.IUser : null);
 
             js.AdminLevelChanged(client != null ? client.IUser : null);
 
@@ -666,7 +684,7 @@ namespace core
         public static void InvalidRegistration(IClient client)
         {
             if (DefaultCommands)
-                commands.InvalidRegistration(client != null ? client.IUser : null);
+                cmds.InvalidRegistration(client != null ? client.IUser : null);
 
             ExtensionManager.Plugins.ForEach(x =>
             {
@@ -684,7 +702,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Registering(client != null ? client.IUser : null);
+                result = cmds.Registering(client != null ? client.IUser : null);
 
             if (result)
                 result = js.Registering(client != null ? client.IUser : null);
@@ -708,7 +726,7 @@ namespace core
         public static void Registered(IClient client)
         {
             if (DefaultCommands)
-                commands.Registered(client != null ? client.IUser : null);
+                cmds.Registered(client != null ? client.IUser : null);
 
             js.Registered(client != null ? client.IUser : null);
 
@@ -722,7 +740,7 @@ namespace core
         public static void Unregistered(IClient client)
         {
             if (DefaultCommands)
-                commands.Unregistered(client != null ? client.IUser : null);
+                cmds.Unregistered(client != null ? client.IUser : null);
 
             js.Unregistered(client != null ? client.IUser : null);
 
@@ -736,7 +754,7 @@ namespace core
         public static void CaptchaSending(IClient client)
         {
             if (DefaultCommands)
-                commands.CaptchaSending(client != null ? client.IUser : null);
+                cmds.CaptchaSending(client != null ? client.IUser : null);
 
             js.CaptchaSending(client != null ? client.IUser : null);
 
@@ -750,7 +768,7 @@ namespace core
         public static void CaptchaReply(IClient client, String reply)
         {
             if (DefaultCommands)
-                commands.CaptchaReply(client != null ? client.IUser : null, reply);
+                cmds.CaptchaReply(client != null ? client.IUser : null, reply);
 
             js.CaptchaReply(client != null ? client.IUser : null, reply);
 
@@ -766,7 +784,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.VroomChanging(client != null ? client.IUser : null, vroom);
+                result = cmds.VroomChanging(client != null ? client.IUser : null, vroom);
 
             if (result)
                 result = js.VroomChanging(client != null ? client.IUser : null, vroom);
@@ -790,7 +808,7 @@ namespace core
         public static void VroomChanged(IClient client)
         {
             if (DefaultCommands)
-                commands.VroomChanged(client != null ? client.IUser : null);
+                cmds.VroomChanged(client != null ? client.IUser : null);
 
             js.VroomChanged(client != null ? client.IUser : null);
 
@@ -806,7 +824,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.Flooding(client != null ? client.IUser : null, msg);
+                result = cmds.Flooding(client != null ? client.IUser : null, msg);
 
             if (result)
                 result = js.Flooding(client != null ? client.IUser : null, msg);
@@ -832,7 +850,7 @@ namespace core
             Stats.FloodCount++;
 
             if (DefaultCommands)
-                commands.Flooded(client != null ? client.IUser : null);
+                cmds.Flooded(client != null ? client.IUser : null);
 
             js.Flooded(client != null ? client.IUser : null);
 
@@ -848,7 +866,7 @@ namespace core
         public static void Logout(IClient client)
         {
             if (DefaultCommands)
-                commands.Logout(client != null ? client.IUser : null);
+                cmds.Logout(client != null ? client.IUser : null);
 
             js.Logout(client != null ? client.IUser : null);
 
@@ -862,7 +880,7 @@ namespace core
         public static void Idled(IClient client)
         {
             if (DefaultCommands)
-                commands.Idled(client != null ? client.IUser : null);
+                cmds.Idled(client != null ? client.IUser : null);
 
             js.Idled(client != null ? client.IUser : null);
 
@@ -876,7 +894,7 @@ namespace core
         public static void Unidled(IClient client, uint seconds_away)
         {
             if (DefaultCommands)
-                commands.Unidled(client != null ? client.IUser : null, seconds_away);
+                cmds.Unidled(client != null ? client.IUser : null, seconds_away);
 
             js.Unidled(client != null ? client.IUser : null, seconds_away);
 
@@ -890,7 +908,7 @@ namespace core
         public static void BansAutoCleared()
         {
             if (DefaultCommands)
-                commands.BansAutoCleared();
+                cmds.BansAutoCleared();
 
             js.BansAutoCleared();
 
@@ -906,7 +924,7 @@ namespace core
             bool result = true;
 
             if (DefaultCommands)
-                result = commands.ProxyDetected(client != null ? client.IUser : null);
+                result = cmds.ProxyDetected(client != null ? client.IUser : null);
 
             js.ProxyDetected(client != null ? client.IUser : null);
 
@@ -929,7 +947,7 @@ namespace core
         public static void LinkError(core.LinkLeaf.LinkError e)
         {
             if (DefaultCommands)
-                commands.LinkError((ILinkError)e);
+                cmds.LinkError((ILinkError)e);
 
             js.LinkError((ILinkError)e);
 
@@ -943,7 +961,7 @@ namespace core
         public static void Linked()
         {
             if (DefaultCommands)
-                commands.Linked();
+                cmds.Linked();
 
             js.Linked();
 
@@ -957,7 +975,7 @@ namespace core
         public static void Unlinked()
         {
             if (DefaultCommands)
-                commands.Unlinked();
+                cmds.Unlinked();
 
             js.Unlinked();
 
@@ -971,7 +989,7 @@ namespace core
         public static void LeafJoined(LinkLeaf.Leaf leaf)
         {
             if (DefaultCommands)
-                commands.LeafJoined(leaf);
+                cmds.LeafJoined(leaf);
 
             js.LeafJoined(leaf);
 
@@ -985,7 +1003,7 @@ namespace core
         public static void LeafParted(LinkLeaf.Leaf leaf)
         {
             if (DefaultCommands)
-                commands.LeafParted(leaf);
+                cmds.LeafParted(leaf);
 
             js.LeafParted(leaf);
 
@@ -999,7 +1017,7 @@ namespace core
         public static void LinkedAdminDisabled(LinkLeaf.Leaf leaf, IClient client)
         {
             if (DefaultCommands)
-                commands.LinkedAdminDisabled(leaf, client.IUser);
+                cmds.LinkedAdminDisabled(leaf, client.IUser);
 
             js.LinkedAdminDisabled(leaf, client.IUser);
 
