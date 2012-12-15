@@ -15,6 +15,11 @@ namespace commands
             list = new List<Guid>();
         }
 
+        public static bool IsVspy(IUser client)
+        {
+            return list.FindIndex(x => client.Guid.Equals(x)) > -1;
+        }
+
         public static void Add(IUser client)
         {
             list.RemoveAll(x => x.Equals(client.Guid));

@@ -459,12 +459,12 @@ namespace commands
         public static void PMBlock(IUser client, String onoff)
         {
             if (client.Level > ILevel.Regular || Settings.General)
-                if (onoff == "on")
+                if (onoff == "on" && !PMBlocking.IsBlocking(client))
                 {
                     PMBlocking.Add(client);
                     Server.Print(Template.Text(Category.PmBlocking, 0).Replace("+n", client.Name), true);
                 }
-                else if (onoff == "off")
+                else if (onoff == "off" && PMBlocking.IsBlocking(client))
                 {
                     PMBlocking.Remove(client);
                     Server.Print(Template.Text(Category.PmBlocking, 1).Replace("+n", client.Name), true);
@@ -680,12 +680,12 @@ namespace commands
         public static void Stealth(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("stealth"))
-                if (args == "on")
+                if (args == "on" && !Settings.Stealth)
                 {
                     Settings.Stealth = true;
                     Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 26).Replace("+n", admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.Stealth)
                 {
                     Settings.Stealth = false;
                     Server.Print(ILevel.Moderator, Template.Text(Category.EnableDisable, 27).Replace("+n", admin.Name));
@@ -697,12 +697,12 @@ namespace commands
         {
             if (!Server.Link.IsLinked)
                 if (admin.Level >= Server.GetLevel("cloak"))
-                    if (args == "on")
+                    if (args == "on" && !admin.Cloaked)
                     {
                         admin.Cloaked = true;
                         Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 11).Replace("+n", admin.Name));
                     }
-                    else if (args == "off")
+                    else if (args == "off" && admin.Cloaked)
                     {
                         admin.Cloaked = false;
                         Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 12).Replace("+n", admin.Name));
@@ -766,12 +766,12 @@ namespace commands
         public static void Colors(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("colors"))
-                if (args == "on")
+                if (args == "on" && !Settings.Colors)
                 {
                     Settings.Colors = true;
                     Server.Print(Template.Text(Category.EnableDisable, 28).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.Colors)
                 {
                     Settings.Colors = false;
                     Server.Print(Template.Text(Category.EnableDisable, 29).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -782,12 +782,12 @@ namespace commands
         public static void Vspy(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("vspy"))
-                if (args == "on")
+                if (args == "on" && !commands.VSpy.IsVspy(admin))
                 {
                     commands.VSpy.Add(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 20).Replace("+n", admin.Name), true);
                 }
-                else if (args == "off")
+                else if (args == "off" && commands.VSpy.IsVspy(admin))
                 {
                     commands.VSpy.Remove(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 21).Replace("+n", admin.Name), true);
@@ -798,12 +798,12 @@ namespace commands
         public static void CustomNames(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("customnames"))
-                if (args == " on")
+                if (args == " on" && !Server.Chatroom.CustomNamesEnabled)
                 {
                     Server.Chatroom.CustomNamesEnabled = true;
                     Server.Print(Template.Text(Category.EnableDisable, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == " off")
+                else if (args == " off" && Server.Chatroom.CustomNamesEnabled)
                 {
                     Server.Chatroom.CustomNamesEnabled = false;
                     Server.Print(Template.Text(Category.EnableDisable, 15).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -944,12 +944,12 @@ namespace commands
         public static void BanSend(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("bansend"))
-                if (args == "on")
+                if (args == "on" && !commands.BanSend.Has(admin))
                 {
                     commands.BanSend.Add(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 24).Replace("+n", admin.Name), true);
                 }
-                else if (args == "off")
+                else if (args == "off" && commands.BanSend.Has(admin))
                 {
                     commands.BanSend.Remove(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 25).Replace("+n", admin.Name), true);
@@ -960,12 +960,12 @@ namespace commands
         public static void LogSend(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("logsend"))
-                if (args == "on")
+                if (args == "on" && !commands.LogSend.Has(admin))
                 {
                     commands.LogSend.Add(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 26).Replace("+n", admin.Name), true);
                 }
-                else if (args == "off")
+                else if (args == "off" && commands.LogSend.Has(admin))
                 {
                     commands.LogSend.Remove(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 27).Replace("+n", admin.Name), true);
@@ -976,12 +976,12 @@ namespace commands
         public static void IPSend(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("ipsend"))
-                if (args == "on")
+                if (args == "on" && !commands.IPSend.Has(admin))
                 {
                     commands.IPSend.Add(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 22).Replace("+n", admin.Name), true);
                 }
-                else if (args == "off")
+                else if (args == "off" && commands.IPSend.Has(admin))
                 {
                     commands.IPSend.Remove(admin);
                     Server.Print(ILevel.Moderator, Template.Text(Category.Notification, 23).Replace("+n", admin.Name), true);
@@ -1247,12 +1247,12 @@ namespace commands
         public static void ShareFiles(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("sharefiles"))
-                if (args == "on")
+                if (args == "on" && !Settings.ShareFileMonitoring)
                 {
                     Settings.ShareFileMonitoring = true;
                     Server.Print(Template.Text(Category.EnableDisable, 0).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.ShareFileMonitoring)
                 {
                     Settings.ShareFileMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 1).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1263,12 +1263,12 @@ namespace commands
         public static void IdleMonitoring(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("idle"))
-                if (args == "on")
+                if (args == "on" && !Settings.IdleMonitoring)
                 {
                     Settings.IdleMonitoring = true;
                     Server.Print(Template.Text(Category.EnableDisable, 2).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.IdleMonitoring)
                 {
                     Settings.IdleMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 3).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1279,13 +1279,13 @@ namespace commands
         public static void Clock(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("clock"))
-                if (args == "on")
+                if (args == "on" && !Settings.Clock)
                 {
                     Settings.Clock = true;
                     Topics.EnableClock();
                     Server.Print(Template.Text(Category.EnableDisable, 4).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.Clock)
                 {
                     Settings.Clock = false;
                     Topics.DisableClock();
@@ -1373,12 +1373,12 @@ namespace commands
         public static void GreetMsg(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("greetmsg"))
-                if (args == "on")
+                if (args == "on" && !Settings.GreetMsg)
                 {
                     Settings.GreetMsg = true;
                     Server.Print(Template.Text(Category.EnableDisable, 6).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.GreetMsg)
                 {
                     Settings.GreetMsg = false;
                     Server.Print(Template.Text(Category.EnableDisable, 7).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1426,12 +1426,12 @@ namespace commands
         public static void PMGreetMsg(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("pmgreetmsg"))
-                if (args == "on")
+                if (args == "on" && !Settings.PMGreetMsg)
                 {
                     Settings.PMGreetMsg = true;
                     Server.Print(Template.Text(Category.EnableDisable, 8).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.PMGreetMsg)
                 {
                     Settings.PMGreetMsg = false;
                     Server.Print(Template.Text(Category.EnableDisable, 9).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1448,12 +1448,12 @@ namespace commands
         public static void Caps(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("caps"))
-                if (args == "on")
+                if (args == "on" && !Settings.CapsMonitoring)
                 {
                     Settings.CapsMonitoring = true;
                     Server.Print(Template.Text(Category.EnableDisable, 10).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.CapsMonitoring)
                 {
                     Settings.CapsMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 11).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1464,12 +1464,12 @@ namespace commands
         public static void Anon(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("anon"))
-                if (args == "on")
+                if (args == "on" && !Settings.AnonMonitoring)
                 {
                     Settings.AnonMonitoring = true;
                     Server.Print(Template.Text(Category.EnableDisable, 12).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.AnonMonitoring)
                 {
                     Settings.AnonMonitoring = false;
                     Server.Print(Template.Text(Category.EnableDisable, 13).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1480,12 +1480,12 @@ namespace commands
         public static void General(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("general"))
-                if (args == "on")
+                if (args == "on" && !Settings.General)
                 {
                     Settings.General = true;
                     Server.Print(Template.Text(Category.EnableDisable, 16).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.General)
                 {
                     Settings.General = false;
                     Server.Print(Template.Text(Category.EnableDisable, 17).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1496,13 +1496,13 @@ namespace commands
         public static void Url(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("url"))
-                if (args == "on")
+                if (args == "on" && !Settings.Url)
                 {
                     Settings.Url = true;
                     Server.Print(Template.Text(Category.EnableDisable, 18).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                     Urls.EnableDisable(true);
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.Url)
                 {
                     Settings.Url = false;
                     Server.Print(Template.Text(Category.EnableDisable, 19).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1551,13 +1551,13 @@ namespace commands
         public static void RoomInfo(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("roominfo"))
-                if (args == "on")
+                if (args == "on" && !Settings.RoomInfo)
                 {
                     Settings.RoomInfo = true;
                     Server.Print(Template.Text(Category.EnableDisable, 20).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                     commands.RoomInfo.ForceUpdate();
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.RoomInfo)
                 {
                     Settings.RoomInfo = false;
                     Server.Print(Template.Text(Category.EnableDisable, 21).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1581,12 +1581,12 @@ namespace commands
         public static void LastSeen(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("lastseen"))
-                if (args == "on")
+                if (args == "on" && !Settings.LastSeen)
                 {
                     Settings.LastSeen = true;
                     Server.Print(Template.Text(Category.EnableDisable, 22).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.LastSeen)
                 {
                     Settings.LastSeen = false;
                     Server.Print(Template.Text(Category.EnableDisable, 23).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1597,12 +1597,12 @@ namespace commands
         public static void History(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("history"))
-                if (args == "on")
+                if (args == "on" && !Settings.History)
                 {
                     Settings.History = true;
                     Server.Print(Template.Text(Category.EnableDisable, 24).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.History)
                 {
                     Settings.History = false;
                     Server.Print(Template.Text(Category.EnableDisable, 25).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1636,12 +1636,12 @@ namespace commands
         public static void Filter(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("filter"))
-                if (args == "on")
+                if (args == "on" && !Settings.Filtering)
                 {
                     Settings.Filtering = true;
                     Server.Print(Template.Text(Category.EnableDisable, 30).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.Filtering)
                 {
                     Settings.Filtering = false;
                     Server.Print(Template.Text(Category.EnableDisable, 31).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
@@ -1698,12 +1698,12 @@ namespace commands
         public static void AdminAnnounce(IUser admin, String args)
         {
             if (admin.Level >= Server.GetLevel("adminannounce"))
-                if (args == "on")
+                if (args == "on" && !Settings.AdminAnnounce)
                 {
                     Settings.AdminAnnounce = true;
                     Server.Print(Template.Text(Category.Filter, 18).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
                 }
-                else if (args == "off")
+                else if (args == "off" && Settings.AdminAnnounce)
                 {
                     Settings.AdminAnnounce = false;
                     Server.Print(Template.Text(Category.Filter, 19).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));

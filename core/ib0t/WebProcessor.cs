@@ -67,8 +67,7 @@ namespace core.ib0t
 
             using (MD5 md5 = MD5.Create())
                 client.Guid = new Guid(md5.ComputeHash(g));
-
-            ObSalt.GetSalt(client);
+            
             client.OrgName = args.Substring(32);
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
@@ -85,6 +84,7 @@ namespace core.ib0t
             client.Sex = 0;
             client.Country = 0;
             client.Region = String.Empty;
+            ObSalt.GetSalt(client);
             client.Captcha = !Settings.Get<bool>("captcha");
 
             if (!client.Captcha)

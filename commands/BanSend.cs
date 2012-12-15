@@ -46,5 +46,10 @@ namespace commands
         {
             list.RemoveAll(x => x == client.ID);
         }
+
+        public static bool Has(IUser client)
+        {
+            return list.FindIndex(x => x == client.ID) > -1;
+        }
     }
 }

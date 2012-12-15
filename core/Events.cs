@@ -451,7 +451,7 @@ namespace core
                     return;
                 }
 
-                if (command == "logout")
+                if (command == "logout" || command == "logoff")
                 {
                     AccountManager.Logout(client);
                     return;
@@ -558,7 +558,7 @@ namespace core
                 if (!client.Owner)
                     client.Print("/unregister");
 
-                client.Print("/logout");
+                client.Print("/logoff");
                 client.Print("/nick <name>");
 
                 if (client.Owner)

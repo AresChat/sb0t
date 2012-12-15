@@ -1,4 +1,4 @@
 start with windows
-logout/#logoff
-filter tutorial
-show enable/disable only when necessary
+
+xp fix
+ibot fix

@@ -331,6 +331,13 @@ namespace gui
             w.checkBox11.Content = spanish["checkBox11"];
             w.checkBox12.Content = spanish["checkBox12"];
             w.label6.Content = spanish["label6"];
+
+            w.main.Width = 82;
+            w.admin.Width = 103;
+            w.linking.Width = 85;
+            w.advanced.Width = 83;
+            w.avatars.Width = 78;
+            w.plugins.Width = 92;
         }
 
         public static void SetEnglish(MainWindow w)
@@ -421,6 +428,13 @@ namespace gui
             w.checkBox11.Content = english["checkBox11"];
             w.checkBox12.Content = english["checkBox12"];
             w.label6.Content = english["label6"];
+
+            w.main.Width = 71;
+            w.admin.Width = 75;
+            w.linking.Width = 78;
+            w.advanced.Width = 92;
+            w.avatars.Width = 79;
+            w.plugins.Width = 96;
         }
     }
 }
