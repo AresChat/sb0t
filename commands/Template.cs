@@ -83,6 +83,7 @@ namespace commands
             list.Add(new Item { Category = Category.Notification, Index = 26, Text = "+n has been added to logsend" });
             list.Add(new Item { Category = Category.Notification, Index = 27, Text = "+n has been removed from logsend" });
             list.Add(new Item { Category = Category.Notification, Index = 28, Text = "+n has flooded (code: +c)" });
+            list.Add(new Item { Category = Category.Notification, Index = 29, Text = "your admin level is too low to use this command on +n" });
 
             list.Add(new Item { Category = Category.Rejected, Index = 0, Text = "The name +n is already in use!" });//1
             list.Add(new Item { Category = Category.Rejected, Index = 1, Text = "+n there are too many clients connected from your IP address!" });//2

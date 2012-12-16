@@ -67,6 +67,7 @@ namespace commands
                         commands.BanStats.Add(admin, target);
                         target.Ban();
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("ban10", ILevel.Moderator)]
@@ -87,6 +88,7 @@ namespace commands
                         Bans.AddBan(target, BanDuration.Ten);
                         target.Ban();
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("ban60", ILevel.Administrator)]
@@ -107,6 +109,7 @@ namespace commands
                         Bans.AddBan(target, BanDuration.Sixty);
                         target.Ban();
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("unban", ILevel.Administrator)]
@@ -203,11 +206,13 @@ namespace commands
 
                         target.Disconnect();
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("muzzle", ILevel.Moderator)]
         public static void Muzzle(IUser admin, IUser target, String args)
         {
+            Server.Print("test");
             if (admin.Level >= Server.GetLevel("muzzle"))
                 if (target != null)
                     if (target.Level < admin.Level)
@@ -222,6 +227,7 @@ namespace commands
                         target.Muzzled = true;
                         Muzzles.AddMuzzle(target);
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         public static void Unmuzzle(IUser admin, IUser target, String args)
@@ -263,6 +269,7 @@ namespace commands
                 commands.CustomNames.UpdateCustomName(target);
                 Server.Print(Template.Text(Category.AdminAction, 5).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
             }
+            else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("uncustomname", ILevel.Moderator)]
@@ -286,6 +293,7 @@ namespace commands
                 commands.CustomNames.UpdateCustomName(target);
                 Server.Print(Template.Text(Category.AdminAction, 6).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
             }
+            else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("kewltext", ILevel.Moderator)]
@@ -321,6 +329,7 @@ namespace commands
 
                         Lowered.Add(target);
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("unlower", ILevel.Moderator)]
@@ -348,6 +357,7 @@ namespace commands
 
                         Kiddied.Add(target);
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         public static void Unkiddy(IUser admin, IUser target, String args)
@@ -372,6 +382,7 @@ namespace commands
                         Server.Print(Template.Text(Category.AdminAction, 13).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                         commands.Echo.Add(target, args);
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         public static void Unecho(IUser admin, IUser target)
@@ -389,11 +400,10 @@ namespace commands
         {
             if (admin.Level >= Server.GetLevel("paint"))
                 if (target != null)
-                    if (target.Level < admin.Level)
-                    {
-                        Server.Print(Template.Text(Category.AdminAction, 15).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
-                        commands.Paint.Add(target, args);
-                    }
+                {
+                    Server.Print(Template.Text(Category.AdminAction, 15).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
+                    commands.Paint.Add(target, args);
+                }
         }
 
         public static void Unpaint(IUser admin, IUser target)
@@ -527,6 +537,7 @@ namespace commands
 
                         target.Disconnect();
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         public static void HostBan(IUser admin, IUser target)
@@ -541,6 +552,7 @@ namespace commands
 
                         target.Ban();
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         public static void HostUnban(IUser admin, String args)
@@ -611,17 +623,17 @@ namespace commands
                         target.Muzzled = true;
                         Muzzles.AddMuzzle(target);
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         public static void HostUnmuzzle(IUser admin, IUser target)
         {
             if (admin.Level == ILevel.Host)
                 if (target != null)
-                    if (target.Level < admin.Level)
-                    {
-                        target.Muzzled = false;
-                        Muzzles.RemoveMuzzle(target);
-                    }
+                {
+                    target.Muzzled = false;
+                    Muzzles.RemoveMuzzle(target);
+                }
         }
 
         public static void HostCBans(IUser admin)
@@ -724,6 +736,7 @@ namespace commands
                         AvatarPMManager.AddAvatar(target);
                         Server.Print(Template.Text(Category.AdminAction, 23).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("changemessage", ILevel.Moderator)]
@@ -741,6 +754,7 @@ namespace commands
                         AvatarPMManager.AddPM(target, args);
                         Server.Print(Template.Text(Category.AdminAction, 24).Replace("+n", target.Name).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : admin.Name), true);
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("clearscreen", ILevel.Moderator)]
@@ -1241,6 +1255,7 @@ namespace commands
                             target.Redirect(args.Trim());
                         }
                     }
+                    else admin.Print(Template.Text(Category.Notification, 29).Replace("+n", target.Name));
         }
 
         [CommandLevel("sharefiles", ILevel.Host)]
