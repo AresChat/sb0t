@@ -168,19 +168,19 @@ namespace commands
                     client.SetLevel(level);
 
                 if (Settings.LastSeen)
-                    Server.Users.Records(x =>
+                {
+                    LastSeenResult lsr = Whowas.Last(client);
+
+                    if (lsr != null)
                     {
-                        if (x.ExternalIP.Equals(client.ExternalIP))
-                            if (x.Name != client.Name)
-                            {
-                                String lastseen = Template.Text(Category.Notification, 6);
-                                lastseen = lastseen.Replace("+n", client.Name);
-                                lastseen = lastseen.Replace("+ip", client.ExternalIP.ToString());
-                                lastseen = lastseen.Replace("+o", x.Name);
-                                lastseen = lastseen.Replace("+t", Helpers.UnixTimeToString(x.JoinTime));
-                                return;
-                            }
-                    });
+                        String lastseen = Template.Text(Category.Notification, 6);
+                        lastseen = lastseen.Replace("+n", client.Name);
+                        lastseen = lastseen.Replace("+ip", client.ExternalIP.ToString());
+                        lastseen = lastseen.Replace("+o", lsr.Name);
+                        lastseen = lastseen.Replace("+t", Helpers.UnixTimeToString((uint)lsr.Time));
+                        Server.Print(lastseen, true);
+                    }
+                }
 
                 if (Settings.Filtering)
                     JoinFilter.DoPostFilter(client);

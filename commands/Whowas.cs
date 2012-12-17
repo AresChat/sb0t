@@ -32,6 +32,38 @@ namespace commands
             }
         }
 
+        public static LastSeenResult Last(IUser client)
+        {
+            LastSeenResult result = null;
+
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            {
+                connection.Open();
+
+                String query = @"select * from whowas where ip=@ip order by jointime desc";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.Add(new SQLiteParameter("@ip", client.ExternalIP.ToString()));
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                        if (reader.Read())
+                        {
+                            String name = (String)reader["name"];
+
+                            if (name != client.Name)
+                            {
+                                result = new LastSeenResult();
+                                result.Name = name;
+                                result.Time = (int)reader["jointime"];
+                            }
+                        }
+                }
+            }
+
+            return result;
+        }
+
         public static void Add(IUser client)
         {
             int time = (int)(Server.Time - 1);
@@ -139,5 +171,11 @@ namespace commands
                     command.ExecuteNonQuery();
             }
         }
+    }
+
+    class LastSeenResult
+    {
+        public String Name { get; set; }
+        public int Time { get; set; }
     }
 }

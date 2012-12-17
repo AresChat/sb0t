@@ -10,7 +10,7 @@ namespace core
 {
     public class Settings
     {
-        public const String VERSION = "sb0t 5.02b";
+        public const String VERSION = "sb0t 5.02c";
         public const ushort LINK_PROTO = 500;
 
         public static bool RUNNING { get; set; }

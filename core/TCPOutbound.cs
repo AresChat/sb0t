@@ -18,8 +18,13 @@ namespace core
 
         public static byte[] NoSuch(AresClient client, String text)
         {
+            String str = text;
+
+            while (Encoding.UTF8.GetByteCount(str) > 4000)
+                str = str.Substring(0, str.Length - 1);
+
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteString(client, text, false);
+            packet.WriteString(client, str, false);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_NOSUCH);
         }
 
