@@ -13,11 +13,22 @@ namespace scripting.Objects
         private String ScriptName { get; set; }
 
         public JSRecord(ObjectInstance prototype, IRecord user, String script)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["Record"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.parent = user;
             this.ScriptName = script;
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "Record"; }
+        }
+
+        internal JSRecord(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
         }
 
         internal IRecord parent;
@@ -82,11 +93,6 @@ namespace scripting.Objects
         public void Ban()
         {
             this.parent.Ban();
-        }
-
-        public override string ToString()
-        {
-            return "[object Record]";
         }
     }
 }

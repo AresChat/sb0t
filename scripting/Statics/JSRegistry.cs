@@ -17,6 +17,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Registry"; }
+        }
+
         [JSFunction(Name = "exists", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static bool Exists(ScriptEngine eng, String key)
         {

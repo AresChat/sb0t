@@ -17,6 +17,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "File"; }
+        }
+
         private static String[] bad_chars_script = new String[]
         {
             "..",

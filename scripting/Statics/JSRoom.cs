@@ -16,6 +16,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Room"; }
+        }
+
         [JSProperty(Name = "version")]
         public static int Version
         {

@@ -24,6 +24,36 @@ namespace scripting
             return Server.Ticks;
         }
 
+        [JSFunction(Name = "escapeUtf")]
+        public static String EscapeUTF(object a)
+        {
+            if (a is Undefined)
+                return null;
+
+            String result = String.Empty;
+            char[] letters = a.ToString().ToCharArray();
+
+            foreach (char c in letters)
+                if ((c >= 97 && c <= 122) ||
+                    (c >= 65 && c <= 90) ||
+                    (c >= 48 && c <= 57))
+                    result += c.ToString();
+                else
+                {
+                    String s = String.Format("{0:X2}", Convert.ToUInt32(c));
+
+                    if ((s.Length % 2) != 0)
+                        s = "0" + s;
+
+                    if (s.Length == 2)
+                        result += "\\x" + s;
+                    else
+                        result += "\\u" + s;
+                }
+
+            return result;
+        }
+
         [JSFunction(Name = "scriptName", Flags = JSFunctionFlags.HasEngineParameter)]
         public static String ScriptName(ScriptEngine eng)
         {

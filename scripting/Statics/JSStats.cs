@@ -16,6 +16,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Stats"; }
+        }
+
         [JSProperty(Name = "userCount")]
         public static double UserCount
         {

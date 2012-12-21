@@ -25,6 +25,11 @@ namespace scripting.Instances
             }
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Timer"; }
+        }
+
         public String ScriptName { get; set; }
         public ulong StartTime { get; set; }
 

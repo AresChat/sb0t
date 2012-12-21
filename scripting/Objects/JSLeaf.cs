@@ -14,11 +14,22 @@ namespace scripting.Objects
         internal List<Objects.JSUser> users = new List<Objects.JSUser>();
 
         public JSLeaf(ObjectInstance prototype, ILeaf leaf, String script)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["Leaf"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.parent = leaf;
             this.ScriptName = script;
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "Leaf"; }
+        }
+
+        internal JSLeaf(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
         }
 
         internal ILeaf parent;
@@ -180,11 +191,6 @@ namespace scripting.Objects
                 JSScribbleImage scr = (JSScribbleImage)b;
                 scr.SendScribble(a.ToString(), this.parent);
             }
-        }
-
-        public override string ToString()
-        {
-            return "[object Leaf]";
         }
     }
 }

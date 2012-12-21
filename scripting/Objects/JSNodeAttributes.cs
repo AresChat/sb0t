@@ -15,7 +15,7 @@ namespace scripting.Objects
         private int count { get; set; }
 
         public JSNodeAttributes(ObjectInstance prototype, XmlAttributeCollection attribs, XmlNode owner)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["NodeAttributes"]).InstancePrototype)
         {
             this.Attribs = attribs;
             this.Owner = owner;
@@ -25,6 +25,17 @@ namespace scripting.Objects
 
             foreach (XmlAttribute a in attribs)
                 this.SetPropertyValue((uint)this.count++, a.Name, throwOnError: true);
+        }
+
+        internal JSNodeAttributes(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "NodeAttributes"; }
         }
 
         [JSProperty(Name = "length")]
@@ -113,11 +124,6 @@ namespace scripting.Objects
             catch { }
 
             return false;
-        }
-
-        public override string ToString()
-        {
-            return "[object NodeAttributes]";
         }
     }
 }

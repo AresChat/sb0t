@@ -23,20 +23,22 @@ namespace scripting
             this.JS = new ScriptEngine();
             this.JS.ScriptName = name;
 
+            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+
             // set up global functions
             this.JS.EmbedGlobalClass(typeof(JSGlobal));
             
             //set up static classes
-            var statics = Assembly.GetExecutingAssembly().GetTypes().Where(x =>
-                x.Namespace == "scripting.Statics" && x.IsSubclassOf(typeof(ObjectInstance)));
-
-            this.JS.EmbedStaticClasses(statics.ToArray());
+            var statics = types.Where(x => x.Namespace == "scripting.Statics" && x.IsSubclassOf(typeof(ObjectInstance)));
+            this.JS.EmbedStatics(statics.ToArray());
 
             //set up instance classes
-            var instances = Assembly.GetExecutingAssembly().GetTypes().Where(x =>
-                x.Namespace == "scripting.Instances" && x.IsSubclassOf(typeof(ClrFunction)));
-
+            var instances = types.Where(x => x.Namespace == "scripting.Instances" && x.IsSubclassOf(typeof(ClrFunction)));
             this.JS.EmbedInstances(instances.ToArray());
+
+            //set up object prototypes
+            var protos = types.Where(x => x.Namespace == "scripting.ObjectPrototypes" && x.IsSubclassOf(typeof(ClrFunction)));
+            this.JS.EmbedObjectPrototypes(protos.ToArray());
 
             // set up default events
             StringBuilder events = new StringBuilder();

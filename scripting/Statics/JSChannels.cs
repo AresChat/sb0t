@@ -17,6 +17,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Channels"; }
+        }
+
         [JSProperty(Name = "available")]
         public static bool Available
         {

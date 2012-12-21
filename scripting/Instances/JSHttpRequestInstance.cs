@@ -24,6 +24,11 @@ namespace scripting.Instances
             
         }
 
+        protected override string InternalClassName
+        {
+            get { return "HttpRequest"; }
+        }
+
         [JSProperty(Name = "method")]
         public String Method
         {

@@ -20,6 +20,11 @@ namespace scripting.Instances
             this.query = String.Empty;
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Query"; }
+        }
+
         public JSQueryInstance(ObjectInstance prototype, String q, params object[] a)
             : base(prototype)
         {

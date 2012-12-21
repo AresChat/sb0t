@@ -13,7 +13,7 @@ namespace scripting.Instances
         public JSAvatar(ScriptEngine engine)
             : base(engine.Function.InstancePrototype, "Avatar", new JSAvatarInstance(engine.Object.InstancePrototype))
         {
-
+            
         }
 
         [JSConstructorFunction]

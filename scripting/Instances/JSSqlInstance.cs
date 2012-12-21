@@ -20,6 +20,11 @@ namespace scripting.Instances
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Sql"; }
+        }
+
         private String ConnectionString { get; set; }
         private SQLiteConnection Connection { get; set; }
         private SQLiteDataReader Reader { get; set; }

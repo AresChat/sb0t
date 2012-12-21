@@ -163,16 +163,16 @@
                             <Rectangle Canvas.Left="149" Canvas.Top="250" Height="74" Name="rectangle6" Stroke="Silver" Width="173" />
                             <Label Background="{x:Null}" Canvas.Left="159" Canvas.Top="236" Content="Gender" Height="28" Name="label15" />
                             <Rectangle Canvas.Left="10" Canvas.Top="236" Height="96" Name="rectangle5" Stroke="Silver" Width="321" />
-                            <Rectangle Canvas.Left="342" Canvas.Top="236" Height="96" Name="rectangle1" Stroke="Silver" Width="229" />
-                            <Label Canvas.Left="352" Canvas.Top="222" Content="Scripting" Height="28" Name="label7" Background="{x:Null}" />
-                            <Rectangle Canvas.Left="342" Canvas.Top="129" Height="96" Name="rectangle2" Stroke="Silver" Width="229" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="217" Height="115" Name="rectangle1" Stroke="Silver" Width="229" />
+                            <Label Canvas.Left="352" Canvas.Top="204" Content="Scripting" Height="28" Name="label7" Background="{x:Null}" />
+                            <Rectangle Canvas.Left="342" Canvas.Top="129" Height="77" Name="rectangle2" Stroke="Silver" Width="229" />
                             <Label Background="{x:Null}" Canvas.Left="20" Canvas.Top="222" Content="Restrictions" Height="28" Name="label12" />
                             <Rectangle Canvas.Left="10" Canvas.Top="22" Height="203" Name="rectangle3" Stroke="Silver" Width="321" />
-                            <CheckBox Content="Captcha enabled" Height="16" Name="checkBox8" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" Canvas.Left="355" Canvas.Top="200" />
+                            <CheckBox Content="Captcha enabled" Height="16" Name="checkBox8" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" Canvas.Left="355" Canvas.Top="182" />
                             <CheckBox Canvas.Left="26" Canvas.Top="42" Content="Enable file browsing" Height="16" Name="checkBox7" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Grid Canvas.Left="372" Canvas.Top="245"></Grid>
-                            <CheckBox Canvas.Left="355" Canvas.Top="255" Content="Enable javascript engine" Height="16" Name="checkBox11" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="355" Canvas.Top="275" Content="Enable in-room scripting" Height="16" Name="checkBox12" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="355" Canvas.Top="235" Content="Enable javascript engine" Height="16" Name="checkBox11" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="355" Canvas.Top="255" Content="Enable in-room scripting" Height="16" Name="checkBox12" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <ComboBox Canvas.Left="441" Canvas.Top="299" Height="23" Name="comboBox1" Width="118" SelectionChanged="ScriptLevelSelectionChanged">
                                 <ComboBoxItem Content="Moderator" />
                                 <ComboBoxItem Content="Administrator" />
@@ -187,11 +187,11 @@
                             <CheckBox Canvas.Left="355" Canvas.Top="93" Content="Auto clear bans" Height="16" Name="checkBox13" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Label Canvas.Left="369" Canvas.Top="48" Content="Interval:" Height="28" Name="label11" />
                             <Label Background="{x:Null}" Canvas.Left="20" Canvas.Top="8" Content="Advanced settings" Height="28" Name="label9" Foreground="#FF320000" />
-                            <ComboBox Canvas.Left="425" Canvas.Top="158" Height="23" Name="comboBox2" Width="101" SelectionChanged="CaptchaModeSelectionChanged">
+                            <ComboBox Canvas.Left="425" Canvas.Top="150" Height="23" Name="comboBox2" Width="101" SelectionChanged="CaptchaModeSelectionChanged">
                                 <ComboBoxItem Content="Regular" />
                                 <ComboBoxItem Content="Quarantine" />
                             </ComboBox>
-                            <Label Canvas.Left="376" Canvas.Top="155" Content="Mode:" Height="28" Name="label13" />
+                            <Label Canvas.Left="376" Canvas.Top="147" Content="Mode:" Height="28" Name="label13" />
                             <my:NumericUpDown x:Name="numericUpDown2" Canvas.Left="26" Canvas.Top="271" Value="18" MaxValue="99" MinValue="1" ValueChanged="numericUpDown2_ValueChanged" />
                             <Label Canvas.Left="21" Canvas.Top="249" Content="Minimum age:" Height="28" Name="label14" />
                             <CheckBox Content="Reject unknown" Height="16" Name="checkBox16" Canvas.Left="173" Canvas.Top="299" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
@@ -228,6 +228,7 @@
                             <Label Canvas.Left="191" Canvas.Top="161" Content="Preferred language:" Height="28" Name="label18" />
                             <Label Content="hours" Height="28" Name="label19" Canvas.Left="470" Canvas.Top="67" />
                             <CheckBox Content="Enable room search" Height="16" Name="checkBox23" Canvas.Left="26" Canvas.Top="78" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Content="Scripts can change level" Canvas.Left="355" Canvas.Top="275" Name="checkBox30" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                         </Canvas>
                     </Border>
                 </Grid>

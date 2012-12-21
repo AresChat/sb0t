@@ -16,6 +16,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Users"; }
+        }
+
         [JSFunction(Name = "local", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static void Local(ScriptEngine eng, object f)
         {

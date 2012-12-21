@@ -16,6 +16,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Link"; }
+        }
+
         [JSFunction(Name = "leaves", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static void Leaves(ScriptEngine eng, object f)
         {

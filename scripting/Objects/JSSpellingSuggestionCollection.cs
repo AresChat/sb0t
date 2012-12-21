@@ -12,7 +12,7 @@ namespace scripting.Objects
         private int count { get; set; }
 
         public JSSpellingSuggestionCollection(ObjectInstance prototype, String[] items, String scriptName)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["SpellingSuggestionCollection"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.count = 0;
@@ -21,16 +21,22 @@ namespace scripting.Objects
                 this.SetPropertyValue((uint)this.count++, str, throwOnError: true);
         }
 
+        internal JSSpellingSuggestionCollection(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "SpellingSuggestionCollection"; }
+        }
+
         [JSProperty(Name = "length")]
         public int Length
         {
             get { return this.count; }
             set { }
-        }
-
-        public override string ToString()
-        {
-            return "[object SpellingSuggestionCollection]";
         }
     }
 }

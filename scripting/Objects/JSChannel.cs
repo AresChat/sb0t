@@ -12,11 +12,22 @@ namespace scripting.Objects
     {
         public IChannelItem Item { get; set; }
 
+        internal JSChannel(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
         public JSChannel(ObjectInstance prototype, IChannelItem item)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["Channel"]).InstancePrototype)
         {
             this.Item = item;
             this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "Channel"; }
         }
 
         [JSProperty(Name = "hashlink")]
@@ -83,11 +94,6 @@ namespace scripting.Objects
         {
             get { return this.Item.Language; }
             set { }
-        }
-
-        public override string ToString()
-        {
-            return "[object Channel]";
         }
     }
 }

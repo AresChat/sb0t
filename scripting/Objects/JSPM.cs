@@ -13,9 +13,20 @@ namespace scripting.Objects
         public IPrivateMsg _PM { get; set; }
 
         public JSPM(ObjectInstance prototype, IPrivateMsg pm)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["PM"]).InstancePrototype)
         {
             this._PM = pm;
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "PM"; }
+        }
+
+        internal JSPM(ScriptEngine eng)
+            : base(eng)
+        {
             this.PopulateFunctions();
         }
 
@@ -45,11 +56,6 @@ namespace scripting.Objects
                     if (b != null)
                         if (!(b is Undefined) && !(b is Null))
                             this._PM.Replace(a.ToString(), b.ToString());
-        }
-
-        public override string ToString()
-        {
-            return "[object PM]";
         }
     }
 }

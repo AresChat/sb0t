@@ -64,6 +64,9 @@ namespace gui
             this.checkBox9.IsChecked = Settings.Get<bool>("enabled", "web");
             //strict
             this.checkBox22.IsChecked = Settings.Get<bool>("strict");
+            // script_can_level
+            this.checkBox30.IsChecked = Settings.Get<bool>("script_can_level");
+            Settings.ScriptCanLevel(Settings.Get<bool>("script_can_level"));
             //title
             this.label1.Content = Settings.VERSION;
             //owner

@@ -13,9 +13,20 @@ namespace scripting.Objects
         internal XmlNode Item { get; set; }
 
         public JSNode(ObjectInstance prototype, XmlNode node)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["Node"]).InstancePrototype)
         {
             this.Item = node;
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "Node"; }
+        }
+
+        internal JSNode(ScriptEngine eng)
+            : base(eng)
+        {
             this.PopulateFunctions();
         }
 
@@ -146,11 +157,6 @@ namespace scripting.Objects
             }
 
             return false;
-        }
-
-        public override string ToString()
-        {
-            return "[object Node]";
         }
     }
 }

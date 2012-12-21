@@ -14,6 +14,8 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
+using System.Threading;
+using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using core;
 
@@ -33,8 +35,34 @@ namespace gui
         private System.Windows.Forms.NotifyIcon notify;
         private bool _hidden = false;
 
+        private static Mutex mutex;
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
         public MainWindow()
         {
+            bool first;
+            mutex = new Mutex(true, AppDomain.CurrentDomain.FriendlyName, out first);
+
+            if (!first)
+            {
+                Process p = Process.GetCurrentProcess();
+                
+                var pl = Process.GetProcesses().Where(x =>
+                    x.ProcessName == p.ProcessName &&
+                    x.MainWindowHandle != p.MainWindowHandle);
+
+                MessageBox.Show("There is already a instance of sb0t running.  To have additional instances, each must have a filename different from "
+                    + AppDomain.CurrentDomain.FriendlyName, "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                if (pl.Count() > 0)
+                    SetForegroundWindow(pl.ToArray()[0].MainWindowHandle);
+
+                Environment.Exit(-1);
+            }
+
             SETTING_UP = true;
             this.InitializeComponent();
             this.server = new ServerCore();
@@ -134,6 +162,7 @@ namespace gui
             this.checkBox20.IsEnabled = !running;
             this.checkBox22.IsEnabled = !running;
             this.checkBox23.IsEnabled = !running;
+            this.checkBox30.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -302,6 +331,11 @@ namespace gui
                 Settings.Set("roomsearch", this.checkBox23.IsChecked);
             else if (cb.Name == "checkBox24")
                 Settings.Set("allow_unreg", this.checkBox24.IsChecked);
+            else if (cb.Name == "checkBox30")
+            {
+                Settings.Set("script_can_level", this.checkBox30.IsChecked);
+                Settings.ScriptCanLevel(Settings.Get<bool>("script_can_level"));
+            }
         }
 
         private void ScriptLevelSelectionChanged(object sender, SelectionChangedEventArgs e)

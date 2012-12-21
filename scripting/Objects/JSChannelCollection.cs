@@ -11,8 +11,19 @@ namespace scripting.Objects
     {
         private int count { get; set; }
 
+        protected override string InternalClassName
+        {
+            get { return "ChannelCollection"; }
+        }
+
+        internal JSChannelCollection(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
         public JSChannelCollection(ObjectInstance prototype, JSChannel[] items, String scriptName)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["ChannelCollection"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.count = 0;
@@ -26,11 +37,6 @@ namespace scripting.Objects
         {
             get { return this.count; }
             set { }
-        }
-
-        public override string ToString()
-        {
-            return "[object ChannelCollection]";
         }
     }
 }

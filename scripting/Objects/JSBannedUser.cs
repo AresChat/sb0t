@@ -13,11 +13,22 @@ namespace scripting.Objects
         private String ScriptName { get; set; }
 
         public JSBannedUser(ObjectInstance prototype, IBan user, String script)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["BannedUser"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.parent = user;
             this.ScriptName = script;
+        }
+
+        internal JSBannedUser(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "BannedUser"; }
         }
 
         internal IBan parent;
@@ -68,11 +79,6 @@ namespace scripting.Objects
         public void Unban()
         {
             this.parent.Unban();
-        }
-
-        public override string ToString()
-        {
-            return "[object BannedUser]";
         }
     }
 }

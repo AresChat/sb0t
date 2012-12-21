@@ -11,10 +11,21 @@ namespace scripting.Objects
 {
     class JSAvatarImage : ObjectInstance, ICallback
     {
-        public JSAvatarImage(ObjectInstance prototype)
-            : base(prototype)
+        internal JSAvatarImage(ScriptEngine eng)
+            : base(eng)
         {
             this.PopulateFunctions();
+        }
+
+        public JSAvatarImage(ObjectInstance prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["AvatarImage"]).InstancePrototype)
+        {
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "AvatarImage"; }
         }
 
         public byte[] Data { get; set; }
@@ -107,11 +118,6 @@ namespace scripting.Objects
                 }
             }
             catch { }
-        }
-
-        public override string ToString()
-        {
-            return "[object AvatarImage]";
         }
     }
 }

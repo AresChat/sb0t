@@ -16,6 +16,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Zip"; }
+        }
+
         [JSFunction(Name = "compress", IsWritable = false, IsEnumerable = true)]
         public static String Compress(object a)
         {

@@ -11,8 +11,19 @@ namespace scripting.Objects
     {
         private int count { get; set; }
 
+        protected override string InternalClassName
+        {
+            get { return "IgnoreCollection"; }
+        }
+
+        internal JSIgnoreCollection(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
         public JSIgnoreCollection(ObjectInstance prototype, String[] ignores, String scriptName)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["IgnoreCollection"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.count = 0;
@@ -46,11 +57,6 @@ namespace scripting.Objects
         {
             get { return this.count; }
             set { }
-        }
-
-        public override string ToString()
-        {
-            return "[object IgnoreCollection]";
         }
     }
 }

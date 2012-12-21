@@ -12,7 +12,13 @@ namespace scripting.Objects
     class JSScribbleImage : ObjectInstance, ICallback
     {
         public JSScribbleImage(ObjectInstance prototype)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["ScribbleImage"]).InstancePrototype)
+        {
+            this.PopulateFunctions();
+        }
+
+        internal JSScribbleImage(ScriptEngine eng)
+            : base(eng)
         {
             this.PopulateFunctions();
         }
@@ -22,6 +28,11 @@ namespace scripting.Objects
         public String ScriptName { get; set; }
         public String Arg { get; set; }
         public int Height { get; set; }
+
+        protected override string InternalClassName
+        {
+            get { return "ScribbleImage"; }
+        }
 
         [JSProperty(Name = "arg")]
         public String GetArgument
@@ -108,11 +119,6 @@ namespace scripting.Objects
                 return;
 
             leaf.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data, this.Height);
-        }
-
-        public override string ToString()
-        {
-            return "[object ScribbleImage]";
         }
     }
 }

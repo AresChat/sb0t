@@ -12,12 +12,23 @@ namespace scripting.Objects
     {
         private String ScriptName { get; set; }
 
+        internal JSUser(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
         public JSUser(ObjectInstance prototype, IUser user, String script)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["User"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.parent = user;
             this.ScriptName = script;
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "User"; }
         }
 
         internal IUser parent;
@@ -61,17 +72,23 @@ namespace scripting.Objects
         }
 
         [JSProperty(Name = "avatar")]
-        public JSAvatarImage Avatar
+        public object Avatar
         {
             get { return new JSAvatarImage(this.Engine.Object.InstancePrototype) { Data = this.parent.Avatar }; }
             set
             {
-                if (value == null)
-                    this.parent.Avatar = null;
-                else if (value is JSAvatarImage)
-                    this.parent.Avatar = value.Data;
-                else
-                    this.parent.Avatar = null;
+                if (value is JSAvatarImage)
+                {
+                    JSAvatarImage av = (JSAvatarImage)value;
+
+                    if (av.DoesExist)
+                    {
+                        this.parent.Avatar = av.Data;
+                        return;
+                    }
+                }
+
+                this.parent.Avatar = null;
             }
         }
 
@@ -97,10 +114,19 @@ namespace scripting.Objects
         }
 
         [JSProperty(Name = "customName")]
-        public String CustomName
+        public object CustomName
         {
             get { return this.parent.CustomName; }
-            set { this.parent.CustomName = value; }
+            set
+            {
+                if (value is Null)
+                {
+                    this.parent.CustomName = null;
+                    return;
+                }
+
+                this.parent.CustomName = value.ToString();
+            }
         }
 
         [JSProperty(Name = "externalIp")]
@@ -189,7 +215,13 @@ namespace scripting.Objects
         public int Level
         {
             get { return (int)((byte)this.parent.Level); }
-            set { }
+            set
+            {
+                if (!this.parent.Owner)
+                    if (value >= 0 && value <= 3)
+                        if (ScriptCanLevel.Enabled)
+                            this.parent.SetLevel((ILevel)(byte)value);
+            }
         }
 
         [JSProperty(Name = "linked")]
@@ -327,13 +359,15 @@ namespace scripting.Objects
         [JSFunction(Name = "ban", IsWritable = false, IsEnumerable = true)]
         public void Ban()
         {
-            this.parent.Ban();
+            if (!this.parent.Owner)
+                this.parent.Ban();
         }
 
         [JSFunction(Name = "disconnect", IsWritable = false, IsEnumerable = true)]
         public void Disconnect()
         {
-            this.parent.Disconnect();
+            if (!this.parent.Owner)
+                this.parent.Disconnect();
         }
 
         [JSFunction(Name = "nudge", IsWritable = false, IsEnumerable = true)]
@@ -356,7 +390,8 @@ namespace scripting.Objects
         public void Redirect(object a)
         {
             if (a is String || a is ConcatenatedString)
-                this.parent.Redirect(a.ToString());
+                if (!this.parent.Owner)
+                    this.parent.Redirect(a.ToString());
         }
 
         [JSFunction(Name = "restoreAvatar", IsWritable = false, IsEnumerable = true)]
@@ -414,11 +449,6 @@ namespace scripting.Objects
                 JSScribbleImage scr = (JSScribbleImage)b;
                 scr.SendScribble(a.ToString(), this.parent);
             }
-        }
-
-        public override string ToString()
-        {
-            return "[object User]";
         }
     }
 }

@@ -15,6 +15,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Script"; }
+        }
+
         private static String[] bad_chars = new String[] { "..", "/", "\\", " ", };
 
         [JSFunction(Name = "include", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]

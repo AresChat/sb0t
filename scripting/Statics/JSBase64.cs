@@ -16,6 +16,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Base64"; }
+        }
+
         [JSFunction(Name = "encode", IsWritable = false, IsEnumerable = true)]
         public static String Encode(object a)
         {

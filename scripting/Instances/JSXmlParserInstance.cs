@@ -21,6 +21,11 @@ namespace scripting.Instances
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "XmlParser"; }
+        }
+
         [JSProperty(Name = "available")]
         public bool Available
         {

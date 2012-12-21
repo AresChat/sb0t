@@ -18,6 +18,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Hashlink"; }
+        }
+
         [JSFunction(Name = "encode", IsWritable = false, IsEnumerable = true)]
         public static String Encode(object a)
         {

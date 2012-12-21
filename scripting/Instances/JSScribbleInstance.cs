@@ -23,6 +23,11 @@ namespace scripting.Instances
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Scribble"; }
+        }
+
         [JSProperty(Name = "src")]
         public String Source { get; set; }
 

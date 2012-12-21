@@ -237,6 +237,9 @@ namespace gui
             english["label6"] = "Scripting level:";
             spanish["label6"] = "Nivel para usar\r\nscripting:";
 
+            english["checkBox30"] = "Scripts can change level";
+            spanish["checkBox30"] = "Carga script cambiar de level";
+
             IsSpanish = core.Settings.Get<bool>("is_spanish");
 
             if (IsSpanish)
@@ -331,6 +334,7 @@ namespace gui
             w.checkBox11.Content = spanish["checkBox11"];
             w.checkBox12.Content = spanish["checkBox12"];
             w.label6.Content = spanish["label6"];
+            w.checkBox30.Content = spanish["checkBox30"];
 
             w.main.Width = 82;
             w.admin.Width = 103;
@@ -428,6 +432,7 @@ namespace gui
             w.checkBox11.Content = english["checkBox11"];
             w.checkBox12.Content = english["checkBox12"];
             w.label6.Content = english["label6"];
+            w.checkBox30.Content = english["checkBox30"];
 
             w.main.Width = 71;
             w.admin.Width = 75;

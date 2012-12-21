@@ -468,7 +468,7 @@ namespace scripting
                 foreach (JSScript s in scripts)
                 {
                     Objects.JSUser u = s.GetUser(client);
-                    Objects.JSUser t = s.GetUser(client);
+                    Objects.JSUser t = s.GetUser(target);
 
                     if (u != null && t != null)
                         try
@@ -500,7 +500,7 @@ namespace scripting
                 foreach (JSScript s in scripts)
                 {
                     Objects.JSUser u = s.GetUser(client);
-                    Objects.JSUser t = s.GetUser(client);
+                    Objects.JSUser t = s.GetUser(target);
 
                     if (u != null && t != null)
                         try

@@ -10,10 +10,21 @@ namespace scripting.Objects
     class JSHttpRequestResult : ObjectInstance, ICallback
     {
         public JSHttpRequestResult(ObjectInstance prototype)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["HttpRequestResult"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.Data = String.Empty;
+        }
+
+        internal JSHttpRequestResult(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "HttpRequestResult"; }
         }
 
         public String Data { get; set; }
@@ -33,11 +44,6 @@ namespace scripting.Objects
         {
             get { return this.Data; }
             set { }
-        }
-
-        public override string ToString()
-        {
-            return "[object HttpRequestResult]";
         }
     }
 }

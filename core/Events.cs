@@ -13,6 +13,11 @@ namespace core
         private static bool DefaultCommands { get; set; }
         private static scripting.ServerEvents js { get; set; }
 
+        public static void ScriptCanLevel(bool can)
+        {
+            scripting.ScriptCanLevel.Enabled = can;
+        }
+
         public static void InitializeCommandsExtension()
         {
             js = new scripting.ServerEvents(new ExHost(String.Empty));

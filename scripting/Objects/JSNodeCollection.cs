@@ -13,8 +13,19 @@ namespace scripting.Objects
         private XmlNodeList Items { get; set; }
         private int count { get; set; }
 
+        protected override string InternalClassName
+        {
+            get { return "NodeCollection"; }
+        }
+
+        internal JSNodeCollection(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
         public JSNodeCollection(ObjectInstance prototype, XmlNodeList list)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["NodeCollection"]).InstancePrototype)
         {
             this.Items = list;
             this.count = 0;
@@ -32,11 +43,6 @@ namespace scripting.Objects
         {
             get { return this.count; }
             set { }
-        }
-
-        public override string ToString()
-        {
-            return "[object NodeCollection]";
         }
     }
 }

@@ -10,7 +10,7 @@ namespace core
 {
     public class Settings
     {
-        public const String VERSION = "sb0t 5.02c";
+        public const String VERSION = "sb0t 5.02d";
         public const ushort LINK_PROTO = 500;
 
         public static bool RUNNING { get; set; }
@@ -21,6 +21,11 @@ namespace core
             port = 0;
             name = null;
             language = 0;
+        }
+
+        public static void ScriptCanLevel(bool can)
+        {
+            Events.ScriptCanLevel(can);
         }
 
         private static IPAddress externalip { get; set; }

@@ -12,8 +12,19 @@ namespace scripting.Objects
     {
         internal IHashlinkRoom parent;
 
+        internal JSHashlinkResult(ScriptEngine eng)
+            : base(eng)
+        {
+            this.PopulateFunctions();
+        }
+
+        protected override string InternalClassName
+        {
+            get { return "HashlinkResult"; }
+        }
+
         public JSHashlinkResult(ObjectInstance prototype, IHashlinkRoom obj)
-            : base(prototype)
+            : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["HashlinkResult"]).InstancePrototype)
         {
             this.PopulateFunctions();
             this.parent = obj;
@@ -38,11 +49,6 @@ namespace scripting.Objects
         {
             get { return this.parent.Port; }
             set { }
-        }
-
-        public override string ToString()
-        {
-            return "[object HashlinkResult]";
         }
     }
 }

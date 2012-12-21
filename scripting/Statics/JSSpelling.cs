@@ -16,6 +16,11 @@ namespace scripting.Statics
             this.PopulateFunctions();
         }
 
+        protected override string InternalClassName
+        {
+            get { return "Spelling"; }
+        }
+
         [JSFunction(Name = "check", IsWritable = false, IsEnumerable = true)]
         public static String Check(object a)
         {
