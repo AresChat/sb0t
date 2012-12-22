@@ -69,6 +69,19 @@ namespace scripting.Instances
         {
             if (this.array.Length < 2)
                 return false;
+
+            if (a is Undefined)
+            {
+                List<object> nocomp = this.array.ToList();
+                nocomp.Sort();
+
+                this.array = nocomp.ToArray();
+
+                for (uint i = 0; i < this.array.Length; i++)
+                    this.SetPropertyValue(i, this.array[i], true);
+
+                return true;
+            }
             
             if (!(a is UserDefinedFunction))
                 throw new JavaScriptException(this.Engine, "invalid casting", "expecting comparison function");

@@ -19,14 +19,23 @@ namespace core
 
         public static void Destroy()
         {
-            AUsers.ForEach(x => x.LoggedIn = false);
-            AUsers.ForEach(x => x.Disconnect());
-            AUsers.Clear();
-            AUsers = null;
-            WUsers.ForEach(x => x.LoggedIn = false);
-            WUsers.ForEach(x => x.Disconnect());
-            WUsers.Clear();
-            WUsers = null;
+            try
+            {
+                AUsers.ForEach(x => x.LoggedIn = false);
+                AUsers.ForEach(x => x.Disconnect());
+                AUsers.Clear();
+                AUsers = null;
+            }
+            catch { }
+
+            try
+            {
+                WUsers.ForEach(x => x.LoggedIn = false);
+                WUsers.ForEach(x => x.Disconnect());
+                WUsers.Clear();
+                WUsers = null;
+            }
+            catch { }
         }
 
         public static void CreateAresClient(Socket sock, ulong time)

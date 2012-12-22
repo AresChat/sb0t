@@ -102,7 +102,7 @@ namespace commands
 
         public static bool IsRangeBanned(IUser client)
         {
-            String str = client.ToString();
+            String str = client.ExternalIP.ToString();
             return list.Find(x => str.StartsWith(x)) != null;
         }
     }

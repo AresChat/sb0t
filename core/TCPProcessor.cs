@@ -588,13 +588,14 @@ namespace core
             UserHistory.AddUser(client, time);
 
             if (BanSystem.IsBanned(client))
-            {
-                if (hijack != null && hijack is AresClient)
-                    ((AresClient)hijack).SendDepart();
+                if (!Helpers.IsLocalHost(client))
+                {
+                    if (hijack != null && hijack is AresClient)
+                        ((AresClient)hijack).SendDepart();
 
-                Events.Rejected(client, RejectedMsg.Banned);
-                throw new Exception("banned user");
-            }
+                    Events.Rejected(client, RejectedMsg.Banned);
+                    throw new Exception("banned user");
+                }
 
             if (Settings.Get<bool>("age_restrict"))
                 if (client.Age > 0)
@@ -630,13 +631,14 @@ namespace core
             client.Quarantined = !client.Captcha && Settings.Get<int>("captcha_mode") == 1;
 
             if (!Events.Joining(client))
-            {
-                if (hijack != null && hijack is AresClient)
-                    ((AresClient)hijack).SendDepart();
+                if (!Helpers.IsLocalHost(client))
+                {
+                    if (hijack != null && hijack is AresClient)
+                        ((AresClient)hijack).SendDepart();
 
-                Events.Rejected(client, RejectedMsg.UserDefined);
-                throw new Exception("user defined rejection");
-            }
+                    Events.Rejected(client, RejectedMsg.UserDefined);
+                    throw new Exception("user defined rejection");
+                }
 
             if (Helpers.IsLocalHost(client))
             {
