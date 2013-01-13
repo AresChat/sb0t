@@ -44,13 +44,13 @@ namespace core.ib0t
         public bool Quarantined { get; set; }
         public ILink Link { get { return new UserLinkCredentials(); } }
         public byte[] Password { get; set; }
+        public bool Extended { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }
         public ulong Time { get; set; }
         public bool ProtoConnected { get; set; }
         public bool LoggedIn { get; set; }
-        public bool CanScribble { get; set; }
         public FloodRecord FloodRecord { get; private set; }
 
         private int socket_health = 0;
@@ -89,6 +89,9 @@ namespace core.ib0t
             this.DNS = client.DNS;
             this.JoinTime = Helpers.UnixTime;
             this.FloodRecord = new FloodRecord();
+            
+            // vvvvvvvvvvvvvvvvvv
+            this.Extended = true;
         }
 
         public void SetLevel(ILevel level)
@@ -107,7 +110,7 @@ namespace core.ib0t
 
         public void Scribble(String sender, byte[] img, int h)
         {
-            if (!this.CanScribble || !this.ProtoConnected)
+            if (!this.Extended || !this.ProtoConnected)
                 return;
 
             byte[] buf = Zip.Decompress(img);
@@ -124,7 +127,7 @@ namespace core.ib0t
             if (base64.Length > 0)
                 packets.Add(base64);
 
-            this.QueuePacket(WebOutbound.ScribbleHead(this, packets.Count, height));
+            this.QueuePacket(WebOutbound.ScribbleHead(this, sender, packets.Count, height));
 
             foreach (String str in packets)
                 this.QueuePacket(WebOutbound.ScribbleBlock(this, str));
@@ -214,7 +217,22 @@ namespace core.ib0t
             this.Disconnect();
         }
 
-        public void PM(String sender, String text) { }
+        public void PM(String sender, String text)
+        {
+            if (!this.Extended)
+                return;
+
+            int len = Encoding.UTF8.GetByteCount(sender);
+
+            if (len >= 2 && len <= 20)
+            {
+                len = Encoding.UTF8.GetByteCount(text);
+
+                if (len > 0 && len <= 300)
+                    this.QueuePacket(WebOutbound.PrivateTo(this, sender, text));
+            }
+        }
+
         public void Redirect(String hashlink) { }
         public void RestoreAvatar() { }
 
@@ -402,9 +420,10 @@ namespace core.ib0t
                 this.QueuePacket(WebOutbound.NoSuchTo(this, text.ToString()));
         }
 
+        public String _pmsg = "ib0t web user";
         public String PersonalMessage
         {
-            get { return "ib0t web user"; }
+            get { return this._pmsg; }
             set { }
         }
 
@@ -693,7 +712,7 @@ namespace core.ib0t
                     switch (msg)
                     {
                         case 136:
-                            this.SocketConnected = true;
+                            this.SocketConnected = false;
                             return null;
 
                         case 129:

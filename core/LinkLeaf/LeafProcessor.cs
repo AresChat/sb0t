@@ -172,7 +172,7 @@ namespace core.LinkLeaf
                 ib0t.ib0tClient ic = UserPool.WUsers.Find(x => x.Name == target && x.LoggedIn && !x.Quarantined);
 
                 if (ic != null)
-                    if (ic.CanScribble)
+                    if (ic.Extended)
                         ic.Scribble(sender, img, height);
             }
         }
@@ -187,7 +187,7 @@ namespace core.LinkLeaf
                 x => x.LoggedIn && !x.Quarantined && x.CustomClient);
 
             UserPool.WUsers.ForEachWhere(x => x.Scribble(sender, img, height),
-                x => x.LoggedIn && !x.Quarantined && x.CanScribble);
+                x => x.LoggedIn && !x.Quarantined && x.Extended);
         }
 
         private static void HubNudge(LinkClient link, TCPPacketReader packet)
@@ -438,9 +438,7 @@ namespace core.LinkLeaf
 
                             if (!args.Cancel && !String.IsNullOrEmpty(args.Text))
                             {
-                                if (target is AresClient)
-                                    target.IUser.PM(sender.Name, args.Text);
-
+                                target.IUser.PM(sender.Name, args.Text);
                                 Events.PrivateSent(sender, target, args.Text);
                             }
                         }
@@ -738,8 +736,13 @@ namespace core.LinkLeaf
                         user.SetAvatar(buffer);
 
                         if (user.Link.Visible)
+                        {
                             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, user)),
                                 x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.AvatarTo(x, user.Name, user.Avatar)),
+                                x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined && x.Extended);
+                        }
                     }
             }
         }
@@ -761,8 +764,13 @@ namespace core.LinkLeaf
                         user.SetPersonalMessage(text);
 
                         if (user.Link.Visible)
+                        {
                             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, user)),
                                 x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+
+                            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PersMsgTo(x, user.Name, user.PersonalMessage)),
+                                x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined && x.Extended);
+                        }
                     }
             }
         }
@@ -878,8 +886,17 @@ namespace core.LinkLeaf
                         },
                         x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
 
-                        UserPool.WUsers.ForEachWhere(x =>x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
-                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                        UserPool.WUsers.ForEachWhere(x =>
+                        {
+                            x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level));
+
+                            if (user.Avatar.Length > 0)
+                                x.QueuePacket(ib0t.WebOutbound.AvatarTo(x, user.Name, user.Avatar));
+
+                            if (user.PersonalMessage.Length > 0)
+                                x.QueuePacket(ib0t.WebOutbound.PersMsgTo(x, user.Name, user.PersonalMessage));
+                        },
+                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined && x.Extended);
                     }
                 }
             }
@@ -952,8 +969,17 @@ namespace core.LinkLeaf
                         },
                         x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
 
-                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
-                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                        UserPool.WUsers.ForEachWhere(x =>
+                        {
+                            x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level));
+
+                            if (user.Avatar.Length > 0)
+                                x.QueuePacket(ib0t.WebOutbound.AvatarTo(x, user.Name, user.Avatar));
+
+                            if (user.PersonalMessage.Length > 0)
+                                x.QueuePacket(ib0t.WebOutbound.PersMsgTo(x, user.Name, user.PersonalMessage));
+                        },
+                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined && x.Extended);
                     }
 
                     Events.VroomChanged(user);
@@ -1129,8 +1155,17 @@ namespace core.LinkLeaf
                     },
                         x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
 
-                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level)),
-                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined);
+                    UserPool.WUsers.ForEachWhere(x =>
+                    {
+                        x.QueuePacket(ib0t.WebOutbound.JoinTo(x, user.Name, user.Level));
+
+                        if (user.Avatar.Length > 0)
+                            x.QueuePacket(ib0t.WebOutbound.AvatarTo(x, user.Name, user.Avatar));
+
+                        if (user.PersonalMessage.Length > 0)
+                            x.QueuePacket(ib0t.WebOutbound.PersMsgTo(x, user.Name, user.PersonalMessage));
+                    },
+                        x => x.LoggedIn && x.Vroom == user.Vroom && !x.Quarantined && x.Extended);
                 }
 
                 leaf.Users.Add(user);

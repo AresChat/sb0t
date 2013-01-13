@@ -13,6 +13,53 @@ namespace core.ib0t
             return WebSockets.Html5TextPacket("ACK:" + name.Length + ":" + name, userobj.WebCredentials.OldProto);
         }
 
+        public static byte[] PrivateTo(ib0tClient userobj, String name, String text)
+        {
+            return WebSockets.Html5TextPacket("PM:" + name.Length + "," + text.Length + ":" + name + text, userobj.WebCredentials.OldProto);
+        }
+
+        public static byte[] OfflineTo(ib0tClient userobj, String name)
+        {
+            return WebSockets.Html5TextPacket("OFFLINE:" + name.Length + ":" + name, userobj.WebCredentials.OldProto);
+        }
+
+        public static byte[] IgnoringTo(ib0tClient userobj, String name)
+        {
+            return WebSockets.Html5TextPacket("IGNORING:" + name.Length + ":" + name, userobj.WebCredentials.OldProto);
+        }
+
+        public static byte[] PersMsgTo(ib0tClient userobj, String name, String text)
+        {
+            return WebSockets.Html5TextPacket("PERSMSG:" + name.Length + "," + text.Length + ":" + name + text, userobj.WebCredentials.OldProto);
+        }
+
+        public static byte[] LagTo(ib0tClient userobj, String args)
+        {
+            return WebSockets.Html5TextPacket("LAG:" + args.Length + ":" + args, userobj.WebCredentials.OldProto);
+        }
+
+        public static byte[] PerMsgBotTo(ib0tClient userobj)
+        {
+            String name = Settings.Get<String>("bot");
+            String text = Settings.VERSION;
+            return WebSockets.Html5TextPacket("PERSMSG:" + name.Length + "," + text.Length + ":" + name + text, userobj.WebCredentials.OldProto);
+        }
+
+        public static byte[] AvatarTo(ib0tClient userobj, String name, byte[] av)
+        {
+            String str = "AVATAR:";
+            String avstr = Convert.ToBase64String(av);
+            str += name.Length + "," + avstr.Length + ":";
+            str += name + avstr;
+            byte[] packet = WebSockets.Html5TextPacket(str, userobj.WebCredentials.OldProto);
+            return packet;
+        }
+
+        public static byte[] AvatarClearTo(ib0tClient userobj, String name)
+        {
+            return WebSockets.Html5TextPacket("AVATAR:" + name.Length + ":" + name, userobj.WebCredentials.OldProto);
+        }
+
         public static byte[] PublicTo(ib0tClient userobj, String name, String text)
         {
             String str = text;
@@ -43,14 +90,18 @@ namespace core.ib0t
             return WebSockets.Html5TextPacket("NOSUCH:" + str.Length + ":" + str, userobj.WebCredentials.OldProto);
         }
 
-        public static byte[] ScribbleHead(ib0tClient userobj, int count, String height)
+        public static byte[] ScribbleHead(ib0tClient userobj, String sender, int count, String height)
         {
-            return WebSockets.Html5TextPacket("SCRIBBLE_HEAD:" + count + "," + height, userobj.WebCredentials.OldProto);
+            return WebSockets.Html5TextPacket("SCRIBBLE_HEAD:" + sender.Length + "," +
+                                                                 count.ToString().Length + "," +
+                                                                 height.Length +
+                                                                 ":" + sender + count + height,
+                                                                 userobj.WebCredentials.OldProto);
         }
 
         public static byte[] ScribbleBlock(ib0tClient userobj, String text)
         {
-            return WebSockets.Html5TextPacket("SCRIBBLE_BLOCK:" + text, userobj.WebCredentials.OldProto);
+            return WebSockets.Html5TextPacket("SCRIBBLE_BLOCK:" + text.Length + ":" + text, userobj.WebCredentials.OldProto);
         }
 
         public static byte[] UpdateTo(ib0tClient userobj, String name, ILevel level)

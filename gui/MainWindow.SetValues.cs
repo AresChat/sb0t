@@ -172,7 +172,6 @@ namespace gui
             {
                 String path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                                   "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Avatars\\default";
-
                 if (File.Exists(path))
                 {
                     RenderTargetBitmap resizedImage = this.FileToSizedImageSource(path, 90, 90);

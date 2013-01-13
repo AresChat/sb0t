@@ -241,7 +241,7 @@ namespace core
                 }
                 else
                 {
-                    if (text.StartsWith("#"))
+                    if (text.StartsWith("#") || text.StartsWith("/"))
                         Command(client, text.Substring(1));
 
                     if (!client.Quarantined)
@@ -285,9 +285,7 @@ namespace core
 
                     if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
                     {
-                        if (target is AresClient)
-                            target.IUser.PM(client.Name, args.Text);
-
+                        target.IUser.PM(client.Name, args.Text);
                         Events.PrivateSent(client, target, args.Text);
                     }
                 }

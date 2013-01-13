@@ -227,12 +227,22 @@ namespace core
                 x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
             if (client.Avatar.Length > 0)
+            {
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.AvatarTo(x, client.Name, client.Avatar)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
+            }
+
             if (client.PersonalMessage.Length > 0)
+            {
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.PersMsgTo(x, client.Name, client.PersonalMessage)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
+            }
 
             if (client.Font.HasFont)
             {
@@ -250,21 +260,6 @@ namespace core
             foreach (CustomEmoticon em in client.EmoticonList)
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, em)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomEmoticons && !x.Quarantined);
-        }
-
-        public static void UncloakedSequence(ib0t.ib0tClient client)
-        {
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Join(x, client)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
-
-            UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.JoinTo(x, client.Name, client.Level)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
-
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
-
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
         }
 
         public static void FakeRejoinSequence(AresClient client, bool features)
@@ -363,6 +358,9 @@ namespace core
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.AvatarTo(x, client.Name, client.Avatar)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
+
                     if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, client));
                 }
@@ -372,6 +370,9 @@ namespace core
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.PersMsgTo(x, client.Name, client.PersonalMessage)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
 
                     if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, client));
@@ -421,6 +422,11 @@ namespace core
             UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked && !x.Quarantined);
 
+            if (ServerCore.Linker.Busy)
+                foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                    leaf.Users.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
+                        x => x.Vroom == client.Vroom && x.Link.Visible);
+
             client.QueuePacket(WebOutbound.UserlistEndTo(client));
 
             if (features)
@@ -430,11 +436,42 @@ namespace core
                 UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked && !x.Quarantined);
 
+            if (client.Extended)
+            {
+                client.QueuePacket(WebOutbound.PerMsgBotTo(client));
+                client.QueuePacket(Avatars.Server(client));
+
+                UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.AvatarTo(client, x.Name, x.Avatar)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0 && !x.Cloaked && !x.Quarantined);
+
+                UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.AvatarTo(client, x.Name, x.Avatar)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked && !x.Quarantined);
+
+                if (ServerCore.Linker.Busy)
+                    foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                        leaf.Users.ForEachWhere(x => client.QueuePacket(WebOutbound.AvatarTo(client, x.Name, x.Avatar)),
+                            x => x.Vroom == client.Vroom && x.Link.Visible && x.Avatar.Length > 0);
+
+                UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.PersMsgTo(client, x.Name, x.PersonalMessage)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0 && !x.Cloaked && !x.Quarantined);
+
+                UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.PersMsgTo(client, x.Name, x.PersonalMessage)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked && !x.Quarantined);
+
+                if (ServerCore.Linker.Busy)
+                    foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                        leaf.Users.ForEachWhere(x => client.QueuePacket(WebOutbound.PersMsgTo(client, x.Name, x.PersonalMessage)),
+                            x => x.Vroom == client.Vroom && x.Link.Visible && x.PersonalMessage.Length > 0);
+            }
+
             if (client.Avatar.Length > 0)
                 if (!client.Cloaked)
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.AvatarTo(x, client.Name, client.Avatar)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
 
                     if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, client));
@@ -445,6 +482,9 @@ namespace core
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.PersMsgTo(x, client.Name, client.PersonalMessage)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
 
                     if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, client));

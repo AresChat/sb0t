@@ -51,24 +51,180 @@ namespace core.ib0t
                     client.Time = time;
                     break;
 
+                case "PM":
+                    PM(client, args, time);
+                    break;
+
+                case "IGNORE":
+                    Ignore(client, args);
+                    break;
+
+                case "LAG":
+                    Lag(client, args);
+                    break;
+
                 default:
                     throw new Exception();
             }
         }
 
+        private static void Lag(ib0tClient client, String args)
+        {
+            client.QueuePacket(WebOutbound.LagTo(client, args));
+        }
+
+        private static void Ignore(ib0tClient client, String args)
+        {
+            String tmp = args;
+            int finder = tmp.IndexOf(":");
+            String[] lens = tmp.Substring(0, finder).Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            tmp = tmp.Substring(finder + 1);
+            int n_len = int.Parse(lens[0]);
+
+            String name = tmp.Substring(0, n_len);
+            bool ignore = int.Parse(tmp.Substring(tmp.Length - 1)) == 1;
+
+            if (client.Quarantined)
+                return;
+
+            IClient target = UserPool.AUsers.Find(x => x.Name == name);
+
+            if (target == null)
+                target = UserPool.WUsers.Find(x => x.Name == name);
+
+            if (target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                target = ServerCore.Linker.FindUser(x => x.Name == name);
+
+            if (target != null)
+                if (!ignore)
+                {
+                    client.IgnoreList.RemoveAll(x => x == name);
+                    Events.IgnoredStateChanged(client, target, ignore);
+                }
+                else if (Events.Ignoring(client, target))
+                    if (client.SocketConnected)
+                    {
+                        if (!client.IgnoreList.Contains(name))
+                            client.IgnoreList.Add(name);
+
+                        Events.IgnoredStateChanged(client, target, ignore);
+                    }
+        }
+
+        private static void PM(ib0tClient client, String ags, ulong time)
+        {
+            String tmp = ags;
+            int finder = tmp.IndexOf(":");
+            String[] lens = tmp.Substring(0, finder).Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            tmp = tmp.Substring(finder + 1);
+            int n_len = int.Parse(lens[0]);
+            int t_len = int.Parse(lens[1]);
+
+            String name = tmp.Substring(0, n_len);
+            String text = tmp.Substring(n_len, t_len);
+
+            if (text.Length > 300)
+                text = text.Substring(0, 300);
+
+            PMEventArgs args = new PMEventArgs { Cancel = false, Text = text };
+
+            if (name == Settings.Get<String>("bot"))
+            {
+                if (text.StartsWith("#login") || text.StartsWith("#register"))
+                {
+                    Command(client, text.Substring(1));
+                    return;
+                }
+                else
+                {
+                    if (text.StartsWith("#") || text.StartsWith("/"))
+                        Command(client, text.Substring(1));
+
+                    if (!client.Quarantined)
+                        Events.BotPrivateSent(client, args.Text);
+                }
+            }
+            else
+            {
+                if (!client.Captcha)
+                    return;
+
+                IClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn);
+
+                if (target == null)
+                    target = UserPool.WUsers.Find(x => x.Name == name && x.LoggedIn);
+
+                if (target == null && ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                {
+                    target = ServerCore.Linker.FindUser(x => x.Name == name);
+
+                    if (target != null)
+                    {
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPrivateText(ServerCore.Linker, client.Name, target, text));
+                        return;
+                    }
+                }
+
+                if (target == null)
+                    client.QueuePacket(WebOutbound.OfflineTo(client, name));
+                else if (target.IgnoreList.Contains(client.Name) || client.Muzzled)
+                    client.QueuePacket(WebOutbound.IgnoringTo(client, name));
+                else
+                {
+                    if (target.Cloaked)
+                    {
+                        client.QueuePacket(WebOutbound.OfflineTo(client, name));
+                        return;
+                    }
+
+                    Events.PrivateSending(client, target, args);
+
+                    if (!args.Cancel && !String.IsNullOrEmpty(args.Text) && client.SocketConnected)
+                    {
+                        target.IUser.PM(client.Name, args.Text);
+                        Events.PrivateSent(client, target, args.Text);
+                    }
+                }
+            }
+        }
+
+        private static String[] GetArgItems(String args)
+        {
+            List<String> items = new List<String>();
+            int finder = args.IndexOf(":");
+
+            if (finder > -1)
+            {
+                String[] lens = args.Substring(0, finder).Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                String data = args.Substring(finder + 1);
+
+                for (int i = 0; i < lens.Length; i++)
+                {
+                    int l = int.Parse(lens[i]);
+                    String s = data.Substring(0, l);
+                    items.Add(s);
+                    data = data.Substring(l);
+                }
+            }
+
+            return items.ToArray();
+        }
+
         private static void Login(ib0tClient client, String args, ulong time)
         {
+            String[] arg_items = GetArgItems(args);
+
+            client.Extended = int.Parse(arg_items[0]) >= 2000;
+
             byte[] g = new byte[16];
 
             for (int i = 0; i < g.Length; i++)
-                g[i] = byte.Parse(args.Substring((i * 2), 2), NumberStyles.HexNumber);
-
-            client.CanScribble = g[0] == 0xff;
+                g[i] = byte.Parse(arg_items[1].Substring((i * 2), 2), NumberStyles.HexNumber);
 
             using (MD5 md5 = MD5.Create())
                 client.Guid = new Guid(md5.ComputeHash(g));
-            
-            client.OrgName = args.Substring(32);
+
+            client.OrgName = arg_items[2];
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.FastPing = false;
@@ -76,7 +232,8 @@ namespace core.ib0t
             client.DataPort = 0;
             client.NodeIP = IPAddress.Parse("0.0.0.0");
             client.NodePort = 0;
-            client.Version = "ib0t web user";
+            client.Version = arg_items[4] + " [" + arg_items[3] + "]";
+            client._pmsg = arg_items[4];
             client.CustomClient = true;
             client.LocalIP = client.ExternalIP;
             client.Browsable = false;
@@ -205,6 +362,11 @@ namespace core.ib0t
                 UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
+                if (ServerCore.Linker.Busy)
+                    foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                        leaf.Users.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
+                            x => x.Vroom == client.Vroom && x.Link.Visible);
+
                 client.QueuePacket(WebOutbound.UserlistEndTo(client));
                 client.QueuePacket(WebOutbound.UrlTo(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
 
@@ -214,8 +376,42 @@ namespace core.ib0t
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.AvatarTo(x, client.Name, client.Avatar)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
+
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.PersMsgTo(x, client.Name, client.PersonalMessage)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
+
+                if (client.Extended)
+                {
+                    client.QueuePacket(WebOutbound.PerMsgBotTo(client));
+                    client.QueuePacket(Avatars.Server(client));
+
+                    UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.AvatarTo(client, x.Name, x.Avatar)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0 && !x.Quarantined);
+
+                    UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.AvatarTo(client, x.Name, x.Avatar)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy)
+                        foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                            leaf.Users.ForEachWhere(x => client.QueuePacket(WebOutbound.AvatarTo(client, x.Name, x.Avatar)),
+                                x => x.Vroom == client.Vroom && x.Link.Visible && x.Avatar.Length > 0);
+
+                    UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.PersMsgTo(client, x.Name, x.PersonalMessage)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.PersonalMessage.Length > 0 && !x.Quarantined);
+
+                    UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.PersMsgTo(client, x.Name, x.PersonalMessage)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    if (ServerCore.Linker.Busy)
+                        foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
+                            leaf.Users.ForEachWhere(x => client.QueuePacket(WebOutbound.PersMsgTo(client, x.Name, x.PersonalMessage)),
+                                x => x.Vroom == client.Vroom && x.Link.Visible && x.PersonalMessage.Length > 0);
+                }
 
                 FloodControl.Remove(client);
 
@@ -239,6 +435,8 @@ namespace core.ib0t
                 client.QueuePacket(WebOutbound.AckTo(client, client.Name));
                 client.QueuePacket(WebOutbound.TopicFirstTo(client, Settings.Get<String>("topic")));
                 client.QueuePacket(WebOutbound.UserlistEndTo(client));
+                client.QueuePacket(WebOutbound.PerMsgBotTo(client));
+                client.QueuePacket(Avatars.Server(client));
 
                 CaptchaItem cap = Captcha.Create();
                 client.CaptchaWord = cap.Word;

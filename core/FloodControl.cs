@@ -124,6 +124,9 @@ namespace core
                 case "PING":
                     return TCPMsg.MSG_CHAT_CLIENT_UPDATE_STATUS;
 
+                case "PM":
+                    return TCPMsg.MSG_CHAT_CLIENT_PVT;
+
                 default:
                     return (TCPMsg)255;
             }

@@ -26,7 +26,7 @@ namespace core.ib0t
 
                     sb.Clear();
 
-                    WebRequest request = WebRequest.Create(Settings.Get<String>("url", "web"));
+                    WebRequest request = WebRequest.Create(Settings.Get<String>("url", "web") + "?proto=2");
                     request.Method = "POST";
                     request.ContentLength = data.Length;
                     request.ContentType = "application/x-www-form-urlencoded";

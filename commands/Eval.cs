@@ -212,7 +212,6 @@ namespace commands
         [CommandLevel("muzzle", ILevel.Moderator)]
         public static void Muzzle(IUser admin, IUser target, String args)
         {
-            Server.Print("test");
             if (admin.Level >= Server.GetLevel("muzzle"))
                 if (target != null)
                     if (target.Level < admin.Level)

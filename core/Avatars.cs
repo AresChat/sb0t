@@ -18,14 +18,17 @@ namespace core
         {
             server_avatar = Scale(data);
 
-            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.BotAvatar(x, server_avatar)),
-                x => x.LoggedIn);
+            if (UserPool.AUsers != null)
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.BotAvatar(x, server_avatar)),
+                    x => x.LoggedIn);
         }
 
         public static void UpdateDefaultAvatar(byte[] data)
         {
             default_avatar = Scale(data);
-            UserPool.AUsers.ForEachWhere(x => x.Avatar = default_avatar, x => x.DefaultAvatar);
+
+            if (UserPool.AUsers != null)
+                UserPool.AUsers.ForEachWhere(x => x.Avatar = default_avatar, x => x.DefaultAvatar);
         }
 
         internal static byte[] Server(AresClient client)
@@ -34,6 +37,14 @@ namespace core
                 return TCPOutbound.BotAvatarCleared(client);
             else
                 return TCPOutbound.BotAvatar(client, server_avatar);
+        }
+
+        internal static byte[] Server(ib0t.ib0tClient client)
+        {
+            if (server_avatar == null)
+                return ib0t.WebOutbound.AvatarClearTo(client, Settings.Get<String>("bot"));
+            else
+                return ib0t.WebOutbound.AvatarTo(client, Settings.Get<String>("bot"), server_avatar);
         }
 
         public static void CheckAvatars(ulong time)
@@ -82,7 +93,7 @@ namespace core
                 g.DrawImage(raw_bmp, new Rectangle(0, 0, 48, 48));
                 ImageCodecInfo info = new List<ImageCodecInfo>(ImageCodecInfo.GetImageEncoders()).Find(x => x.MimeType == "image/jpeg");
                 EncoderParameters encoding = new EncoderParameters();
-                encoding.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L);
+                encoding.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 69L);
 
                 using (MemoryStream ms = new MemoryStream())
                 {

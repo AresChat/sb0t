@@ -546,6 +546,9 @@ namespace core
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.AvatarCleared(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
 
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.AvatarClearTo(x, this.Name)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined && x.Extended);
+
                         if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                             ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, this));
                     }
@@ -558,6 +561,9 @@ namespace core
                     {
                         UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, this)),
                             x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                        UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.AvatarTo(x, this.Name, this.Avatar)),
+                            x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined && x.Extended);
 
                         if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                             ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafAvatar(ServerCore.Linker, this));
@@ -577,6 +583,9 @@ namespace core
                 {
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.PersonalMessage(x, this)),
                         x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined);
+
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.PersMsgTo(x, this.Name, this.personal_message)),
+                        x => x.LoggedIn && x.Vroom == this.Vroom && !x.Quarantined && x.Extended);
 
                     if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, this));

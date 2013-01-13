@@ -737,20 +737,21 @@ namespace commands
 
         public void VroomChanged(IUser client)
         {
-            if (client.Vroom == 0)
-            {
-                if (Settings.Clock)
-                    Topics.ClockTo(client);
+            if (!client.Link.IsLinked)
+                if (client.Vroom == 0)
+                {
+                    if (Settings.Clock)
+                        Topics.ClockTo(client);
+                    else
+                        client.Topic(Server.Chatroom.Topic);
+                }
                 else
-                    client.Topic(Server.Chatroom.Topic);
-            }
-            else
-            {
-                String topic = Topics.GetTopic(client.Vroom);
+                {
+                    String topic = Topics.GetTopic(client.Vroom);
 
-                if (!String.IsNullOrEmpty(topic))
-                    client.Topic(topic);
-            }
+                    if (!String.IsNullOrEmpty(topic))
+                        client.Topic(topic);
+                }
 
             VSpy.VroomChanged(client);
         }
@@ -766,7 +767,9 @@ namespace commands
         public void Flooded(IUser client)
         {
             String text = Template.Text(Category.Notification, 28).Replace("+n", client.Name).Replace("+c", this.last_flood.ToString());
-            Server.Print(ILevel.Moderator, text, true);
+
+            if (client.Captcha)
+                Server.Print(ILevel.Moderator, text, true);
         }
 
         public bool ProxyDetected(IUser client) { return true; }
