@@ -46,6 +46,11 @@ namespace core
             packet.WriteByte(target.Sex);
             packet.WriteByte(target.Country);
             packet.WriteString(client, target.Region);
+
+            byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
+                           ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC));
+
+            packet.WriteByte(b);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_JOIN);
         }
 
@@ -55,6 +60,11 @@ namespace core
             packet.WriteString(client, target.Name);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_PART);
         }
+
+        private const int CLIENT_SUPPORTS_VC = 1;
+        private const int CLIENT_SUPPORTS_PM_VC = 2;
+        private const int CLIENT_SUPPORTS_OPUS_VC = 4;
+        private const int CLIENT_SUPPORTS_OPUS_PM_VC = 8;
 
         public static byte[] Userlist(AresClient client, IClient target)
         {
@@ -74,6 +84,11 @@ namespace core
             packet.WriteByte(target.Sex);
             packet.WriteByte(target.Country);
             packet.WriteString(client, target.Region);
+
+            byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
+                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC));
+
+            packet.WriteByte(b);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CHANNEL_USER_LIST);
         }
 
@@ -127,11 +142,26 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_OPCHANGE);
         }
 
+        private const int SERVER_SUPPORTS_PVT = 1;
+        private const int SERVER_SUPPORTS_SHARING = 2;
+        private const int SERVER_SUPPORTS_COMPRESSION = 4;
+        private const int SERVER_SUPPORTS_VC = 8;
+        private const int SERVER_SUPPORTS_OPUS_VC = 16;
+        private const int SERVER_SUPPORTS_ROOM_SCRIBBLES = 32;
+        private const int SERVER_SUPPORTS_PM_SCRIBBLES = 64;
+
         public static byte[] MyFeatures(AresClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, Settings.VERSION);
-            packet.WriteByte(7);
+
+            byte flag = (byte)(SERVER_SUPPORTS_PVT |
+                               SERVER_SUPPORTS_SHARING |
+                               SERVER_SUPPORTS_COMPRESSION |
+                               SERVER_SUPPORTS_VC);
+
+            packet.WriteByte(flag);
+
             packet.WriteByte(63);
             packet.WriteByte(Settings.Get<byte>("language"));
             packet.WriteUInt32(client.Cookie);
@@ -369,7 +399,7 @@ namespace core
         public static byte[] SuperNodes()
         {
             var linq = from x in UserPool.AUsers
-                       where x.NodePort > 0 && x.Version.StartsWith("Ares 2.")
+                       where x.NodePort > 0 && (x.Version.StartsWith("Ares 2.") || x.Version.StartsWith("Ares_2."))
                        select new IPEndPoint(x.ExternalIP, x.DataPort);
 
             TCPPacketWriter packet = new TCPPacketWriter();

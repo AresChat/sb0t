@@ -519,7 +519,7 @@ namespace core
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
-            client.CustomClient = !client.Version.StartsWith("Ares 2.");
+            client.CustomClient = !client.Version.StartsWith("Ares 2.0"); // 2.1.* is now custom :-)
             client.LocalIP = packet;
             packet.SkipBytes(4);
             client.Browsable = ((byte)packet) > 2 && Settings.Get<bool>("files");
@@ -530,6 +530,15 @@ namespace core
             client.Sex = packet;
             client.Country = packet;
             client.Region = packet.ReadString(client);
+
+            // new proto data
+            if (packet.Remaining > 0)
+            {
+                byte vc = packet;
+                client.VoiceChatPublic = ((vc & 1) == 1);
+                client.VoiceChatPrivate = ((vc & 2) == 2);
+            }
+
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
 
             if (client.CustomClient) // client doesn't support file sharing

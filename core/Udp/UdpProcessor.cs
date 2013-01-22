@@ -115,7 +115,7 @@ namespace core.Udp
         private static void SendNodes(UdpItem item, UdpListener udp, ulong time)
         {
             var linq = from x in UserPool.AUsers
-                       where x.NodePort > 0 && x.Version.StartsWith("Ares 2.")
+                       where x.NodePort > 0 && (x.Version.StartsWith("Ares 2.") || x.Version.StartsWith("Ares_2."))
                        select new IPEndPoint(x.ExternalIP, x.DataPort);
 
             if (linq.Count() > 0)
