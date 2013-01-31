@@ -9,6 +9,8 @@ namespace core
 {
     interface IClient
     {
+        IFont Font { get; }
+        bool SupportsHTML { get; }
         /// <summary>Session identity</summary>
         ushort ID { get; }
         /// <summary>External IP Address</summary>
@@ -53,8 +55,6 @@ namespace core
         bool Ghosting { get; set; }
         /// <summary>Ignore List</summary>
         List<String> IgnoreList { get; set; }
-        /// <summary>Custom Font</summary>
-        IFont Font { get; set; }
         /// <summary>Third Party Client Flag</summary>
         bool CustomClient { get; set; }
         /// <summary>Tag Data</summary>

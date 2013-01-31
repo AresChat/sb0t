@@ -1046,7 +1046,8 @@ namespace commands
         public static void Shout(IUser client, String text)
         {
             if (client.Level > ILevel.Regular || Settings.General)
-                Server.Print(Template.Text(Category.Messaging, 0).Replace("+n", client.Name).Replace("+t", text), true);
+                if (!client.Muzzled)
+                    Server.Print(Template.Text(Category.Messaging, 0).Replace("+n", client.Name).Replace("+t", text), true);
         }
 
         [CommandLevel("adminmsg", ILevel.Moderator)]

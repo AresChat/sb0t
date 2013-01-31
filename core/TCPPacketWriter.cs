@@ -68,6 +68,14 @@ namespace core
             this.Data.AddRange(ip_object.GetAddressBytes());
         }
 
+        public void WriteString(String text, bool nulled, bool unenc)
+        {
+            this.Data.AddRange(Encoding.UTF8.GetBytes(text));
+
+            if (nulled)
+                this.Data.Add(0);
+        }
+
         public void WriteString(IClient client, String text)
         {
             this.WriteString(client, text, true);

@@ -9,6 +9,8 @@ namespace iconnect
     /// <summary>Chatroom Client</summary>
     public interface IUser
     {
+        /// <summary>Get user's custom font</summary>
+        IFont Font { get; }
         /// <summary>Set user admin level</summary>
         void SetLevel(ILevel level);
         /// <summary>Get user link credentials</summary>
@@ -59,8 +61,6 @@ namespace iconnect
         bool Ghosting { get; }
         /// <summary>Get Ignore List</summary>
         List<String> IgnoreList { get; set; }
-        /// <summary>Get Custom Font</summary>
-        IFont Font { get; }
         /// <summary>Get Third Party Client Flag</summary>
         bool CustomClient { get; }
         /// <summary>Get or Tag Data</summary>
@@ -91,6 +91,8 @@ namespace iconnect
         bool Idle { get; }
         /// <summary>Get Quarantine Status</summary>
         bool Quarantined { get; }
+        /// <summary>Get HTML support status</summary>
+        bool SupportsHTML { get; }
 
         /// <summary>Send raw data to the socket</summary>
         void BinaryWrite(byte[] data);
@@ -104,6 +106,8 @@ namespace iconnect
         void Redirect(String hashlink);
         /// <summary>Clone the user</summary>
         void SendText(String text);
+        /// <summary>Set custom HTML content to user</summary>
+        void SendHTML(String text);
         /// <summary>Clone the user</summary>
         void SendEmote(String text);
         /// <summary>Send a fake PM to this user</summary>

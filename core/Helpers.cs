@@ -244,22 +244,9 @@ namespace core
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
             }
 
-            if (client.Font.HasFont)
-            {
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
-
-                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.FontTo(x, client.Name, client.Font.NameColor, client.Font.TextColor)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
-            }
-
             if (client.VoiceChatPrivate || client.VoiceChatPublic)
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatUserSupport(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && (x.VoiceChatPrivate || x.VoiceChatPublic) && !x.Quarantined);
-
-            foreach (CustomEmoticon em in client.EmoticonList)
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, em)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomEmoticons && !x.Quarantined);
         }
 
         public static void FakeRejoinSequence(AresClient client, bool features)
@@ -289,8 +276,6 @@ namespace core
 
             client.SharedFiles.Clear();
             client.LoggedIn = true;
-            client.CustomEmoticons = false;
-            client.EmoticonList.Clear();
             client.SendPacket(TCPOutbound.Ack(client));
 
             if (features)
@@ -311,7 +296,6 @@ namespace core
 
             client.SendPacket(TCPOutbound.UserListEnd());
             client.SendPacket(TCPOutbound.OpChange(client));
-            client.SendPacket(TCPOutbound.SupportsCustomEmotes());
 
             if (features)
             {
@@ -347,10 +331,6 @@ namespace core
                 foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                     leaf.Users.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
                         x => x.Vroom == client.Vroom && x.Link.Visible && x.PersonalMessage.Length > 0);
-
-            if (client.CustomClient)
-                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked && !x.Quarantined);
 
             if (client.Avatar.Length > 0)
                 if (!client.Cloaked)
@@ -431,10 +411,6 @@ namespace core
 
             if (features)
                 client.QueuePacket(WebOutbound.UrlTo(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
-
-            if (client.CustomClient)
-                UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Cloaked && !x.Quarantined);
 
             if (client.Extended)
             {

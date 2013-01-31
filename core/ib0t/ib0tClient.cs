@@ -11,6 +11,7 @@ namespace core.ib0t
 {
     class ib0tClient : IClient, IUser, IQuarantined
     {
+        public bool SupportsHTML { get { return false; } }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
         public String DNS { get; set; }
@@ -30,7 +31,6 @@ namespace core.ib0t
         public bool FastPing { get; set; }
         public bool Ghosting { get; set; }
         public List<String> IgnoreList { get; set; }
-        public IFont Font { get; set; }
         public bool CustomClient { get; set; }
         public List<String> CustomClientTags { get; set; }
         public bool WebClient { get; private set; }
@@ -45,6 +45,7 @@ namespace core.ib0t
         public ILink Link { get { return new UserLinkCredentials(); } }
         public byte[] Password { get; set; }
         public bool Extended { get; set; }
+        public IFont Font { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }
@@ -81,7 +82,6 @@ namespace core.ib0t
             this._vroom = 0;
             this.Version = String.Empty;
             this.IgnoreList = new List<String>();
-            this.Font = new core.Font();
             this.CustomClientTags = new List<String>();
             this.Encryption = new Encryption { Mode = EncryptionMode.Unencrypted };
             this.CaptchaWord = String.Empty;
@@ -89,10 +89,13 @@ namespace core.ib0t
             this.DNS = client.DNS;
             this.JoinTime = Helpers.UnixTime;
             this.FloodRecord = new FloodRecord();
+            this.Font = new AresFont();
             
             // vvvvvvvvvvvvvvvvvv
             this.Extended = true;
         }
+
+        public void SendHTML(String text) { }
 
         public void SetLevel(ILevel level)
         {

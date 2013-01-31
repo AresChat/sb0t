@@ -62,13 +62,13 @@
     <Compile Include="Account.cs" />
     <Compile Include="AccountManager.cs" />
     <Compile Include="AresClient.cs" />
+    <Compile Include="AresFont.cs" />
     <Compile Include="Avatars.cs" />
     <Compile Include="Ban.cs" />
     <Compile Include="BanSystem.cs" />
     <Compile Include="CaptchaManager.cs" />
     <Compile Include="ChatLog.cs" />
     <Compile Include="Crypto.cs" />
-    <Compile Include="CustomEmoticon.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Extensions\ExAccounts.cs" />
     <Compile Include="Extensions\ExChannels.cs" />
@@ -83,6 +83,7 @@
     <Compile Include="FilterImporter.cs" />
     <Compile Include="FloodControl.cs" />
     <Compile Include="FloodRecord.cs" />
+    <Compile Include="GlobalFont.cs" />
     <Compile Include="IdleManager.cs" />
     <Compile Include="LinkHub\HubOutbound.cs" />
     <Compile Include="LinkHub\Leaf.cs" />
@@ -108,7 +109,6 @@
     <Compile Include="Extensions\ExHost.cs" />
     <Compile Include="Extensions\ExUsers.cs" />
     <Compile Include="FileBrowseProcessor.cs" />
-    <Compile Include="Font.cs" />
     <Compile Include="Hashlink.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="ib0t\ChannelPusher.cs" />
@@ -159,6 +159,7 @@
     <Compile Include="UserHistory.cs" />
     <Compile Include="UserLinkCredentials.cs" />
     <Compile Include="UserPool.cs" />
+    <Compile Include="WebWorker.cs" />
     <Compile Include="Zip.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +197,7 @@
     <None Include="Libraries\dictionary.aff" />
     <None Include="Libraries\dictionary.dic" />
     <None Include="Resources\servers.dat" />
+    <None Include="Resources\template.dat" />
     <None Include="Resources\web.dat" />
   </ItemGroup>
   <ItemGroup />

@@ -162,6 +162,7 @@ namespace core
                 this.CheckTCPListener(time);
                 this.ServiceAresSockets(time);
                 this.ServiceLeaves(link_mode, time);
+                this.ServiceWW();
                 Linker.Service(time);
 
                 if (can_web_chat)
@@ -198,6 +199,14 @@ namespace core
                     if (!this.udp.IsTcpChecker(sock))
                         UserPool.CreateAresClient(sock, time);
                 }
+        }
+
+        private void ServiceWW()
+        {
+            foreach (WebWorker w in UserPool.WW)
+                w.DoSocketTasks();
+
+            UserPool.WW.RemoveAll(x => x.Dead);
         }
 
         private void ServiceWebSockets(ulong time)
@@ -281,6 +290,13 @@ namespace core
                             UserPool.CreateIb0tClient(client, time);
                         else
                             client.Disconnect();
+                        break;
+                    }
+
+                    if (client.IsWebWorker)
+                    {
+                        UserPool.CreateWW(client);
+                        client.Disconnect();
                         break;
                     }
 

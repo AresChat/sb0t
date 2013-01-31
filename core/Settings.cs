@@ -5,22 +5,43 @@ using System.Text;
 using System.Net;
 using System.Diagnostics;
 using Microsoft.Win32;
+using System.IO;
 
 namespace core
 {
     public class Settings
     {
-        public const String VERSION = "sb0t 5.04";
+        public const String VERSION = "sb0t 5.05";
         public const ushort LINK_PROTO = 500;
 
         public static bool RUNNING { get; set; }
+        public static String WebPath { get; set; }
+        public static iconnect.IFont Font { get; set; }
+        
 
         public static void Reset()
         {
+            Font = new GlobalFont();
             externalip = null;
             port = 0;
             name = null;
             language = 0;
+
+            WebPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                      "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Style";
+
+            if (!Directory.Exists(WebPath))
+            {
+                Directory.CreateDirectory(WebPath);
+                WebPath += "\\";
+
+                try
+                {
+                    File.WriteAllBytes(WebPath + "template.htm", Resource1.template);
+                }
+                catch { }
+            }
+            else WebPath += "\\";
         }
 
         public static void ScriptCanLevel(bool can)

@@ -85,6 +85,7 @@
     <Compile Include="ObjectPrototypes\JSBannedUser.cs" />
     <Compile Include="ObjectPrototypes\JSChannelCollection.cs" />
     <Compile Include="ObjectPrototypes\JSChannel.cs" />
+    <Compile Include="ObjectPrototypes\JSUserFont.cs" />
     <Compile Include="ObjectPrototypes\JSHashlinkResult.cs" />
     <Compile Include="ObjectPrototypes\JSHttpRequestResult.cs" />
     <Compile Include="ObjectPrototypes\JSIgnoreCollection.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Objects\JSBannedUser.cs" />
     <Compile Include="Objects\JSChannel.cs" />
     <Compile Include="Objects\JSChannelCollection.cs" />
+    <Compile Include="Objects\JSUserFont.cs" />
     <Compile Include="Objects\JSHashlinkResult.cs" />
     <Compile Include="Objects\JSHttpRequestResult.cs" />
     <Compile Include="Objects\JSIgnoreCollection.cs" />
@@ -124,6 +126,7 @@
     <Compile Include="Statics\JSBase64.cs" />
     <Compile Include="Statics\JSChannels.cs" />
     <Compile Include="Statics\JSFile.cs" />
+    <Compile Include="Statics\JSFont.cs" />
     <Compile Include="Statics\JSHashlink.cs" />
     <Compile Include="Statics\JSLink.cs" />
     <Compile Include="Statics\JSRegistry.cs" />

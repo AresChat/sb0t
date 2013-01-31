@@ -370,9 +370,6 @@ namespace core.ib0t
                 client.QueuePacket(WebOutbound.UserlistEndTo(client));
                 client.QueuePacket(WebOutbound.UrlTo(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
 
-                UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.FontTo(client, x.Name, x.Font.NameColor, x.Font.TextColor)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Quarantined);
-
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Avatar(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
@@ -519,9 +516,44 @@ namespace core.ib0t
 
                     if (client.SocketConnected)
                     {
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
-                            TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
+                        byte[] js_style = null;
+
+                        if (Settings.Font.Enabled)
+                        {
+                            GlobalFont gfont = (GlobalFont)Settings.Font;
+                            gfont.IsEmote = !String.IsNullOrEmpty(client.CustomName);
+                            js_style = TCPOutbound.Font(gfont);
+                        }
+
+                        UserPool.AUsers.ForEachWhere(x =>
+                        {
+                            if (x.SupportsHTML)
+                            {
+                                if (String.IsNullOrEmpty(client.CustomName))
+                                {
+                                    if (x.SupportsHTML)
+                                        if (js_style != null)
+                                            x.SendPacket(js_style);
+
+                                    x.SendPacket(TCPOutbound.Public(x, client.Name, text));
+                                }
+                                else
+                                {
+                                    if (x.SupportsHTML)
+                                        if (js_style != null)
+                                            x.SendPacket(js_style);
+
+                                    x.SendPacket(TCPOutbound.NoSuch(x, client.CustomName + text));
+                                }
+                            }
+                            else
+                            {
+                                if (String.IsNullOrEmpty(client.CustomName))
+                                    x.SendPacket(TCPOutbound.Public(x, client.Name, text));
+                                else
+                                    x.SendPacket(TCPOutbound.NoSuch(x, client.CustomName + text));
+                            }
+                        }, x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
                             ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
@@ -568,8 +600,23 @@ namespace core.ib0t
 
                         if (client.SocketConnected)
                         {
-                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
-                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
+                            byte[] js_style = null;
+
+                            if (Settings.Font.Enabled)
+                            {
+                                GlobalFont gfont = (GlobalFont)Settings.Font;
+                                gfont.IsEmote = true;
+                                js_style = TCPOutbound.Font(gfont);
+                            }
+
+                            UserPool.AUsers.ForEachWhere(x =>
+                            {
+                                if (x.SupportsHTML)
+                                    if (js_style != null)
+                                        x.SendPacket(js_style);
+
+                                x.SendPacket(TCPOutbound.Emote(x, client.Name, text));
+                            }, x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                             UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
                                 x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);

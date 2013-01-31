@@ -466,9 +466,44 @@ namespace core.LinkLeaf
 
                     if (!String.IsNullOrEmpty(text))
                     {
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(user.CustomName) ?
-                            TCPOutbound.Public(x, user.Name, text) : TCPOutbound.NoSuch(x, user.CustomName + text)),
-                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
+                        byte[] js_style = null;
+
+                        if (Settings.Font.Enabled)
+                        {
+                            GlobalFont gfont = (GlobalFont)Settings.Font;
+                            gfont.IsEmote = !String.IsNullOrEmpty(user.CustomName);
+                            js_style = TCPOutbound.Font(gfont);
+                        }
+
+                        UserPool.AUsers.ForEachWhere(x =>
+                        {
+                            if (x.SupportsHTML)
+                            {
+                                if (String.IsNullOrEmpty(user.CustomName))
+                                {
+                                    if (x.SupportsHTML)
+                                        if (js_style != null)
+                                            x.SendPacket(js_style);
+
+                                    x.SendPacket(TCPOutbound.Public(x, user.Name, text));
+                                }
+                                else
+                                {
+                                    if (x.SupportsHTML)
+                                        if (js_style != null)
+                                            x.SendPacket(js_style);
+
+                                    x.SendPacket(TCPOutbound.NoSuch(x, user.CustomName + text));
+                                }
+                            }
+                            else
+                            {
+                                if (String.IsNullOrEmpty(user.CustomName))
+                                    x.SendPacket(TCPOutbound.Public(x, user.Name, text));
+                                else
+                                    x.SendPacket(TCPOutbound.NoSuch(x, user.CustomName + text));
+                            }
+                        }, x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(user.CustomName) ?
                             ib0t.WebOutbound.PublicTo(x, user.Name, text) : ib0t.WebOutbound.NoSuchTo(x, user.CustomName + text)),
@@ -499,8 +534,23 @@ namespace core.LinkLeaf
 
                     if (!String.IsNullOrEmpty(text))
                     {
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, user.Name, text)),
-                            x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
+                        byte[] js_style = null;
+
+                        if (Settings.Font.Enabled)
+                        {
+                            GlobalFont gfont = (GlobalFont)Settings.Font;
+                            gfont.IsEmote = true;
+                            js_style = TCPOutbound.Font(gfont);
+                        }
+
+                        UserPool.AUsers.ForEachWhere(x =>
+                        {
+                            if (x.SupportsHTML)
+                                if (js_style != null)
+                                    x.SendPacket(js_style);
+
+                            x.SendPacket(TCPOutbound.Emote(x, user.Name, text));
+                        }, x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, user.Name, text)),
                             x => x.LoggedIn && x.Vroom == user.Vroom && !x.IgnoreList.Contains(user.Name) && !x.Quarantined);

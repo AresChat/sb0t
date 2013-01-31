@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+    <!--
+    *
+    {
+        margin: 0px;
+        padding: 0px;
+        text-align: left;
+    }
+
+    BODY
+    {
+        background-color: #FFFFFF;
+        color: #FF0000;
+        font-family: Verdana;
+        font-size: 13px;
+        max-height: 100%;
+        height: 100%;
+    }
+
+    A
+    {
+        text-decoration: none;
+        color: #1122CC;
+    }
+
+    A:VISITED
+    {
+        color: #1122CC;
+    }
+
+    A:HOVER
+    {
+        text-decoration: underline;
+    }
+
+    IMG
+    {
+        position:relative;
+        top:2px;
+    }
+
+    #container
+    {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        z-index: 100;
+        max-height: 100%;
+        height: 100%;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    #chatcont
+    {
+        margin: 4px;
+        padding: 12px 0px 14px 4px;
+    }
+
+    #topiccont
+    {
+        overflow: hidden;
+        background-color: #FFFFFF;
+        color: #000000;
+        position: fixed;
+        top: 0px;
+        z-index: 200;
+        line-height: 21px;
+        height: 21px;
+        padding-left: 4px;
+        width: 3000px;
+        border-style: solid;
+        border-width: 0 0 1px 0;
+        border-color: #C0C0C0;
+        font-family: Verdana;
+        font-size: 13px;
+    }
+    -->
+    </style>
+    <script type="text/javascript">
+        /* START OF CUSTOM FONT STYLING */
+        var style_user = null;
+
+        var test1 = Math.random();
+
+        function init()
+        {
+            document.getElementById("chatcont").addEventListener('DOMSubtreeModified', itemAdded, false);
+        }
+
+        function setUserStyle()
+        {
+            try
+            {
+                var obj = document.getElementById("chatcont");
+                obj = obj.lastChild.firstChild;
+
+                if (obj.nodeName == "INPUT")
+                    if (obj.type == "hidden")
+                    {
+                        obj = obj.value.toString();
+
+                        if (obj.length > 0)
+                        {
+                            obj = decodeURIComponent(obj);
+                            obj = JSON.parse(obj);
+                            style_user = obj;
+                            return true;
+                        }
+                    }
+            }
+            catch (ex) { }
+
+            return false;
+        }
+
+        function itemAdded(e)
+        {
+            if (e.target.id == "chatcont")
+            {
+                if (setUserStyle())
+                    return;
+
+                var style_now = null;
+
+                if (style_user != null)
+                    style_now = style_user;
+                else if (style_global != null)
+                    style_now = style_global;
+
+                if (style_now != null)
+                {
+                    var item = document.getElementById("chatcont").lastChild;
+                    var spans = item.getElementsByTagName("span");
+
+                    if (spans.length > 0)
+                    {
+                        if (style_now.isEmote)
+                        {
+                            var text_span = spans[0];
+
+                            if (style_now.tc != "")
+                                text_span.style.color = style_now.tc;
+                            if (style_now.ff != "")
+                                item.style.fontFamily = style_now.ff;
+                            if (style_now.fs != "")
+                                item.style.fontSize = style_now.fs;
+                        }
+                        else if (spans.length > 1)
+                        {
+                            var name_span = spans[0];
+
+                            if (style_now.nc != "")
+                                name_span.style.color = style_now.nc;
+                            if (style_now.ff != "")
+                                item.style.fontFamily = style_now.ff;
+                            if (style_now.fs != "")
+                                item.style.fontSize = style_now.fs;
+
+                            var text_span = spans[1];
+
+                            if (style_now.tc != "")
+                                text_span.style.color = style_now.tc;
+                        }
+                    }
+
+                    style_user = null;
+                }
+            }
+        }
+        /* END OF CUSTOM FONT STYLING */
+    </script>
+</head>
+
+<body onload="init()">
+    <div id="topiccont"></div>
+    <div id="container">
+        <div id="chatcont">
+
+        </div>
+    </div>
+</body>
+
+</html>

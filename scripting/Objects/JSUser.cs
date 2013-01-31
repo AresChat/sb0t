@@ -11,6 +11,7 @@ namespace scripting.Objects
     class JSUser : ObjectInstance
     {
         private String ScriptName { get; set; }
+        private JSUserFont _font { get; set; }
 
         internal JSUser(ScriptEngine eng)
             : base(eng)
@@ -24,6 +25,7 @@ namespace scripting.Objects
             this.PopulateFunctions();
             this.parent = user;
             this.ScriptName = script;
+            this._font = new JSUserFont(this.Prototype, user, script);
         }
 
         protected override string InternalClassName
@@ -43,6 +45,13 @@ namespace scripting.Objects
 
                 return !this.parent.Cloaked;
             }
+            set { }
+        }
+
+        [JSProperty(Name = "font")]
+        public JSUserFont Font
+        {
+            get { return this._font; }
             set { }
         }
 
@@ -133,13 +142,6 @@ namespace scripting.Objects
         public String ExternalIp
         {
             get { return this.parent.ExternalIP.ToString(); }
-            set { }
-        }
-
-        [JSProperty(Name = "font")]
-        public String Font
-        {
-            get { return this.parent.Font.HasFont ? this.parent.Font.Family : String.Empty; }
             set { }
         }
 
@@ -336,6 +338,13 @@ namespace scripting.Objects
             set { }
         }
 
+        [JSProperty(Name = "canHTML")]
+        public bool CanHTML
+        {
+            get { return this.parent.SupportsHTML; }
+            set { }
+        }
+
         [JSProperty(Name = "joinTime")]
         public double JoinTime
         {
@@ -412,6 +421,13 @@ namespace scripting.Objects
         {
             if (!(a is Undefined) && a != null)
                 this.parent.SendText(a.ToString());
+        }
+
+        [JSFunction(Name = "sendHTML", IsWritable = false, IsEnumerable = true)]
+        public void SendHTML(object a)
+        {
+            if (!(a is Undefined) && a != null)
+                this.parent.SendHTML(a.ToString());
         }
 
         [JSFunction(Name = "setTopic", IsWritable = false, IsEnumerable = true)]

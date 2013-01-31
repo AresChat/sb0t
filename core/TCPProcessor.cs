@@ -364,9 +364,51 @@ namespace core
 
                     if (client.SocketConnected)
                     {
-                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(client.CustomName) ?
-                            TCPOutbound.Public(x, client.Name, text) : TCPOutbound.NoSuch(x, client.CustomName + text)),
-                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
+                        byte[] js_style = null;
+                        AresFont font = (AresFont)client.Font;
+
+                        if (font.Enabled)
+                        {
+                            font.IsEmote = !String.IsNullOrEmpty(client.CustomName);
+                            js_style = TCPOutbound.Font(font);
+                        }
+                        else if (Settings.Font.Enabled)
+                        {
+                            GlobalFont gfont = (GlobalFont)Settings.Font;
+                            gfont.IsEmote = !String.IsNullOrEmpty(client.CustomName);
+                            js_style = TCPOutbound.Font(gfont);
+                        }
+
+                        UserPool.AUsers.ForEachWhere(x =>
+                        {
+                            if (x.SupportsHTML)
+                            {
+                                if (String.IsNullOrEmpty(client.CustomName))
+                                {
+                                    if (x.SupportsHTML)
+                                        if (js_style != null)
+                                            x.SendPacket(js_style);
+
+                                    x.SendPacket(TCPOutbound.Public(x, client.Name, text));
+                                }
+                                else
+                                {
+                                    if (x.SupportsHTML)
+                                        if (js_style != null)
+                                            x.SendPacket(js_style);
+
+                                    x.SendPacket(TCPOutbound.NoSuch(x, client.CustomName + text));
+                                }
+                            }
+                            else
+                            {
+                                if (String.IsNullOrEmpty(client.CustomName))
+                                    x.SendPacket(TCPOutbound.Public(x, client.Name, text));
+                                else
+                                    x.SendPacket(TCPOutbound.NoSuch(x, client.CustomName + text));
+                            }
+                        },
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                         UserPool.WUsers.ForEachWhere(x => x.QueuePacket(String.IsNullOrEmpty(client.CustomName) ?
                             ib0t.WebOutbound.PublicTo(x, client.Name, text) : ib0t.WebOutbound.NoSuchTo(x, client.CustomName + text)),
@@ -416,8 +458,30 @@ namespace core
 
                         if (client.SocketConnected)
                         {
-                            UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.Emote(x, client.Name, text)),
-                                x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
+                            byte[] js_style = null;
+                            AresFont font = (AresFont)client.Font;
+
+                            if (font.Enabled)
+                            {
+                                font.IsEmote = true;
+                                js_style = TCPOutbound.Font(font);
+                            }
+                            else if (Settings.Font.Enabled)
+                            {
+                                GlobalFont gfont = (GlobalFont)Settings.Font;
+                                gfont.IsEmote = true;
+                                js_style = TCPOutbound.Font(gfont);
+                            }
+
+                            UserPool.AUsers.ForEachWhere(x =>
+                            {
+                                if (x.SupportsHTML)
+                                    if (js_style != null)
+                                        x.SendPacket(js_style);
+
+                                x.SendPacket(TCPOutbound.Emote(x, client.Name, text));
+                            },
+                            x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
 
                             UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.EmoteTo(x, client.Name, text)),
                                 x => x.LoggedIn && x.Vroom == client.Vroom && !x.IgnoreList.Contains(client.Name) && !x.Quarantined);
@@ -519,7 +583,7 @@ namespace core
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
-            client.CustomClient = !client.Version.StartsWith("Ares 2.0"); // 2.1.* is now custom :-)
+            client.CustomClient = true; // everyone can be custom client
             client.LocalIP = packet;
             packet.SkipBytes(4);
             client.Browsable = ((byte)packet) > 2 && Settings.Get<bool>("files");
@@ -530,6 +594,10 @@ namespace core
             client.Sex = packet;
             client.Country = packet;
             client.Region = packet.ReadString(client);
+            client.FileCount = client.Browsable && client.Version.StartsWith("Ares") ? client.FileCount : (ushort)0;
+
+            if (client.FileCount == 0)
+                client.Browsable = false;
 
             // new proto data
             if (packet.Remaining > 0)
@@ -537,12 +605,14 @@ namespace core
                 byte vc = packet;
                 client.VoiceChatPublic = ((vc & 1) == 1);
                 client.VoiceChatPrivate = ((vc & 2) == 2);
+                client.SupportsHTML = ((vc & 16) == 16);
             }
 
+            // maybe add encryption in next cbot?
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
 
-            if (client.CustomClient) // client doesn't support file sharing
-                ObSalt.GetSalt(client);
+         //   if (client.Version.StartsWith("cb0t"))
+                ObSalt.GetSalt(client); // client doesn't support file sharing, so protect their external ip from idiots!
 
             client.Captcha = !Settings.Get<bool>("captcha");
 
@@ -603,6 +673,15 @@ namespace core
                     Events.Rejected(client, RejectedMsg.Banned);
                     throw new Exception("banned user");
                 }
+
+            if (client.LocalIP.ToString() == "6.6.6.6" || client.LocalIP.ToString() == "7.8.7.8")
+            {
+                if (hijack != null && hijack is AresClient)
+                    ((AresClient)hijack).SendDepart();
+
+                Events.Rejected(client, RejectedMsg.Banned);
+                throw new Exception("spam bot");
+            }
 
             if (Settings.Get<bool>("age_restrict"))
                 if (client.Age > 0)
@@ -704,7 +783,6 @@ namespace core
                 client.SendPacket(TCPOutbound.UserListEnd());
                 client.SendPacket(TCPOutbound.OpChange(client));
                 client.SendPacket(TCPOutbound.SupportsVoiceClips());
-                client.SendPacket(TCPOutbound.SupportsCustomEmotes());
                 client.SendPacket(TCPOutbound.Url(client, Settings.Get<String>("link", "url"), Settings.Get<String>("text", "url")));
                 client.SendPacket(TCPOutbound.PersonalMessageBot(client));
                 client.SendPacket(Avatars.Server(client));
@@ -734,10 +812,6 @@ namespace core
                     foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                         leaf.Users.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
                             x => x.Vroom == client.Vroom && x.Link.Visible && x.PersonalMessage.Length > 0);
-
-                if (client.CustomClient)
-                    UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.HasFont && !x.Quarantined);
 
                 FloodControl.Remove(client);
 

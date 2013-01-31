@@ -76,24 +76,28 @@ namespace core.Udp
             if (!File.Exists(DataPath))
                 return;
 
-            using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+            try
             {
-                connection.Open();
+                using (SQLiteConnection connection = new SQLiteConnection("Data Source=\"" + DataPath + "\""))
+                {
+                    connection.Open();
 
-                using (SQLiteCommand command = new SQLiteCommand("select * from roomsearch", connection))
-                using (SQLiteDataReader reader = command.ExecuteReader())
-                    while (reader.Read())
-                        primary_list.Push(new UdpChannelItem
-                        {
-                            Name = (String)reader["name"],
-                            Topic = (String)reader["topic"],
-                            Version = (String)reader["version"],
-                            IP = IPAddress.Parse((String)reader["ip"]),
-                            Port = (ushort)(int)reader["port"],
-                            Users = (ushort)(int)reader["users"],
-                            Language = (byte)(int)reader["language"]
-                        });
+                    using (SQLiteCommand command = new SQLiteCommand("select * from roomsearch", connection))
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                        while (reader.Read())
+                            primary_list.Push(new UdpChannelItem
+                            {
+                                Name = (String)reader["name"],
+                                Topic = (String)reader["topic"],
+                                Version = (String)reader["version"],
+                                IP = IPAddress.Parse((String)reader["ip"]),
+                                Port = (ushort)(int)reader["port"],
+                                Users = (ushort)(int)reader["users"],
+                                Language = (byte)(int)reader["language"]
+                            });
+                }
             }
+            catch { }
         }
 
         private static void SaveLocal()

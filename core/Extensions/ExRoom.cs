@@ -14,6 +14,11 @@ namespace core.Extensions
             get { return Settings.VERSION; }
         }
 
+        public IFont Font
+        {
+            get { return Settings.Font; }
+        }
+
         public byte MinimumAge
         {
             get

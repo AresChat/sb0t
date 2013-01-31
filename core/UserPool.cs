@@ -10,11 +10,13 @@ namespace core
     {
         public static List<AresClient> AUsers;
         public static List<ib0t.ib0tClient> WUsers;
+        public static List<WebWorker> WW;
 
         public static void Build()
         {
             AUsers = new List<AresClient>();
             WUsers = new List<ib0t.ib0tClient>();
+            WW = new List<WebWorker>();
         }
 
         public static void Destroy()
@@ -34,6 +36,14 @@ namespace core
                 WUsers.ForEach(x => x.Disconnect());
                 WUsers.Clear();
                 WUsers = null;
+            }
+            catch { }
+
+            try
+            {
+                WW.ForEach(x => x.Disconnect());
+                WW.Clear();
+                WW = null;
             }
             catch { }
         }
@@ -68,6 +78,13 @@ namespace core
                     break;
                 }
             }
+        }
+
+        public static void CreateWW(AresClient client)
+        {
+            WW.Add(new WebWorker(client));
+            client.Sock = null;
+            AUsers.RemoveAll(x => x.ID == client.ID);
         }
 
         public static ushort UserCount

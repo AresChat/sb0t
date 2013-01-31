@@ -28,7 +28,8 @@ namespace core
             {
                 byte[] r = null;
 
-                using (Stream s = new InflaterInputStream(new MemoryStream(data)))
+                using (MemoryStream ms = new MemoryStream(data))
+                using (Stream s = new InflaterInputStream(ms))
                 {
                     List<byte> list = new List<byte>();
                     int count = 0;

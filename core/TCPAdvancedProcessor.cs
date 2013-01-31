@@ -17,10 +17,6 @@ namespace core
 
             switch (msg)
             {
-                case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_FONT:
-                    CustomFont(client, packet.Packet);
-                    break;
-
                 case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_ADD_TAGS:
                     AddClientTag(client, packet.Packet);
                     break;
@@ -53,16 +49,8 @@ namespace core
                     VCIgnore(client, packet.Packet);
                     break;
 
-                case TCPMsg.MSG_CHAT_CLIENT_SUPPORTS_CUSTOM_EMOTES:
-                    SupportsCustomEmotes(client);
-                    break;
-
-                case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_EMOTES_UPLOAD_ITEM:
-                    CustomEmotesUploadItem(client, packet.Packet);
-                    break;
-
-                case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_EMOTE_DELETE:
-                    CustomEmotesDelete(client, packet.Packet);
+                case TCPMsg.MSG_CHAT_CLIENT_FONT:
+                    Font(client, packet.Packet);
                     break;
 
                 default:
@@ -71,50 +59,17 @@ namespace core
             }
         }
 
-        private static void SupportsCustomEmotes(AresClient client)
+        private static void Font(AresClient client, TCPPacketReader packet)
         {
-            if (Settings.Get<bool>("emotes") && !client.CustomEmoticons)
+            if (packet.Remaining == 0)
+                client.Font.Enabled = false;
+            else
             {
-                client.CustomEmoticons = true;
-                client.EmoticonList.Clear();
-
-                UserPool.AUsers.ForEachWhere(x =>
-                {
-                    foreach (CustomEmoticon c in x.EmoticonList)
-                        client.SendPacket(TCPOutbound.CustomEmoteItem(client, x, c));
-                },
-                x => x.CustomEmoticons && !x.Quarantined);
-            }
-        }
-
-        private static void CustomEmotesUploadItem(AresClient client, TCPPacketReader packet)
-        {
-            if (Settings.Get<bool>("emotes"))
-            {
-                SupportsCustomEmotes(client);
-
-                CustomEmoticon c = new CustomEmoticon();
-                c.Shortcut = packet.ReadString(client);
-                c.Size = packet;
-                c.Image = packet;
-                client.EmoticonList.Add(c);
-
-                if (!client.Cloaked)
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteItem(x, client, c)),
-                        x => x.Vroom == client.Vroom && x.CustomEmoticons && !x.Quarantined);
-            }
-        }
-
-        private static void CustomEmotesDelete(AresClient client, TCPPacketReader packet)
-        {
-            if (Settings.Get<bool>("emotes"))
-            {
-                String shortcut = packet.ReadString(client);
-                client.EmoticonList.RemoveAll(x => x.Shortcut == shortcut);
-
-                if (!client.Cloaked)
-                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomEmoteDelete(x, client, shortcut)),
-                        x => x.Vroom == client.Vroom && x.CustomEmoticons && !x.Quarantined);
+                client.Font.Enabled = true;
+                client.Font.FontName = packet.ReadString(client);
+                client.Font.NameColor = packet.ReadString(client);
+                client.Font.TextColor = packet.ReadString(client);
+                client.Font.Size = (int)((byte)packet);
             }
         }
 
@@ -212,32 +167,5 @@ namespace core
                 client.CustomClientTags.RemoveAll(x => x == tag);
             }
         }
-
-        private static void CustomFont(AresClient client, TCPPacketReader packet)
-        {
-            if (packet.Remaining <= 2)
-            {
-                client.Font.HasFont = false;
-                return;
-            }
-
-            client.Font.HasFont = true;
-            client.Font.Size = packet;
-            client.Font.Family = packet.ReadString(client);
-            client.Font.NameColor = packet;
-            client.Font.TextColor = packet;
-            client.Font.NameColorNew = packet;
-            client.Font.TextColorNew = packet;
-
-            if (!client.Cloaked)
-            {
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
-
-                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.FontTo(x, client.Name, client.Font.NameColor, client.Font.TextColor)),
-                    x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
-            }
-        }
-
     }
 }

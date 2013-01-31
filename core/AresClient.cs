@@ -37,15 +37,12 @@ namespace core
         public bool Ghosting { get; set; }
         public uint Cookie { get; set; }
         public List<String> IgnoreList { get; set; }
-        public IFont Font { get; set; }
         public bool CustomClient { get; set; }
         public List<SharedFile> SharedFiles { get; set; }
         public List<String> CustomClientTags { get; set; }
         public bool VoiceChatPublic { get; set; }
         public bool VoiceChatPrivate { get; set; }
         public List<String> VoiceChatIgnoreList { get; set; }
-        public bool CustomEmoticons { get; set; }
-        public List<CustomEmoticon> EmoticonList { get; set; }
         public bool WebClient { get; private set; }
         public bool Owner { get; set; }
         public bool IsHTML { get; private set; }
@@ -58,6 +55,10 @@ namespace core
         public bool IsLeaf { get; set; }
         public ILink Link { get { return new UserLinkCredentials(); } }
         public byte[] Password { get; set; }
+        public bool SupportsHTML { get; set; }
+        public bool IsWebWorker { get; set; }
+
+        public IFont Font { get; set; }
 
         public Socket Sock { get; set; }
         public bool HasSecureLoginAttempted { get; set; }
@@ -89,17 +90,22 @@ namespace core
             this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };
             this.Version = String.Empty;
             this.IgnoreList = new List<String>();
-            this.Font = new core.Font();
             this.SharedFiles = new List<SharedFile>();
             this.CustomClientTags = new List<String>();
             this.VoiceChatIgnoreList = new List<String>();
-            this.EmoticonList = new List<CustomEmoticon>();
             this.CaptchaWord = String.Empty;
             this.Captcha = !Settings.Get<bool>("captcha");
             this.JoinTime = Helpers.UnixTime;
             this.FloodRecord = new core.FloodRecord();
             this.AvatarTimeout = time;
+            this.Font = new AresFont();
             Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+        }
+
+        public void SendHTML(String text)
+        {
+            if (this.SupportsHTML)
+                this.SendPacket(TCPOutbound.HTML(text));
         }
 
         public void Release()
@@ -644,7 +650,13 @@ namespace core
             if (!this.LoggedIn)
                 if (!this.IsHTML)
                     if (this.data_in.Count >= 3)
-                        this.IsHTML = Encoding.Default.GetString(this.data_in.ToArray(), 0, 3).ToUpper() == "GET";
+                    {
+                        String test_str = Encoding.UTF8.GetString(this.data_in.ToArray()).ToUpper();
+                        this.IsHTML = test_str.StartsWith("GET / ");
+                        
+                        if (!this.IsHTML)
+                            this.IsWebWorker = test_str.StartsWith("GET");
+                    }
         }
 
         public void EnforceRules(ulong time)

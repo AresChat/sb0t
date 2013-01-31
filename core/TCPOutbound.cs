@@ -8,6 +8,77 @@ namespace core
 {
     class TCPOutbound
     {
+        public static byte[] HTML(String text)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteString(text, false, true);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_HTML);
+        }
+
+        public static byte[] Font(GlobalFont f)
+        {
+            StringBuilder sb = new StringBuilder("{");
+
+            sb.Append("\"isEmote\":" + f.IsEmote.ToString().ToLower());
+
+            if (!String.IsNullOrEmpty(f.NameColor))
+                sb.Append(",\"nc\":\"" + f.NameColor + "\"");
+            else
+                sb.Append(",\"nc\":\"\"");
+
+            if (!String.IsNullOrEmpty(f.TextColor))
+                sb.Append(",\"tc\":\"" + f.TextColor + "\"");
+            else
+                sb.Append(",\"tc\":\"\"");
+
+            if (!String.IsNullOrEmpty(f.FontName))
+                sb.Append(",\"ff\":\"" + f.FontName + "\"");
+            else
+                sb.Append(",\"ff\":\"\"");
+
+            if (f.Size >= 8 && f.Size <= 18)
+                sb.Append(",\"fs\":\"" + f.Size + "px\"");
+            else
+                sb.Append(",\"fs\":\"\"");
+
+            sb.Append("}");
+
+            String html = "<input type=\"hidden\" value=\"" + Uri.EscapeDataString(sb.ToString()) + "\" />";
+            return HTML(html);
+        }
+
+        public static byte[] Font(AresFont f)
+        {
+            StringBuilder sb = new StringBuilder("{");
+
+            sb.Append("\"isEmote\":" + f.IsEmote.ToString().ToLower());
+
+            if (!String.IsNullOrEmpty(f.NameColor))
+                sb.Append(",\"nc\":\"" + f.NameColor + "\"");
+            else
+                sb.Append(",\"nc\":\"\"");
+
+            if (!String.IsNullOrEmpty(f.TextColor))
+                sb.Append(",\"tc\":\"" + f.TextColor + "\"");
+            else
+                sb.Append(",\"tc\":\"\"");
+
+            if (!String.IsNullOrEmpty(f.FontName))
+                sb.Append(",\"ff\":\"" + f.FontName + "\"");
+            else
+                sb.Append(",\"ff\":\"\"");
+
+            if (f.Size >= 8 && f.Size <= 18)
+                sb.Append(",\"fs\":\"" + f.Size + "px\"");
+            else
+                sb.Append(",\"fs\":\"\"");
+
+            sb.Append("}");
+
+            String html = "<input type=\"hidden\" value=\"" + Uri.EscapeDataString(sb.ToString()) + "\" />";
+            return HTML(html);
+        }
+
         public static byte[] Ack(AresClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
@@ -48,7 +119,8 @@ namespace core
             packet.WriteString(client, target.Region);
 
             byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
-                           ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC));
+                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC) |
+                            ((client.SupportsHTML ? 0 : 1) * CLIENT_SUPPORTS_HTML));
 
             packet.WriteByte(b);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_JOIN);
@@ -65,6 +137,7 @@ namespace core
         private const int CLIENT_SUPPORTS_PM_VC = 2;
         private const int CLIENT_SUPPORTS_OPUS_VC = 4;
         private const int CLIENT_SUPPORTS_OPUS_PM_VC = 8;
+        private const int CLIENT_SUPPORTS_HTML = 16;
 
         public static byte[] Userlist(AresClient client, IClient target)
         {
@@ -86,7 +159,8 @@ namespace core
             packet.WriteString(client, target.Region);
 
             byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
-                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC));
+                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC) |
+                            ((client.SupportsHTML ? 0 : 1) * CLIENT_SUPPORTS_HTML));
 
             packet.WriteByte(b);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CHANNEL_USER_LIST);
@@ -149,6 +223,7 @@ namespace core
         private const int SERVER_SUPPORTS_OPUS_VC = 16;
         private const int SERVER_SUPPORTS_ROOM_SCRIBBLES = 32;
         private const int SERVER_SUPPORTS_PM_SCRIBBLES = 64;
+        private const int SERVER_SUPPORTS_HTML = 128;
 
         public static byte[] MyFeatures(AresClient client)
         {
@@ -158,7 +233,8 @@ namespace core
             byte flag = (byte)(SERVER_SUPPORTS_PVT |
                                SERVER_SUPPORTS_SHARING |
                                SERVER_SUPPORTS_COMPRESSION |
-                               SERVER_SUPPORTS_VC);
+                               SERVER_SUPPORTS_VC |
+                               SERVER_SUPPORTS_HTML);
 
             packet.WriteByte(flag);
 
@@ -279,27 +355,6 @@ namespace core
             packet.WriteString(client, username);
             packet.WriteString(client, text, false);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_EMOTE);
-        }
-
-        public static byte[] CustomFont(AresClient client, IClient target)
-        {
-            TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteString(client, target.Name); // user's name + null
-            packet.WriteByte(target.Font.Size); // limited to between 8 to 16
-            packet.WriteString(client, target.Font.Family); // null terminated
-            packet.WriteByte(target.Font.NameColor);
-            packet.WriteByte(target.Font.TextColor);
-
-            if (target.Font.NameColorNew != null && target.Font.TextColorNew != null)
-            {
-                packet.WriteBytes(target.Font.NameColorNew);
-                packet.WriteBytes(target.Font.TextColorNew);
-            }
-
-            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_FONT); // id = 204
-            packet = new TCPPacketWriter();
-            packet.WriteBytes(buf);
-            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
         }
 
         public static byte[] Private(IClient client, String username, String text)
@@ -515,40 +570,6 @@ namespace core
             packet.WriteString(client, sender);
             packet.WriteBytes(buffer);
             byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_VC_CHUNK_FROM);
-            packet = new TCPPacketWriter();
-            packet.WriteBytes(buf);
-            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
-        }
-
-        public static byte[] SupportsCustomEmotes()
-        {
-            TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteByte(16);
-            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_SUPPORTS_CUSTOM_EMOTES);
-            packet = new TCPPacketWriter();
-            packet.WriteBytes(buf);
-            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
-        }
-
-        public static byte[] CustomEmoteItem(AresClient client, AresClient target, CustomEmoticon item)
-        {
-            TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteString(client, target.Name);
-            packet.WriteString(client, item.Shortcut);
-            packet.WriteByte(item.Size);
-            packet.WriteBytes(item.Image);
-            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_EMOTES_ITEM);
-            packet = new TCPPacketWriter();
-            packet.WriteBytes(buf);
-            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
-        }
-
-        public static byte[] CustomEmoteDelete(AresClient client, AresClient target, String shortcut)
-        {
-            TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteString(client, target.Name);
-            packet.WriteString(client, shortcut);
-            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_EMOTE_DELETE);
             packet = new TCPPacketWriter();
             packet.WriteBytes(buf);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);

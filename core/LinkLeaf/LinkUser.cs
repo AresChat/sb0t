@@ -9,6 +9,7 @@ namespace core.LinkLeaf
 {
     class LinkUser : IClient, IUser
     {
+        public bool SupportsHTML { get { return false; } }
         public uint JoinTime { get; set; }
         public ushort ID { get { return 999; } }
         public IPAddress ExternalIP { get; set; }
@@ -30,7 +31,6 @@ namespace core.LinkLeaf
         public ILevel Level { get; set; }
         public bool Ghosting { get { return false; } set { } }
         public List<String> IgnoreList { get { return new List<String>(); } set { } }
-        public IFont Font { get { return new Font(); } set { } }
         public bool CustomClient { get; set; }
         public List<String> CustomClientTags { get { return new List<String>(); } set { } }
         public bool WebClient { get; set; }
@@ -54,6 +54,9 @@ namespace core.LinkLeaf
         public byte[] Password { get; set; }
 
         public void SetLevel(ILevel level) { }
+        public void SendHTML(String text) { }
+
+        public IFont Font { get; set; }
 
         public void Scribble(String sender, byte[] img, int height)
         {
@@ -238,6 +241,7 @@ namespace core.LinkLeaf
         {
             this._avatar = new byte[] { };
             this._personalmessage = String.Empty;
+            this.Font = new AresFont();
 
             this.LinkCredentials = new UserLinkCredentials
             {

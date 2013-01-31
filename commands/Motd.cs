@@ -11,6 +11,16 @@ namespace commands
     {
         private static List<String> lines = new List<String>();
 
+        private static String yt = "<div style=\"margin-left: 2px;\"><object width=\"420\" height=\"315\">" +
+                                   "<param name=\"movie\" value=\"https://www.youtube.com/v/LINK?version=3&autoplay=0\"></param>" +
+                                   "<param name=\"allowScriptAccess\" value=\"always\"></param>" +
+                                   "<embed src=\"https://www.youtube.com/v/LINK?version=3&autoplay=0\" " +
+                                   "type=\"application/x-shockwave-flash\" " +
+                                   "allowscriptaccess=\"always\" " +
+                                   "wmode=\"opaque\" " +
+                                   "width=\"420\" height=\"315\"></embed>" +
+                                   "</object></div>";
+
         public static void LoadMOTD()
         {
             try
@@ -55,19 +65,40 @@ namespace commands
 
             foreach (String str in lines)
             {
-                String s = str;
-                s = s.Replace("+n", client.Name);
-                s = s.Replace("+ip", client.ExternalIP.ToString());
-                s = s.Replace("+id", client.ID.ToString());
-                s = s.Replace("+f", client.FileCount.ToString());
-                s = s.Replace("+v", client.Version);
-                s = s.Replace("+p", client.DataPort.ToString());
-                s = s.Replace("+uc", Server.Stats.CurrentUserCount.ToString());
-                s = s.Replace("+rn", Server.Chatroom.Name);
-                s = s.Replace("+ut", Helpers.GetUptime);
-                s = s.Replace("+ru", rnd_user);
-                s = s.Replace("+l", _str);
-                client.Print(Helpers.SetColors(s));
+                String html = str.Trim();
+
+                if (html.StartsWith("[youtube=") && html.EndsWith("]") && client.SupportsHTML)
+                {
+                    html = html.Substring(9, html.Length - 10);
+                    html = yt.Replace("LINK", html);
+                    client.SendHTML(html);
+                }
+                else if (html.StartsWith("[image=") && html.EndsWith("]") && client.SupportsHTML)
+                {
+                    html = html.Substring(7, html.Length - 8);
+                    html = "<img src=\"" + html + "\" style=\"max-width: 420px; max-height: 420px;\" alt=\"\" />";
+                    client.SendHTML(html);
+                }
+                else
+                {
+                    String s = str;
+                    s = s.Replace("+n", client.Name);
+                    s = s.Replace("+ip", client.ExternalIP.ToString());
+                    s = s.Replace("+id", client.ID.ToString());
+                    s = s.Replace("+f", client.FileCount.ToString());
+                    s = s.Replace("+v", client.Version);
+                    s = s.Replace("+p", client.DataPort.ToString());
+                    s = s.Replace("+uc", Server.Stats.CurrentUserCount.ToString());
+                    s = s.Replace("+rn", Server.Chatroom.Name);
+                    s = s.Replace("+ut", Helpers.GetUptime);
+                    s = s.Replace("+ru", rnd_user);
+                    s = s.Replace("+l", _str);
+
+                    if (s.Length == 0)
+                        s = " ";
+
+                    client.Print(Helpers.SetColors(s));
+                }
             }
         }
 
