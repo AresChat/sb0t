@@ -69,6 +69,7 @@
     <Compile Include="CaptchaManager.cs" />
     <Compile Include="ChatLog.cs" />
     <Compile Include="Crypto.cs" />
+    <Compile Include="DoOnce.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Extensions\ExAccounts.cs" />
     <Compile Include="Extensions\ExChannels.cs" />
@@ -196,6 +197,7 @@
   <ItemGroup>
     <None Include="Libraries\dictionary.aff" />
     <None Include="Libraries\dictionary.dic" />
+    <None Include="Resources\sb0t.dat" />
     <None Include="Resources\servers.dat" />
     <None Include="Resources\template.dat" />
     <None Include="Resources\web.dat" />

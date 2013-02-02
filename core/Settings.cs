@@ -11,7 +11,7 @@ namespace core
 {
     public class Settings
     {
-        public const String VERSION = "sb0t 5.05";
+        public const String VERSION = "sb0t 5.06";
         public const ushort LINK_PROTO = 500;
 
         public static bool RUNNING { get; set; }
@@ -26,6 +26,7 @@ namespace core
             port = 0;
             name = null;
             language = 0;
+            hide_ips = 0;
 
             WebPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
                       "\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\Style";
@@ -34,19 +35,27 @@ namespace core
             {
                 Directory.CreateDirectory(WebPath);
                 WebPath += "\\";
-
-                try
-                {
-                    File.WriteAllBytes(WebPath + "template.htm", Resource1.template);
-                }
-                catch { }
             }
             else WebPath += "\\";
+
+            DoOnce.Run();
         }
 
         public static void ScriptCanLevel(bool can)
         {
             Events.ScriptCanLevel(can);
+        }
+
+        private static int hide_ips = 0;
+        public static bool HideIps
+        {
+            get
+            {
+                if (hide_ips == 0)
+                    hide_ips = Get<bool>("hide_ips") ? 2 : 1;
+
+                return hide_ips == 2;
+            }
         }
 
         private static IPAddress externalip { get; set; }

@@ -53,7 +53,8 @@ namespace scripting.Instances
                     Callback = this.Callback,
                     Data = null,
                     ScriptName = this.Engine.ScriptName,
-                    Arg = arg
+                    Arg = arg,
+                    URL = this.Source
                 };
 
                 try

@@ -302,10 +302,6 @@ namespace core.LinkLeaf
             String ident = packet.ReadString(link);
             byte[] data = packet;
 
-            if (ident.StartsWith("cb0t_scribble_"))
-                if (!Settings.Get<bool>("full_scribble"))
-                    return;
-
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, sender, ident, data)),
                 x => x.LoggedIn && x.Vroom == vroom && x.CustomClient && !x.Quarantined);
         }

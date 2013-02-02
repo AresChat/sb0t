@@ -163,6 +163,7 @@ namespace gui
             this.checkBox22.IsEnabled = !running;
             this.checkBox23.IsEnabled = !running;
             this.checkBox30.IsEnabled = !running;
+            this.checkBox18.IsEnabled = !running;
         }
 
         private void Window_SourceInitialized(object sender, EventArgs e)
@@ -318,7 +319,7 @@ namespace gui
             else if (cb.Name == "checkBox16")
                 Settings.Set("reject_unknown", this.checkBox16.IsChecked);
             else if (cb.Name == "checkBox18")
-                Settings.Set("full_scribble", this.checkBox18.IsChecked);
+                Settings.Set("hide_ips", this.checkBox18.IsChecked);
             else if (cb.Name == "checkBox19")
                 Settings.Set("local_host", this.checkBox19.IsChecked);
             else if (cb.Name == "checkBox20")

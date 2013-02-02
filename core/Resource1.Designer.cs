@@ -63,6 +63,16 @@ namespace core {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] sb0t {
+            get {
+                object obj = ResourceManager.GetObject("sb0t", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] template {
             get {
                 object obj = ResourceManager.GetObject("template", resourceCulture);

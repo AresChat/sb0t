@@ -134,8 +134,8 @@ namespace gui
             }
 
             this.textBox5.Text = ib;
-            //full scribble
-            this.checkBox18.IsChecked = Settings.Get<bool>("full_scribble");
+            //hide ips
+            this.checkBox18.IsChecked = Settings.Get<bool>("hide_ips");
             //preferred language
             this.comboBox3.SelectedIndex = this.AresLanguageToComboBoxLangauge();
             //local host

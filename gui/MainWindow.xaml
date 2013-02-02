@@ -221,7 +221,7 @@
                             </ComboBox>
                             <TextBox Canvas.Left="26" Canvas.Top="139" Height="23" Name="textBox5" Width="290" TextChanged="TextBoxTextChanged" />
                             <TextBox Canvas.Left="26" Canvas.Top="183" Height="23" Name="textBox6" Width="120" TextChanged="TextBoxTextChanged" />
-                            <CheckBox Canvas.Left="26" Canvas.Top="60" Content="Enable full room scribbles" Height="16" Name="checkBox18" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="26" Canvas.Top="60" Content="Hide IP addresses" Height="16" Name="checkBox18" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="26" Canvas.Top="96" Content="Local clients auto login" Height="16" Name="checkBox19" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Label Canvas.Left="21" Canvas.Top="115" Content="ib0t channel list receiver script:" Height="28" Name="label16" />
                             <Label Canvas.Left="21" Canvas.Top="161" Content="UDP host address:" Height="28" Name="label17" />

@@ -13,6 +13,7 @@ namespace core
         private List<byte> data_in = new List<byte>();
         private List<byte[]> data_out = new List<byte[]>();
         private WWItem current_item = new WWItem();
+        public String UserName { get; set; }
 
         public Socket Sock { get; set; }
         public bool Dead { get; set; }
@@ -21,6 +22,7 @@ namespace core
         {
             this.Sock = client.Sock;
             this.data_in.AddRange(client.ReceiveDump);
+            this.UserName = String.Empty;
         }
 
         private int socket_health = 0;
@@ -86,7 +88,13 @@ namespace core
                                 this.current_item.FileName = this.current_item.FileName.Substring(0, this.current_item.FileName.IndexOf(" "));
 
                             if (this.current_item.FileName.IndexOf("?") > -1)
+                            {
+                                this.current_item.QueryString = new QueryStringCollection(this.current_item.FileName.Substring(this.current_item.FileName.IndexOf("?") + 1));                                
                                 this.current_item.FileName = this.current_item.FileName.Substring(0, this.current_item.FileName.IndexOf("?"));
+
+                                if (this.current_item.QueryString["user"] != null)
+                                    this.UserName = this.current_item.QueryString["user"];
+                            }
                         }
                         else if (line.ToUpper().StartsWith("CONTENT-LENGTH:"))
                         {
@@ -119,6 +127,25 @@ namespace core
                     try
                     {
                         byte[] content = File.ReadAllBytes(Settings.WebPath + filename);
+
+                        if (filename == "template.htm")
+                        {
+                            String html = Encoding.UTF8.GetString(content).Replace("\"sb0t.js\"", "\"sb0t.js?r=" + Helpers.UnixTime + "\"");
+                            int index = html.ToUpper().IndexOf("<HEAD>");
+
+                            if (index > -1)
+                            {
+                                StringBuilder sb = new StringBuilder();
+                                sb.AppendLine();
+                                sb.AppendLine("<script>");
+                                sb.AppendLine("<!--");
+                                sb.AppendLine("    var my_username = \"" + this.UserName + "\";");
+                                sb.AppendLine("-->");
+                                sb.Append("</script>");
+                                content = Encoding.UTF8.GetBytes(html.Insert((index + 6), sb.ToString()));
+                            }
+                        }
+
                         content = Zip.Compress(content);
                         String mime = this.GetMIME(filename.ToLower());
                         byte[] header = this.BuildHeader(mime, content.Length);
@@ -132,7 +159,16 @@ namespace core
                 }
                 else
                 {
-                    this.data_out.Add(this.Build404());
+                    if (filename == "sb0t.js") // dynamic
+                    {
+                        byte[] content = Resource1.sb0t;
+                        content = Zip.Compress(content);
+                        String mime = this.GetMIME(filename.ToLower());
+                        byte[] header = this.BuildHeader(mime, content.Length);
+                        this.data_out.Add(header);
+                        this.data_out.Add(content);
+                    }
+                    else this.data_out.Add(this.Build404());
                 }
             }
         }
@@ -149,7 +185,6 @@ namespace core
             sb.AppendLine("HTTP/1.1 200 OK");
             sb.AppendLine("Date: " + this.BuildTimestamp(DateTime.Now.ToUniversalTime()));
             sb.AppendLine("Server: sb0t style server");
-            sb.AppendLine("Last-Modified: " + this.BuildTimestamp(DateTime.Now.ToUniversalTime()));
             sb.AppendLine("Connection: keep-alive");
             sb.AppendLine("Accept-Ranges: bytes");
             sb.AppendLine("Content-Length: " + len);
@@ -221,9 +256,6 @@ namespace core
             if (path.EndsWith(".htm"))
                 return "text/html; charset=utf-8";
 
-            if (path.EndsWith(".sb0t"))
-                return "text/html; charset=utf-8";
-
             if (path.EndsWith(".txt"))
                 return "text/plain; charset=utf-8";
 
@@ -232,6 +264,24 @@ namespace core
 
             if (path.EndsWith(".js"))
                 return "text/javascript; charset=utf-8";
+
+            if (path.EndsWith(".wav"))
+                return "audio/vnd.wave";
+
+            if (path.EndsWith(".mpeg") || path.EndsWith(".mp3"))
+                return "audio/mpeg";
+
+            if (path.EndsWith(".ogg"))
+                return "video/ogg";
+
+            if (path.EndsWith(".oga"))
+                return "audio/ogg";
+
+            if (path.EndsWith(".mp4") || path.EndsWith(".m4v"))
+                return "video/mp4";
+
+            if (path.EndsWith(".m4a"))
+                return "audio/mp4";
 
             return "text/plain; charset=utf-8";
         }
@@ -256,12 +306,66 @@ namespace core
         public String FileName { get; set; }
         public int ContentLength = 0;
         public bool GotHeader { get; set; }
+        public QueryStringCollection QueryString { get; set; }
 
         public WWItem()
         {
             this.ContentLength = 0;
             this.GotHeader = false;
             this.FileName = null;
+            this.QueryString = null;
         }
+    }
+
+    class QueryStringCollection
+    {
+        private List<QueryStringItem> list { get; set; }
+
+        public QueryStringCollection(String raw)
+        {
+            this.list = new List<QueryStringItem>();
+            String[] items = raw.Split(new String[] { "&" }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (String str in items)
+            {
+                String[] kv = str.Split(new String[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (kv.Length > 0)
+                {
+                    String key = Uri.UnescapeDataString(kv[0]).ToUpper();
+                    String value = String.Empty;
+
+                    if (kv.Length > 0)
+                        value = Uri.UnescapeDataString(String.Join("=", kv.Skip(1).ToArray()));
+
+                    this.list.Add(new QueryStringItem { Key = key, Value = value, Raw = str });
+                }
+            }
+        }
+
+        public String GetRaw(String key)
+        {
+            return this.list.Find(x => x.Key == key.ToUpper()).Raw;
+        }
+
+        public String this[String key]
+        {
+            get
+            {
+                QueryStringItem item = this.list.Find(x => x.Key == key.ToUpper());
+
+                if (item != null)
+                    return item.Value;
+
+                return null;
+            }
+        }
+    }
+
+    class QueryStringItem
+    {
+        public String Key { get; set; }
+        public String Value { get; set; }
+        public String Raw { get; set; }
     }
 }

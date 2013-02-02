@@ -761,8 +761,24 @@ namespace commands
         {
             if (admin.Level >= Server.GetLevel("clearscreen"))
             {
-                for (int i = 0; i < 500; i++)
-                    Server.Print(String.Empty);
+                Server.Users.Web(x =>
+                {
+                    for (int i = 0; i < 500; i++)
+                        x.Print(String.Empty);
+                });
+
+                Server.Users.Ares(x =>
+                {
+                    if (!x.SupportsHTML)
+                    {
+                        for (int i = 0; i < 500; i++)
+                            x.Print(String.Empty);
+                    }
+                    else
+                    {
+                        x.SendHTML("<input type=\"hidden\" value=\"CMD:CLEARSCREEN\" />");
+                    }
+                });
 
                 Server.Print(Template.Text(Category.Notification, 14).Replace("+n", Settings.Stealth ? Server.Chatroom.Name : admin.Name));
             }

@@ -165,8 +165,8 @@ namespace gui
             english["checkBox7"] = "Enable file browsing";
             spanish["checkBox7"] = "Habilitar navegación de archivos";
 
-            english["checkBox18"] = "Enable full room scribbles";
-            spanish["checkBox18"] = "Habilitar todos los scribbles en la sala";
+            english["checkBox18"] = "Hide IP addresses";
+            spanish["checkBox18"] = "Esconder la dirección IP";
 
             english["checkBox23"] = "Enable room search";
             spanish["checkBox23"] = "Habilitar la búsqueda de salas";

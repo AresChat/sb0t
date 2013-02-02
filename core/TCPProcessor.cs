@@ -504,10 +504,6 @@ namespace core
             String ident = packet.ReadString(client);
             byte[] data = packet;
 
-            if (ident.StartsWith("cb0t_scribble_"))
-                if (!Settings.Get<bool>("full_scribble"))
-                    return;
-
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, client.Name, ident, data)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined);
 

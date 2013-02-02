@@ -47,9 +47,9 @@ namespace core.LinkLeaf
             packet.WriteString(x, client.Version);
             packet.WriteGuid(client.Guid);
             packet.WriteUInt16(client.FileCount);
-            packet.WriteIP(client.ExternalIP);
-            packet.WriteIP(client.LocalIP);
-            packet.WriteUInt16(client.DataPort);
+            packet.WriteIP(Settings.HideIps ? IPAddress.Parse("0.0.0.0") : client.ExternalIP);
+            packet.WriteIP(Settings.HideIps ? IPAddress.Parse("0.0.0.0") : client.LocalIP);
+            packet.WriteUInt16(Settings.HideIps ? (ushort)0 : client.DataPort);
             packet.WriteString(x, client.DNS);
             packet.WriteByte((byte)(client.Browsable ? 1 : 0));
             packet.WriteByte(client.Age);
@@ -78,9 +78,9 @@ namespace core.LinkLeaf
             packet.WriteString(x, client.Version);
             packet.WriteGuid(client.Guid);
             packet.WriteUInt16(client.FileCount);
-            packet.WriteIP(client.ExternalIP);
-            packet.WriteIP(client.LocalIP);
-            packet.WriteUInt16(client.DataPort);
+            packet.WriteIP(Settings.HideIps ? IPAddress.Parse("0.0.0.0") : client.ExternalIP);
+            packet.WriteIP(Settings.HideIps ? IPAddress.Parse("0.0.0.0") : client.LocalIP);
+            packet.WriteUInt16(Settings.HideIps ? (ushort)0 : client.DataPort);
             packet.WriteString(x, client.DNS);
             packet.WriteByte((byte)(client.Browsable ? 1 : 0));
             packet.WriteByte(client.Age);

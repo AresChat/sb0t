@@ -1,0 +1,112 @@
+var style_user = null;
+
+function init()
+{
+    document.getElementById("chatcont").addEventListener('DOMSubtreeModified', itemAdded, false);
+    window.onunload = unset;
+}
+
+function unset()
+{
+    document.getElementById("chatcont").removeEventListener('DOMSubtreeModified', itemAdded, false);
+}
+
+function setUserStyle()
+{
+    try
+    {
+        var obj = document.getElementById("chatcont");
+        obj = obj.lastChild.firstChild;
+
+        if (obj.nodeName == "INPUT")
+            if (obj.type == "hidden")
+            {
+                obj = obj.value.toString();
+
+                if (obj.length > 0)
+                {
+                    if (obj.indexOf("CMD:") == 0)
+                    {
+                        obj = obj.substr(4);
+
+                        switch (obj)
+                        {
+                            case "CLEARSCREEN":
+                                document.getElementById("chatcont").removeEventListener('DOMSubtreeModified', itemAdded, false);
+                                obj = document.getElementById("chatcont");
+
+                                while (obj.hasChildNodes())
+                                    obj.removeChild(obj.lastChild);
+
+                                document.getElementById("chatcont").addEventListener('DOMSubtreeModified', itemAdded, false);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        obj = decodeURIComponent(obj);
+                        obj = JSON.parse(obj);
+                        style_user = obj;
+                    }
+
+                    return true;
+                }
+            }
+    }
+    catch (ex) { }
+
+    return false;
+}
+
+function itemAdded(e)
+{
+    if (e.target.id == "chatcont")
+    {
+        if (setUserStyle())
+            return;
+
+        var style_now = null;
+
+        if (style_user != null)
+            style_now = style_user;
+
+        if (style_now != null)
+        {
+            var item = document.getElementById("chatcont").lastChild;
+            var spans = item.getElementsByTagName("span");
+
+            if (spans.length > 0)
+            {
+                if (style_now.isEmote)
+                {
+                    var text_span = spans[0];
+
+                    if (style_now.tc != "")
+                        text_span.style.color = style_now.tc;
+                    if (style_now.ff != "")
+                        item.style.fontFamily = style_now.ff;
+                    if (style_now.fs != "")
+                        item.style.fontSize = style_now.fs;
+                }
+                else if (spans.length > 1)
+                {
+                    var name_span = spans[0];
+
+                    if (style_now.nc != "")
+                        name_span.style.color = style_now.nc;
+                    if (style_now.ff != "")
+                        item.style.fontFamily = style_now.ff;
+                    if (style_now.fs != "")
+                        item.style.fontSize = style_now.fs;
+
+                    var text_span = spans[1];
+
+                    if (style_now.tc != "")
+                        text_span.style.color = style_now.tc;
+                }
+            }
+
+            style_user = null;
+        }
+    }
+}

@@ -79,6 +79,18 @@ namespace commands
                     html = "<img src=\"" + html + "\" style=\"max-width: 420px; max-height: 420px;\" alt=\"\" />";
                     client.SendHTML(html);
                 }
+                else if (html.StartsWith("[audio=") && html.EndsWith("]") && client.SupportsHTML)
+                {
+                    html = html.Substring(7, html.Length - 8);
+                    html = "<audio src=\"" + html + "\" autoplay />";
+                    client.SendHTML(html);
+                }
+                else if (html.StartsWith("[video=") && html.EndsWith("]") && client.SupportsHTML)
+                {
+                    html = html.Substring(7, html.Length - 8);
+                    html = "<video src=\"" + html + "\" width=\"420\" height=\"315\" controls />";
+                    client.SendHTML(html);
+                }
                 else
                 {
                     String s = str;
