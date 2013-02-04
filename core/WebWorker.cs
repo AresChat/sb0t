@@ -80,9 +80,18 @@ namespace core
                     {
                         String line = this.data_in.TakeLine();
 
-                        if (line.ToUpper().StartsWith("GET /"))
+                        if (line.ToUpper().StartsWith("GET /") || line.ToUpper().StartsWith("HEAD /"))
                         {
-                            this.current_item.FileName = line.Substring(5);
+                            if (line.ToUpper().StartsWith("GET /"))
+                            {
+                                this.current_item.FileName = line.Substring(5);
+                                this.current_item.RequestType = HttpRequestType.Get;
+                            }
+                            else
+                            {
+                                this.current_item.FileName = line.Substring(6);
+                                this.current_item.RequestType = HttpRequestType.Head;
+                            }
 
                             if (this.current_item.FileName.IndexOf(" ") > -1)
                                 this.current_item.FileName = this.current_item.FileName.Substring(0, this.current_item.FileName.IndexOf(" "));
@@ -95,6 +104,8 @@ namespace core
                                 if (this.current_item.QueryString["user"] != null)
                                     this.UserName = this.current_item.QueryString["user"];
                             }
+
+                            this.current_item.FileName = Uri.UnescapeDataString(this.current_item.FileName);
                         }
                         else if (line.ToUpper().StartsWith("CONTENT-LENGTH:"))
                         {
@@ -122,7 +133,40 @@ namespace core
         {
             if (filename != null)
             {
-                if (File.Exists(Settings.WebPath + filename) && !this.IsBadName(filename))
+                if (filename == "favicon.ico")
+                {
+                    byte[] content = Resource1.fi;
+                    String mime = this.GetMIME(filename.ToLower());
+                    byte[] header = this.BuildHeader(mime, content.Length, false);
+                    this.data_out.Add(header);
+
+                    if (this.current_item.RequestType != HttpRequestType.Head)
+                        this.data_out.Add(content);
+                }
+                else if (filename == "sb0t.js")
+                {
+                    byte[] content = Resource1.sb0t;
+                    content = Zip.GCompress(content);
+                    String mime = this.GetMIME(filename.ToLower());
+                    byte[] header = this.BuildHeader(mime, content.Length, true);
+                    this.data_out.Add(header);
+
+                    if (this.current_item.RequestType != HttpRequestType.Head)
+                        this.data_out.Add(content);
+                }
+                else if (filename == "font.htm") // ajax callback from default sbot template
+                {
+                    this.ParseFont();
+                    byte[] content = new byte[] { 79, 75 };
+                    content = Zip.GCompress(content);
+                    String mime = this.GetMIME(filename.ToLower());
+                    byte[] header = this.BuildHeader(mime, content.Length, true);
+                    this.data_out.Add(header);
+
+                    if (this.current_item.RequestType != HttpRequestType.Head)
+                        this.data_out.Add(content);
+                }
+                else if (File.Exists(Settings.WebPath + filename) && !this.IsBadName(filename))
                 {
                     try
                     {
@@ -146,41 +190,37 @@ namespace core
                             }
                         }
 
-                        content = Zip.GCompress(content);
+                        bool compress = this.ShouldCompress(filename);
+
+                        if (compress)
+                            content = Zip.GCompress(content);
+
                         String mime = this.GetMIME(filename.ToLower());
-                        byte[] header = this.BuildHeader(mime, content.Length);
+                        byte[] header = this.BuildHeader(mime, content.Length, compress);
                         this.data_out.Add(header);
-                        this.data_out.Add(content);
+
+                        if (this.current_item.RequestType != HttpRequestType.Head)
+                            this.data_out.Add(content);
                     }
                     catch
                     {
                         this.data_out.Add(this.Build404());
                     }
                 }
-                else
-                {
-                    if (filename == "sb0t.js") // dynamic
-                    {
-                        byte[] content = Resource1.sb0t;
-                        content = Zip.GCompress(content);
-                        String mime = this.GetMIME(filename.ToLower());
-                        byte[] header = this.BuildHeader(mime, content.Length);
-                        this.data_out.Add(header);
-                        this.data_out.Add(content);
-                    }
-                    else if (filename == "font.htm") // dynamic
-                    {
-                        this.ParseFont();
-                        byte[] content = new byte[] { 79, 75 };
-                        content = Zip.GCompress(content);
-                        String mime = this.GetMIME(filename.ToLower());
-                        byte[] header = this.BuildHeader(mime, content.Length);
-                        this.data_out.Add(header);
-                        this.data_out.Add(content);
-                    }
-                    else this.data_out.Add(this.Build404());
-                }
+                else this.data_out.Add(this.Build404());
             }
+        }
+
+        private bool ShouldCompress(String filename)
+        {
+            String f = filename.ToUpper();
+
+            return f.EndsWith(".HTM") ||
+                   f.EndsWith(".HTML") ||
+                   f.EndsWith(".CSS") ||
+                   f.EndsWith(".JS") ||
+                   f.EndsWith(".TXT") ||
+                   f.EndsWith(".BMP");
         }
 
         private void ParseFont()
@@ -224,7 +264,7 @@ namespace core
             "\\"
         };
 
-        private byte[] BuildHeader(String mime, int len)
+        private byte[] BuildHeader(String mime, int len, bool compress)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("HTTP/1.1 200 OK");
@@ -233,7 +273,10 @@ namespace core
             sb.AppendLine("Connection: keep-alive");
             sb.AppendLine("Accept-Ranges: bytes");
             sb.AppendLine("Content-Length: " + len);
-            sb.AppendLine("Content-Encoding: gzip");
+
+            if (compress)
+                sb.AppendLine("Content-Encoding: gzip");
+
             sb.AppendLine("Content-Type: " + mime);
             sb.AppendLine("");
 
@@ -283,52 +326,26 @@ namespace core
 
         private String GetMIME(String path)
         {
-            if (path.EndsWith(".gif"))
-                return "image/gif";
+            if (path.EndsWith(".gif")) return "image/gif";
+            if (path.EndsWith(".jpg")) return "image/jpg";
+            if (path.EndsWith(".bmp")) return "image/bmp";
+            if (path.EndsWith(".png")) return "image/png";
+            if (path.EndsWith(".ico")) return "image/ico";
+            if (path.EndsWith(".html")) return "text/html; charset=utf-8";
+            if (path.EndsWith(".htm")) return "text/html; charset=utf-8";
+            if (path.EndsWith(".txt")) return "text/plain; charset=utf-8";
+            if (path.EndsWith(".css")) return "text/css";
+            if (path.EndsWith(".js")) return "text/javascript; charset=utf-8";
+            if (path.EndsWith(".wav")) return "audio/vnd.wave";
+            if (path.EndsWith(".mp3")) return "audio/mpeg";
+            if (path.EndsWith(".ogg")) return "video/ogg";
+            if (path.EndsWith(".oga")) return "audio/ogg";
+            if (path.EndsWith(".mpg") || path.EndsWith(".mpeg")) return "video/mpeg";
+            if (path.EndsWith(".mp4") || path.EndsWith(".m4v")) return "video/mp4";
+            if (path.EndsWith(".m4a")) return "audio/mp4";
+            if (path.EndsWith(".swf")) return "application/x-shockwave-flash";
 
-            if (path.EndsWith(".jpg"))
-                return "image/jpg";
-
-            if (path.EndsWith(".bmp"))
-                return "image/bmp";
-
-            if (path.EndsWith(".png"))
-                return "image/png";
-
-            if (path.EndsWith(".html"))
-                return "text/html; charset=utf-8";
-
-            if (path.EndsWith(".htm"))
-                return "text/html; charset=utf-8";
-
-            if (path.EndsWith(".txt"))
-                return "text/plain; charset=utf-8";
-
-            if (path.EndsWith(".css"))
-                return "text/css";
-
-            if (path.EndsWith(".js"))
-                return "text/javascript; charset=utf-8";
-
-            if (path.EndsWith(".wav"))
-                return "audio/vnd.wave";
-
-            if (path.EndsWith(".mpeg") || path.EndsWith(".mp3"))
-                return "audio/mpeg";
-
-            if (path.EndsWith(".ogg"))
-                return "video/ogg";
-
-            if (path.EndsWith(".oga"))
-                return "audio/ogg";
-
-            if (path.EndsWith(".mp4") || path.EndsWith(".m4v"))
-                return "video/mp4";
-
-            if (path.EndsWith(".m4a"))
-                return "audio/mp4";
-
-            return "text/plain; charset=utf-8";
+            return "application/octet-stream";
         }
 
         public void Disconnect()
@@ -352,6 +369,7 @@ namespace core
         public int ContentLength = 0;
         public bool GotHeader { get; set; }
         public QueryStringCollection QueryString { get; set; }
+        public HttpRequestType RequestType { get; set; }
 
         public WWItem()
         {
@@ -359,6 +377,7 @@ namespace core
             this.GotHeader = false;
             this.FileName = null;
             this.QueryString = null;
+            this.RequestType = HttpRequestType.Get;
         }
     }
 
@@ -412,5 +431,12 @@ namespace core
         public String Key { get; set; }
         public String Value { get; set; }
         public String Raw { get; set; }
+    }
+
+    enum HttpRequestType
+    {
+        Head,
+        Post,
+        Get
     }
 }

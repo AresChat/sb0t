@@ -196,6 +196,7 @@
   <ItemGroup>
     <None Include="Libraries\dictionary.aff" />
     <None Include="Libraries\dictionary.dic" />
+    <None Include="Resources\fi.dat" />
     <None Include="Resources\sb0t.dat" />
     <None Include="Resources\servers.dat" />
     <None Include="Resources\template.dat" />
