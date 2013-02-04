@@ -16,7 +16,5 @@ namespace iconnect
         String TextColor { get; set; }
         /// <summary>Custom Font Style</summary>
         String FontName { get; set; }
-        /// <summary>Custom Font Style</summary>
-        int Size { get; set; }
     }
 }

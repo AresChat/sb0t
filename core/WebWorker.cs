@@ -168,8 +168,53 @@ namespace core
                         this.data_out.Add(header);
                         this.data_out.Add(content);
                     }
+                    else if (filename == "font.htm") // dynamic
+                    {
+                        this.ParseFont();
+                        byte[] content = new byte[] { 79, 75 };
+                        content = Zip.Compress(content);
+                        String mime = this.GetMIME(filename.ToLower());
+                        byte[] header = this.BuildHeader(mime, content.Length);
+                        this.data_out.Add(header);
+                        this.data_out.Add(content);
+                    }
                     else this.data_out.Add(this.Build404());
                 }
+            }
+        }
+
+        private void ParseFont()
+        {
+            String _font = this.current_item.QueryString["f"];
+            String _name = this.current_item.QueryString["n"];
+
+            if (!String.IsNullOrEmpty(_font) && !String.IsNullOrEmpty(_name))
+            {
+                try
+                {
+                    String[] split = _font.Split(new String[] { "\0" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (split.Length >= 2)
+                    {
+                        String font_family = split[0];
+                        String font_color = split[1];
+                        String name = Encoding.UTF8.GetString(Convert.FromBase64String(_name));
+                        name = Uri.UnescapeDataString(name);
+                        IPAddress ip = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
+                        AresClient target = UserPool.AUsers.Find(x => x.LoggedIn && x.Name.Equals(name) && x.SocketAddr.Equals(ip));
+
+                        if (target != null)
+                        {
+                            target.Font.Enabled = true;
+                            target.Font.FontName = font_family;
+                            target.Font.TextColor = font_color;
+
+                            if (split.Length >= 3)
+                                target.Font.NameColor = split[2];
+                        }
+                    }
+                }
+                catch { }
             }
         }
 

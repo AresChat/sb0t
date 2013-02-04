@@ -94,7 +94,7 @@ namespace gui
             spanish["label5"] = "Contraseña del propietario:";
 
             english["checkBox10"] = "Enable built in commands";
-            spanish["checkBox10"] = "Habilitar construido en comandos";
+            spanish["checkBox10"] = "Habilitar construcción en commandos";
 
             english["checkBox22"] = "Check passwords against clients (strict mode)";
             spanish["checkBox22"] = "Revisar contraseñas a través de Clientes (Modo estricto)";
@@ -127,7 +127,7 @@ namespace gui
             spanish["label22"] = "Disponible:";
 
             english["label23"] = "Refresh...";
-            spanish["label23"] = "Refrescando...";
+            spanish["label23"] = "Actualizar...";
 
             english["label20"] = "Server avatar:";
             spanish["label20"] = "Avatar del servidor:";

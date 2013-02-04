@@ -126,7 +126,6 @@
     <Compile Include="Statics\JSBase64.cs" />
     <Compile Include="Statics\JSChannels.cs" />
     <Compile Include="Statics\JSFile.cs" />
-    <Compile Include="Statics\JSFont.cs" />
     <Compile Include="Statics\JSHashlink.cs" />
     <Compile Include="Statics\JSLink.cs" />
     <Compile Include="Statics\JSRegistry.cs" />

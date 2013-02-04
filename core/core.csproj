@@ -84,7 +84,6 @@
     <Compile Include="FilterImporter.cs" />
     <Compile Include="FloodControl.cs" />
     <Compile Include="FloodRecord.cs" />
-    <Compile Include="GlobalFont.cs" />
     <Compile Include="IdleManager.cs" />
     <Compile Include="LinkHub\HubOutbound.cs" />
     <Compile Include="LinkHub\Leaf.cs" />

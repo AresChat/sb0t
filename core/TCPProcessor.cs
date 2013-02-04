@@ -372,12 +372,6 @@ namespace core
                             font.IsEmote = !String.IsNullOrEmpty(client.CustomName);
                             js_style = TCPOutbound.Font(font);
                         }
-                        else if (Settings.Font.Enabled)
-                        {
-                            GlobalFont gfont = (GlobalFont)Settings.Font;
-                            gfont.IsEmote = !String.IsNullOrEmpty(client.CustomName);
-                            js_style = TCPOutbound.Font(gfont);
-                        }
 
                         UserPool.AUsers.ForEachWhere(x =>
                         {
@@ -465,12 +459,6 @@ namespace core
                             {
                                 font.IsEmote = true;
                                 js_style = TCPOutbound.Font(font);
-                            }
-                            else if (Settings.Font.Enabled)
-                            {
-                                GlobalFont gfont = (GlobalFont)Settings.Font;
-                                gfont.IsEmote = true;
-                                js_style = TCPOutbound.Font(gfont);
                             }
 
                             UserPool.AUsers.ForEachWhere(x =>
@@ -623,7 +611,7 @@ namespace core
             }
 
             if ((UserPool.AUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count +
-                 UserPool.WUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count) > 3)
+                 UserPool.WUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count) > 5)
             {
                 Events.Rejected(client, RejectedMsg.TooManyClients);
                 throw new Exception("too many clients from this ip");

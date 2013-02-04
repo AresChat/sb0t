@@ -51,17 +51,6 @@ namespace scripting.Objects
             set { this.parent.Font.TextColor = value; }
         }
 
-        [JSProperty(Name = "size")]
-        public int Size
-        {
-            get { return this.parent.Font.Size; }
-            set
-            {
-                if (value >= 8 && value <= 18)
-                    this.parent.Font.Size = value;
-            }
-        }
-
         [JSProperty(Name = "family")]
         public String Name
         {

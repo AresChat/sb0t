@@ -49,27 +49,9 @@ namespace core
                     VCIgnore(client, packet.Packet);
                     break;
 
-                case TCPMsg.MSG_CHAT_CLIENT_FONT:
-                    Font(client, packet.Packet);
-                    break;
-
                 default:
                     Events.UnhandledProtocol(client, true, packet.Msg, packet.Packet, time);
                     break;
-            }
-        }
-
-        private static void Font(AresClient client, TCPPacketReader packet)
-        {
-            if (packet.Remaining == 0)
-                client.Font.Enabled = false;
-            else
-            {
-                client.Font.Enabled = true;
-                client.Font.FontName = packet.ReadString(client);
-                client.Font.NameColor = packet.ReadString(client);
-                client.Font.TextColor = packet.ReadString(client);
-                client.Font.Size = (int)((byte)packet);
             }
         }
 

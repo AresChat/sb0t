@@ -464,13 +464,6 @@ namespace core.LinkLeaf
                     {
                         byte[] js_style = null;
 
-                        if (Settings.Font.Enabled)
-                        {
-                            GlobalFont gfont = (GlobalFont)Settings.Font;
-                            gfont.IsEmote = !String.IsNullOrEmpty(user.CustomName);
-                            js_style = TCPOutbound.Font(gfont);
-                        }
-
                         UserPool.AUsers.ForEachWhere(x =>
                         {
                             if (x.SupportsHTML)
@@ -531,13 +524,6 @@ namespace core.LinkLeaf
                     if (!String.IsNullOrEmpty(text))
                     {
                         byte[] js_style = null;
-
-                        if (Settings.Font.Enabled)
-                        {
-                            GlobalFont gfont = (GlobalFont)Settings.Font;
-                            gfont.IsEmote = true;
-                            js_style = TCPOutbound.Font(gfont);
-                        }
 
                         UserPool.AUsers.ForEachWhere(x =>
                         {

@@ -11,17 +11,14 @@ namespace core
 {
     public class Settings
     {
-        public const String VERSION = "sb0t 5.06";
+        public const String VERSION = "sb0t 5.07";
         public const ushort LINK_PROTO = 500;
 
         public static bool RUNNING { get; set; }
         public static String WebPath { get; set; }
-        public static iconnect.IFont Font { get; set; }
-        
 
         public static void Reset()
         {
-            Font = new GlobalFont();
             externalip = null;
             port = 0;
             name = null;

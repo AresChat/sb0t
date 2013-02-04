@@ -61,6 +61,7 @@ namespace core
         public IFont Font { get; set; }
 
         public Socket Sock { get; set; }
+        public IPAddress SocketAddr { get; set; }
         public bool HasSecureLoginAttempted { get; set; }
         public FloodRecord FloodRecord { get; private set; }
         public bool AvatarReceived { get; set; }
@@ -85,6 +86,7 @@ namespace core
             this.Sock = sock;
             this.Sock.Blocking = false;
             this.Time = time;
+            this.SocketAddr = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
             this.Cookie = AccountManager.NextCookie;
             this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };

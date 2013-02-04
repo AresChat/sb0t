@@ -1,9 +1,126 @@
 var style_user = null;
 
+var default_family = null;
+var default_size = null;
+var default_color = null;
+var my_name_color = null;
+var fs = 0;
+var cs = false;
+
 function init()
 {
     document.getElementById("chatcont").addEventListener('DOMSubtreeModified', itemAdded, false);
     window.onunload = unset;
+    window.onmousewheel = wheel;
+    document.getElementById("chatcont").onmousedown = scrollerdown;
+    document.getElementById("chatcont").onmouseup = scrollerup;
+
+    var str = getCookie("usFontSet");
+    
+    if (str != null)
+    {
+        str = str.split("&");
+
+        for (var i = 0; i < str.length; i++)
+        {
+            var splitter = str[i].split("=");
+
+            if (splitter.length == 2)
+            {
+                switch (splitter[0])
+                {
+                    case "Fam":
+                        default_family = splitter[1];
+                        document.body.style.fontFamily = default_family;
+                        break;
+
+                    case "Siz":
+                        default_size = splitter[1] + "pt";
+                        fs = parseInt(parseFloat(splitter[1]));
+                        document.body.style.fontSize = default_size;
+                        break;
+
+                    case "Col":
+                        default_color = splitter[1];
+                        break;
+
+                    case "NCol": // name color, maybe use in new cbot?
+                        my_name_color = splitter[i];
+                        break;
+                }
+            }
+        }
+
+        if (default_family != null && default_color != null)
+        {
+            var upload_str = (default_family + "\0" + default_color);
+
+            if (my_name_color != null)
+                upload_str += ("\0" + my_name_color);
+
+            upload_str = encodeURIComponent(upload_str);
+            var ajax = new Ajax();
+            ajax.download("font.htm?n=" + encodeURIComponent(my_username) + "&f=" + upload_str + "&t=" + new Date().getTime());
+        }
+    }
+}
+
+function scrollerdown(e)
+{
+    if (e.button == 0)
+        cs = true;
+}
+
+function scrollerup() { cs = false; }
+
+function wheel()
+{
+    if (!cs)
+        return;
+
+    var d = 0;
+    var e = window.event;
+
+    if (e.wheelDelta)
+        d = e.wheelDelta / 120;
+
+    if (d != 0)
+    {
+        if (d > 0)
+        {
+            fs++;
+            document.body.style.fontSize = (fs + "pt");
+        }
+        else
+        {
+            fs--;
+            document.body.style.fontSize = (fs + "pt");
+        }
+
+        if (event.preventDefault)
+            event.preventDefault();
+
+        event.returnValue = false;
+    }
+}
+
+function getCookie(c_name)
+{
+    var i, x, y, ARRcookies = document.cookie.split(";");
+
+    for (i = 0; i < ARRcookies.length; i++)
+    {
+        x = ARRcookies[i].substr(0, ARRcookies[i].indexOf("="));
+        y = ARRcookies[i].substr(ARRcookies[i].indexOf("=") + 1);
+        x = x.replace(/^\s+|\s+$/g, "");
+
+        if (x == c_name)
+        {
+            return unescape(y);
+        }
+    }
+
+    return null;
 }
 
 function unset()
@@ -85,8 +202,6 @@ function itemAdded(e)
                         text_span.style.color = style_now.tc;
                     if (style_now.ff != "")
                         item.style.fontFamily = style_now.ff;
-                    if (style_now.fs != "")
-                        item.style.fontSize = style_now.fs;
                 }
                 else if (spans.length > 1)
                 {
@@ -96,8 +211,6 @@ function itemAdded(e)
                         name_span.style.color = style_now.nc;
                     if (style_now.ff != "")
                         item.style.fontFamily = style_now.ff;
-                    if (style_now.fs != "")
-                        item.style.fontSize = style_now.fs;
 
                     var text_span = spans[1];
 
@@ -108,5 +221,38 @@ function itemAdded(e)
 
             style_user = null;
         }
+    }
+}
+
+function Ajax()
+{
+    this.svc = null;
+    this.oncomplete = null;
+
+    try { this.svc = new XMLHttpRequest(); }
+    catch (e)
+    {
+        try { this.svc = new ActiveXObject("Msxml2.XMLHTTP"); }
+        catch (e)
+        {
+            try { this.svc = new ActiveXObject("Microsoft.XMLHTTP"); }
+            catch (e) { }
+        }
+    }
+
+    this.download = function (url)
+    {
+        var tmp = this;
+
+        this.svc.onreadystatechange = function ()
+        {
+            if (tmp.svc.readyState == 4)
+                if (tmp.svc.status == 200)
+                    if (tmp.oncomplete != null)
+                        tmp.oncomplete(tmp.svc.responseText);
+        }
+
+        this.svc.open("GET", url, true);
+        this.svc.send();
     }
 }

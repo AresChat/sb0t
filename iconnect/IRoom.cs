@@ -9,8 +9,6 @@ namespace iconnect
     /// <summary>Chatroom Properties</summary>
     public interface IRoom
     {
-        /// <summary>Get room's custom font</summary>
-        IFont Font { get; }
         /// <summary>Get or set the global custom names setting</summary>
         bool CustomNamesEnabled { get; set; }
         /// <summary>Get the chatroom name</summary>

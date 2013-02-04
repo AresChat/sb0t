@@ -15,38 +15,6 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_HTML);
         }
 
-        public static byte[] Font(GlobalFont f)
-        {
-            StringBuilder sb = new StringBuilder("{");
-
-            sb.Append("\"isEmote\":" + f.IsEmote.ToString().ToLower());
-
-            if (!String.IsNullOrEmpty(f.NameColor))
-                sb.Append(",\"nc\":\"" + f.NameColor + "\"");
-            else
-                sb.Append(",\"nc\":\"\"");
-
-            if (!String.IsNullOrEmpty(f.TextColor))
-                sb.Append(",\"tc\":\"" + f.TextColor + "\"");
-            else
-                sb.Append(",\"tc\":\"\"");
-
-            if (!String.IsNullOrEmpty(f.FontName))
-                sb.Append(",\"ff\":\"" + f.FontName + "\"");
-            else
-                sb.Append(",\"ff\":\"\"");
-
-            if (f.Size >= 8 && f.Size <= 18)
-                sb.Append(",\"fs\":\"" + f.Size + "px\"");
-            else
-                sb.Append(",\"fs\":\"\"");
-
-            sb.Append("}");
-
-            String html = "<input type=\"hidden\" value=\"" + Uri.EscapeDataString(sb.ToString()) + "\" />";
-            return HTML(html);
-        }
-
         public static byte[] Font(AresFont f)
         {
             StringBuilder sb = new StringBuilder("{");
@@ -67,11 +35,6 @@ namespace core
                 sb.Append(",\"ff\":\"" + f.FontName + "\"");
             else
                 sb.Append(",\"ff\":\"\"");
-
-            if (f.Size >= 8 && f.Size <= 18)
-                sb.Append(",\"fs\":\"" + f.Size + "px\"");
-            else
-                sb.Append(",\"fs\":\"\"");
 
             sb.Append("}");
 

@@ -12,12 +12,6 @@ namespace core
         public String NameColor { get; set; }
         public String TextColor { get; set; }
         public String FontName { get; set; }
-        public int Size { get; set; }
         public bool IsEmote { get; set; }
-
-        public AresFont()
-        {
-            this.Size = 12;
-        }
     }
 }
