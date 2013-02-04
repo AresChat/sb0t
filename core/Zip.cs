@@ -7,6 +7,21 @@ namespace core
 {
     class Zip
     {
+        public static byte[] GCompress(byte[] data)
+        {
+            byte[] result = null;
+
+            using (MemoryStream ms = new MemoryStream())
+            using (Stream s = new ICSharpCode.SharpZipLib.GZip.GZipOutputStream(ms))
+            {
+                s.Write(data, 0, data.Length);
+                s.Close();
+                result = ms.ToArray();
+            }
+
+            return result;
+        }
+
         public static byte[] Compress(byte[] data)
         {
             byte[] result = null;

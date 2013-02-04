@@ -146,7 +146,7 @@ namespace core
                             }
                         }
 
-                        content = Zip.Compress(content);
+                        content = Zip.GCompress(content);
                         String mime = this.GetMIME(filename.ToLower());
                         byte[] header = this.BuildHeader(mime, content.Length);
                         this.data_out.Add(header);
@@ -162,7 +162,7 @@ namespace core
                     if (filename == "sb0t.js") // dynamic
                     {
                         byte[] content = Resource1.sb0t;
-                        content = Zip.Compress(content);
+                        content = Zip.GCompress(content);
                         String mime = this.GetMIME(filename.ToLower());
                         byte[] header = this.BuildHeader(mime, content.Length);
                         this.data_out.Add(header);
@@ -172,7 +172,7 @@ namespace core
                     {
                         this.ParseFont();
                         byte[] content = new byte[] { 79, 75 };
-                        content = Zip.Compress(content);
+                        content = Zip.GCompress(content);
                         String mime = this.GetMIME(filename.ToLower());
                         byte[] header = this.BuildHeader(mime, content.Length);
                         this.data_out.Add(header);
