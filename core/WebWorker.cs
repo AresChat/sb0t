@@ -13,6 +13,7 @@ namespace core
         private List<byte> data_in = new List<byte>();
         private List<byte[]> data_out = new List<byte[]>();
         private WWItem current_item = new WWItem();
+        private IPAddress SocketAddr { get; set; }
         public String UserName { get; set; }
 
         public Socket Sock { get; set; }
@@ -21,6 +22,7 @@ namespace core
         public WebWorker(AresClient client)
         {
             this.Sock = client.Sock;
+            this.SocketAddr = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
             this.data_in.AddRange(client.ReceiveDump);
             this.UserName = String.Empty;
         }
@@ -69,6 +71,7 @@ namespace core
                 {
                     if (this.data_in.Count >= this.current_item.ContentLength)
                     {
+                        this.current_item.PostData = Encoding.UTF8.GetString(this.data_in.GetRange(0, this.current_item.ContentLength).ToArray());
                         this.data_in.RemoveRange(0, this.current_item.ContentLength);
                         this.GetFile(this.current_item.FileName);
                         this.current_item = new WWItem();
@@ -80,12 +83,17 @@ namespace core
                     {
                         String line = this.data_in.TakeLine();
 
-                        if (line.ToUpper().StartsWith("GET /") || line.ToUpper().StartsWith("HEAD /"))
+                        if (line.ToUpper().StartsWith("GET /") || line.ToUpper().StartsWith("HEAD /") || line.ToUpper().StartsWith("POST /"))
                         {
                             if (line.ToUpper().StartsWith("GET /"))
                             {
                                 this.current_item.FileName = line.Substring(5);
                                 this.current_item.RequestType = HttpRequestType.Get;
+                            }
+                            else if (line.ToUpper().StartsWith("POST /"))
+                            {
+                                this.current_item.FileName = line.Substring(6);
+                                this.current_item.RequestType = HttpRequestType.Post;
                             }
                             else
                             {
@@ -240,8 +248,7 @@ namespace core
                         String font_color = split[1];
                         String name = Encoding.UTF8.GetString(Convert.FromBase64String(_name));
                         name = Uri.UnescapeDataString(name);
-                        IPAddress ip = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
-                        AresClient target = UserPool.AUsers.Find(x => x.LoggedIn && x.Name.Equals(name) && x.SocketAddr.Equals(ip));
+                        AresClient target = UserPool.AUsers.Find(x => x.LoggedIn && x.Name.Equals(name) && x.SocketAddr.Equals(this.SocketAddr));
 
                         if (target != null)
                         {
@@ -370,6 +377,7 @@ namespace core
         public bool GotHeader { get; set; }
         public QueryStringCollection QueryString { get; set; }
         public HttpRequestType RequestType { get; set; }
+        public String PostData { get; set; }
 
         public WWItem()
         {
@@ -378,6 +386,7 @@ namespace core
             this.FileName = null;
             this.QueryString = null;
             this.RequestType = HttpRequestType.Get;
+            this.PostData = null;
         }
     }
 

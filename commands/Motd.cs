@@ -39,6 +39,9 @@ namespace commands
 
         public static void ViewMOTD(IUser client)
         {
+            if (client.SupportsHTML)
+                client.SendHTML("<!--MOTDSTART-->");
+
             String _str = Helpers.CountryCodeToString(client.Country);
             List<String> list = new List<String>();
             Server.Users.Ares(x => list.Add(x.Name));
@@ -112,6 +115,9 @@ namespace commands
                     client.Print(Helpers.SetColors(s));
                 }
             }
+
+            if (client.SupportsHTML)
+                client.SendHTML("<!--MOTDEND-->");
         }
 
         public static int MotdSize

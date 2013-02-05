@@ -52,7 +52,16 @@ namespace scripting.Objects
         public JSUserFont Font
         {
             get { return this._font; }
-            set { }
+            set
+            {
+                if (value != null)
+                    if (value is JSUserFont)
+                    {
+                        this._font.Enabled = value.Enabled;
+                        this._font.NameColor = value.NameColor;
+                        this._font.TextColor = value.TextColor;
+                    }
+            }
         }
 
         [JSProperty(Name = "age")]

@@ -4,6 +4,8 @@ var default_family = null;
 var default_size = null;
 var default_color = null;
 var my_name_color = null;
+var bg_color = "";
+
 var fs = 0;
 var cs = false;
 
@@ -42,6 +44,10 @@ function init()
 
                     case "Col":
                         default_color = splitter[1];
+                        break;
+
+                    case "BkCol":
+                        bg_color = splitter[1];
                         break;
 
                     case "NCol": // name color, maybe use in new cbot?
@@ -199,7 +205,9 @@ function itemAdded(e)
                     var text_span = spans[0];
 
                     if (style_now.tc != "")
-                        text_span.style.color = style_now.tc;
+                        if (bg_color != style_now.tc)
+                            text_span.style.color = style_now.tc;
+
                     if (style_now.ff != "")
                         item.style.fontFamily = style_now.ff;
                 }
@@ -208,14 +216,17 @@ function itemAdded(e)
                     var name_span = spans[0];
 
                     if (style_now.nc != "")
-                        name_span.style.color = style_now.nc;
+                        if (bg_color != style_now.nc)
+                            name_span.style.color = style_now.nc;
+
                     if (style_now.ff != "")
                         item.style.fontFamily = style_now.ff;
 
                     var text_span = spans[1];
 
                     if (style_now.tc != "")
-                        text_span.style.color = style_now.tc;
+                        if (bg_color != style_now.tc)
+                            text_span.style.color = style_now.tc;
                 }
             }
 

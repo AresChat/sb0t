@@ -776,7 +776,8 @@ namespace commands
                     }
                     else
                     {
-                        x.SendHTML("<input type=\"hidden\" value=\"CMD:CLEARSCREEN\" />");
+                        for (int i = 0; i < 400; i++)
+                            x.Print("\x000500\x000300.");
                     }
                 });
 
