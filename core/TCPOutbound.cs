@@ -54,6 +54,9 @@ namespace core
         {
             String str = text;
 
+            if (str.Length == 0)
+                str = " ";
+
             while (Encoding.UTF8.GetByteCount(str) > 4000)
                 str = str.Substring(0, str.Length - 1);
 

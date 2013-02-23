@@ -595,7 +595,7 @@ namespace core
             // maybe add encryption in next cbot?
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
 
-         //   if (client.Version.StartsWith("cb0t"))
+            if (client.Version.StartsWith("cb0t"))
                 ObSalt.GetSalt(client); // client doesn't support file sharing, so protect their external ip from idiots!
 
             client.Captcha = !Settings.Get<bool>("captcha");

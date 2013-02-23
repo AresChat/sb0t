@@ -9,16 +9,35 @@ var bg_color = "";
 var fs = 0;
 var cs = false;
 
+function createCookie(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function eraseCookie(name) {
+	createCookie(name,"",-1);
+}
+
+
 function init()
 {
-    document.getElementById("chatcont").addEventListener('DOMSubtreeModified', itemAdded, false);
+    if (document.getElementById("chatcont").addEventListener)
+        document.getElementById("chatcont").addEventListener('DOMSubtreeModified', itemAdded, false);
+    else if (document.getElementById("chatcont").attachEvent)
+        document.getElementById("chatcont").attachEvent('DOMSubtreeModified', itemAdded);
+
     window.onunload = unset;
     window.onmousewheel = wheel;
     document.getElementById("chatcont").onmousedown = scrollerdown;
     document.getElementById("chatcont").onmouseup = scrollerup;
 
     var str = getCookie("usFontSet");
-    
+
     if (str != null)
     {
         str = str.split("&");
@@ -51,7 +70,7 @@ function init()
                         break;
 
                     case "NCol": // name color, maybe use in new cbot?
-                        my_name_color = splitter[i];
+                        my_name_color = splitter[1];
                         break;
                 }
             }
@@ -131,7 +150,10 @@ function getCookie(c_name)
 
 function unset()
 {
-    document.getElementById("chatcont").removeEventListener('DOMSubtreeModified', itemAdded, false);
+    if (document.getElementById("chatcont").removeEventListener)
+        document.getElementById("chatcont").removeEventListener('DOMSubtreeModified', itemAdded, false);
+    else if (document.getElementById("chatcont").detachEvent)
+        document.getElementById("chatcont").detachEvent('DOMSubtreeModified', itemAdded);
 }
 
 function setUserStyle()
@@ -148,30 +170,9 @@ function setUserStyle()
 
                 if (obj.length > 0)
                 {
-                    if (obj.indexOf("CMD:") == 0)
-                    {
-                        obj = obj.substr(4);
-
-                        switch (obj)
-                        {
-                            case "CLEARSCREEN":
-                                document.getElementById("chatcont").removeEventListener('DOMSubtreeModified', itemAdded, false);
-                                obj = document.getElementById("chatcont");
-
-                                while (obj.hasChildNodes())
-                                    obj.removeChild(obj.lastChild);
-
-                                document.getElementById("chatcont").addEventListener('DOMSubtreeModified', itemAdded, false);
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        obj = decodeURIComponent(obj);
-                        obj = JSON.parse(obj);
-                        style_user = obj;
-                    }
-
+                    obj = decodeURIComponent(obj);
+                    obj = JSON.parse(obj);
+                    style_user = obj;
                     return true;
                 }
             }

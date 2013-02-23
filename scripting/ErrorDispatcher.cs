@@ -30,13 +30,14 @@ namespace scripting
 
         public static void SendError(String script, String msg, int line)
         {
-            String str = msg + " at line " + line;
+            String str = script + ": " + msg + " at line " + line;
+            String sender = Server.Chatroom.BotName;
 
             Server.Users.All(x =>
             {
                 if (!x.Link.IsLinked)
                     if (list.FindIndex(z => z.Equals(x.Guid)) > -1)
-                        x.PM(script, str);
+                        x.PM(sender, str);
             });
         }
     }

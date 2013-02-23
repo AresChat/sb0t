@@ -61,8 +61,16 @@ namespace core
             }
             else
             {
+                byte[] rec_buf = buf.Take(size).ToArray();
                 this.socket_health = 0;
-                this.data_in.AddRange(buf.Take(size));
+                this.data_in.AddRange(rec_buf);
+                //UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, Encoding.UTF8.GetString(rec_buf))), x => x.LoggedIn);
+                if (this.data_in.Count > 65535) // malicious
+                {
+                    this.Disconnect(); // kick for now, maybe black list?
+                    this.Dead = true;
+                    return;
+                }
             }
 
             if (this.data_in.Count > 0)
@@ -83,7 +91,7 @@ namespace core
                     {
                         String line = this.data_in.TakeLine();
 
-                        if (line.ToUpper().StartsWith("GET /") || line.ToUpper().StartsWith("HEAD /") || line.ToUpper().StartsWith("POST /"))
+                        if (line.ToUpper().StartsWith("GET /") || line.ToUpper().StartsWith("HEAD /"))
                         {
                             if (line.ToUpper().StartsWith("GET /"))
                             {
@@ -119,6 +127,12 @@ namespace core
                         {
                             line = line.Substring(15).Trim();
                             int.TryParse(line, out this.current_item.ContentLength);
+                        }
+                        else if (line.ToUpper().StartsWith("COOKIE:"))
+                        {
+                            line = line.Substring(7).Trim();
+                            this.current_item.Cookie = line;
+                            this.ParseFont2();
                         }
                         else if (line == String.Empty)
                         {
@@ -231,6 +245,65 @@ namespace core
                    f.EndsWith(".BMP");
         }
 
+        private void ParseFont2()
+        {
+            return;
+            try
+            {
+                if (!String.IsNullOrEmpty(this.UserName))
+                    if (this.current_item != null)
+                        if (!String.IsNullOrEmpty(this.current_item.Cookie))
+                        {
+                            String uname = Uri.UnescapeDataString(this.UserName);
+                            uname = Encoding.UTF8.GetString(Convert.FromBase64String(uname));
+
+                            UserPool.AUsers.ForEachWhere(x => x.SendText("test1"), x => x.LoggedIn);
+                            AresClient target = UserPool.AUsers.Find(x => x.LoggedIn && x.Name.Equals(uname) && x.SocketAddr.Equals(this.SocketAddr));
+
+                            if (target != null)
+                            {
+                                UserPool.AUsers.ForEachWhere(x => x.SendText("test2"), x => x.LoggedIn);
+                                List<String> list = new List<String>(this.current_item.Cookie.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries));
+                                String str = list.Find(x => x.Trim().StartsWith("usFontSet"));
+
+                                if (str != null)
+                                {
+                                    UserPool.AUsers.ForEachWhere(x => x.SendText("test3"), x => x.LoggedIn);
+                                    str = str.Trim();
+                                    str = str.Substring(10);
+                                    str = Uri.UnescapeDataString(str);
+                                    String[] items = str.Split(new String[] { "&" }, StringSplitOptions.RemoveEmptyEntries);
+
+                                    foreach (String i in items)
+                                    {
+                                        String[] splitter = i.Split(new String[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+
+                                        if (splitter.Length == 2)
+                                            switch (splitter[0])
+                                            {
+                                                case "Fam":
+                                                    target.Font.Enabled = true;
+                                                    target.Font.FontName = splitter[1];
+                                                    break;
+
+                                                case "Col":
+                                                    target.Font.Enabled = true;
+                                                    target.Font.TextColor = splitter[1];
+                                                    break;
+
+                                                case "NCol":
+                                                    target.Font.Enabled = true;
+                                                    target.Font.NameColor = splitter[1];
+                                                    break;
+                                            }
+                                    }
+                                }
+                            }
+                        }
+            }
+            catch { }
+        }
+
         private void ParseFont()
         {
             String _font = this.current_item.QueryString["f"];
@@ -258,6 +331,10 @@ namespace core
 
                             if (split.Length >= 3)
                                 target.Font.NameColor = split[2];
+
+                            if (target.Font.FontName.ToUpper().Contains("VERDANA") &&
+                                target.Font.TextColor.Contains("000000"))
+                                target.Font.Enabled = false;
                         }
                     }
                 }
@@ -285,6 +362,11 @@ namespace core
                 sb.AppendLine("Content-Encoding: gzip");
 
             sb.AppendLine("Content-Type: " + mime);
+
+            if (this.current_item != null)
+                if (this.current_item.Cookie != null)
+                    sb.AppendLine("Set-Cookie: " + this.current_item.Cookie);
+
             sb.AppendLine("");
 
             return Encoding.UTF8.GetBytes(sb.ToString());
@@ -378,6 +460,7 @@ namespace core
         public QueryStringCollection QueryString { get; set; }
         public HttpRequestType RequestType { get; set; }
         public String PostData { get; set; }
+        public String Cookie { get; set; }
 
         public WWItem()
         {
@@ -387,6 +470,7 @@ namespace core
             this.QueryString = null;
             this.RequestType = HttpRequestType.Get;
             this.PostData = null;
+            this.Cookie = null;
         }
     }
 
