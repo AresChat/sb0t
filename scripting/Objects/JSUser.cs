@@ -60,6 +60,7 @@ namespace scripting.Objects
                         this._font.Enabled = value.Enabled;
                         this._font.NameColor = value.NameColor;
                         this._font.TextColor = value.TextColor;
+                        this._font.Name = value.Name;
                     }
             }
         }

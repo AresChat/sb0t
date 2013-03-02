@@ -65,12 +65,12 @@ namespace core
                 this.socket_health = 0;
                 this.data_in.AddRange(rec_buf);
                 //UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, Encoding.UTF8.GetString(rec_buf))), x => x.LoggedIn);
-                if (this.data_in.Count > 65535) // malicious
+               /* if (this.data_in.Count > 65535) // malicious
                 {
                     this.Disconnect(); // kick for now, maybe black list?
                     this.Dead = true;
                     return;
-                }
+                }*/
             }
 
             if (this.data_in.Count > 0)
@@ -132,7 +132,6 @@ namespace core
                         {
                             line = line.Substring(7).Trim();
                             this.current_item.Cookie = line;
-                            this.ParseFont2();
                         }
                         else if (line == String.Empty)
                         {
@@ -245,73 +244,14 @@ namespace core
                    f.EndsWith(".BMP");
         }
 
-        private void ParseFont2()
-        {
-            return;
-            try
-            {
-                if (!String.IsNullOrEmpty(this.UserName))
-                    if (this.current_item != null)
-                        if (!String.IsNullOrEmpty(this.current_item.Cookie))
-                        {
-                            String uname = Uri.UnescapeDataString(this.UserName);
-                            uname = Encoding.UTF8.GetString(Convert.FromBase64String(uname));
-
-                            UserPool.AUsers.ForEachWhere(x => x.SendText("test1"), x => x.LoggedIn);
-                            AresClient target = UserPool.AUsers.Find(x => x.LoggedIn && x.Name.Equals(uname) && x.SocketAddr.Equals(this.SocketAddr));
-
-                            if (target != null)
-                            {
-                                UserPool.AUsers.ForEachWhere(x => x.SendText("test2"), x => x.LoggedIn);
-                                List<String> list = new List<String>(this.current_item.Cookie.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries));
-                                String str = list.Find(x => x.Trim().StartsWith("usFontSet"));
-
-                                if (str != null)
-                                {
-                                    UserPool.AUsers.ForEachWhere(x => x.SendText("test3"), x => x.LoggedIn);
-                                    str = str.Trim();
-                                    str = str.Substring(10);
-                                    str = Uri.UnescapeDataString(str);
-                                    String[] items = str.Split(new String[] { "&" }, StringSplitOptions.RemoveEmptyEntries);
-
-                                    foreach (String i in items)
-                                    {
-                                        String[] splitter = i.Split(new String[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
-
-                                        if (splitter.Length == 2)
-                                            switch (splitter[0])
-                                            {
-                                                case "Fam":
-                                                    target.Font.Enabled = true;
-                                                    target.Font.FontName = splitter[1];
-                                                    break;
-
-                                                case "Col":
-                                                    target.Font.Enabled = true;
-                                                    target.Font.TextColor = splitter[1];
-                                                    break;
-
-                                                case "NCol":
-                                                    target.Font.Enabled = true;
-                                                    target.Font.NameColor = splitter[1];
-                                                    break;
-                                            }
-                                    }
-                                }
-                            }
-                        }
-            }
-            catch { }
-        }
-
         private void ParseFont()
         {
-            String _font = this.current_item.QueryString["f"];
-            String _name = this.current_item.QueryString["n"];
-
-            if (!String.IsNullOrEmpty(_font) && !String.IsNullOrEmpty(_name))
+            try
             {
-                try
+                String _font = this.current_item.QueryString["f"];
+                String _name = this.current_item.QueryString["n"];
+
+                if (!String.IsNullOrEmpty(_font) && !String.IsNullOrEmpty(_name))
                 {
                     String[] split = _font.Split(new String[] { "\0" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -338,8 +278,8 @@ namespace core
                         }
                     }
                 }
-                catch { }
             }
+            catch { }
         }
 
         private String[] bad_chars_script = new String[]
@@ -467,7 +407,7 @@ namespace core
             this.ContentLength = 0;
             this.GotHeader = false;
             this.FileName = null;
-            this.QueryString = null;
+            this.QueryString = new QueryStringCollection();
             this.RequestType = HttpRequestType.Get;
             this.PostData = null;
             this.Cookie = null;
@@ -498,6 +438,11 @@ namespace core
                     this.list.Add(new QueryStringItem { Key = key, Value = value, Raw = str });
                 }
             }
+        }
+
+        public QueryStringCollection()
+        {
+            this.list = new List<QueryStringItem>();
         }
 
         public String GetRaw(String key)
