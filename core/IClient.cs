@@ -9,6 +9,7 @@ namespace core
 {
     interface IClient
     {
+        bool Ares { get; }
         IFont Font { get; }
         bool SupportsHTML { get; }
         /// <summary>Session identity</summary>

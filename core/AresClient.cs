@@ -11,6 +11,7 @@ namespace core
 {
     class AresClient : IClient, IUser, IQuarantined
     {
+        public bool Ares { get; set; }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
         public String DNS { get; set; }

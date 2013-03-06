@@ -7,21 +7,19 @@
     <title></title>
     <style type="text/css">
     <!--
-    *
+    HTML
     {
-        margin: 0px;
-        padding: 0px;
-        text-align: left;
+        overflow-x: hidden;
+        overflow-y: scroll;
     }
 
     BODY
     {
-        background-color: #FFFFFF;
-        color: #FF0000;
-        font-family: Verdana;
-        font-size: 13px;
         max-height: 100%;
         height: 100%;
+        overflow-x: hidden;
+        font-family: Verdana;
+        font-size: 10pt;
     }
 
     A
@@ -44,6 +42,7 @@
     {
         position:relative;
         top:2px;
+        border: 0px none #ffffff;
     }
 
     #container
@@ -51,19 +50,67 @@
         overflow-x: hidden;
         overflow-y: scroll;
         position: fixed;
-        top: 0px;
+        top: 30px;
+        bottom: 0px;
         left: 0px;
         z-index: 100;
-        max-height: 100%;
-        height: 100%;
-        margin-top: 10px;
         width: 100%;
+        border-style: solid;
+        border-color: #C0C0C0;
+        border-width: 0px 0px 1px 0px;
     }
 
     #chatcont
     {
-        margin: 4px;
-        padding: 12px 0px 14px 4px;
+        padding: 0px 4px 4px 4px;
+        width: 100%;
+    }
+
+    #topiccont
+    {
+        overflow: hidden;
+        background-color: #FFFFFF;
+        color: #000000;
+        z-index: 200;
+        line-height: 29px;
+        height: 29px;
+        padding-left: 4px;
+        width: 3000px;
+        border-style: solid;
+        border-width: 0 0 1px 0;
+        border-color: #C0C0C0;
+        white-space: pre-wrap;
+    }
+    -->
+    </style>
+
+<!--[if gte IE 7]>
+<style type="text/css">
+    HTML
+    {
+        overflow: hidden;
+    }
+
+    BODY
+    {
+        max-height: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+ 
+    #container
+    {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        position: fixed;
+        top: 30px;
+        bottom: 0px;
+        left: 0px;
+        z-index: 100;
+        width: 100%;
+        border-style: solid;
+        border-color: #C0C0C0;
+        border-width: 0px 0px 1px 0px;
     }
 
     #topiccont
@@ -74,18 +121,17 @@
         position: fixed;
         top: 0px;
         z-index: 200;
-        line-height: 21px;
-        height: 21px;
+        line-height: 29px;
+        height: 29px;
         padding-left: 4px;
         width: 3000px;
         border-style: solid;
         border-width: 0 0 1px 0;
         border-color: #C0C0C0;
-        font-family: Verdana;
-        font-size: 13px;
+        white-space: pre-wrap;
     }
-    -->
-    </style>
+</style>
+<![endif]-->
     <script type="text/javascript" src="sb0t.js"></script>
 </head>
 

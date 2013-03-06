@@ -558,6 +558,7 @@ namespace core
             client.FastPing = relogin;
             client.Guid = packet;
             client.FileCount = packet;
+            ushort org_files = client.FileCount;
             byte crypto = packet;
             client.DataPort = packet;
             client.NodeIP = packet;
@@ -567,6 +568,7 @@ namespace core
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
+            client.Ares = client.Version.StartsWith("Ares 2.") || client.Version.StartsWith("Ares_2.");
             client.CustomClient = true; // everyone can be custom client
             client.LocalIP = packet;
             packet.SkipBytes(4);
@@ -658,7 +660,9 @@ namespace core
                     throw new Exception("banned user");
                 }
 
-            if (client.LocalIP.ToString() == "6.6.6.6" || client.LocalIP.ToString() == "7.8.7.8")
+            if (client.LocalIP.ToString() == "6.6.6.6" ||
+                client.LocalIP.ToString() == "7.8.7.8" ||
+                org_files == 6969)
             {
                 if (hijack != null && hijack is AresClient)
                     ((AresClient)hijack).SendDepart();

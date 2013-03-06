@@ -109,7 +109,7 @@ namespace core
             byte[] addr = client.ExternalIP.GetAddressBytes();
             byte[] salt = addr.Concat(item.Salt).ToArray();
 
-            int excess = client.Encryption.Mode == EncryptionMode.Encrypted ? 4 : 2;
+            int excess = 2;
             int h = 19, l = 0;
 
             using (SHA1 sha1 = SHA1.Create())
