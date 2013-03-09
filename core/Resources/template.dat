@@ -87,28 +87,6 @@
 
 <body onload="init()">
     <div id="topiccont"></div>
-    <div style="width: 144px; height: 32px; background-color: #FFFFFF; position: fixed; top: 30px; right: 20px; z-index: 400;">
-        <div style="position: absolute; top: 0px; left: 0px; height: 32px; width: 32px;">
-            <a href="http://aresgalaxy.sourceforge.net/" title="visit ib0t web page">
-                <img style="background-color: #FFFFFF; border: none;" src="ares.png" alt="" title="visit Ares web page" />
-            </a>
-        </div>
-        <div style="position: absolute; top: 0px; left: 36px; height: 32px; width: 32px;">
-            <a href="http://sb0t5.codeplex.com/" title="visit ib0t web page">
-                <img style="background-color: #FFFFFF; border: none;" src="sbot.png" alt="" title="visit sb0t web page" />
-            </a>
-        </div>
-        <div style="position: absolute; top: 0px; left: 72px; height: 32px; width: 32px;">
-            <a href="http://cb0t.codeplex.com/" title="visit ib0t web page">
-                <img style="background-color: #FFFFFF; border: none;" src="cbot.png" alt="" title="visit cb0t web page" />
-            </a>
-        </div>
-        <div style="position: absolute; top: 0px; left: 108px; height: 32px; width: 32px;">
-            <a href="http://chatrooms.marsproject.net/chat/" title="visit ib0t web page">
-                <img style="background-color: #FFFFFF; border: none;" src="ibot.png" alt="" title="visit ib0t web page" />
-            </a>
-        </div>
-    </div>
     <div id="container">
         <div id="chatcont">
 
