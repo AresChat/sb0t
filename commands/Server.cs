@@ -223,7 +223,13 @@ namespace commands
         /// <returns></returns>
         public static ILevel GetLevel(String command)
         {
-            return Callback.GetLevel(command);
+            ILevel result = Callback.GetLevel(command); // get preferred level for command
+
+            if (result == ILevel.Regular) // preferred level is Regular
+                if (!Settings.General) // but General is off?
+                    result = ILevel.Moderator; // we change the preferred level to Moderator
+
+            return result;
         }
 
         /// <summary>Clear the ban list</summary>

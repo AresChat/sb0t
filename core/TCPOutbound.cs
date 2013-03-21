@@ -126,6 +126,8 @@ namespace core
 
             byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
                             ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC) |
+                            ((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_OPUS_VC) |
+                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_OPUS_PM_VC) |
                             ((client.SupportsHTML ? 0 : 1) * CLIENT_SUPPORTS_HTML));
 
             packet.WriteByte(b);

@@ -51,7 +51,7 @@ namespace gui
             //custom emoticons
             this.checkBox2.IsChecked = Settings.Get<bool>("emotes");
             //auto load - TO DO
-            this.checkBox4.IsChecked = Settings.Get<bool>("autoload");
+            this.checkBox4.IsChecked = Settings.Get<bool>("start_min");
             //udp
             this.checkBox5.IsChecked = Settings.Get<bool>("udp");
             //voice chat

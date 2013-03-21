@@ -30,7 +30,7 @@
                             <CheckBox Canvas.Left="350" Canvas.Top="45" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="350" Canvas.Top="65" Content="Custom emoticons enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="350" Canvas.Top="85" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="105" Content="Load sb0t when windows starts" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="105" Content="Start sb0t minimized" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="350" Canvas.Top="125" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="350" Canvas.Top="145" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Button Style="{DynamicResource GlassButton}" FontSize="12" Canvas.Left="341" Canvas.Top="216" Content="Start server" Height="28" Name="button1" Width="193" Click="ServerStartStop" />

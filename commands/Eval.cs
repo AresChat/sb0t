@@ -651,10 +651,13 @@ namespace commands
 
         public static void HostClone(IUser admin, IUser target, String args)
         {
-            if (args.StartsWith("/me ") && args.Length > 4)
-                target.SendEmote(args.Substring(4));
-            else if (args.Length > 0)
-                target.SendText(args);
+            if (admin.Level == ILevel.Host)
+            {
+                if (args.StartsWith("/me ") && args.Length > 4)
+                    target.SendEmote(args.Substring(4));
+                else if (args.Length > 0)
+                    target.SendText(args);
+            }
         }
 
         [CommandLevel("loadmotd", ILevel.Host)]

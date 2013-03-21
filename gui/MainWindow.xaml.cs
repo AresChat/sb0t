@@ -125,6 +125,10 @@ namespace gui
                 }
 
                 this.SetupValues();
+
+                if ((bool)this.checkBox4.IsChecked)
+                    this.WindowState = WindowState.Minimized;
+
                 SETTING_UP = false;
 
                 AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(this.LogUnhandledException);
@@ -277,7 +281,7 @@ namespace gui
                 Settings.Set("autostart", this.checkBox3.IsChecked);
             else if (cb.Name == "checkBox4")
             {
-                Settings.Set("autoload", this.checkBox4.IsChecked);
+                Settings.Set("start_min", this.checkBox4.IsChecked);
             }
             else if (cb.Name == "checkBox5")
                 Settings.Set("udp", this.checkBox5.IsChecked);
