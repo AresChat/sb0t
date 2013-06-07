@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Security.Cryptography;
+using System.Drawing;
+using System.Globalization;
 using core.ib0t;
 using iconnect;
 
@@ -10,6 +12,61 @@ namespace core
 {
     class Helpers
     {
+        public static String AresColorToHTMLColor(byte c)
+        {
+            switch (c)
+            {
+                case 1: return "#000000";
+                case 0: return "#FFFFFF";
+                case 8: return "#FFFF00";
+                case 11: return "#00FFFF";
+                case 12: return "#0000FF";
+                case 2: return "#000080";
+                case 6: return "#800080";
+                case 9: return "#00FF00";
+                case 13: return "#FF00FF";
+                case 14: return "#808080";
+                case 15: return "#C0C0C0";
+                case 7: return "#FFA500";
+                case 5: return "#800000";
+                case 10: return "#008080";
+                case 3: return "#008000";
+                case 4: return "#FF0000";
+                default: return null;
+            }
+        }
+
+        private static Color[] acols = new Color[]
+        {
+            Color.White, Color.Black, Color.Navy, Color.Green, Color.Red, Color.Maroon, Color.Purple, Color.Orange,
+            Color.Yellow, Color.Lime, Color.Teal, Color.Aqua, Color.Blue, Color.Fuchsia, Color.Gray, Color.Silver
+        };
+
+        public static byte HTMLColorToAresColor(String h)
+        {
+            byte r = byte.Parse(h.Substring(1, 2), NumberStyles.HexNumber);
+            byte g = byte.Parse(h.Substring(3, 2), NumberStyles.HexNumber);
+            byte b = byte.Parse(h.Substring(5, 2), NumberStyles.HexNumber);
+
+            double closest = double.MaxValue;
+            int result = 0;
+
+            for (int i = 0; i < acols.Length; i++)
+            {
+                double d = Math.Sqrt(Math.Pow((r - acols[i].R), 2) +
+                                     Math.Pow((g - acols[i].G), 2) +
+                                     Math.Pow((b - acols[i].B), 2));
+
+                if (d < closest)
+                {
+                    closest = d;
+                    result = i;
+                }
+            }
+
+            return (byte)result;
+        }
+
         public static String StripColors(String input)
         {
             if (Regex.IsMatch(input, @"\x03|\x05", RegexOptions.IgnoreCase))
@@ -244,6 +301,16 @@ namespace core
                     x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Extended);
             }
 
+            if (client.Font.Enabled)
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.IsCbot);
+
+                AresFont f = (AresFont)client.Font;
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.FontTo(x, client.Name, f.oldN, f.oldT)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+            }
+
             if (client.VoiceChatPrivate || client.VoiceChatPublic)
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatUserSupport(x, client)),
                     x => x.LoggedIn && x.Vroom == client.Vroom && (x.VoiceChatPrivate || x.VoiceChatPublic) && !x.Quarantined);
@@ -327,6 +394,10 @@ namespace core
             UserPool.WUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked && !x.Quarantined);
 
+            if (client.IsCbot)
+                UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.Enabled);
+
             if (ServerCore.Linker.Busy)
                 foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)
                     leaf.Users.ForEachWhere(x => client.SendPacket(TCPOutbound.PersonalMessage(client, x)),
@@ -356,6 +427,17 @@ namespace core
 
                     if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafPersonalMessage(ServerCore.Linker, client));
+                }
+
+            if (client.Font.Enabled)
+                if (!client.Cloaked)
+                {
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.IsCbot);
+
+                    AresFont f = (AresFont)client.Font;
+                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(WebOutbound.FontTo(x, client.Name, f.oldN, f.oldT)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
                 }
 
             if (features)
@@ -401,6 +483,12 @@ namespace core
 
             UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.UserlistItemTo(client, x.Name, x.Level)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && !x.Cloaked && !x.Quarantined);
+
+            UserPool.AUsers.ForEachWhere(x =>
+            {
+                AresFont f = (AresFont)x.Font;
+                client.QueuePacket(ib0t.WebOutbound.FontTo(client, x.Name, f.oldN, f.oldT));
+            }, x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Font.Enabled);
 
             if (ServerCore.Linker.Busy)
                 foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)

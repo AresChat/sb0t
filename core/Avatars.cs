@@ -39,6 +39,11 @@ namespace core
                 return TCPOutbound.BotAvatar(client, server_avatar);
         }
 
+        internal static bool GotServerAvatar
+        {
+            get { return server_avatar != null; }
+        }
+
         internal static byte[] Server(ib0t.ib0tClient client)
         {
             if (server_avatar == null)

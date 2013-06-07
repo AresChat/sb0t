@@ -9,12 +9,12 @@ namespace iconnect
     public interface IFont
     {
         /// <summary>Custom Font Style</summary>
-        bool Enabled { get; set; }
+        bool Enabled { get; }
         /// <summary>Custom Font Style</summary>
-        String NameColor { get; set; }
+        String NameColor { get; }
         /// <summary>Custom Font Style</summary>
-        String TextColor { get; set; }
+        String TextColor { get; }
         /// <summary>Custom Font Style</summary>
-        String FontName { get; set; }
+        String FontName { get; }
     }
 }

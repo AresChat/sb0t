@@ -12,6 +12,7 @@ namespace core
     class AresClient : IClient, IUser, IQuarantined
     {
         public bool Ares { get; set; }
+        public bool IsCbot { get; set; }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
         public String DNS { get; set; }
@@ -102,7 +103,8 @@ namespace core
             this.FloodRecord = new core.FloodRecord();
             this.AvatarTimeout = time;
             this.Font = new AresFont();
-            Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+         //   Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+            this.DNS = "unknown";
         }
 
         public void SendHTML(String text)

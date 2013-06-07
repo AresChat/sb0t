@@ -43,7 +43,16 @@ namespace scripting.Objects
         [JSProperty(Name = "exists")]
         public bool DoesExist
         {
-            get { return this.Data != null; }
+            get
+            {
+                if (this.Data == null)
+                    return false;
+
+                if (this.Data.Length == 0)
+                    return false;
+
+                return true;
+            }
             set { }
         }
 

@@ -15,6 +15,25 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_HTML);
         }
 
+        public static byte[] CustomFont(AresClient client, AresClient target)
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            AresFont f = (AresFont)target.Font;
+
+            packet.WriteString(client, target.Name); // user's name + null   
+            packet.WriteByte(f.size);
+            packet.WriteString(client, target.Font.FontName); // null terminated   
+            packet.WriteByte(f.oldN);
+            packet.WriteByte(f.oldT);
+            packet.WriteString(client, target.Font.NameColor);
+            packet.WriteString(client, target.Font.TextColor);
+
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CUSTOM_FONT); // id = 204   
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
         public static byte[] Font(AresFont f)
         {
             StringBuilder sb = new StringBuilder("{");

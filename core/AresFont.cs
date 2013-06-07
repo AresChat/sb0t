@@ -13,5 +13,8 @@ namespace core
         public String TextColor { get; set; }
         public String FontName { get; set; }
         public bool IsEmote { get; set; }
+        public byte oldN { get; set; }
+        public byte oldT { get; set; }
+        public byte size { get; set; }
     }
 }

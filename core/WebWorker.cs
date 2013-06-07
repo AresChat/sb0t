@@ -265,16 +265,34 @@ namespace core
 
                         if (target != null)
                         {
-                            target.Font.Enabled = true;
-                            target.Font.FontName = font_family;
-                            target.Font.TextColor = font_color;
+                            AresFont f = new AresFont();
+                            f.size = 10;
+                            f.Enabled = true;
+                            f.FontName = font_family;
+                            f.TextColor = font_color;
 
                             if (split.Length >= 3)
-                                target.Font.NameColor = split[2];
+                                f.NameColor = split[2];
+                            else
+                                f.NameColor = "#000000";
 
-                            if (target.Font.FontName.ToUpper().Contains("VERDANA") &&
-                                target.Font.TextColor.Contains("000000"))
-                                target.Font.Enabled = false;
+                            if (f.FontName.ToUpper().Contains("VERDANA") && f.TextColor.Contains("000000"))
+                                f.Enabled = false;
+
+                            if (f.Enabled)
+                            {
+                                f.oldN = Helpers.HTMLColorToAresColor(f.NameColor);
+                                f.oldT = Helpers.HTMLColorToAresColor(f.TextColor);
+                                target.Font = f;
+
+                                if (!target.Quarantined)
+                                {
+                                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, target)),
+                                        x => x.IsCbot && !x.Quarantined && x.LoggedIn && x.Vroom == target.Vroom && !x.Quarantined);
+                                    UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.FontTo(x, target.Name, f.oldN, f.oldT)),
+                                        x => x.LoggedIn && x.Vroom == target.Vroom && !x.Quarantined);
+                                }
+                            }
                         }
                     }
                 }

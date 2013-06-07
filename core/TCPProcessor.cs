@@ -375,7 +375,7 @@ namespace core
 
                         UserPool.AUsers.ForEachWhere(x =>
                         {
-                            if (x.SupportsHTML)
+                            if (x.SupportsHTML && x.Ares)
                             {
                                 if (String.IsNullOrEmpty(client.CustomName))
                                 {
@@ -463,7 +463,7 @@ namespace core
 
                             UserPool.AUsers.ForEachWhere(x =>
                             {
-                                if (x.SupportsHTML)
+                                if (x.SupportsHTML && x.Ares)
                                     if (js_style != null)
                                         x.SendPacket(js_style);
 
@@ -569,6 +569,7 @@ namespace core
             client.Name = client.OrgName;
             client.Version = packet.ReadString(client);
             client.Ares = client.Version.StartsWith("Ares 2.") || client.Version.StartsWith("Ares_2.");
+            client.IsCbot = client.Version.StartsWith("cb0t ");
             client.CustomClient = true; // everyone can be custom client
             client.LocalIP = packet;
             packet.SkipBytes(4);
@@ -813,6 +814,10 @@ namespace core
 
                 if (client.Owner)
                     client.Level = ILevel.Host;
+
+                if (client.IsCbot)
+                    UserPool.AUsers.ForEachWhere(x => client.SendPacket(TCPOutbound.CustomFont(client, x)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && x.Font.Enabled);
             }
             else
             {

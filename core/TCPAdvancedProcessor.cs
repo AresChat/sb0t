@@ -49,9 +49,51 @@ namespace core
                     VCIgnore(client, packet.Packet);
                     break;
 
+                case TCPMsg.MSG_CHAT_CLIENT_CUSTOM_FONT:
+                    Font(client, packet.Packet);
+                    break;
+
                 default:
                     Events.UnhandledProtocol(client, true, packet.Msg, packet.Packet, time);
                     break;
+            }
+        }
+
+        private static void Font(AresClient client, TCPPacketReader packet)
+        {
+            if (packet.Remaining < 2)
+            {
+                client.Font = new AresFont();
+                return;
+            }
+
+            AresFont font = new AresFont();
+            font.Enabled = true;
+            font.size = packet;
+            font.FontName = packet.ReadString(client);
+            font.oldN = packet;
+            font.oldT = packet;
+
+            if (packet.Remaining > 0)
+                font.NameColor = packet.ReadString(client);
+
+            if (packet.Remaining > 0)
+                font.TextColor = packet.ReadString(client);
+
+            if (String.IsNullOrEmpty(font.NameColor))
+                font.NameColor = Helpers.AresColorToHTMLColor(font.oldN);
+
+            if (String.IsNullOrEmpty(font.TextColor))
+                font.TextColor = Helpers.AresColorToHTMLColor(font.oldT);
+
+            client.Font = font;
+
+            if (!client.Quarantined)
+            {
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomFont(x, client)),
+                    x => x.IsCbot && !x.Quarantined && x.LoggedIn && x.Vroom == client.Vroom);
+                UserPool.WUsers.ForEachWhere(x => x.QueuePacket(ib0t.WebOutbound.FontTo(x, client.Name, font.oldN, font.oldT)),
+                    x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
             }
         }
 

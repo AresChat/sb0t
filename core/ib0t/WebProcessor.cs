@@ -385,7 +385,9 @@ namespace core.ib0t
                 if (client.Extended)
                 {
                     client.QueuePacket(WebOutbound.PerMsgBotTo(client));
-                    client.QueuePacket(Avatars.Server(client));
+
+                    if (Avatars.GotServerAvatar)
+                        client.QueuePacket(Avatars.Server(client));
 
                     UserPool.AUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.AvatarTo(client, x.Name, x.Avatar)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && x.Avatar.Length > 0 && !x.Quarantined);
@@ -403,6 +405,12 @@ namespace core.ib0t
 
                     UserPool.WUsers.ForEachWhere(x => client.QueuePacket(WebOutbound.PersMsgTo(client, x.Name, x.PersonalMessage)),
                         x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
+
+                    UserPool.AUsers.ForEachWhere(x =>
+                    {
+                        AresFont f = (AresFont)x.Font;
+                        client.QueuePacket(WebOutbound.FontTo(client, x.Name, f.oldN, f.oldT));
+                    }, x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && x.Font.Enabled);
 
                     if (ServerCore.Linker.Busy)
                         foreach (LinkLeaf.Leaf leaf in ServerCore.Linker.Leaves)

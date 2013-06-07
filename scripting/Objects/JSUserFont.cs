@@ -34,28 +34,28 @@ namespace scripting.Objects
         public bool Enabled
         {
             get { return this.parent.Font.Enabled; }
-            set { this.parent.Font.Enabled = value; }
+            set { }
         }
 
         [JSProperty(Name = "nameColor")]
         public String NameColor
         {
             get { return this.parent.Font.NameColor; }
-            set { this.parent.Font.NameColor = value; }
+            set { }
         }
 
         [JSProperty(Name = "textColor")]
         public String TextColor 
         {
             get { return this.parent.Font.TextColor; }
-            set { this.parent.Font.TextColor = value; }
+            set { }
         }
 
         [JSProperty(Name = "family")]
         public String Name
         {
             get { return this.parent.Font.FontName; }
-            set { this.parent.Font.FontName = value; }
+            set { }
         }
     }
 }
