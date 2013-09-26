@@ -1,2 +1,1 @@
-start with windows
-link list syncing - seems to be "part" related
+testing svn on new computer
