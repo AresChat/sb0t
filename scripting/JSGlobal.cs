@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using Jurassic;
 using Jurassic.Library;
+using System.Text.RegularExpressions;
 
 namespace scripting
 {
@@ -265,6 +266,26 @@ namespace scripting
 
                 Server.EmoteToTarget(((Objects.JSUser)a).parent, sender, text);
             }
+        }
+
+        [JSFunction(Name = "stripColors")]
+        public static String StripColors(object a)
+        {
+            if (a is Undefined || a is Null)
+                return null;
+
+            String input = a.ToString();
+
+            if (Regex.IsMatch(input, @"\x03|\x05", RegexOptions.IgnoreCase))
+                input = Regex.Replace(input, @"(\x03|\x05)[0-9]{2}", "");
+
+            input = input.Replace("\x06", "");
+            input = input.Replace("\x07", "");
+            input = input.Replace("\x09", "");
+            input = input.Replace("\x02", "");
+            input = input.Replace("­", "");
+
+            return input;
         }
     }
 }

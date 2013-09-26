@@ -389,7 +389,7 @@ namespace commands
         public void PrivateSending(IUser client, IUser target, IPrivateMsg msg)
         {
             if (PMBlocking.IsBlocking(target))
-                if (target.Level > client.Level)
+                if (target.Level > client.Level || client.Level == ILevel.Regular)
                 {
                     msg.Cancel = true;
                     client.PM(target.Name, Template.Text(Category.PmBlocking, 2).Replace("+n", client.Name).Replace("+t", target.Name));

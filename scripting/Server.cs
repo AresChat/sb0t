@@ -9,7 +9,7 @@ namespace scripting
 {
     class Server
     {
-        public const int SCRIPT_VERSION = 5008;
+        public const int SCRIPT_VERSION = 5009;
 
         private static IHostApp Callback { get; set; }
 
