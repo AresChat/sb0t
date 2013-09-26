@@ -128,6 +128,7 @@
     <Compile Include="Statics\JSBase64.cs" />
     <Compile Include="Statics\JSChannels.cs" />
     <Compile Include="Statics\JSCrypto.cs" />
+    <Compile Include="Statics\JSEntities.cs" />
     <Compile Include="Statics\JSFile.cs" />
     <Compile Include="Statics\JSHashlink.cs" />
     <Compile Include="Statics\JSLink.cs" />
