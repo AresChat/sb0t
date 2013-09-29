@@ -64,7 +64,7 @@ namespace commands
                         break;
 
                     case FilterType.VersionBan:
-                        if (client.Version.ToUpper().Contains(item.Args.ToUpper()))
+                        if (client.Version.ToUpper().Contains(item.Trigger.ToUpper()))
                             return true;
                         break;
                 }
