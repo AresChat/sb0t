@@ -49,7 +49,7 @@ namespace gui
             //chat logging
             this.checkBox1.IsChecked = Settings.Get<bool>("logging");
             //custom emoticons
-            this.checkBox2.IsChecked = Settings.Get<bool>("emotes");
+            this.checkBox2.IsChecked = Settings.Get<bool>("can_room_scribble");
             //auto load - TO DO
             this.checkBox4.IsChecked = Settings.Get<bool>("start_min");
             //udp

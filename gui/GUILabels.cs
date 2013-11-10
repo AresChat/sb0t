@@ -57,8 +57,8 @@ namespace gui
             english["checkBox1"] = "Chat logging enabled";
             spanish["checkBox1"] = "Registro de Chat habilitado";
 
-            english["checkBox2"] = "Custom emoticons enabled";
-            spanish["checkBox2"] = "Emoticons personalizados habilitado";
+            english["checkBox2"] = "Room scribbles enabled";
+            spanish["checkBox2"] = "Habilitado scribbles sala";
 
             english["checkBox3"] = "Start server when sb0t starts";
             spanish["checkBox3"] = "Servidor on cuando sb0t esté on";

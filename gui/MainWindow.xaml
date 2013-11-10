@@ -28,7 +28,7 @@
                             <Label Canvas.Left="29" Canvas.Top="197" Content="Room port:" Height="28" Name="label3" />
                             <Label Canvas.Left="29" Canvas.Top="244" Content="Bot name:" Height="28" Name="label4" />
                             <CheckBox Canvas.Left="350" Canvas.Top="45" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="65" Content="Custom emoticons enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="350" Canvas.Top="65" Content="Room scribbles enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="350" Canvas.Top="85" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="350" Canvas.Top="105" Content="Start sb0t minimized" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="350" Canvas.Top="125" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />

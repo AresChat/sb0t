@@ -844,7 +844,8 @@ namespace commands
             if (client.Level > ILevel.Regular)
                 if (!cmd.StartsWith("whisper"))
                     if (!cmd.StartsWith("host"))
-                        LogSend.Log(client, cmd);
+                        if (!cmd.StartsWith("jsmsg"))
+                            LogSend.Log(client, cmd);
 
             if (cmd == "version")
                 client.Print(Server.Chatroom.Version);

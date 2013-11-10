@@ -276,7 +276,7 @@ namespace gui
             if (cb.Name == "checkBox1")
                 Settings.Set("logging", this.checkBox1.IsChecked);
             else if (cb.Name == "checkBox2")
-                Settings.Set("emotes", this.checkBox2.IsChecked);
+                Settings.Set("can_room_scribble", this.checkBox2.IsChecked);
             else if (cb.Name == "checkBox3")
                 Settings.Set("autostart", this.checkBox3.IsChecked);
             else if (cb.Name == "checkBox4")

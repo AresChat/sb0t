@@ -900,6 +900,12 @@ namespace core.LinkHub
             byte[] credentials = packet.ReadBytes(20);
             leaf.Protocol = packet;
             leaf.Port = packet;
+
+            Leaf existing = LeafPool.Leaves.Find(x => x.ExternalIP.Equals(leaf.ExternalIP) && x.Port == leaf.Port && x.Ident != leaf.Ident);
+
+            if (existing != null)
+                existing.Disconnect();
+
             TrustedLeafItem item = TrustedLeavesManager.GetTrusted(leaf.ExternalIP, leaf.Port, credentials);
 
             if (item == null)

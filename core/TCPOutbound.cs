@@ -15,6 +15,15 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_HTML);
         }
 
+        public static byte[] CanRoomScribble()
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_ROOM_SCRIBBLE);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
+        }
+
         public static byte[] CustomFont(AresClient client, AresClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
