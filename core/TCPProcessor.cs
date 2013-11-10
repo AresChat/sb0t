@@ -525,7 +525,10 @@ namespace core
             AresClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn && x.CustomClient);
 
             if (target != null)
-                target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
+            {
+                if (target.IgnoreList.Contains(client.Name))
+                    target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
+            }
             else if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
             {
                 IClient linked = ServerCore.Linker.FindUser(x => x.Name == name && x.CustomClient);
