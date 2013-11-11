@@ -526,7 +526,7 @@ namespace core
 
             if (target != null)
             {
-                if (target.IgnoreList.Contains(client.Name))
+                if (!target.IgnoreList.Contains(client.Name))
                     target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
             }
             else if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
