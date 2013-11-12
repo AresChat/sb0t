@@ -103,9 +103,10 @@ namespace core
             packet.WriteByte(target.Country);
             packet.WriteString(client, target.Region);
 
-            byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
-                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC) |
-                            ((client.SupportsHTML ? 0 : 1) * CLIENT_SUPPORTS_HTML));
+            byte b = 0;
+
+            if (target.SupportsHTML)
+                b |= CLIENT_SUPPORTS_HTML;
 
             if (target is AresClient)
             {
@@ -113,6 +114,12 @@ namespace core
 
                 if (ac != null)
                 {
+                    if (ac.VoiceChatPublic)
+                        b |= CLIENT_SUPPORTS_VC;
+
+                    if (ac.VoiceChatPrivate)
+                        b |= CLIENT_SUPPORTS_PM_VC;
+
                     if (ac.VoiceOpusChatPublic)
                         b |= CLIENT_SUPPORTS_OPUS_VC;
 
@@ -157,16 +164,23 @@ namespace core
             packet.WriteByte(target.Country);
             packet.WriteString(client, target.Region);
 
-            byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
-                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC) |
-                            ((client.SupportsHTML ? 0 : 1) * CLIENT_SUPPORTS_HTML));
+            byte b = 0;
 
+            if (target.SupportsHTML)
+                b |= CLIENT_SUPPORTS_HTML;
+            
             if (target is AresClient)
             {
                 AresClient ac = (AresClient)target;
 
                 if (ac != null)
                 {
+                    if (ac.VoiceChatPublic)
+                        b |= CLIENT_SUPPORTS_VC;
+
+                    if (ac.VoiceChatPrivate)
+                        b |= CLIENT_SUPPORTS_PM_VC;
+
                     if (ac.VoiceOpusChatPublic)
                         b |= CLIENT_SUPPORTS_OPUS_VC;
 

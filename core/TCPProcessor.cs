@@ -610,9 +610,15 @@ namespace core
                 byte vc = packet;
                 client.VoiceChatPublic = ((vc & 1) == 1);
                 client.VoiceChatPrivate = ((vc & 2) == 2);
-                client.VoiceOpusChatPublic = ((vc & 2) == 4);
-                client.VoiceOpusChatPrivate = ((vc & 2) == 8);
+                client.VoiceOpusChatPublic = ((vc & 4) == 4);
+                client.VoiceOpusChatPrivate = ((vc & 8) == 8);
                 client.SupportsHTML = ((vc & 16) == 16);
+
+                if (client.VoiceOpusChatPublic)
+                    client.VoiceChatPublic = true;
+
+                if (client.VoiceOpusChatPrivate)
+                    client.VoiceChatPrivate = true;
             }
 
             // maybe add encryption in next cbot?
