@@ -15,15 +15,6 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_HTML);
         }
 
-        public static byte[] CanRoomScribble()
-        {
-            TCPPacketWriter packet = new TCPPacketWriter();
-            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_ROOM_SCRIBBLE);
-            packet = new TCPPacketWriter();
-            packet.WriteBytes(buf);
-            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
-        }
-
         public static byte[] CustomFont(AresClient client, AresClient target)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
@@ -212,28 +203,35 @@ namespace core
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_OPCHANGE);
         }
 
-        private const int SERVER_SUPPORTS_PVT = 1;
-        private const int SERVER_SUPPORTS_SHARING = 2;
-        private const int SERVER_SUPPORTS_COMPRESSION = 4;
-        private const int SERVER_SUPPORTS_VC = 8;
-        private const int SERVER_SUPPORTS_OPUS_VC = 16;
-        private const int SERVER_SUPPORTS_ROOM_SCRIBBLES = 32;
-        private const int SERVER_SUPPORTS_PM_SCRIBBLES = 64;
-        private const int SERVER_SUPPORTS_HTML = 128;
+        private enum ServerFeatures : byte
+        {
+            SERVER_SUPPORTS_PVT = 1,
+            SERVER_SUPPORTS_SHARING = 2,
+            SERVER_SUPPORTS_COMPRESSION = 4,
+            SERVER_SUPPORTS_VC = 8,
+            SERVER_SUPPORTS_OPUS_VC = 16,
+            SERVER_SUPPORTS_ROOM_SCRIBBLES = 32,
+            SERVER_SUPPORTS_PM_SCRIBBLES = 64,
+            SERVER_SUPPORTS_HTML = 128
+        }
 
         public static byte[] MyFeatures(AresClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteString(client, Settings.VERSION);
 
-            byte flag = (byte)(SERVER_SUPPORTS_PVT |
-                               SERVER_SUPPORTS_SHARING |
-                               SERVER_SUPPORTS_COMPRESSION |
-                               SERVER_SUPPORTS_VC |
-                               SERVER_SUPPORTS_HTML);
+            ServerFeatures flag = (ServerFeatures.SERVER_SUPPORTS_PVT |
+                                   ServerFeatures.SERVER_SUPPORTS_SHARING |
+                                   ServerFeatures.SERVER_SUPPORTS_COMPRESSION |
+                                   ServerFeatures.SERVER_SUPPORTS_VC |
+                                   ServerFeatures.SERVER_SUPPORTS_OPUS_VC |
+                                   ServerFeatures.SERVER_SUPPORTS_PM_SCRIBBLES |
+                                   ServerFeatures.SERVER_SUPPORTS_HTML);
 
-            packet.WriteByte(flag);
+            if (Settings.Get<bool>("can_room_scribble"))
+                flag |= ServerFeatures.SERVER_SUPPORTS_ROOM_SCRIBBLES;
 
+            packet.WriteByte((byte)flag);
             packet.WriteByte(63);
             packet.WriteByte(Settings.Get<byte>("language"));
             packet.WriteUInt32(client.Cookie);

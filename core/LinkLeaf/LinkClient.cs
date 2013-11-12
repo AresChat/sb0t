@@ -138,6 +138,7 @@ namespace core.LinkLeaf
                     catch (Exception e)
                     {
                         this.KillSocket();
+                        bool was_linked = this.LoginPhase == LinkLogin.Ready;
 
                         if (this.CanReconnect)
                         {
@@ -149,7 +150,7 @@ namespace core.LinkLeaf
                         Events.LinkError(LinkError.BadProtocol);
                         ServerCore.Log("packet read fail from hub " + packet.Msg, e);
 
-                        if (this.LoginPhase == LinkLogin.Ready)
+                        if (was_linked)
                             this.ClearUserlist();
 
                         Events.Unlinked();
@@ -173,10 +174,10 @@ namespace core.LinkLeaf
                     Events.LinkError(LinkError.RemoteDisconnect);
 
                     if (unlink_fire)
-                        Events.Unlinked();
-
-                    if (this.LoginPhase == LinkLogin.Ready)
+                    {
                         this.ClearUserlist();
+                        Events.Unlinked();
+                    }
                 }
                 else if (this.LoginPhase == LinkLogin.AwaitingAck)
                 {

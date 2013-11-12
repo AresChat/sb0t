@@ -501,14 +501,14 @@ namespace core
                             x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID);
 
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, Settings.Get<String>("bot"), ident, data)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID && !x.IgnoreList.Contains(client.Name));
                 }
 
                 return;
             }
 
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, client.Name, ident, data)),
-                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID);
+                x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID && !x.IgnoreList.Contains(client.Name));
 
             if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
                 ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomDataAll(ServerCore.Linker, client.Vroom, client.Name, ident, data));
@@ -862,9 +862,6 @@ namespace core
                 client.SendPacket(TCPOutbound.NoSuch(client, String.Empty));
                 FloodControl.Remove(client);
             }
-
-            if (Settings.Get<bool>("can_room_scribble"))
-                client.SendPacket(TCPOutbound.CanRoomScribble());
         }
 
     }
