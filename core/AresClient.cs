@@ -44,6 +44,8 @@ namespace core
         public List<String> CustomClientTags { get; set; }
         public bool VoiceChatPublic { get; set; }
         public bool VoiceChatPrivate { get; set; }
+        public bool VoiceOpusChatPublic { get; set; }
+        public bool VoiceOpusChatPrivate { get; set; }
         public List<String> VoiceChatIgnoreList { get; set; }
         public bool WebClient { get; private set; }
         public bool Owner { get; set; }

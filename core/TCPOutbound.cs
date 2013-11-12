@@ -107,6 +107,20 @@ namespace core
                             ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC) |
                             ((client.SupportsHTML ? 0 : 1) * CLIENT_SUPPORTS_HTML));
 
+            if (target is AresClient)
+            {
+                AresClient ac = (AresClient)target;
+
+                if (ac != null)
+                {
+                    if (ac.VoiceOpusChatPublic)
+                        b |= CLIENT_SUPPORTS_OPUS_VC;
+
+                    if (ac.VoiceOpusChatPrivate)
+                        b |= CLIENT_SUPPORTS_OPUS_PM_VC;
+                }
+            }
+
             packet.WriteByte(b);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_JOIN);
         }
@@ -145,9 +159,21 @@ namespace core
 
             byte b = (byte)(((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_VC) |
                             ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_PM_VC) |
-                            ((client.VoiceChatPublic ? 0 : 1) * CLIENT_SUPPORTS_OPUS_VC) |
-                            ((client.VoiceChatPrivate ? 0 : 1) * CLIENT_SUPPORTS_OPUS_PM_VC) |
                             ((client.SupportsHTML ? 0 : 1) * CLIENT_SUPPORTS_HTML));
+
+            if (target is AresClient)
+            {
+                AresClient ac = (AresClient)target;
+
+                if (ac != null)
+                {
+                    if (ac.VoiceOpusChatPublic)
+                        b |= CLIENT_SUPPORTS_OPUS_VC;
+
+                    if (ac.VoiceOpusChatPrivate)
+                        b |= CLIENT_SUPPORTS_OPUS_PM_VC;
+                }
+            }
 
             packet.WriteByte(b);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_CHANNEL_USER_LIST);
@@ -158,8 +184,8 @@ namespace core
             TCPPacketWriter packet = new TCPPacketWriter();
             packet.WriteUInt16(0);
             packet.WriteUInt32(0);
-            packet.WriteIP(Settings.ExternalIP);
-            packet.WriteUInt16(Settings.Port);
+            packet.WriteIP("0.0.0.0");
+            packet.WriteUInt16(69);
             packet.WriteIP("0.0.0.0");
             packet.WriteUInt16(0);
             packet.WriteByte(0);
