@@ -83,6 +83,8 @@ namespace core
         private bool _cloaked = false;
         private String _customname = String.Empty;
 
+        public UserScribbleRoomObject ScribbleRoomObject = new UserScribbleRoomObject();
+
         public AresClient(Socket sock, ulong time, ushort id)
         {
             this.OrgAvatar = new byte[] { };

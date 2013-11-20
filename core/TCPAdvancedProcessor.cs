@@ -53,9 +53,84 @@ namespace core
                     Font(client, packet.Packet);
                     break;
 
+                case TCPMsg.MSG_CHAT_CLIENT_SCRIBBLEROOM_FIRST:
+                    ScribbleRoomFirst(client, packet.Packet);
+                    break;
+
+                case TCPMsg.MSG_CHAT_CLIENT_SCRIBBLEROOM_CHUNK:
+                    ScribbleRoomChunk(client, packet.Packet);
+                    break;
+
                 default:
                     Events.UnhandledProtocol(client, true, packet.Msg, packet.Packet, time);
                     break;
+            }
+        }
+
+        private static void ScribbleRoomFirst(AresClient client, TCPPacketReader packet)
+        {
+            if (!Settings.Get<bool>("can_room_scribble"))
+                return;
+
+            client.ScribbleRoomObject.Reset();
+            client.ScribbleRoomObject.Size = packet;
+
+            if (client.ScribbleRoomObject.Size > 200000)
+            {
+                client.ScribbleRoomObject.Reset();
+                return;
+            }
+
+            client.ScribbleRoomObject.IsReceiving = true;
+            client.ScribbleRoomObject.Chunks = packet;
+            client.ScribbleRoomObject.DataIn.AddRange(((byte[])packet));
+
+            if (client.ScribbleRoomObject.ChunkCount == client.ScribbleRoomObject.Chunks)
+            {
+                if (client.ScribbleRoomObject.ReceivedCount == client.ScribbleRoomObject.Size)
+                {
+                    byte[] img = client.ScribbleRoomObject.DataIn.ToArray();
+                    String sender = Settings.Get<String>("bot");
+                    int height = 123; // not important
+
+                    UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "\x000314--- From " + client.Name)),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID);
+
+                    UserPool.AUsers.ForEachWhere(x => x.Scribble(sender, img, height),
+                        x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID && !x.IgnoreList.Contains(client.Name));
+                }
+
+                client.ScribbleRoomObject.Reset();
+            }
+        }
+
+        private static void ScribbleRoomChunk(AresClient client, TCPPacketReader packet)
+        {
+            if (!Settings.Get<bool>("can_room_scribble"))
+                return;
+
+            if (client.ScribbleRoomObject.IsReceiving)
+            {
+                client.ScribbleRoomObject.ChunkCount++;
+                client.ScribbleRoomObject.DataIn.AddRange(((byte[])packet));
+
+                if (client.ScribbleRoomObject.ChunkCount == client.ScribbleRoomObject.Chunks)
+                {
+                    if (client.ScribbleRoomObject.ReceivedCount == client.ScribbleRoomObject.Size)
+                    {
+                        byte[] img = client.ScribbleRoomObject.DataIn.ToArray();
+                        String sender = Settings.Get<String>("bot");
+                        int height = 123; // not important
+
+                        UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.NoSuch(x, "\x000314--- From " + client.Name)),
+                            x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID && !x.IgnoreList.Contains(client.Name));
+
+                        UserPool.AUsers.ForEachWhere(x => x.Scribble(sender, img, height),
+                            x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID && !x.IgnoreList.Contains(client.Name));
+                    }
+
+                    client.ScribbleRoomObject.Reset();
+                }
             }
         }
 

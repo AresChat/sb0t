@@ -86,6 +86,16 @@ namespace core
         MSG_CHAT_SERVER_ROOM_SCRIBBLE = 225,
         MSG_CHAT_SERVER_CRYPTO_KEY = 230,
 
+        // new scribble-to-room (so that images can be trickled to avoid flooding)
+
+        // 4 bytes = size
+        // 2 bytes = number of chunks
+        // x bytes = data
+        MSG_CHAT_CLIENT_SCRIBBLEROOM_FIRST = 240,
+
+        // x bytes = data
+        MSG_CHAT_CLIENT_SCRIBBLEROOM_CHUNK = 241,
+
         MSG_LINK_PROTO = 251
     }
 }

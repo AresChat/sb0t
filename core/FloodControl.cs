@@ -16,9 +16,6 @@ namespace core
 
         public static bool IsFlooding(IClient client, TCPMsg msg, byte[] data, ulong time)
         {
-            if (msg == TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL)
-                return false;
-
             if (msg == TCPMsg.MSG_CHAT_CLIENT_PUBLIC || msg == TCPMsg.MSG_CHAT_CLIENT_EMOTE)
             {
                 if (IsTextFlood(client))

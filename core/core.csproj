@@ -159,6 +159,7 @@
     <Compile Include="UserHistory.cs" />
     <Compile Include="UserLinkCredentials.cs" />
     <Compile Include="UserPool.cs" />
+    <Compile Include="UserScribbleRoomObject.cs" />
     <Compile Include="WebWorker.cs" />
     <Compile Include="Zip.cs" />
   </ItemGroup>
