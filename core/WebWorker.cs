@@ -362,7 +362,7 @@ namespace core
             StringBuilder sb = new StringBuilder();
             sb.Append(d.DayOfWeek.ToString().Substring(0, 3) + ", ");
             sb.Append(d.Day + " ");
-            sb.Append(months[d.Month] + " ");
+            sb.Append(months[d.Month - 1] + " ");
             sb.Append(d.Year + " ");
             sb.Append((d.Hour > 10 ? d.Hour.ToString() : ("0" + d.Hour)) + ":");
             sb.Append((d.Minute > 10 ? d.Minute.ToString() : ("0" + d.Minute)) + ":");

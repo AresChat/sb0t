@@ -17,7 +17,7 @@ namespace core
             "69.22.", // hotspot sheild
             "69.162.", // hotspot sheild
             "69.167.", // hotspot sheild
-            "74.115.", // hotspot sheild
+           // "74.115.", // hotspot sheild
             "128.241.", // hotspot sheild
             "140.174.", // hotspot sheild
             "204.2.", // hotspot sheild
