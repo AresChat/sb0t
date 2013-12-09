@@ -61,6 +61,10 @@ namespace core
                     ScribbleRoomChunk(client, packet.Packet);
                     break;
 
+                case TCPMsg.MSG_CHAT_CLIENT_BLOCK_CUSTOMNAMES:
+                    client.BlockCustomNames = ((byte)packet.Packet) == 1;
+                    break;
+
                 default:
                     Events.UnhandledProtocol(client, true, packet.Msg, packet.Packet, time);
                     break;

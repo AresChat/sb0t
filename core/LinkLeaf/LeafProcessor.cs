@@ -468,7 +468,7 @@ namespace core.LinkLeaf
                         {
                             if (x.SupportsHTML)
                             {
-                                if (String.IsNullOrEmpty(user.CustomName))
+                                if (String.IsNullOrEmpty(user.CustomName) || x.BlockCustomNames)
                                 {
                                     if (x.SupportsHTML)
                                         if (js_style != null)
@@ -487,7 +487,7 @@ namespace core.LinkLeaf
                             }
                             else
                             {
-                                if (String.IsNullOrEmpty(user.CustomName))
+                                if (String.IsNullOrEmpty(user.CustomName) || x.BlockCustomNames)
                                     x.SendPacket(TCPOutbound.Public(x, user.Name, text));
                                 else
                                     x.SendPacket(TCPOutbound.NoSuch(x, user.CustomName + text));

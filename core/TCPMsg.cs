@@ -85,6 +85,7 @@ namespace core
         MSG_CHAT_ADVANCED_FEATURES_PROTOCOL = 250,
         MSG_CHAT_SERVER_ROOM_SCRIBBLE = 225,
         MSG_CHAT_SERVER_CRYPTO_KEY = 230,
+        MSG_CHAT_SERVER_FAVICON = 231,
 
         // new scribble-to-room (so that images can be trickled to avoid flooding)
 
@@ -96,6 +97,11 @@ namespace core
         // x bytes = data
         MSG_CHAT_CLIENT_SCRIBBLEROOM_CHUNK = 241,
 
+        // Cometseeker - Maybe use this in Ares Server? :-)
+        // --- client will send after MSG_CHAT_SERVER_MYFEATURES is received.. if blocking is required!
+        // --- client will send when requirement changes (for example if you have a check-box to toggle blocking)
+        MSG_CHAT_CLIENT_BLOCK_CUSTOMNAMES = 242, // 1 byte -> 0=no 1=yes
+        
         MSG_LINK_PROTO = 251
     }
 }

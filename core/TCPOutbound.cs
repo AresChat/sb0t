@@ -265,8 +265,10 @@ namespace core
                                    ServerFeatures.SERVER_SUPPORTS_COMPRESSION |
                                    ServerFeatures.SERVER_SUPPORTS_VC |
                                    ServerFeatures.SERVER_SUPPORTS_OPUS_VC |
-                                   ServerFeatures.SERVER_SUPPORTS_PM_SCRIBBLES |
-                                   ServerFeatures.SERVER_SUPPORTS_HTML);
+                                   ServerFeatures.SERVER_SUPPORTS_PM_SCRIBBLES);
+
+            if (client.IsHTML)
+                flag |= ServerFeatures.SERVER_SUPPORTS_HTML;
 
             if (Settings.Get<bool>("can_room_scribble"))
                 flag |= ServerFeatures.SERVER_SUPPORTS_ROOM_SCRIBBLES;
@@ -277,6 +279,16 @@ namespace core
             packet.WriteUInt32(client.Cookie);
             packet.WriteByte(1);
             return packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_MYFEATURES);
+        }
+
+        public static byte[] FavIcon()
+        {
+            TCPPacketWriter packet = new TCPPacketWriter();
+            packet.WriteBytes(Resource1.fi);
+            byte[] buf = packet.ToAresPacket(TCPMsg.MSG_CHAT_SERVER_FAVICON);
+            packet = new TCPPacketWriter();
+            packet.WriteBytes(buf);
+            return packet.ToAresPacket(TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL);
         }
 
         public static byte[] Url(AresClient client, String addr, String tag)

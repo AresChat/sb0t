@@ -377,7 +377,7 @@ namespace core
                         {
                             if (x.SupportsHTML && x.Ares)
                             {
-                                if (String.IsNullOrEmpty(client.CustomName))
+                                if (String.IsNullOrEmpty(client.CustomName) || x.BlockCustomNames)
                                 {
                                     if (x.SupportsHTML)
                                         if (js_style != null)
@@ -396,7 +396,7 @@ namespace core
                             }
                             else
                             {
-                                if (String.IsNullOrEmpty(client.CustomName))
+                                if (String.IsNullOrEmpty(client.CustomName) || x.BlockCustomNames)
                                     x.SendPacket(TCPOutbound.Public(x, client.Name, text));
                                 else
                                     x.SendPacket(TCPOutbound.NoSuch(x, client.CustomName + text));
@@ -769,6 +769,7 @@ namespace core
                 client.LoggedIn = true;
                 client.SendPacket(TCPOutbound.Ack(client));
                 client.SendPacket(TCPOutbound.MyFeatures(client));
+                client.SendPacket(TCPOutbound.FavIcon());
                 client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Topic));
                 client.SendPacket(TCPOutbound.UserlistBot(client));
 
@@ -841,6 +842,7 @@ namespace core
                 client.LoggedIn = true;
                 client.SendPacket(TCPOutbound.Ack(client));
                 client.SendPacket(TCPOutbound.MyFeatures(client));
+                client.SendPacket(TCPOutbound.FavIcon());
                 client.SendPacket(TCPOutbound.TopicFirst(client, Settings.Topic));
                 client.SendPacket(TCPOutbound.UserlistBot(client));
                 client.SendPacket(TCPOutbound.UserListEnd());

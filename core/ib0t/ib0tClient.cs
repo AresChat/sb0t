@@ -259,7 +259,7 @@ namespace core.ib0t
         {
             if (!String.IsNullOrEmpty(text) && !this.Quarantined)
             {
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(this.CustomName) ?
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket((String.IsNullOrEmpty(this.CustomName) || x.BlockCustomNames) ?
                     TCPOutbound.Public(x, this.Name, text) : TCPOutbound.NoSuch(x, this.CustomName + text)),
                     x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
 

@@ -62,6 +62,8 @@ namespace core
         public bool SupportsHTML { get; set; }
         public bool IsWebWorker { get; set; }
 
+        public bool BlockCustomNames { get; set; }
+
         public IFont Font { get; set; }
 
         public Socket Sock { get; set; }
@@ -310,7 +312,7 @@ namespace core
         {
             if (!String.IsNullOrEmpty(text) && !this.Quarantined)
             {
-                UserPool.AUsers.ForEachWhere(x => x.SendPacket(String.IsNullOrEmpty(this.CustomName) ?
+                UserPool.AUsers.ForEachWhere(x => x.SendPacket((String.IsNullOrEmpty(this.CustomName) || x.BlockCustomNames) ?
                     TCPOutbound.Public(x, this.Name, text) : TCPOutbound.NoSuch(x, this.CustomName + text)),
                     x => x.LoggedIn && x.Vroom == this.Vroom && !x.IgnoreList.Contains(this.Name) && !x.Quarantined);
 

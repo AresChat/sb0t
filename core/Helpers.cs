@@ -346,7 +346,10 @@ namespace core
             client.SendPacket(TCPOutbound.Ack(client));
 
             if (features)
+            {
                 client.SendPacket(TCPOutbound.MyFeatures(client));
+                client.SendPacket(TCPOutbound.FavIcon());
+            }
 
             client.SendPacket(TCPOutbound.UserlistBot(client));
 

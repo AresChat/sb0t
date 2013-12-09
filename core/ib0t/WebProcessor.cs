@@ -530,7 +530,7 @@ namespace core.ib0t
                         {
                             if (x.SupportsHTML)
                             {
-                                if (String.IsNullOrEmpty(client.CustomName))
+                                if (String.IsNullOrEmpty(client.CustomName) || x.BlockCustomNames)
                                 {
                                     if (x.SupportsHTML)
                                         if (js_style != null)
@@ -549,7 +549,7 @@ namespace core.ib0t
                             }
                             else
                             {
-                                if (String.IsNullOrEmpty(client.CustomName))
+                                if (String.IsNullOrEmpty(client.CustomName) || x.BlockCustomNames)
                                     x.SendPacket(TCPOutbound.Public(x, client.Name, text));
                                 else
                                     x.SendPacket(TCPOutbound.NoSuch(x, client.CustomName + text));
