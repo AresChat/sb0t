@@ -267,7 +267,7 @@ namespace core
                                    ServerFeatures.SERVER_SUPPORTS_OPUS_VC |
                                    ServerFeatures.SERVER_SUPPORTS_PM_SCRIBBLES);
 
-            if (client.IsHTML)
+            if (client.SupportsHTML)
                 flag |= ServerFeatures.SERVER_SUPPORTS_HTML;
 
             if (Settings.Get<bool>("can_room_scribble"))
