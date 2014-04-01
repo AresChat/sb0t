@@ -122,5 +122,7 @@ namespace iconnect
         void Scribble(String sender, byte[] img, int height);
         /// <summary>Nudge the user (if client supports this feature)</summary>
         void Nudge(String sender);
+        /// <summary>Get Local Endpoint</summary>
+        IPEndPoint LocalEP { get; }
     }
 }

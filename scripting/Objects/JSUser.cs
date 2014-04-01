@@ -48,6 +48,19 @@ namespace scripting.Objects
             set { }
         }
 
+        [JSProperty(Name = "localEP")]
+        public String LocalEP
+        {
+            get
+            {
+                if (this.parent.LocalEP == null)
+                    return "0.0.0.0:0";
+
+                else return this.parent.LocalEP.ToString();
+            }
+            set { }
+        }
+
         [JSProperty(Name = "font")]
         public JSUserFont Font
         {

@@ -47,6 +47,7 @@ namespace core.ib0t
         public byte[] Password { get; set; }
         public bool Extended { get; set; }
         public IFont Font { get; set; }
+        public IPEndPoint LocalEP { get; set; }
 
         public Html5RequestEventArgs WebCredentials { get; set; }
         public Socket Sock { get; set; }
@@ -80,6 +81,7 @@ namespace core.ib0t
             this.Time = time;
             this.ProtoConnected = false;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
+            this.LocalEP = (IPEndPoint)this.Sock.LocalEndPoint;
             this._vroom = 0;
             this.Version = String.Empty;
             this.IgnoreList = new List<String>();

@@ -5,6 +5,7 @@ using System.Text;
 using captcha;
 using iconnect;
 using core.LinkHub;
+using System.Net;
 
 namespace core
 {
@@ -220,6 +221,60 @@ namespace core
             Command cmd = new Command { Text = text, Args = String.Empty };
             Helpers.PopulateCommand(cmd);
             Events.Command(client, text, cmd.Target, cmd.Args);
+        }
+
+        private static void CustomData(AresClient client, TCPPacketReader packet)
+        {
+            if (client.Quarantined || !client.Captcha)
+                return;
+
+            String ident = packet.ReadString(client);
+            String name = packet.ReadString(client);
+            byte[] data = packet;
+            AresClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn && x.CustomClient);
+
+            if (ident == "cb0t_pm_msg")
+            {
+                if (target != null)
+                {
+                    if (target.IgnoreList.Contains(client.Name) || client.Muzzled)
+                        client.SendPacket(TCPOutbound.IsIgnoringYou(client, name));
+                    else
+                    {
+                        if (target.Cloaked)
+                        {
+                            client.SendPacket(TCPOutbound.OfflineUser(client, name));
+                            return;
+                        }
+
+                        PMEventArgs args = new PMEventArgs { Cancel = false, Text = "          " };
+                        Events.PrivateSending(client, target, args);
+
+                        if (!args.Cancel && client.SocketConnected)
+                        {
+                            target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
+                            Events.PrivateSent(client, target, args.Text);
+                        }
+                    }
+                }
+                else client.SendPacket(TCPOutbound.OfflineUser(client, name));
+            }
+            else
+            {
+                if (target != null)
+                {
+                    if (!target.IgnoreList.Contains(client.Name))
+                        target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
+                }
+                else if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
+                {
+                    IClient linked = ServerCore.Linker.FindUser(x => x.Name == name && x.CustomClient);
+
+                    if (linked != null)
+                        ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomDataTo(ServerCore.Linker,
+                            linked.IUser.Link.Ident, client.Name, linked.Name, ident, data));
+                }
+            }
         }
 
         private static void Private(AresClient client, TCPPacketReader packet)
@@ -502,31 +557,6 @@ namespace core
                 ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomDataAll(ServerCore.Linker, client.Vroom, client.Name, ident, data));
         }
 
-        private static void CustomData(AresClient client, TCPPacketReader packet)
-        {
-            if (client.Quarantined || !client.Captcha)
-                return;
-
-            String ident = packet.ReadString(client);
-            String name = packet.ReadString(client);
-            byte[] data = packet;
-            AresClient target = UserPool.AUsers.Find(x => x.Name == name && x.LoggedIn && x.CustomClient);
-
-            if (target != null)
-            {
-                if (!target.IgnoreList.Contains(client.Name))
-                    target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
-            }
-            else if (ServerCore.Linker.Busy && ServerCore.Linker.LoginPhase == LinkLeaf.LinkLogin.Ready)
-            {
-                IClient linked = ServerCore.Linker.FindUser(x => x.Name == name && x.CustomClient);
-
-                if (linked != null)
-                    ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomDataTo(ServerCore.Linker,
-                        linked.IUser.Link.Ident, client.Name, linked.Name, ident, data));
-            }
-        }
-
         private static void PersonalMessage(AresClient client, TCPPacketReader packet)
         {
             String text = packet.ReadString(client);
@@ -611,6 +641,8 @@ namespace core
 
             // maybe add encryption in next cbot?
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
+
+            IPAddress p_check = new IPAddress(client.ExternalIP.GetAddressBytes());
 
             if (client.Version.StartsWith("cb0t"))
                 ObSalt.GetSalt(client); // client doesn't support file sharing, so protect their external ip from idiots!
@@ -706,7 +738,7 @@ namespace core
                 throw new Exception("unacceptable gender");
             }
 
-            if (Proxies.Check(client))
+            if (Proxies.Check(p_check, client.DNS))
                 if (!Helpers.IsLocalHost(client))
                     if (Events.ProxyDetected(client))
                     {

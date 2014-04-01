@@ -241,6 +241,7 @@ namespace core.ib0t
             client.Sex = 0;
             client.Country = 0;
             client.Region = String.Empty;
+            IPAddress p_check = new IPAddress(client.ExternalIP.GetAddressBytes());
             ObSalt.GetSalt(client);
             client.Captcha = !Settings.Get<bool>("captcha");
 
@@ -295,7 +296,7 @@ namespace core.ib0t
                     throw new Exception("banned user");
                 }
 
-            if (Proxies.Check(client))
+            if (Proxies.Check(p_check, client.DNS))
                 if (!Helpers.IsLocalHost(client))
                     if (Events.ProxyDetected(client))
                     {

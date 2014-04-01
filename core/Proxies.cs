@@ -47,6 +47,13 @@ namespace core
             "108.61.74.99", // cyber ghost
             "79.141.165.21", // cyber ghost
             "24.99.89.166", // cyber ghost
+            "199.58.84.", // spotflux
+            "50.116.5.", // spotflux
+            "23.92.22.", // spotflux
+            "64.62.201.", // spotflux
+            "162.210.196.", // spotflux
+            "192.96.203.", // spotflux
+            "199.58.84." // spotflux
         };
 
         private static String[] bad_dns = new String[]
@@ -65,19 +72,22 @@ namespace core
             "pptp",
             "cloud",
             "onlinehome",
-            "hide"
+            "hide",
+            "transip",
+            "flux"
+            //".ip-"
         };
 
-        public static bool Check(IClient client)
+        public static bool Check(IPAddress ipaddr, String dnsaddr)
         {
             foreach (String ip in bad_ranges)
-                if (client.ExternalIP.ToString().StartsWith(ip))
+                if (ipaddr.ToString().StartsWith(ip))
                 {
                     return true;
                 }
 
             foreach (String dns in bad_dns)
-                if (client.DNS.ToLower().Contains(dns))
+                if (dnsaddr.ToLower().Contains(dns))
                 {
                     return true;
                 }
@@ -86,7 +96,7 @@ namespace core
 
             lock (list)
             {
-                int i = list.FindIndex(x => x.Equals(client.ExternalIP));
+                int i = list.FindIndex(x => x.Equals(ipaddr));
                 result = i > -1;
             }
 

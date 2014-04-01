@@ -53,6 +53,7 @@ namespace core.LinkLeaf
         public UserLinkCredentials LinkCredentials { get; set; }
         public ILink Link { get { return this.LinkCredentials; } set { } }
         public byte[] Password { get; set; }
+        public IPEndPoint LocalEP { get; set; }
 
         public void SetLevel(ILevel level) { }
         public void SendHTML(String text) { }
@@ -243,6 +244,7 @@ namespace core.LinkLeaf
             this._avatar = new byte[] { };
             this._personalmessage = String.Empty;
             this.Font = new AresFont();
+            this.LocalEP = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 0);
 
             this.LinkCredentials = new UserLinkCredentials
             {

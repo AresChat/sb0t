@@ -61,6 +61,7 @@ namespace core
         public byte[] Password { get; set; }
         public bool SupportsHTML { get; set; }
         public bool IsWebWorker { get; set; }
+        public IPEndPoint LocalEP { get; set; }
 
         public bool BlockCustomNames { get; set; }
 
@@ -96,6 +97,7 @@ namespace core
             this.Time = time;
             this.SocketAddr = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
+            this.LocalEP = (IPEndPoint)this.Sock.LocalEndPoint;
             this.Cookie = AccountManager.NextCookie;
             this.Encryption = new core.Encryption { Mode = EncryptionMode.Unencrypted };
             this.Version = String.Empty;
@@ -109,8 +111,8 @@ namespace core
             this.FloodRecord = new core.FloodRecord();
             this.AvatarTimeout = time;
             this.Font = new AresFont();
-         //   Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
-            this.DNS = "unknown";
+            Dns.BeginGetHostEntry(this.ExternalIP, new AsyncCallback(this.DnsReceived), null);
+           // this.DNS = "unknown";
         }
 
         public void SendHTML(String text)
