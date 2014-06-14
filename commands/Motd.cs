@@ -73,6 +73,7 @@ namespace commands
                 if (html.StartsWith("[youtube=") && html.EndsWith("]") && client.SupportsHTML)
                 {
                     html = html.Substring(9, html.Length - 10);
+                    client.SendHTML("<!--EMBEDYOUTUBE:" + html + "-->");
                     html = yt.Replace("LINK", html);
                     client.SendHTML(html);
                 }
