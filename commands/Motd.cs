@@ -83,6 +83,12 @@ namespace commands
                     html = "<img src=\"" + html + "\" style=\"max-width: 420px; max-height: 420px;\" alt=\"\" />";
                     client.SendHTML(html);
                 }
+                else if (html.StartsWith("[poster=") && html.EndsWith("]") && client.SupportsHTML)
+                {
+                    html = html.Substring(8, html.Length - 9);
+                    html = "<img src=\"" + html + "\" style=\"max-width: 75%; display: block; margin-left: auto; margin-right: auto;\" alt=\"\" />";
+                    client.SendHTML(html);
+                }
                 else if (html.StartsWith("[audio=") && html.EndsWith("]") && client.SupportsHTML)
                 {
                     html = html.Substring(7, html.Length - 8);
