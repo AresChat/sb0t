@@ -10,6 +10,8 @@ namespace iconnect
     public interface IUser
     {
         /// <summary>Get user's custom font</summary>
+        uint LastScribble { get; set; }
+        /// <summary>Get user's custom font</summary>
         IFont Font { get; }
         /// <summary>Set user admin level</summary>
         void SetLevel(ILevel level);

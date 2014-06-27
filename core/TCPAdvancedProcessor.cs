@@ -183,7 +183,7 @@ namespace core
                 byte[] data = packet;
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatFirst(x, client.Name, data)),
-                    x => x.ID != client.ID && x.VoiceChatPublic && !x.Quarantined);
+                    x => x.ID != client.ID && x.VoiceChatPublic && !x.Quarantined && !x.VoiceChatIgnoreList.Contains(client.Name) && !x.IgnoreList.Contains(client.Name));
             }
         }
 
@@ -196,7 +196,7 @@ namespace core
                 byte[] data = packet;
 
                 if (target != null)
-                    if (!target.VoiceChatIgnoreList.Contains(client.Name))
+                    if (!target.VoiceChatIgnoreList.Contains(client.Name) && !target.IgnoreList.Contains(client.Name))
                         if (target.VoiceChatPrivate)
                             target.SendPacket(TCPOutbound.VoiceChatFirstTo(target, client.Name, data));
                         else client.SendPacket(TCPOutbound.VoiceChatNoPrivate(client, name));
@@ -212,7 +212,7 @@ namespace core
                 byte[] data = packet;
 
                 UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.VoiceChatChunk(x, client.Name, data)),
-                    x => x.ID != client.ID && x.VoiceChatPublic && !x.Quarantined);
+                    x => x.ID != client.ID && x.VoiceChatPublic && !x.Quarantined && !x.VoiceChatIgnoreList.Contains(client.Name) && !x.IgnoreList.Contains(client.Name));
             }
         }
 
@@ -226,7 +226,7 @@ namespace core
 
                 if (target != null)
                     if (target.VoiceChatPrivate)
-                        if (!target.VoiceChatIgnoreList.Contains(client.Name))
+                        if (!target.VoiceChatIgnoreList.Contains(client.Name) && !target.VoiceChatIgnoreList.Contains(client.Name))
                             target.SendPacket(TCPOutbound.VoiceChatChunkTo(target, client.Name, data));
             }
         }

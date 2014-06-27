@@ -11,6 +11,7 @@ namespace core
 {
     class AresClient : IClient, IUser, IQuarantined
     {
+        public uint LastScribble { get; set; }
         public bool Ares { get; set; }
         public bool IsCbot { get; set; }
         public ushort ID { get; private set; }

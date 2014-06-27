@@ -11,6 +11,7 @@ namespace core.ib0t
 {
     class ib0tClient : IClient, IUser, IQuarantined
     {
+        public uint LastScribble { get; set; }
         public bool Ares { get; set; }
         public bool SupportsHTML { get { return false; } }
         public ushort ID { get; private set; }

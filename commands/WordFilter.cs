@@ -166,6 +166,25 @@ namespace commands
                             if (client.Level == ILevel.Regular)
                                 text = Regex.Replace(text, Regex.Escape(item.Trigger), item.Args, RegexOptions.IgnoreCase);
                             break;
+
+                        case FilterType.Scribble:
+                            if (!client.WebClient && !client.Link.IsLinked && !text.StartsWith("#addwordfilter"))
+                            {
+                                uint time = Server.Time;
+
+                                if (client.Level > ILevel.Regular || (time >= (client.LastScribble + 30)))
+                                {
+                                    client.LastScribble = time;
+                                    String html = "<img src=\"" + item.Args + "\" style=\"max-width: 320px; max-height: 320px;\" alt=\"\" />";
+
+                                    Server.Users.Ares(x =>
+                                    {
+                                        if (x.Vroom == client.Vroom && !x.Quarantined && x.SupportsHTML && !x.IgnoreList.Contains(client.Name))
+                                            x.SendHTML(html);
+                                    });
+                                }
+                            }
+                            break;
                     }
 
             return text;
@@ -276,7 +295,8 @@ namespace commands
             Announce,
             Clone,
             Replace,
-            Echo
+            Echo,
+            Scribble
         }
 
         public static void AddLine(IUser admin, int ident, String text)

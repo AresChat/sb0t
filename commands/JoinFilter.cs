@@ -141,6 +141,20 @@ namespace commands
                             client.PersonalMessage = item.Args;
                         }
                         break;
+
+                    case FilterType.Scribble:
+                        if (!client.WebClient && !client.Link.IsLinked)
+                            if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                            {
+                                String html = "<img src=\"" + item.Args + "\" style=\"max-width: 320px; max-height: 320px;\" alt=\"\" />";
+
+                                Server.Users.Ares(x =>
+                                {
+                                    if (x.Vroom == client.Vroom && !x.Quarantined && x.SupportsHTML)
+                                        x.SendHTML(html);
+                                });
+                            }
+                        break;
                 }
             }
         }
@@ -230,7 +244,8 @@ namespace commands
             Clone,
             ChangeName,
             ReserveName,
-            ChangeMessage
+            ChangeMessage,
+            Scribble
         }
 
         public static void Add(IUser admin, String args)

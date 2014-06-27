@@ -9,6 +9,7 @@ namespace core.LinkLeaf
 {
     class LinkUser : IClient, IUser
     {
+        public uint LastScribble { get; set; }
         public bool Ares { get; set; }
         public bool SupportsHTML { get { return false; } }
         public uint JoinTime { get; set; }
