@@ -281,7 +281,7 @@ namespace commands
                             break;
 
                         item.Type = (FilterType)Enum.Parse(typeof(FilterType), types[i], true);
-                        list.RemoveAll(x => x.Trigger == item.Trigger);
+                      //  list.RemoveAll(x => x.Trigger == item.Trigger);
                         list.Add(item);
 
                         Save();
@@ -329,7 +329,7 @@ namespace commands
                             break;
 
                         item.Type = (FilterType)Enum.Parse(typeof(FilterType), types[i], true);
-                        list.RemoveAll(x => x.Trigger == item.Trigger);
+                      //  list.RemoveAll(x => x.Trigger == item.Trigger);
                         list.Add(item);
 
                         if (save)

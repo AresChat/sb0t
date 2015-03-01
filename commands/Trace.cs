@@ -47,11 +47,11 @@ namespace commands
         {
             new Thread(new ThreadStart(() =>
             {
-                if (client.Encrypted)
+               /* if (client.Encrypted)
                 {
                     RESULTS.Enqueue(new TraceResult { owner = client.Name });
                     return;
-                }
+                } */
 
                 String url = "http://api.ipinfodb.com/v3/ip-city/?key=a91bf4749409447a6ba31d6f68b22140b1c87825c72f2c3ff337f9a5dd52f917&ip="
                     + Uri.EscapeDataString(client.ExternalIP.ToString()) + "&format=json";
