@@ -1,0 +1,10 @@
+.vs
+
+cb0t/bin
+cb0t/obj
+captcha/obj
+commands/obj
+core/obj
+gui/obj
+scripting/obj
+iconnect/obj
