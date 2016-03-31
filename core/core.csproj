@@ -202,6 +202,9 @@
     <None Include="Resources\servers.dat" />
     <None Include="Resources\template.dat" />
     <None Include="Resources\web.dat" />
+    <None Include="servers.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

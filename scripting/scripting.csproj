@@ -36,9 +36,8 @@
     <Reference Include="iconnect">
       <HintPath>..\iconnect\bin\Debug\iconnect.dll</HintPath>
     </Reference>
-    <Reference Include="Jurassic, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\jurassic-7f18d6625a84\jurassic_7f18d6625a84\Jurassic\bin\Release\Jurassic.dll</HintPath>
+    <Reference Include="Jurassic">
+      <HintPath>..\References\Jurassic.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

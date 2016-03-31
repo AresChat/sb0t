@@ -1067,7 +1067,31 @@ namespace commands
         {
             if (client.Level > ILevel.Regular || Settings.General)
                 if (!client.Muzzled)
-                    Server.Print(Template.Text(Category.Messaging, 0).Replace("+n", client.Name).Replace("+t", text), true);
+                {
+                    Server.Users.Ares(x =>
+                    {
+                        if (!x.IgnoreList.Contains(client.Name))
+                            x.Print(Template.Text(Category.Messaging, 0).Replace("+n", client.Name).Replace("+t", text));
+                    });
+
+                    Server.Users.Web(x =>
+                    {
+                        if (!x.IgnoreList.Contains(client.Name))
+                            x.Print(Template.Text(Category.Messaging, 0).Replace("+n", client.Name).Replace("+t", text));
+                    });
+
+                    if(Server.Link.IsLinked)
+                    {
+                        Server.Link.ForEachLeaf(l =>
+                        {
+                            l.ForEachUser(c =>
+                            {
+                                if (c.IgnoreList.Contains(client.Name))
+                                    c.Print(Template.Text(Category.Messaging, 0).Replace("+n", client.Name).Replace("+t", text));
+                            });
+                        });
+                    }
+                }
         }
 
         [CommandLevel("adminmsg", ILevel.Moderator)]
@@ -1087,7 +1111,7 @@ namespace commands
         public static void Whisper(IUser client, IUser target, String text)
         {
             if (client.Level > ILevel.Regular || Settings.General)
-                if (target != null)
+                if (target != null && !target.IgnoreList.Contains(client.Name))
                 {
                     client.Print(Template.Text(Category.Messaging, 2).Replace("+n", target.Name).Replace("+t", text));
                     target.Print(Template.Text(Category.Messaging, 3).Replace("+n", client.Name).Replace("+t", text));
