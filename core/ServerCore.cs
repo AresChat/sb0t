@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using captcha;
+using core.Extensions;
 using core.Udp;
+using iconnect;
+using Newtonsoft.Json;
 
 namespace core
 {
@@ -34,27 +39,27 @@ namespace core
 
         public static void Log(String message)
         {
-            LogUpdate(null, new ServerLogEventArgs { Message = message });
+            LogUpdate(null, new ServerLogEventArgs {Message = message});
         }
 
         public static void Log(String message, Exception e)
         {
-            LogUpdate(null, new ServerLogEventArgs { Message = message, Error = e });
+            LogUpdate(null, new ServerLogEventArgs {Message = message, Error = e});
         }
-        
+
         public bool Open()
         {
             Settings.Reset();
             Time.Reset();
             this.tcp = new TcpListenerEx(new IPEndPoint(IPAddress.Any, Settings.Port));
-            
+
             try
             {
                 this.tcp.Start();
             }
             catch (Exception e)
             {
-                LogUpdate(this, new ServerLogEventArgs { Message = "TCP Listener", Error = e });
+                LogUpdate(this, new ServerLogEventArgs {Message = "TCP Listener", Error = e});
                 return false;
             }
 
@@ -66,11 +71,15 @@ namespace core
             }
             catch (Exception e)
             {
-                LogUpdate(this, new ServerLogEventArgs { Message = "UDP Listener", Error = e });
+                LogUpdate(this, new ServerLogEventArgs {Message = "UDP Listener", Error = e});
                 return false;
             }
 
-            LogUpdate(this, new ServerLogEventArgs { Message = "Server initialized on port " + ((IPEndPoint)this.tcp.LocalEndpoint).Port });
+            LogUpdate(this,
+                new ServerLogEventArgs
+                {
+                    Message = "Server initialized on port " + ((IPEndPoint) this.tcp.LocalEndpoint).Port
+                });
             this.thread = new Thread(new ThreadStart(this.ServerThread));
             this.thread.Start();
             this.Running = true;
@@ -85,11 +94,21 @@ namespace core
             this.Running = false;
             this.terminate = true;
 
-            try { this.tcp.Stop(); }
-            catch { }
+            try
+            {
+                this.tcp.Stop();
+            }
+            catch
+            {
+            }
 
-            try { this.udp.Stop(); }
-            catch { }
+            try
+            {
+                this.udp.Stop();
+            }
+            catch
+            {
+            }
 
             UserPool.Destroy();
             core.LinkHub.LeafPool.Destroy();
@@ -120,12 +139,13 @@ namespace core
             if (Settings.Get<bool>("roomsearch"))
                 UdpChannelList.Start();
 
+            ulong last_update_check = Time.Now;
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);
             ulong reset_floods_timer = Time.Now;
             ulong room_search_timer = (Time.Now - 1800000);
             bool can_web_chat = Settings.Get<bool>("enabled", "web");
-            core.LinkHub.LinkMode link_mode = (core.LinkHub.LinkMode)Settings.Get<int>("link_mode");
+            core.LinkHub.LinkMode link_mode = (core.LinkHub.LinkMode) Settings.Get<int>("link_mode");
             Linker = new LinkLeaf.LinkClient();
 
             if (link_mode == LinkHub.LinkMode.Hub)
@@ -139,6 +159,12 @@ namespace core
                     break;
 
                 ulong time = Time.Now;
+
+                if (time > (last_update_check + (1*60*1000)))
+                {
+                    last_update_check = time;
+                    CheckLatestVersion();
+                }
 
                 if (time > (fast_ping_timer + 2000))
                 {
@@ -227,7 +253,10 @@ namespace core
                             client.Time = time;
                             continue;
                         }
-                        catch { client.SocketConnected = false; }
+                        catch
+                        {
+                            client.SocketConnected = false;
+                        }
                     }
 
                     if (!client.SocketConnected || (client.Time + 10000) < time)
@@ -320,8 +349,10 @@ namespace core
                                 if (packet.Msg != TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL)
                                     Log("packet read fail from " + client.ExternalIP + " " + packet.Msg, e);
                                 else
-                                    Log("packet read fail from " + client.ExternalIP + " " + (TCPMsg)packet.Packet.ToArray()[2], e);
-                                
+                                    Log(
+                                        "packet read fail from " + client.ExternalIP + " " +
+                                        (TCPMsg) packet.Packet.ToArray()[2], e);
+
                                 break;
                             }
 
@@ -364,6 +395,66 @@ namespace core
 
             core.LinkHub.LeafPool.Leaves.ForEachWhere(x => x.Disconnect(), x => !x.SocketConnected);
             core.LinkHub.LeafPool.Leaves.RemoveAll(x => !x.SocketConnected);
+        }
+
+        private static async void CheckLatestVersion()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Add(
+                        "User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+                    );
+
+                    using (var response = await client.GetAsync(Settings.VERSION_CHECK_URL))
+                    using (var content = response.Content)
+                    {
+                        {
+                            var result = await content.ReadAsStringAsync();
+
+                            if (result == null)
+                            {
+                                return;
+                            }
+
+                            dynamic json = JsonConvert.DeserializeObject(result);
+                            string version = json[0].tag_name;
+
+                            if (version == Settings.VERSION_NUMBER)
+                            {
+                                return;
+                            }
+
+                            String message =
+                                "A new version(" + version + ") of sb0t is available, download it at " +
+                                Settings.RELEASE_URL;
+
+                            // ares users
+                            UserPool.AUsers.ForEachWhere(x =>
+                            {
+                                if (x.Level >= ILevel.Host)
+                                    x.Print(message);
+                                x.PM(Settings.Get<String>("bot"), message);
+                            }, x => x.LoggedIn && !x.Quarantined && x.Level >= ILevel.Administrator);
+
+                            // web users
+                            UserPool.WUsers.ForEachWhere(x =>
+                            {
+                                if (x.Level >= ILevel.Host)
+                                    x.Print(message);
+                                x.PM(Settings.Get<String>("bot"), message);
+                            }, x => x.LoggedIn && !x.Quarantined && x.Level >= ILevel.Administrator);
+                
+                        }
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log(e.ToString());
+            }
         }
     }
 
