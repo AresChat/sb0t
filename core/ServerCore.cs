@@ -421,13 +421,13 @@ namespace core
                             dynamic json = JsonConvert.DeserializeObject(result);
                             string version = json[0].tag_name;
 
-                            if (version == Settings.VERSION_NUMBER)
+                            if (version.ToLower().Equals(Settings.VERSION_NUMBER.ToLower()))
                             {
                                 return;
                             }
 
                             String message =
-                                "A new version(" + version + ") of sb0t is available, download it at " +
+                                "A new version(v" + version + ") of sb0t is available, download it at " +
                                 Settings.RELEASE_URL;
 
                             // ares users
