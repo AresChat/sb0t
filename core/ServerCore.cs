@@ -348,10 +348,13 @@ namespace core
 
                                 if (packet.Msg != TCPMsg.MSG_CHAT_ADVANCED_FEATURES_PROTOCOL)
                                     Log("packet read fail from " + client.ExternalIP + " " + packet.Msg, e);
-                                else
+                                else if (packet.Packet.ToArray().Length >= 3)
                                     Log(
                                         "packet read fail from " + client.ExternalIP + " " +
-                                        (TCPMsg) packet.Packet.ToArray()[2], e);
+                                        (TCPMsg)packet.Packet.ToArray()[2], e);
+                                else
+                                    Log("packet read fail from " + client.ExternalIP + " (Advanced Protocol Exploit)", e);
+
 
                                 break;
                             }
