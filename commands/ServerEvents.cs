@@ -638,7 +638,7 @@ namespace commands
 
         public void FileReceived(IUser client, String filename, String title, MimeType type)
         {
-            if (client.Level > ILevel.Regular)
+            if (client.Level < ILevel.Administrator)
                 if (type == MimeType.ARES_MIME_IMAGE ||
                     type == MimeType.ARES_MIME_OTHER ||
                     type == MimeType.ARES_MIME_SOFTWARE ||
