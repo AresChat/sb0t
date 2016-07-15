@@ -258,7 +258,7 @@ namespace core
         public static byte[] MyFeatures(AresClient client)
         {
             TCPPacketWriter packet = new TCPPacketWriter();
-            packet.WriteString(client, Settings.VERSION);
+            packet.WriteString(client, Settings.VERSION + " - " + Settings.RELEASE_URL);
 
             ServerFeatures flag = (ServerFeatures.SERVER_SUPPORTS_PVT |
                                    ServerFeatures.SERVER_SUPPORTS_SHARING |
