@@ -617,6 +617,12 @@ namespace core
             client.Sex = packet;
             client.Country = packet;
             client.Region = packet.ReadString(client);
+
+            if(client.Region.Length > 30)
+            {
+                client.Region = client.Region.Substring(0, 30);
+            }
+
             client.FileCount = client.Browsable && client.Version.StartsWith("Ares") ? client.FileCount : (ushort)0;
 
             if (client.FileCount == 0)

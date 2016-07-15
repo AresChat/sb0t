@@ -1149,6 +1149,12 @@ namespace core.LinkLeaf
                 user.Sex = packet;
                 user.Country = packet;
                 user.Region = packet.ReadString(link);
+
+                if (user.Region.Length > 30)
+                {
+                    user.Region = user.Region.Substring(0, 30);
+                }
+
                 user.Level = (iconnect.ILevel)(byte)packet;
                 user.SetVroom((ushort)packet);
                 user.CustomClient = ((byte)packet) == 1;
