@@ -424,6 +424,8 @@ namespace core
                             dynamic json = JsonConvert.DeserializeObject(result);
                             string version = json[0].tag_name;
 
+                            version = version.ToLower().Replace("v", "").Trim();                        
+
                             if (version.ToLower().Equals(Settings.VERSION_NUMBER.ToLower()))
                             {
                                 return;
