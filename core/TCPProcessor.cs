@@ -694,6 +694,7 @@ namespace core
                         ((ib0t.ib0tClient)hijack).Disconnect();
 
                     client.Name = client.OrgName;
+                    client.FastPing = true;
                 }
                 else
                 {
