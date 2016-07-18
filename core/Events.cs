@@ -493,6 +493,11 @@ namespace core
 
                 if (command == "idle" || command == "idles")
                 {
+                    if(!IdleManager.CheckIfCanIdle(client))
+                    {
+                        return;
+                    }
+
                     IdleManager.Add(client);
                     Events.Idled(client);
                     return;

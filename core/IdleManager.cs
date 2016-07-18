@@ -54,6 +54,23 @@ namespace core
                 client.IdleStart = i.Time;
             }
         }
+
+        public static bool CheckIfCanIdle(IClient client)
+        {
+            // user is already idle
+            if (client.Idled)
+            {
+                return false;
+            }
+
+            // last idle was less than 5 minutes ago don't let them idle again
+            if(client.IdleStart > 0 && ((Time.Now - client.IdleStart) / 1000) < 5 * 60)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 
     class Idle

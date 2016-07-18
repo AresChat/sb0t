@@ -501,6 +501,10 @@ namespace core
                     {
                         if (text.StartsWith("idles"))
                         {
+                            if (!IdleManager.CheckIfCanIdle(client))
+                            {
+                                return;
+                            }
                             IdleManager.Add(client);
                             Events.Idled(client);
                         }
