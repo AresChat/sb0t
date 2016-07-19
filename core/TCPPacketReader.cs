@@ -182,6 +182,7 @@ namespace core
 
             String[] bad_chars = new String[] // skiddy
             {
+                "\u009d",
                 "\r\n",
                 "\r",
                 "\n",
