@@ -127,7 +127,7 @@ namespace core
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
 
-            return str;
+            return str.Trim();
         }
 
         public String ReadString(core.LinkLeaf.LinkClient client)
@@ -145,7 +145,7 @@ namespace core
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
 
-            return str;
+            return str.Trim();
         }
 
         public String ReadString(IClient client)
@@ -175,7 +175,7 @@ namespace core
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
 
-            return str;
+            return str.Trim();
         }
 
         public String ReadString()
@@ -190,7 +190,7 @@ namespace core
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
 
-            return str;
+            return str.Trim();
         }
 
         public byte[] ToArray()
