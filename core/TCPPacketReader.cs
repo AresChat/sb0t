@@ -9,6 +9,20 @@ namespace core
 {
     class TCPPacketReader
     {
+
+        private static String[] bad_chars = new String[] // skiddy
+            {
+                "\u00AD",
+                "\u009d",
+                "\r\n",
+                "\r",
+                "\n",
+                "",
+                "",
+                "\x00cc\x00b8",
+                "͋"
+            };
+
         private int Position = 0;
         private List<byte> Data = new List<byte>();
 
@@ -110,17 +124,6 @@ namespace core
                 if (this.Data[this.Position] == 0)
                     this.Position++;
 
-            String[] bad_chars = new String[] // skiddy
-            {
-                "\r\n",
-                "\r",
-                "\n",
-                "",
-                "",
-                "\x00cc\x00b8",
-                "͋"
-            };
-
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
 
@@ -138,17 +141,6 @@ namespace core
             if (this.Position < this.Data.Count)
                 if (this.Data[this.Position] == 0)
                     this.Position++;
-
-            String[] bad_chars = new String[] // skiddy
-            {
-                "\r\n",
-                "\r",
-                "\n",
-                "",
-                "",
-                "\x00cc\x00b8",
-                "͋"
-            };
 
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
@@ -178,19 +170,7 @@ namespace core
                 Array.Copy(this.Data.ToArray(), this.Position, tmp, 0, tmp.Length);
                 this.Position = split > -1 ? (split + 1) : this.Data.Count;
                 str = Encoding.UTF8.GetString(tmp);
-            }
-
-            String[] bad_chars = new String[] // skiddy
-            {
-                "\u009d",
-                "\r\n",
-                "\r",
-                "\n",
-                "",
-                "",
-                "\x00cc\x00b8",
-                "͋"
-            };
+            }      
 
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
@@ -206,17 +186,6 @@ namespace core
             Array.Copy(this.Data.ToArray(), this.Position, tmp, 0, tmp.Length);
             this.Position = split > -1 ? (split + 1) : this.Data.Count;
             str = Encoding.UTF8.GetString(tmp);
-
-            String[] bad_chars = new String[] // skiddy
-            {
-                "\r\n",
-                "\r",
-                "\n",
-                "",
-                "",
-                "\x00cc\x00b8",
-                "͋"
-            };
 
             foreach (String c in bad_chars)
                 str = Regex.Replace(str, Regex.Escape(c), "", RegexOptions.IgnoreCase);
