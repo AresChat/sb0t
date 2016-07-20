@@ -166,7 +166,7 @@ namespace core
 
             if (client.OrgName.Length < 2)
             {
-                client.OrgName = "anon ";
+                client.OrgName = client.WebClient ? "ib0t" : "anon ";
 
                 foreach (byte b in client.ExternalIP.GetAddressBytes())
                     client.OrgName += String.Format("{0:x2}", b);

@@ -622,6 +622,7 @@ namespace core
             client.Country = packet;
             client.Region = packet.ReadString(client);
 
+
             if(client.Region.Length > 30)
             {
                 client.Region = client.Region.Substring(0, 30);

@@ -224,7 +224,7 @@ namespace core.ib0t
             using (MD5 md5 = MD5.Create())
                 client.Guid = new Guid(md5.ComputeHash(g));
 
-            client.OrgName = arg_items[2];
+            client.OrgName = arg_items[2].Trim();
             Helpers.FormatUsername(client);
             client.Name = client.OrgName;
             client.FastPing = false;
