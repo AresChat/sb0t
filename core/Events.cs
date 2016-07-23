@@ -95,6 +95,7 @@ namespace core
         {
             if(client.Muzzled)
             {
+                client.Print("You are muzzled.");
                 return false;
             }
             return js.CanScribble(client != null ? client.IUser : null);
