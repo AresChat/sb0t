@@ -12,6 +12,7 @@ namespace core
 
         private static String[] bad_chars = new String[] // skiddy
             {
+                "\u00A0",
                 "\u00AD",
                 "\u009d",
                 "\r\n",
