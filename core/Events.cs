@@ -93,6 +93,10 @@ namespace core
 
         public static bool CanScribble(IClient client)
         {
+            if(client.Muzzled)
+            {
+                return false;
+            }
             return js.CanScribble(client != null ? client.IUser : null);
         }
 
