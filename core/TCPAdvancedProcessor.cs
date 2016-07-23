@@ -85,6 +85,11 @@ namespace core
                 return;
             }
 
+            if(!Events.CanScribble(client))
+            {
+                return;
+            }
+
             client.ScribbleRoomObject.IsReceiving = true;
             client.ScribbleRoomObject.Chunks = packet;
             client.ScribbleRoomObject.DataIn.AddRange(((byte[])packet));
@@ -112,7 +117,7 @@ namespace core
         {
             if (!Settings.Get<bool>("can_room_scribble"))
                 return;
-
+            
             if (client.ScribbleRoomObject.IsReceiving)
             {
                 client.ScribbleRoomObject.ChunkCount++;

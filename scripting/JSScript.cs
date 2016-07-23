@@ -42,6 +42,7 @@ namespace scripting
 
             // set up default events
             StringBuilder events = new StringBuilder();
+            events.AppendLine("function onScribbleCheck(userobj) { return true }");
             events.AppendLine("function onTextReceived(userobj, text) { }");
             events.AppendLine("function onTextBefore(userobj, text) { return text; }");
             events.AppendLine("function onTextAfter(userobj, text) { }");

@@ -50,6 +50,33 @@ namespace scripting
             }
         }
 
+        public bool CanScribble(IUser client)
+        {
+            if (this.CanScript)
+            {
+                JSScript[] scripts = ScriptManager.Scripts.ToArray();
+
+                foreach (JSScript s in scripts)
+                {
+                    try
+                    {
+                        Objects.JSUser u = new Objects.JSUser(s.JS.Object.InstancePrototype, client, s.ScriptName);
+                        bool result = s.JS.CallGlobalFunction<bool>("onScribbleCheck", u);
+
+                        if (!result)
+                            return false;
+                    }
+                    catch (Jurassic.JavaScriptException e)
+                    {
+                        ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
+                    }
+                    catch { }
+                }
+            }
+
+            return true;
+        }
+
         public bool Joining(IUser client)
         {
             if (this.CanScript)

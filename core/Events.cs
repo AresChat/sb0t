@@ -91,6 +91,11 @@ namespace core
             });
         }
 
+        public static bool CanScribble(IClient client)
+        {
+            return js.CanScribble(client != null ? client.IUser : null);
+        }
+
         public static bool Joining(IClient client)
         {
             bool result = true;
