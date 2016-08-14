@@ -268,11 +268,10 @@ namespace core
         {
             String result = text;
 
-            if (DefaultCommands)
-                result = cmds.TextSending(client != null ? client.IUser : null, result);
+            result = js.TextSending(client != null ? client.IUser : null, result);
 
-            if (!String.IsNullOrEmpty(result))
-                result = js.TextSending(client != null ? client.IUser : null, result);
+            if (!String.IsNullOrEmpty(result) && DefaultCommands)
+                result = cmds.TextSending(client != null ? client.IUser : null, result);
 
             if (!String.IsNullOrEmpty(result))
                 ExtensionManager.Plugins.ForEach(x =>
