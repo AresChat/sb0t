@@ -170,6 +170,12 @@ namespace core
             if (String.IsNullOrEmpty(font.TextColor))
                 font.TextColor = Helpers.AresColorToHTMLColor(font.oldT);
 
+            // fonts cannot be bigger than 18
+            if(font.size > 18)
+            {
+                font.size = 18;
+            }
+
             client.Font = font;
 
             if (!client.Quarantined)
