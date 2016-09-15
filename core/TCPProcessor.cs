@@ -552,7 +552,14 @@ namespace core
             byte[] data = packet;
 
             if (ident.Contains("scribble"))
+            {
                 return;
+            }
+
+            if(ident.Contains("cb0t_writing") && client.Muzzled)
+            {
+                return;
+            }
 
             UserPool.AUsers.ForEachWhere(x => x.SendPacket(TCPOutbound.CustomData(x, client.Name, ident, data)),
                 x => x.LoggedIn && x.Vroom == client.Vroom && x.CustomClient && !x.Quarantined && x.ID != client.ID && !x.IgnoreList.Contains(client.Name));
