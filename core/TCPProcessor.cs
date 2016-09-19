@@ -811,10 +811,10 @@ namespace core
                         }
 
                     UserPool.AUsers.ForEachWhere(x => x.SendPacket(other == null ? TCPOutbound.Join(x, client) : TCPOutbound.UpdateUserStatus(x, client)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && !x.Cloaked);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
 
                     UserPool.WUsers.ForEachWhere(x => x.QueuePacket(other == null ? ib0t.WebOutbound.JoinTo(x, client.Name, client.Level) : ib0t.WebOutbound.UpdateTo(x, client.Name, client.Level)),
-                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined && !x.Cloaked);
+                        x => x.LoggedIn && x.Vroom == client.Vroom && !x.Quarantined);
                 }
 
                 client.LoggedIn = true;
