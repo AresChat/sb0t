@@ -140,7 +140,7 @@ namespace core
             if (Settings.Get<bool>("roomsearch"))
                 UdpChannelList.Start();
 
-            ulong last_update_check = Time.Now;
+            ulong last_update_check = 0;
             ulong fast_ping_timer = Time.Now;
             ulong channel_push_timer = (Time.Now - 1200000);
             ulong reset_floods_timer = Time.Now;
@@ -424,13 +424,13 @@ namespace core
 
                             BlockedIps.Clear();
 
-                            string[] lines = result.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                            string[] lines = result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
                             foreach(string s in lines) {
                                 if(s.StartsWith("#")) // comments
                                 {
                                     continue;
                                 }
-                      
+
                                 BlockedIps.Add(s.Trim());
                                 if (Settings.ExternalIP.ToString().Equals(s.Trim()))
                                 {
