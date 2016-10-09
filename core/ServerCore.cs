@@ -219,13 +219,20 @@ namespace core
         private void CheckTCPListener(ulong time)
         {
             if (this.tcp.Active)
-                while (this.tcp.Pending())
+            {
+                for(int i = 0; i < 5; i++)
                 {
+                    if(!this.tcp.Pending())
+                    {
+                        break;
+                    }
+
                     Socket sock = this.tcp.AcceptSocket();
 
                     if (!this.udp.IsTcpChecker(sock))
                         UserPool.CreateAresClient(sock, time);
                 }
+            }
         }
 
         private void ServiceWW()
