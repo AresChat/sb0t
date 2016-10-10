@@ -41,6 +41,12 @@ namespace core.Udp
 
         public static void Add(UdpNode server)
         {
+
+            if(ServerCore.BlockedIps.Contains(server.IP.ToString()))
+            {
+                return;
+            }
+
             if (!server.IP.Equals(Settings.ExternalIP))
             {
                 UdpNode sobj = Nodes.Find(s => s.IP.Equals(server.IP));
