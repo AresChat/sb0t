@@ -365,6 +365,15 @@ namespace core
             ChatLog.WriteLine("emote: * " + client.Name + " " + text);
         }
 
+        public static bool CanPrivateMessage(IClient client, IClient target)
+        {
+            if(DefaultCommands)
+            {
+                return cmds.CanPrivateMessage(client != null ? client.IUser : null, target != null ? target.IUser : null);
+            }
+            return true;
+        }
+
         public static void PrivateSending(IClient client, IClient target, PMEventArgs e)
         {
             PrivateMsg pm = new PrivateMsg(e.Text);

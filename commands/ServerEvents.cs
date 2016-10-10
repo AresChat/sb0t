@@ -386,6 +386,11 @@ namespace commands
                 WordFilter.FilterAfter(client, text);
         }
 
+        public bool CanPrivateMessage(IUser client, IUser target)
+        {
+            return !PMBlocking.IsBlocking(target);
+        }
+
         public void PrivateSending(IUser client, IUser target, IPrivateMsg msg)
         {
             if (PMBlocking.IsBlocking(target))

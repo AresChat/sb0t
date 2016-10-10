@@ -6,6 +6,7 @@ using captcha;
 using iconnect;
 using core.LinkHub;
 using System.Net;
+using commands;
 
 namespace core
 {
@@ -263,6 +264,10 @@ namespace core
             {
                 if (target != null)
                 {
+                    if(ident == "cb0t_scribble_once" && !Events.CanPrivateMessage(client, target))
+                    {
+                        return;
+                    }
                     if (!target.IgnoreList.Contains(client.Name))
                         target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
                 }

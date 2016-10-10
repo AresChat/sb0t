@@ -16,7 +16,7 @@ namespace core
         public const String BLACKLIST_URL = "https://raw.githubusercontent.com/AresChat/sb0t/master/blacklist.txt";
         public const String VERSION_NUMBER = "5.33";
 
-        public const String VERSION = "sb0t 5.33";
+        public const String VERSION = "sb0t 5.34";
         public const ushort LINK_PROTO = 500;
 
         public static bool RUNNING { get; set; }
