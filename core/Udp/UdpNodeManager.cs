@@ -49,7 +49,7 @@ namespace core.Udp
 
             if (!server.IP.Equals(Settings.ExternalIP))
             {
-                UdpNode sobj = Nodes.Find(s => s.IP.Equals(server.IP));
+                UdpNode sobj = Nodes.Find(s => s.IP.Equals(server.IP) && s.Port == server.Port);
 
                 if (sobj != null)
                     sobj.Port = server.Port;
@@ -151,11 +151,17 @@ namespace core.Udp
                     UdpNode node = new UdpNode();
                     node.IP = new IPAddress(buffer.Take(4).ToArray());
                     node.Port = BitConverter.ToUInt16(buffer.ToArray(), 4);
+
                     Nodes.Add(node);
                 }
             }
 
             ServerCore.Log("default node list loaded");
+        }
+
+        public static void RemoveBlackListedNodes()
+        {
+            Nodes.RemoveAll(x => ServerCore.BlockedIps.Contains(x.IP.ToString()));
         }
 
         public static UdpNode[] GetServers(int max_servers, ulong time)
