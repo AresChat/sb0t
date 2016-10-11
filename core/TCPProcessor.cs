@@ -192,6 +192,8 @@ namespace core
             String name = packet.ReadString(client);
             IClient target = UserPool.AUsers.Find(x => x.Name == name);
 
+            ignore = !client.IgnoreList.Contains(name);
+
             if (target == null)
                 target = UserPool.WUsers.Find(x => x.Name == name);
 
@@ -203,12 +205,16 @@ namespace core
                 {
                     client.IgnoreList.RemoveAll(x => x == name);
                     Events.IgnoredStateChanged(client, target, ignore);
+                    IgnoreManager.RemoveIgnore(client, name);
                 }
                 else if (Events.Ignoring(client, target))
                     if (client.SocketConnected)
                     {
                         if (!client.IgnoreList.Contains(name))
+                        {
                             client.IgnoreList.Add(name);
+                            IgnoreManager.AddIgnore(client, name);
+                        }
 
                         Events.IgnoredStateChanged(client, target, ignore);
                     }
@@ -784,6 +790,8 @@ namespace core
                     Events.Rejected(client, RejectedMsg.UserDefined);
                     throw new Exception("user defined rejection");
                 }
+
+            IgnoreManager.LoadIgnores(client);
 
             if (Helpers.IsLocalHost(client))
             {

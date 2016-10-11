@@ -93,6 +93,7 @@
     <Compile Include="FloodControl.cs" />
     <Compile Include="FloodRecord.cs" />
     <Compile Include="IdleManager.cs" />
+    <Compile Include="IgnoreManager.cs" />
     <Compile Include="LinkHub\HubOutbound.cs" />
     <Compile Include="LinkHub\Leaf.cs" />
     <Compile Include="LinkHub\LeafPool.cs" />

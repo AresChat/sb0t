@@ -136,6 +136,7 @@ namespace core
             BanSystem.LoadBans();
             IdleManager.Reset();
             Proxies.Start(Helpers.UnixTime);
+            IgnoreManager.init();
 
             if (Settings.Get<bool>("roomsearch"))
                 UdpChannelList.Start();
