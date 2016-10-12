@@ -97,7 +97,10 @@ namespace scripting.Objects
                             if (!Directory.Exists(path))
                                 Directory.CreateDirectory(path);
 
-                            path = Path.Combine(path, filename);
+                            path = Path.Combine(path, filename + ".jpg");
+
+                            Console.WriteLine(path);
+
                             File.WriteAllBytes(path, this.Data);
                             return true;
                         }
