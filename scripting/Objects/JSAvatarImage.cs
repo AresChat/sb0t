@@ -98,9 +98,7 @@ namespace scripting.Objects
                                 Directory.CreateDirectory(path);
 
                             path = Path.Combine(path, filename + ".jpg");
-
-                            Console.WriteLine(path);
-
+                            
                             File.WriteAllBytes(path, this.Data);
                             return true;
                         }
