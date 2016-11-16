@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Sockets;
+using core.ib0t;
 
 namespace core
 {
@@ -50,33 +51,48 @@ namespace core
 
         public static void CreateAresClient(Socket sock, ulong time)
         {
-            for (ushort u = 0; u < ushort.MaxValue; u++)
+            try
             {
-                int index = AUsers.FindIndex(x => x.ID == u);
-
-                if (index == -1)
+                for (ushort u = 0; u < ushort.MaxValue; u++)
                 {
-                    AUsers.Add(new AresClient(sock, time, u));
-                    AUsers.Sort((x, y) => x.ID.CompareTo(y.ID));
-                    break;
+                    int index = AUsers.FindIndex(x => x.ID == u);
+
+                    if (index == -1)
+                    {
+                        AUsers.Add(new AresClient(sock, time, u));
+                        AUsers.Sort((x, y) => x.ID.CompareTo(y.ID));
+                        break;
+                    }
                 }
+            }
+            catch(Exception e)
+            {
+                ServerCore.Log(e.ToString());
             }
         }
 
         public static void CreateIb0tClient(AresClient client, ulong time)
         {
-            for (ushort u = 700; u < ushort.MaxValue; u++)
+            try
             {
-                int index = WUsers.FindIndex(x => x.ID == u);
-
-                if (index == -1)
+                for (ushort u = 700; u < ushort.MaxValue; u++)
                 {
-                    WUsers.Add(new ib0t.ib0tClient(client, time, u));
-                    WUsers.Sort((x, y) => x.ID.CompareTo(y.ID));
-                    client.Sock = null;
-                    AUsers.RemoveAll(x => x.ID == client.ID);
-                    break;
+                    int index = WUsers.FindIndex(x => x.ID == u);
+
+                    if (index == -1)
+                    {
+                        WUsers.Add(new ib0tClient(client, time, u));
+                        WUsers.Sort((x, y) => x.ID.CompareTo(y.ID));
+                        client.Sock = null;
+                        AUsers.RemoveAll(x => x.ID == client.ID);
+                        break;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                ServerCore.Log(e.ToString());
+
             }
         }
 
