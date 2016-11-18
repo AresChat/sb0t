@@ -162,7 +162,7 @@ namespace core
 
                 ulong time = Time.Now;
 
-                if (time > (last_update_check + (1*60*1000)))
+                if (time > (last_update_check + (30 * 60 * 1000)))
                 {
                     last_update_check = time;
                     CheckLatestVersion();
