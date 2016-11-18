@@ -481,7 +481,7 @@ namespace core
                                 if (x.Level >= ILevel.Host)
                                     x.Print(message);
                                 x.PM(Settings.Get<String>("bot"), message);
-                            }, x => x.LoggedIn && !x.Quarantined && x.Level >= ILevel.Administrator);
+                            }, x => x.LoggedIn && !x.Quarantined && x.Owner);
 
                             // web users
                             UserPool.WUsers.ForEachWhere(x =>
@@ -489,7 +489,7 @@ namespace core
                                 if (x.Level >= ILevel.Host)
                                     x.Print(message);
                                 x.PM(Settings.Get<String>("bot"), message);
-                            }, x => x.LoggedIn && !x.Quarantined && x.Level >= ILevel.Administrator);
+                            }, x => x.LoggedIn && !x.Quarantined && x.Owner);
                 
                         }
 
