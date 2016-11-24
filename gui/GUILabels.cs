@@ -52,7 +52,7 @@ namespace gui
             spanish["mboxa"] = "No se puede iniciar el servidor - Por favor revise su configuración";
 
             english["mboxb"] = "Are you sure you want to quit sb0t?";
-            spanish["mboxb"] = "Está usted seguro que quiere salir de Sb0t?";
+            spanish["mboxb"] = "Estás seguro que deseas salir de Sb0t?";
 
             english["mboxc"] = "Invalid leaf identifier";
             spanish["mboxc"] = "Identificador de hoja invalido";
@@ -79,7 +79,7 @@ namespace gui
             spanish["checkBox2"] = "Scribbles en sala habilitados";
 
             english["checkBox3"] = "Start server when sb0t starts";
-            spanish["checkBox3"] = "Servidor on cuando sb0t esté on";
+            spanish["checkBox3"] = "Iniciar servidor cuando sb0t inicie";
 
             english["checkBox4"] = "Load sb0t when windows starts";
             spanish["checkBox4"] = "Cargar sb0t cuando windows comience";
@@ -112,7 +112,7 @@ namespace gui
             spanish["label5"] = "Contraseña del propietario:";
 
             english["checkBox10"] = "Enable built in commands";
-            spanish["checkBox10"] = "Habilitar construcción en commandos";
+            spanish["checkBox10"] = "Habilitar construcción en comandos";
 
             english["checkBox22"] = "Check passwords against clients (strict mode)";
             spanish["checkBox22"] = "Revisar contraseñas a través de Clientes (Modo estricto)";
@@ -190,10 +190,10 @@ namespace gui
             spanish["checkBox23"] = "Habilitar la búsqueda de salas";
 
             english["checkBox19"] = "Local clients auto login";
-            spanish["checkBox19"] = "Inicio de sesión para clientes locales";
+            spanish["checkBox19"] = "Inicio de sesión automática para clientes locales";
 
             english["label16"] = "ib0t channel list receiver script:";
-            spanish["label16"] = "Script de lista de canales de receptores en ib0t:";
+            spanish["label16"] = "Script receptor de lista de canales de ib0t:";
 
             english["label17"] = "UDP host address:";
             spanish["label17"] = "Dirección host UDP:";
@@ -256,7 +256,7 @@ namespace gui
             spanish["label6"] = "Nivel para usar\r\nscripting:";
 
             english["checkBox30"] = "Scripts can change level";
-            spanish["checkBox30"] = "Carga script cambiar de level";
+            spanish["checkBox30"] = "Los scripts pueden cambiar de nivel";
 
             english["checkbox25"] = "Fonts enabled";
             spanish["checkbox25"] = "Fuentes habilitadas";
