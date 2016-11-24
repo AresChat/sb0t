@@ -76,7 +76,7 @@ namespace gui
             spanish["checkBox1"] = "Registro de Chat habilitado";
 
             english["checkBox2"] = "Room scribbles enabled";
-            spanish["checkBox2"] = "Habilitado scribbles sala";
+            spanish["checkBox2"] = "Scribbles en sala habilitados";
 
             english["checkBox3"] = "Start server when sb0t starts";
             spanish["checkBox3"] = "Servidor on cuando sb0t esté on";
@@ -91,7 +91,7 @@ namespace gui
             spanish["checkBox6"] = "Soporte de chat de voz";
 
             english["checkBox9"] = "ib0t support enabled";
-            spanish["checkBox9"] = "Soporte ib0t habilitado";
+            spanish["checkBox9"] = "Soporte de ib0t habilitado";
 
             english["button2"] = "Open data folder";
             spanish["button2"] = "Abrir la carpeta de datos";
