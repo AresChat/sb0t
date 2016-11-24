@@ -194,6 +194,11 @@ namespace core
                 font.size = 18;
             }
 
+            if(!Settings.Get<bool>("fonts_enabled"))
+            {
+                return;
+            }
+
             client.Font = font;
 
             if (!client.Quarantined)

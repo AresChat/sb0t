@@ -18,7 +18,7 @@
                 <Grid>
                     <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
                         <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
-                            <Rectangle Canvas.Left="332" Canvas.Top="28" Height="167" Name="rectangle11" Stroke="Silver" Width="213" />
+                            <Rectangle Canvas.Left="334" Canvas.Top="8" Height="203" Name="rectangle11" Stroke="Silver" Width="213" />
                             <Image Height="128" Width="128" Canvas.Left="65" Canvas.Top="8" Source="Images/chat-bubble-icon.png" />
                             <Label Canvas.Left="62" Canvas.Top="118" Height="27" Name="label1" Width="128" HorizontalContentAlignment="Center" Foreground="#FFF80000" FontFamily="Comic Sans MS" FontWeight="Bold" />
                             <TextBox Canvas.Left="35" Canvas.Top="172" Height="23" Name="textBox1" Width="188" TextChanged="TextBoxTextChanged" />
@@ -27,20 +27,21 @@
                             <Label Canvas.Left="29" Canvas.Top="150" Content="Room name:" Height="28" Name="label2" />
                             <Label Canvas.Left="29" Canvas.Top="197" Content="Room port:" Height="28" Name="label3" />
                             <Label Canvas.Left="29" Canvas.Top="244" Content="Bot name:" Height="28" Name="label4" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="45" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="65" Content="Room scribbles enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="85" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="105" Content="Start sb0t minimized" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="125" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="145" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="353" Canvas.Top="28" Content="Chat logging enabled" Height="16" Name="checkBox1" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="353" Canvas.Top="49" Content="Room scribbles enabled" Height="16" Name="checkBox2" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="353" Canvas.Top="70" Content="Start server when sb0t starts" Height="16" Name="checkBox3" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="353" Canvas.Top="91" Content="Start sb0t minimized" Height="16" Name="checkBox4" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="353" Canvas.Top="112" Content="Show room on the channel list" Height="16" Name="checkBox5" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="353" Canvas.Top="133" Content="Support voice chat" Height="16" Name="checkBox6" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" RenderTransformOrigin="0.528,-1.157" />
                             <Button Style="{DynamicResource GlassButton}" FontSize="12" Canvas.Left="341" Canvas.Top="216" Content="Start server" Height="28" Name="button1" Width="193" Click="ServerStartStop" />
                             <Button Style="{DynamicResource GlassButton}" FontSize="12" Canvas.Left="341" Canvas.Top="247" Content="Open data folder" Height="28" Name="button2" Width="193" Click="button2_Click" />
                             <Button Style="{DynamicResource GlassButton}" FontSize="12" Canvas.Left="341" Canvas.Top="278" Content="Ares join" Height="28" Name="button3" Width="95" IsEnabled="False" Click="button3_Click" />
                             <Button Style="{DynamicResource GlassButton}" FontSize="12" Canvas.Left="439" Canvas.Top="278" Content="cb0t join" Height="28" Name="button4" Width="95" IsEnabled="False" Click="button4_Click" />
                             <Label Canvas.Left="4" Canvas.Bottom="4" Content="Status:  Server stopped." Height="28" Name="statusLabel" FontWeight="Bold" />
-                            <CheckBox Canvas.Left="350" Canvas.Top="165" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
+                            <CheckBox Canvas.Left="353" Canvas.Top="156" Content="ib0t support enabled" Height="16" Name="checkBox9" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Image Canvas.Left="548" Canvas.Top="313" Height="32" Name="image3" Stretch="Fill" Width="32" Source="/sb0t;component/Images/Spain-icon.png" Cursor="Hand" MouseUp="SpanishClicked" ToolTip="Para Usuarios Españoles" />
                             <Image Canvas.Left="515" Canvas.Top="313" Height="32" Name="image4" Stretch="Fill" Width="32" Source="/sb0t;component/Images/England-icon.png" Cursor="Hand" MouseUp="EnglishClicked" ToolTip="For English Users" />
+                            <CheckBox x:Name="checkBox25" Content="Fonts enabled&#xD;&#xA;" Canvas.Left="353" Canvas.Top="178" Height="17" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked"/>
                             <Canvas.Background>
                                 <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
                                     <GradientStop Color="White" Offset="0"/>

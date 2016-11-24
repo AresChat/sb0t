@@ -166,6 +166,7 @@ namespace gui
             this.textBox5.IsEnabled = !running;
             this.textBox6.IsEnabled = !running;
             this.checkBox1.IsEnabled = !running;
+            this.checkBox25.IsEnabled = !running;
             this.checkBox2.IsEnabled = !running;
             this.checkBox3.IsEnabled = !running;
             this.checkBox4.IsEnabled = !running;
@@ -358,6 +359,10 @@ namespace gui
             {
                 Settings.Set("script_can_level", this.checkBox30.IsChecked);
                 Settings.ScriptCanLevel(Settings.Get<bool>("script_can_level"));
+            }
+            else if (cb.Name == "checkBox25")
+            {
+                Settings.Set("fonts_enabled", this.checkBox25.IsChecked);
             }
         }
 
