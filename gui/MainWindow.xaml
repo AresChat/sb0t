@@ -84,7 +84,6 @@
                             </ListView>
                             <CheckBox Content="Enable built in commands" Height="16" Name="checkBox10" Canvas.Left="19" Canvas.Top="282" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <CheckBox Canvas.Left="19" Canvas.Top="298" Content="Check passwords against clients (strict mode)" Height="16" Name="checkBox22" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
-                            <CheckBox Canvas.Left="19" Canvas.Top="314" Content="Unregistered clients can use commands" Height="16" Name="checkBox24" Checked="CheckBoxChecked" Unchecked="CheckBoxChecked" />
                             <Canvas.Background>
                                 <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
                                     <GradientStop Color="White" Offset="0"/>

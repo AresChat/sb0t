@@ -201,8 +201,6 @@ namespace gui
             catch { }
             // fonts enabled
             this.checkBox25.IsChecked = Settings.Get<bool>("fonts_enabled");
-            //unregistered clients
-            this.checkBox24.IsChecked = Settings.Get<bool>("allow_unreg");
             //extensions
             this.RefreshExtensions(null, null);
             core.Extensions.ExtensionManager.Setup();

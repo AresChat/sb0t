@@ -309,7 +309,6 @@ namespace gui
             w.label5.Content = spanish["label5"];
             w.checkBox10.Content = spanish["checkBox10"];
             w.checkBox22.Content = spanish["checkBox22"];
-            w.checkBox24.Content = spanish["checkBox24"];
             w.label26.Content = spanish["label26"];
             w.label27.Content = spanish["label27"];
             w.button7.Content = spanish["button7"];
@@ -408,7 +407,6 @@ namespace gui
             w.label5.Content = english["label5"];
             w.checkBox10.Content = english["checkBox10"];
             w.checkBox22.Content = english["checkBox22"];
-            w.checkBox24.Content = english["checkBox24"];
             w.label26.Content = english["label26"];
             w.label27.Content = english["label27"];
             w.button7.Content = english["button7"];
