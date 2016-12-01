@@ -129,10 +129,7 @@ namespace scripting.Objects
             if (this.Data == null)
                 return;
 
-            if (!String.IsNullOrEmpty(this.URL) && target.SupportsHTML)
-                target.SendHTML("<img style=\"height: " + this.Height + "px;\" src=\"" + this.URL + "\" alt=\"\" />");
-            else
-                target.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data, this.Height);
+            target.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data, this.Height);
         }
 
         public void SendScribble(String sender, ILeaf leaf)
