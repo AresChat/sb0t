@@ -462,9 +462,7 @@ namespace core
                                 {
                                     System.Environment.Exit(1);
                                 }
-                            }
-
-                            UdpNodeManager.RemoveBlackListedNodes();                   
+                            }                   
                         }
                     }
 

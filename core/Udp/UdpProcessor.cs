@@ -83,7 +83,7 @@ namespace core.Udp
         {
             UdpPacketReader packet = new UdpPacketReader(item.Data);
             ushort port = packet;
-            UdpNode node = UdpNodeManager.Find(x => x.IP.Equals(((IPEndPoint)item.EndPoint).Address) && x.Port == ((IPEndPoint)item.EndPoint).Port);
+            UdpNode node = UdpNodeManager.Find(x => x.IP.Equals(((IPEndPoint)item.EndPoint).Address));
 
             if (node != null)
                 node.Port = port;
@@ -113,7 +113,7 @@ namespace core.Udp
             UdpStats.ACKIPS++;
             UdpPacketReader packet = new UdpPacketReader(item.Data);
             ushort port = packet;
-            UdpNode node = UdpNodeManager.Find(x => x.IP.Equals(((IPEndPoint)item.EndPoint).Address) && x.Port == ((IPEndPoint)item.EndPoint).Port);
+            UdpNode node = UdpNodeManager.Find(x => x.IP.Equals(((IPEndPoint)item.EndPoint).Address));
 
             if (node != null)
             {
