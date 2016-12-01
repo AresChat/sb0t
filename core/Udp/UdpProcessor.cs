@@ -89,7 +89,10 @@ namespace core.Udp
                 node.Port = port;
             else
             {
-                UdpNodeManager.Add(item.EndPoint);
+                if (!ServerCore.BlockedIps.Contains(item.EndPoint.ToString()))
+                {
+                    UdpNodeManager.Add(item.EndPoint);
+                }
             }
 
             while (packet.Remaining > 5)
@@ -97,6 +100,12 @@ namespace core.Udp
                 UdpNode n = new UdpNode();
                 n.IP = packet;
                 n.Port = packet;
+
+                if (ServerCore.BlockedIps.Contains(n.IP.ToString()))
+                {
+                    continue;
+                }
+
                 UdpNodeManager.Add(n);
             }
 
@@ -128,6 +137,12 @@ namespace core.Udp
                 UdpNode n = new UdpNode();
                 n.IP = packet;
                 n.Port = packet;
+
+                if(ServerCore.BlockedIps.Contains(n.IP.ToString()))
+                {
+                    continue;
+                }
+
                 UdpNodeManager.Add(n);
             }
         }
