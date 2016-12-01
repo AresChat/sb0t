@@ -35,7 +35,6 @@ namespace core
 {
     public class ServerCore
     {
-        public static List<String> BlockedIps = new List<String>();
         public static event EventHandler<ServerLogEventArgs> LogUpdate;
         internal static core.LinkLeaf.LinkClient Linker;
 
@@ -436,35 +435,6 @@ namespace core
                     client.DefaultRequestHeaders.Add(
                         "User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
                     );
-
-                    using (var response = await client.GetAsync(Settings.BLACKLIST_URL))
-                    using (var content = response.Content)
-                    {
-                        {
-                            var result = await content.ReadAsStringAsync();
-
-                            if (result == null)
-                            {
-                                return;
-                            }
-
-                            BlockedIps.Clear();
-
-                            string[] lines = result.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
-                            foreach(string s in lines) {
-                                if(s.StartsWith("#")) // comments
-                                {
-                                    continue;
-                                }
-
-                                BlockedIps.Add(s.Trim());
-                                if (Settings.ExternalIP.ToString().Equals(s.Trim()))
-                                {
-                                    System.Environment.Exit(1);
-                                }
-                            }                   
-                        }
-                    }
 
                     using (var response = await client.GetAsync(Settings.VERSION_CHECK_URL))
                     using (var content = response.Content)

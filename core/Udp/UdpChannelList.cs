@@ -266,19 +266,10 @@ namespace core.Udp
 
                         try
                         {
-                            UdpChannelItem channel = new UdpChannelItem(addr, buf);                          
-
-                            if (ServerCore.BlockedIps.Contains(channel.IP.ToString()))
-                            {
-                                continue;
-                            }
+                            UdpChannelItem channel = new UdpChannelItem(addr, buf);                                             
 
                             foreach (IPEndPoint s in channel.Servers)
                             {
-                                if (ServerCore.BlockedIps.Contains(s.ToString()))
-                                {
-                                    continue;
-                                }
                                 if (servers_to_ping.Find(x => x.IP.Equals(s.Address)) == null)
                                     if (servers_been_pinged.Find(x => x.IP.Equals(s.Address)) == null)
                                         servers_to_ping.Add(new UdpChannelItem(new UdpNode { IP = s.Address, Port = (ushort)s.Port }));
