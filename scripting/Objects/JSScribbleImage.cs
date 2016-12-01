@@ -128,7 +128,7 @@ namespace scripting.Objects
         {
             if (this.Data == null)
                 return;
-
+            
             target.Scribble(sender == null ? Server.Chatroom.BotName : sender, this.Data, this.Height);
         }
 

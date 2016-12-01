@@ -32,9 +32,9 @@ namespace core
         public const String RELEASE_URL = "https://github.com/AresChat/sb0t/releases";
         public const String VERSION_CHECK_URL = "https://api.github.com/repos/AresChat/sb0t/releases";
         public const String BLACKLIST_URL = "https://raw.githubusercontent.com/AresChat/sb0t/master/blacklist.txt";
-        public const String VERSION_NUMBER = "5.35";
+        public const String VERSION_NUMBER = "5.36";
 
-        public const String VERSION = "sb0t 5.35";
+        public const String VERSION = "sb0t 5.36";
         public const ushort LINK_PROTO = 500;
 
         public static bool RUNNING { get; set; }
