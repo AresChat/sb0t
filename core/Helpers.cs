@@ -173,6 +173,8 @@ namespace core
             if (client.OrgName == Settings.Get<String>("bot"))
                 client.OrgName = String.Empty;
 
+            client.OrgName = client.OrgName.Trim();
+
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("_"), " ", RegexOptions.IgnoreCase);
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("\""), String.Empty, RegexOptions.IgnoreCase);
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("/"), String.Empty, RegexOptions.IgnoreCase);
@@ -182,7 +184,7 @@ namespace core
             while (Encoding.UTF8.GetByteCount(client.OrgName) > 20)
                 client.OrgName = client.OrgName.Substring(0, client.OrgName.Length - 1);
 
-            if (client.OrgName.Length < 2)
+            if (client.OrgName.Length < 2 || string.IsNullOrWhiteSpace(client.OrgName))
             {
                 client.OrgName = client.WebClient ? "ib0t" : "anon ";
 
