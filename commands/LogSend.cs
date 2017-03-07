@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,12 +40,12 @@ namespace commands
             String bot = Server.Chatroom.BotName;
 
             Server.Users.All(x =>
-            {
-                if (!x.Link.IsLinked)
-                    if (x.Level >= l)
-                        if (list.Contains(x.ID))
-                            x.PM(bot, "LOGSEND: " + client.Name + "> /" + text);
-            });
+                             {
+                                 if (!x.Link.IsLinked)
+                                     if (x.Level >= l)
+                                         if (list.Contains(x.ID))
+                                             x.PM(bot, "LOGSEND: " + client.Name + "> /" + text);
+                             });
 
             try
             {
@@ -53,9 +53,45 @@ namespace commands
                 String path = Path.Combine(Server.DataPath, "adminlog.txt");
 
                 using (StreamWriter writer = File.Exists(path) ? File.AppendText(path) : File.CreateText(path))
-                    writer.WriteLine(d.ToShortDateString() + " " + d.ToShortTimeString() + " " + client.Name + "> /" + text);
+                    writer.WriteLine(d.ToShortDateString() + " " + d.ToShortTimeString() + " " + client.Name + "> /" +
+                                     text);
             }
-            catch { }
+            catch
+            {
+            }
+        }
+
+        public static void Log(string text)
+        {
+            Log("logsend.txt", text);
+        }
+
+        public static void Log(string logfile, string text)
+        {
+            ILevel l = Server.GetLevel("logsend");
+            string bot = Server.Chatroom.BotName;
+
+            Server.Users.All(x =>
+            {
+                if (!x.Link.IsLinked)
+                    if (x.Level >= l)
+                        if (list.Contains(x.ID))
+                        {
+                            x.PM(bot, "LOGSEND: " + text);
+                        }
+            });
+
+            try
+            {
+                DateTime d = DateTime.Now;
+                string path = Path.Combine(Server.DataPath, logfile);
+
+                using (StreamWriter writer = File.Exists(path) ? File.AppendText(path) : File.CreateText(path))
+                    writer.WriteLine(d.ToShortDateString() + " " + d.ToShortTimeString() + " " + text);
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
         public static void Add(IUser client)

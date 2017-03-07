@@ -29,6 +29,8 @@ namespace commands
 {
     public class WordFilter
     {
+        private static string LOGFILE = "wordfilter.log.txt";
+
         public static void FilterPM(IUser client, IPrivateMsg msg)
         {
             String ip = client.ExternalIP.ToString();
@@ -50,6 +52,7 @@ namespace commands
                                     Server.Print(
                                         Template.Text(Category.Filter, 16).Replace("+n", client.Name).Replace("+ip", ip),
                                         true);
+                                    LogSend.Log(LOGFILE, $"{client.Name} banned for typing {item.Trigger} in PM");
                                     client.Ban();
                                 }
 
@@ -66,6 +69,7 @@ namespace commands
                                     Server.Print(
                                         Template.Text(Category.Filter, 15).Replace("+n", client.Name).Replace("+ip", ip),
                                         true);
+                                    LogSend.Log(LOGFILE, $"{client.Name} killed for typing {item.Trigger} in PM");
                                     client.Disconnect();
                                 }
 
@@ -82,6 +86,7 @@ namespace commands
                                     Server.Print(
                                         Template.Text(Category.Filter, 17).Replace("+n", client.Name).Replace("+ip", ip),
                                         true);
+                                    LogSend.Log(LOGFILE, $"{client.Name} redirected for typing {item.Trigger} in PM");
                                     client.Redirect(item.Args);
                                 }
 
@@ -112,6 +117,8 @@ namespace commands
                             else if (client.Level == ILevel.Regular)
                             {
                                 Server.Print(Template.Text(Category.Filter, 9).Replace("+n", client.Name), true);
+                                LogSend.Log(LOGFILE, $"{client.Name} muzzled for typing {item.Trigger}");
+
                                 client.Muzzled = true;
                                 return String.Empty;
                             }
@@ -123,6 +130,7 @@ namespace commands
                             else if (client.Level == ILevel.Regular)
                             {
                                 Server.Print(Template.Text(Category.Filter, 10).Replace("+n", client.Name), true);
+                                LogSend.Log(LOGFILE, $"{client.Name} killed for typing {item.Trigger}");
                                 client.Disconnect();
                                 return String.Empty;
                             }
@@ -134,6 +142,7 @@ namespace commands
                             else if (client.Level == ILevel.Regular)
                             {
                                 Server.Print(Template.Text(Category.Filter, 11).Replace("+n", client.Name), true);
+                                LogSend.Log(LOGFILE, $"{client.Name} banned for typing {item.Trigger}");
                                 client.Ban();
                                 return String.Empty;
                             }
@@ -145,6 +154,7 @@ namespace commands
                             else if (client.Level == ILevel.Regular)
                             {
                                 client.Print(Template.Text(Category.Filter, 12).Replace("+n", client.Name));
+                                LogSend.Log(LOGFILE, $"{client.Name} censored for typing {item.Trigger}");
                                 return String.Empty;
                             }
                             break;
@@ -159,6 +169,7 @@ namespace commands
                                 if (ushort.TryParse(item.Args, out u))
                                 {
                                     Server.Print(Template.Text(Category.Filter, 13).Replace("+n", client.Name), true);
+                                    LogSend.Log(LOGFILE, $"{client.Name} moved for typing {item.Trigger}");
                                     client.Vroom = u;
                                 }
 
@@ -172,6 +183,7 @@ namespace commands
                             else if (client.Level == ILevel.Regular)
                             {
                                 Server.Print(Template.Text(Category.Filter, 14).Replace("+n", client.Name), true);
+                                LogSend.Log(LOGFILE, $"{client.Name} redirected for typing {item.Trigger}");
                                 client.Redirect(item.Args);
                                 client.Disconnect();
                                 return String.Empty;
