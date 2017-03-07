@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{DEE23F91-085B-40EB-B470-42D3A7B956E9}"
 EndProject
@@ -16,9 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "scripting", "scripting\scripting.csproj", "{4CEB04C4-C8E8-4766-98B0-6C08D4EBCD78}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E887B4CB-20E4-4767-AF51-BD6C2D67B41D}"
-	ProjectSection(SolutionItems) = preProject
-		TODO.txt = TODO.txt
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", "{A0370214-1976-4EE2-A539-4CA6E7A331F9}"
 	ProjectSection(SolutionItems) = preProject

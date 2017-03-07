@@ -101,7 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iconnect\iconnect.csproj">
-      <Project>{FDEBC3D9-56AA-4D35-93DC-5F7F0E9023B1}</Project>
+      <Project>{fdebc3d9-56aa-4d35-93dc-5f7f0e9023b1}</Project>
       <Name>iconnect</Name>
     </ProjectReference>
   </ItemGroup>

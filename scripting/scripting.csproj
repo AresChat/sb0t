@@ -36,9 +36,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="iconnect">
-      <HintPath>..\iconnect\bin\Debug\iconnect.dll</HintPath>
-    </Reference>
     <Reference Include="Jurassic">
       <HintPath>..\References\Jurassic.dll</HintPath>
     </Reference>
@@ -143,7 +140,12 @@
     <Compile Include="Statics\JSZip.cs" />
     <Compile Include="TimerList.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\iconnect\iconnect.csproj">
+      <Project>{fdebc3d9-56aa-4d35-93dc-5f7f0e9023b1}</Project>
+      <Name>iconnect</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
