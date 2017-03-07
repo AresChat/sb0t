@@ -34,10 +34,15 @@ namespace commands
 
             foreach (Item item in list)
             {
+
+                string trigger = item.Trigger;
+                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
                 switch (item.Type)
                 {
                     case FilterType.Censor:
-                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if(regex.IsMatch(client.Name))
                             client.Name = Regex.Replace(client.Name, Regex.Escape(item.Trigger), String.Empty, RegexOptions.IgnoreCase);
                         break;
 
@@ -53,23 +58,23 @@ namespace commands
                         break;
 
                     case FilterType.NameBan:
-                        if (client.Name == item.Trigger)
+                        if (regex.IsMatch(client.Name))
                             return true;
                         break;
 
                     case FilterType.DNSBan:
-                        if (client.DNS.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if (regex.IsMatch(client.DNS))
                             return true;
                         break;
 
                     case FilterType.Move:
-                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                        if (regex.IsMatch(client.Name) || ip.StartsWith(item.Trigger))
                             if (ushort.TryParse(item.Args, out u))
                                 client.Vroom = u;
                         break;
 
                     case FilterType.Redirect:
-                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                        if (regex.IsMatch(client.Name) || ip.StartsWith(item.Trigger))
                         {
                             client.Redirect(item.Args);
                             return true;
@@ -77,12 +82,12 @@ namespace commands
                         break;
 
                     case FilterType.ChangeName:
-                        if (client.Name.ToUpper().Contains(item.Trigger.ToUpper()) || ip.StartsWith(item.Trigger))
+                        if (regex.IsMatch(client.Name) || ip.StartsWith(item.Trigger))
                             client.Name = item.Args;
                         break;
 
                     case FilterType.VersionBan:
-                        if (client.Version.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if (regex.IsMatch(client.Version))
                             return true;
                         break;
                 }
@@ -97,6 +102,10 @@ namespace commands
 
             foreach (Item item in list)
             {
+                string trigger = item.Trigger;
+                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
                 switch (item.Type)
                 {
                     case FilterType.DisableAvatar:

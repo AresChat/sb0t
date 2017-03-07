@@ -21,7 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Xml;
+ using System.Text.RegularExpressions;
+ using System.Xml;
 using iconnect;
 
 namespace commands
@@ -31,18 +32,22 @@ namespace commands
         public static void DoFilter(IUser client, String filename)
         {
             String ip = client.ExternalIP.ToString();
-
+            
             foreach (Item item in list)
             {
+                string trigger = item.Trigger;
+                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
                 switch (item.Type)
                 {
                     case FilterType.Announce:
-                        if (filename.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if (regex.IsMatch(filename))
                             client.Print(item.Args.Replace("+n", client.Name).Replace("+ip", ip));
                         break;
 
                     case FilterType.Ban:
-                        if (filename.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if (regex.IsMatch(filename))
                         {
                             Server.Print(Template.Text(Category.Filter, 6).Replace("+n", client.Name).Replace("+f", filename), true);
                             client.Ban();
@@ -51,7 +56,7 @@ namespace commands
                         break;
 
                     case FilterType.Clone:
-                        if (filename.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if (regex.IsMatch(filename))
                             if (item.Args.StartsWith("/me "))
                                 client.SendEmote(item.Args.Substring(4).Replace("+n", client.Name).Replace("+ip", ip));
                             else
@@ -59,7 +64,7 @@ namespace commands
                         break;
 
                     case FilterType.Kill:
-                        if (filename.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if (regex.IsMatch(filename))
                         {
                             Server.Print(Template.Text(Category.Filter, 6).Replace("+n", client.Name).Replace("+f", filename), true);
                             client.Disconnect();
@@ -68,7 +73,7 @@ namespace commands
                         break;
 
                     case FilterType.PM:
-                        if (filename.ToUpper().Contains(item.Trigger.ToUpper()))
+                        if (regex.IsMatch(filename))
                             client.PM(Server.Chatroom.BotName, item.Args.Replace("+n", client.Name).Replace("+ip", ip));
                         break;
                 }

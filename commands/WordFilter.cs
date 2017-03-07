@@ -34,7 +34,12 @@ namespace commands
             String ip = client.ExternalIP.ToString();
 
             foreach (Item item in list)
-                if (msg.Contains(item.Trigger))
+            {
+                string trigger = item.Trigger;
+                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+                if (regex.IsMatch(item.Trigger))
                     switch (item.Type)
                     {
                         case FilterType.Ban:
@@ -42,7 +47,9 @@ namespace commands
                             {
                                 if (!client.Link.IsLinked)
                                 {
-                                    Server.Print(Template.Text(Category.Filter, 16).Replace("+n", client.Name).Replace("+ip", ip), true);
+                                    Server.Print(
+                                        Template.Text(Category.Filter, 16).Replace("+n", client.Name).Replace("+ip", ip),
+                                        true);
                                     client.Ban();
                                 }
 
@@ -56,7 +63,9 @@ namespace commands
                             {
                                 if (!client.Link.IsLinked)
                                 {
-                                    Server.Print(Template.Text(Category.Filter, 15).Replace("+n", client.Name).Replace("+ip", ip), true);
+                                    Server.Print(
+                                        Template.Text(Category.Filter, 15).Replace("+n", client.Name).Replace("+ip", ip),
+                                        true);
                                     client.Disconnect();
                                 }
 
@@ -70,7 +79,9 @@ namespace commands
                             {
                                 if (!client.Link.IsLinked)
                                 {
-                                    Server.Print(Template.Text(Category.Filter, 17).Replace("+n", client.Name).Replace("+ip", ip), true);
+                                    Server.Print(
+                                        Template.Text(Category.Filter, 17).Replace("+n", client.Name).Replace("+ip", ip),
+                                        true);
                                     client.Redirect(item.Args);
                                 }
 
@@ -79,6 +90,7 @@ namespace commands
                             }
                             break;
                     }
+            }
         }
 
         public static String FilterBefore(IUser client, String text)
@@ -86,7 +98,12 @@ namespace commands
             String ip = client.ExternalIP.ToString();
 
             foreach (Item item in list)
-                if (text.ToUpper().Contains(item.Trigger.ToUpper()))
+            {
+                string trigger = item.Trigger;
+                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+                if (regex.IsMatch(text))
                     switch (item.Type)
                     {
                         case FilterType.Muzzle:
@@ -167,22 +184,25 @@ namespace commands
                                     break;
 
                             if (client.Level > ILevel.Regular)
-                                if (text.StartsWith("#addline") || text.StartsWith("#remline") || text.StartsWith("#addwordfilter"))
+                                if (text.StartsWith("#addline") || text.StartsWith("#remline") ||
+                                    text.StartsWith("#addwordfilter"))
                                     break;
 
-                            String[] lines = item.Args.Split(new String[] { "\r\n" }, StringSplitOptions.None);
+                            String[] lines = item.Args.Split(new String[] {"\r\n"}, StringSplitOptions.None);
                             String reply = String.Empty;
 
                             if (text.StartsWith(item.Trigger) && text.Length > item.Trigger.Length)
                                 reply = text.Substring(item.Trigger.Length + 1);
 
                             foreach (String str in lines)
-                                Server.Print(str.Replace("+n", client.Name).Replace("+ip", ip).Replace("+r", reply), true);
+                                Server.Print(str.Replace("+n", client.Name).Replace("+ip", ip).Replace("+r", reply),
+                                             true);
                             break;
 
                         case FilterType.Replace:
                             if (client.Level == ILevel.Regular)
-                                text = Regex.Replace(text, Regex.Escape(item.Trigger), item.Args, RegexOptions.IgnoreCase);
+                                text = Regex.Replace(text, Regex.Escape(item.Trigger), item.Args,
+                                                     RegexOptions.IgnoreCase);
                             break;
 
                         case FilterType.Scribble:
@@ -193,17 +213,20 @@ namespace commands
                                 if (client.Level > ILevel.Regular || (time >= (client.LastScribble + 30)))
                                 {
                                     client.LastScribble = time;
-                                    String html = "<img src=\"" + item.Args + "\" style=\"max-width: 320px; max-height: 320px;\" alt=\"\" />";
+                                    String html = "<img src=\"" + item.Args +
+                                                  "\" style=\"max-width: 320px; max-height: 320px;\" alt=\"\" />";
 
                                     Server.Users.Ares(x =>
-                                    {
-                                        if (x.Vroom == client.Vroom && !x.Quarantined && x.SupportsHTML && !x.IgnoreList.Contains(client.Name))
-                                            x.SendHTML(html);
-                                    });
+                                                      {
+                                                          if (x.Vroom == client.Vroom && !x.Quarantined &&
+                                                              x.SupportsHTML && !x.IgnoreList.Contains(client.Name))
+                                                              x.SendHTML(html);
+                                                      });
                                 }
                             }
                             break;
                     }
+            }
 
             return text;
         }
@@ -213,7 +236,12 @@ namespace commands
             String ip = client.ExternalIP.ToString();
 
             foreach (Item item in list)
-                if (text.ToUpper().Contains(item.Trigger.ToUpper()))
+            {
+                string trigger = item.Trigger;
+                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+
+                if (regex.IsMatch(text))
                     switch (item.Type)
                     {
                         case FilterType.PM:
@@ -224,7 +252,9 @@ namespace commands
                             if (client.Level == ILevel.Regular)
                             {
                                 if (item.Args.StartsWith("/me "))
-                                    client.SendEmote(item.Args.Substring(4).Replace("+n", client.Name).Replace("+ip", ip));
+                                    client.SendEmote(item.Args.Substring(4)
+                                                         .Replace("+n", client.Name)
+                                                         .Replace("+ip", ip));
                                 else
                                     client.SendText(item.Args.Replace("+n", client.Name).Replace("+ip", ip));
                             }
@@ -235,6 +265,7 @@ namespace commands
                                 Echo.Add(client, item.Args);
                             break;
                     }
+            }
         }
 
         private class Item
