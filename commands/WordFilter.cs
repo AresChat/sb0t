@@ -37,8 +37,8 @@ namespace commands
 
             foreach (Item item in list)
             {
-                string trigger = item.Trigger;
-                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                string trigger = Regex.Escape(item.Trigger);
+                trigger = trigger.Replace("\\?", ".").Replace("\\*", ".*");
                 Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
                 if (regex.IsMatch(item.Trigger))
@@ -104,8 +104,8 @@ namespace commands
 
             foreach (Item item in list)
             {
-                string trigger = item.Trigger;
-                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                string trigger = Regex.Escape(item.Trigger);
+                trigger = trigger.Replace("\\?", ".").Replace("\\*", ".*");
                 Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
                 if (regex.IsMatch(text))
@@ -249,8 +249,8 @@ namespace commands
 
             foreach (Item item in list)
             {
-                string trigger = item.Trigger;
-                trigger = trigger.Replace('?', '.').Replace("*", ".*");
+                string trigger = Regex.Escape(item.Trigger);
+                trigger = trigger.Replace("\\?", ".").Replace("\\*", ".*");
                 Regex regex = new Regex(trigger, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
                 if (regex.IsMatch(text))
