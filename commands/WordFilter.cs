@@ -29,7 +29,7 @@ namespace commands
 {
     public class WordFilter
     {
-        private static string LOGFILE = "wordfilter.log.txt";
+        private const string LOGFILE = "wordfilter.log.txt";
 
         public static void FilterPM(IUser client, IPrivateMsg msg)
         {

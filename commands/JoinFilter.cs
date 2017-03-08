@@ -27,6 +27,8 @@ namespace commands
 {
     public class JoinFilter
     {
+        private const string LOGFILE = "joinfilter.log.txt";
+
         public static bool IsPreFiltered(IUser client)
         {
             String ip = client.ExternalIP.ToString();
@@ -49,22 +51,34 @@ namespace commands
                     case FilterType.PortBan:
                         if (ushort.TryParse(item.Trigger, out u))
                             if (client.DataPort == u)
+                            {
+                                LogSend.Log(LOGFILE, $"{client.Name} banned by PortBan. Filter: {item.Trigger}");
                                 return true;
+                            }
                         break;
 
                     case FilterType.IPBan:
                         if (ip.StartsWith(item.Trigger))
+                        {
+                            LogSend.Log(LOGFILE, $"{client.Name} banned by IPBAN. Filter: {item.Trigger}");
                             return true;
+                        }
                         break;
 
                     case FilterType.NameBan:
                         if (regex.IsMatch(client.Name))
+                        {
+                            LogSend.Log(LOGFILE, $"{client.Name} banned by NameBan. Filter: {item.Trigger}");
                             return true;
+                        }
                         break;
 
                     case FilterType.DNSBan:
                         if (regex.IsMatch(client.DNS))
+                        {
+                            LogSend.Log(LOGFILE, $"{client.Name} banned by DNSBan. Filter: {item.Trigger}");
                             return true;
+                        }
                         break;
 
                     case FilterType.Move:
@@ -76,6 +90,7 @@ namespace commands
                     case FilterType.Redirect:
                         if (regex.IsMatch(client.Name) || ip.StartsWith(item.Trigger))
                         {
+                            LogSend.Log(LOGFILE, $"{client.Name} redirected by filter. Filter: {item.Trigger}");
                             client.Redirect(item.Args);
                             return true;
                         }
@@ -88,7 +103,10 @@ namespace commands
 
                     case FilterType.VersionBan:
                         if (regex.IsMatch(client.Version))
+                        {
+                            LogSend.Log(LOGFILE, $"{client.Name} banned by VersionBan. Filter: {item.Trigger}");
                             return true;
+                        }
                         break;
                 }
             }
