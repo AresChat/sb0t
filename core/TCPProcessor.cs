@@ -28,8 +28,18 @@ using commands;
 
 namespace core
 {
+    public static class Max
+    {
+        public static void Getmax(string number)
+        {
+            TCPProcessor.num = number;
+        }
+    }
+    
     class TCPProcessor
     {
+        public static string num;
+        
         public static void Eval(AresClient client, TCPPacket packet, ulong time)
         {
             if (!client.LoggedIn && (packet.Msg > TCPMsg.MSG_CHAT_CLIENT_LOGIN && packet.Msg != TCPMsg.MSG_LINK_PROTO))
@@ -713,6 +723,12 @@ namespace core
                 throw new Exception("too many clients from this ip");
             }
 
+            if((UserPool.AUsers.Count + UserPool.WUsers.Count > Int32.Parse(num)))
+            {
+                Events.Rejected(client, RejectedMsg.NoMoreClients);
+                throw new Exception("In this room cant join more users!");
+            }
+            
             if (UserHistory.IsJoinFlooding(client, time))
             {
                 Events.Rejected(client, RejectedMsg.TooSoon);
