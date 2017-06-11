@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.Instances
 {
-    [JSEmbed(Name = "XmlParser")]
+    [JSObject(Name = "XmlParser")]
     class JSXmlParser : ClrFunction
     {
         public JSXmlParser(ScriptEngine engine)

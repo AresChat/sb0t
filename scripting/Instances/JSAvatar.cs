@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.Instances
 {
-    [JSEmbed(Name = "Avatar")]
+    [JSObject(Name = "Avatar")]
     class JSAvatar : ClrFunction
     {
         public JSAvatar(ScriptEngine engine)

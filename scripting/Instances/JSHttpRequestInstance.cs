@@ -39,12 +39,9 @@ namespace scripting.Instances
         {
             this.PopulateFunctions();
             this.Agent = String.Empty;
-            
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "HttpRequest"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("HttpRequest", PropertyAttributes.Sealed), true);
+
         }
 
         [JSProperty(Name = "method")]
@@ -114,7 +111,7 @@ namespace scripting.Instances
                 Objects.JSHttpRequestResult result = new Objects.JSHttpRequestResult(this.Engine.Object.InstancePrototype)
                 {
                     Callback = this.Callback,
-                    ScriptName = this.Engine.ScriptName,
+                    ScriptName = this.Engine.UserData as string,
                     Arg = arg
                 };
 

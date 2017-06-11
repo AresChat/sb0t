@@ -31,15 +31,12 @@ namespace scripting.Objects
         private XmlNodeList Items { get; set; }
         private int count { get; set; }
 
-        protected override string InternalClassName
-        {
-            get { return "NodeCollection"; }
-        }
-
         internal JSNodeCollection(ScriptEngine eng)
             : base(eng)
         {
             this.PopulateFunctions();
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("NodeCollection", PropertyAttributes.Sealed), true);
         }
 
         public JSNodeCollection(ObjectInstance prototype, XmlNodeList list)

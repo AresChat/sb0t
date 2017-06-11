@@ -49,7 +49,7 @@ namespace scripting
                     {
                         Instances.JSTimerInstance timer = list[i];
                         list.RemoveAt(i);
-                        JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == timer.Engine.ScriptName);
+                        JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == timer.Engine.UserData as string);
 
                         if (script != null)
                         {

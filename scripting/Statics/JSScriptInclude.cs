@@ -24,18 +24,15 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Script")]
+    [JSObject(Name = "Script")]
     class JSScriptInclude : ObjectInstance
     {
         public JSScriptInclude(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Script"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Script", PropertyAttributes.Sealed), true);
         }
 
         private static String[] bad_chars = new String[] { "..", "/", "\\", " ", };
@@ -51,7 +48,7 @@ namespace scripting.Statics
                     if (bad_chars.Count<String>(x => filename.Contains(x)) == 0)
                         try
                         {
-                            String path = Path.Combine(Server.DataPath, eng.ScriptName, filename);
+                            String path = Path.Combine(Server.DataPath, eng.UserData as string, filename);
                             eng.ExecuteFile(path);
                         }
                         catch (Jurassic.JavaScriptException e)

@@ -42,11 +42,8 @@ namespace scripting.Objects
             : base(eng)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "BannedUser"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("BannedUser", PropertyAttributes.Sealed), true);
         }
 
         internal IBan parent;

@@ -34,11 +34,8 @@ namespace scripting.Objects
             : base(eng)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "HashlinkResult"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("HashlinkResult", PropertyAttributes.Sealed), true);
         }
 
         public JSHashlinkResult(ObjectInstance prototype, IHashlinkRoom obj)

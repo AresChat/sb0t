@@ -26,24 +26,21 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Registry")]
+    [JSObject(Name = "Registry")]
     class JSRegistry : ObjectInstance
     {
         public JSRegistry(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Registry"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Registry", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "exists", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static bool Exists(ScriptEngine eng, String key)
         {
-            String script = eng.ScriptName;
+            String script = eng.UserData as string;
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\scripting", false);
 
             if (rk == null)
@@ -67,7 +64,7 @@ namespace scripting.Statics
         [JSFunction(Name = "getValue", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static String GetValue(ScriptEngine eng, String key)
         {
-            String script = eng.ScriptName;
+            String script = eng.UserData as string;
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\scripting", false);
 
             if (rk == null)
@@ -97,28 +94,28 @@ namespace scripting.Statics
         public static Objects.JSRegistryKeyCollection GeyKeys(ScriptEngine eng)
         {
             List<String> results = new List<String>();
-            String script = eng.ScriptName;
+            String script = eng.UserData as string;
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\scripting", false);
 
             if (rk == null)
-                return new Objects.JSRegistryKeyCollection(eng.Object.InstancePrototype, results.ToArray(), eng.ScriptName);
+                return new Objects.JSRegistryKeyCollection(eng.Object.InstancePrototype, results.ToArray(), eng.UserData as string);
 
             rk.Close();
             rk = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\scripting\\" + script, false);
 
             if (rk == null)
-                return new Objects.JSRegistryKeyCollection(eng.Object.InstancePrototype, results.ToArray(), eng.ScriptName);
+                return new Objects.JSRegistryKeyCollection(eng.Object.InstancePrototype, results.ToArray(), eng.UserData as string);
 
             foreach (String str in rk.GetValueNames())
                 results.Add(str);
 
-            return new Objects.JSRegistryKeyCollection(eng.Object.InstancePrototype, results.ToArray(), eng.ScriptName);
+            return new Objects.JSRegistryKeyCollection(eng.Object.InstancePrototype, results.ToArray(), eng.UserData as string);
         }
 
         [JSFunction(Name = "setValue", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static bool SetValue(ScriptEngine eng, String key, object value)
         {
-            String script = eng.ScriptName;
+            String script = eng.UserData as string;
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\scripting", false);
 
             if (rk == null)
@@ -148,7 +145,7 @@ namespace scripting.Statics
         [JSFunction(Name = "deleteValue", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static bool DeleteValue(ScriptEngine eng, String key)
         {
-            String script = eng.ScriptName;
+            String script = eng.UserData as string;
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\scripting", false);
 
             if (rk == null)
@@ -178,7 +175,7 @@ namespace scripting.Statics
         [JSFunction(Name = "clear", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
         public static bool Clear(ScriptEngine eng)
         {
-            String script = eng.ScriptName;
+            String script = eng.UserData as string;
             RegistryKey rk = Registry.CurrentUser.OpenSubKey("Software\\sb0t\\" + AppDomain.CurrentDomain.FriendlyName + "\\scripting", true);
 
             if (rk == null)

@@ -40,11 +40,8 @@ namespace scripting.Objects
             : base(eng)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "CryptoResult"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("CryptoResult", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "toHex", IsWritable = false, IsEnumerable = true)]

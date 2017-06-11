@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.ObjectPrototypes
 {
-    [JSEmbed(Name = "BannedUser")]
+    [JSObject(Name = "BannedUser")]
     class JSBannedUser : ClrFunction
     {
         public JSBannedUser(ScriptEngine eng)

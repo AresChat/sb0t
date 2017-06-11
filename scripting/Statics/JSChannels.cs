@@ -26,18 +26,15 @@ using iconnect;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Channels")]
+    [JSObject(Name = "Channels")]
     class JSChannels : ObjectInstance
     {
         public JSChannels(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Channels"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Channels", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "available")]
@@ -80,7 +77,7 @@ namespace scripting.Statics
                     results.Add(new Objects.JSChannel(eng.Object.InstancePrototype, m));
             }
 
-            return new Objects.JSChannelCollection(eng.Object.InstancePrototype, results.ToArray(), eng.ScriptName);
+            return new Objects.JSChannelCollection(eng.Object.InstancePrototype, results.ToArray(), eng.UserData as string);
         }
     }
 }

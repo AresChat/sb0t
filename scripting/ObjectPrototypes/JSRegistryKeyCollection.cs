@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.ObjectPrototypes
 {
-    [JSEmbed(Name = "RegistryKeyCollection")]
+    [JSObject(Name = "RegistryKeyCollection")]
     class JSRegistryKeyCollection : ClrFunction
     {
         public JSRegistryKeyCollection(ScriptEngine eng)

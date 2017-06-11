@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.ObjectPrototypes
 {
-    [JSEmbed(Name = "ScribbleImage")]
+    [JSObject(Name = "ScribbleImage")]
     class JSScribbleImage : ClrFunction
     {
         public JSScribbleImage(ScriptEngine eng)

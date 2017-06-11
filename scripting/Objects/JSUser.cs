@@ -44,11 +44,8 @@ namespace scripting.Objects
             this.parent = user;
             this.ScriptName = script;
             this._font = new JSUserFont(this.Prototype, user, script);
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "User"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("User", PropertyAttributes.Sealed), true);
         }
 
         internal IUser parent;

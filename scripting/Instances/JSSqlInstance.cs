@@ -36,11 +36,8 @@ namespace scripting.Instances
             : base(prototype)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Sql"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Sql", Jurassic.Library.PropertyAttributes.Sealed), true);
         }
 
         private String ConnectionString { get; set; }
@@ -170,7 +167,7 @@ namespace scripting.Instances
             if (file.Length > 1)
                 if (bad_chars.Count<String>(x => file.Contains(x)) == 0)
                 {
-                    String path = Path.Combine(Server.DataPath, this.Engine.ScriptName, "sql");
+                    String path = Path.Combine(Server.DataPath, this.Engine.UserData as string, "sql");
 
                     try
                     {

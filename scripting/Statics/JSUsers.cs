@@ -25,18 +25,14 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Users")]
+    [JSObject(Name = "Users")]
     class JSUsers : ObjectInstance
     {
         public JSUsers(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
-
-        protected override string InternalClassName
-        {
-            get { return "Users"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Users", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "local", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
@@ -44,7 +40,7 @@ namespace scripting.Statics
         {
             if (f is UserDefinedFunction)
             {
-                JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.ScriptName);
+                JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.UserData as string);
 
                 if (script != null)
                 {
@@ -64,7 +60,7 @@ namespace scripting.Statics
         {
             if (f is UserDefinedFunction)
             {
-                JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.ScriptName);
+                JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.UserData as string);
 
                 if (script != null)
                     if (Server.Link.IsLinked)
@@ -90,7 +86,7 @@ namespace scripting.Statics
                 try
                 {
                     Server.Users.Banned(x => function.Call(eng.Global,
-                        new Objects.JSBannedUser(eng.Object.InstancePrototype, x, eng.ScriptName)));
+                        new Objects.JSBannedUser(eng.Object.InstancePrototype, x, eng.UserData as string)));
                 }
                 catch { }
             }
@@ -106,7 +102,7 @@ namespace scripting.Statics
                 try
                 {
                     Server.Users.Records(x => function.Call(eng.Global,
-                        new Objects.JSRecord(eng.Object.InstancePrototype, x, eng.ScriptName)));
+                        new Objects.JSRecord(eng.Object.InstancePrototype, x, eng.UserData as string)));
                 }
                 catch { }
             }

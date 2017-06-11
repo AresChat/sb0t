@@ -25,18 +25,14 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Base64")]
+    [JSObject(Name = "Base64")]
     class JSBase64 : ObjectInstance
     {
         public JSBase64(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
-
-        protected override string InternalClassName
-        {
-            get { return "Base64"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Base64", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "encode", IsWritable = false, IsEnumerable = true)]

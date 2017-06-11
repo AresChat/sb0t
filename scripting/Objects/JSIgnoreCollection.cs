@@ -29,15 +29,12 @@ namespace scripting.Objects
     {
         private int count { get; set; }
 
-        protected override string InternalClassName
-        {
-            get { return "IgnoreCollection"; }
-        }
-
         internal JSIgnoreCollection(ScriptEngine eng)
             : base(eng)
         {
             this.PopulateFunctions();
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("IgnoreCollection", PropertyAttributes.Sealed), true);
         }
 
         public JSIgnoreCollection(ObjectInstance prototype, String[] ignores, String scriptName)

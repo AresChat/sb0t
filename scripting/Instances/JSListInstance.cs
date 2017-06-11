@@ -29,11 +29,6 @@ namespace scripting.Instances
     {
         private object[] array { get; set; }
 
-        protected override string InternalClassName
-        {
-            get { return "List"; }
-        }
-
         public JSListInstance(ObjectInstance prototype, params object[] items)
             : base(prototype)
         {
@@ -42,6 +37,8 @@ namespace scripting.Instances
 
             if (items.Length > 0)
                 this.AddRange(items);
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("List", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "count")]
@@ -102,7 +99,7 @@ namespace scripting.Instances
             }
             
             if (!(a is UserDefinedFunction))
-                throw new JavaScriptException(this.Engine, "invalid casting", "expecting comparison function");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "expecting comparison function");
 
             UserDefinedFunction f = (UserDefinedFunction)a;
             List<object> list = this.array.ToList();
@@ -158,12 +155,12 @@ namespace scripting.Instances
         public int Insert(object ind, object a)
         {
             if (!(ind is int || ind is double))
-                throw new JavaScriptException(this.Engine, "invalid casting", "index must be an int or double");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "index must be an int or double");
 
             int index = TypeConverter.ToInt32(ind);
 
             if (index > this.array.Length || index < 0)
-                throw new JavaScriptException(this.Engine, "out of bounds", "index was out of bounds");
+                throw new JavaScriptException(this.Engine, ErrorType.RangeError, "index was out of bounds");
 
             object[] tmp = new object[this.array.Length + 1];
             tmp[index] = a;
@@ -183,12 +180,12 @@ namespace scripting.Instances
         public int InsertRange(object ind, params object[] a)
         {
             if (!(ind is int || ind is double))
-                throw new JavaScriptException(this.Engine, "invalid casting", "index must be an int or double");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "index must be an int or double");
 
             int index = TypeConverter.ToInt32(ind);
 
             if (index > this.array.Length || index < 0)
-                throw new JavaScriptException(this.Engine, "out of bounds", "index was out of bounds");
+                throw new JavaScriptException(this.Engine, ErrorType.RangeError, "index was out of bounds");
 
             object[] tmp = new object[this.array.Length + a.Length];
 
@@ -248,20 +245,20 @@ namespace scripting.Instances
         public int RemoveRange(object st, object co)
         {
             if (!(st is int || st is double))
-                throw new JavaScriptException(this.Engine, "invalid casting", "start must be an int or double");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "start must be an int or double");
 
             int start = TypeConverter.ToInt32(st);
 
             if (!(co is int || co is double))
-                throw new JavaScriptException(this.Engine, "invalid casting", "count must be an int or double");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "count must be an int or double");
 
             int count = TypeConverter.ToInt32(co);
 
             if (start > this.array.Length || start < 0)
-                throw new JavaScriptException(this.Engine, "out of bounds", "start was out of bounds");
+                throw new JavaScriptException(this.Engine, ErrorType.RangeError, "start was out of bounds");
 
             if ((start + count) > this.array.Length || count < start)
-                throw new JavaScriptException(this.Engine, "out of bounds", "count was out of bounds");
+                throw new JavaScriptException(this.Engine, ErrorType.RangeError, "count was out of bounds");
 
             object[] tmp = new object[this.array.Length - count];
 
@@ -288,12 +285,12 @@ namespace scripting.Instances
         public int RemoveAt(object a)
         {
             if (!(a is int || a is double))
-                throw new JavaScriptException(this.Engine, "invalid casting", "index must be an int or double");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "index must be an int or double");
 
             int index = TypeConverter.ToInt32(a);
 
             if (index >= this.array.Length || index < 0)
-                throw new JavaScriptException(this.Engine, "out of bounds", "start was out of bounds");
+                throw new JavaScriptException(this.Engine, ErrorType.RangeError, "start was out of bounds");
 
             object[] tmp = new object[this.array.Length - 1];
 
@@ -318,7 +315,7 @@ namespace scripting.Instances
         public int RemoveAll(object a)
         {
             if (!(a is UserDefinedFunction))
-                throw new JavaScriptException(this.Engine, "invalid casting", "expecting comparison function");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "expecting comparison function");
 
             UserDefinedFunction f = (UserDefinedFunction)a;
             List<object> list = new List<object>();
@@ -345,20 +342,20 @@ namespace scripting.Instances
         public JSListInstance GetRange(object st, object co)
         {
             if (!(st is int || st is double))
-                throw new JavaScriptException(this.Engine, "invalid casting", "start must be an int or double");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "start must be an int or double");
 
             int start = TypeConverter.ToInt32(st);
 
             if (!(co is int || co is double))
-                throw new JavaScriptException(this.Engine, "invalid casting", "count must be an int or double");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "count must be an int or double");
 
             int count = TypeConverter.ToInt32(co);
 
             if (start > this.array.Length || start < 0)
-                throw new JavaScriptException(this.Engine, "out of bounds", "start was out of bounds");
+                throw new JavaScriptException(this.Engine, ErrorType.RangeError, "start was out of bounds");
 
             if ((start + count) > this.array.Length || count < start)
-                throw new JavaScriptException(this.Engine, "out of bounds", "count was out of bounds");
+                throw new JavaScriptException(this.Engine, ErrorType.RangeError, "count was out of bounds");
 
             JSListInstance result = new JSListInstance(this.Engine.Object.InstancePrototype);
 
@@ -393,7 +390,7 @@ namespace scripting.Instances
         public JSListInstance FindAll(object a)
         {
             if (!(a is UserDefinedFunction))
-                throw new JavaScriptException(this.Engine, "invalid casting", "expecting comparison function");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "expecting comparison function");
 
             UserDefinedFunction f = (UserDefinedFunction)a;
             List<object> list = new List<object>();
@@ -414,7 +411,7 @@ namespace scripting.Instances
         public object Find(object a)
         {
             if (!(a is UserDefinedFunction))
-                throw new JavaScriptException(this.Engine, "invalid casting", "expecting comparison function");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "expecting comparison function");
 
             UserDefinedFunction f = (UserDefinedFunction)a;
 
@@ -429,7 +426,7 @@ namespace scripting.Instances
         public int FindIndex(object a)
         {
             if (!(a is UserDefinedFunction))
-                throw new JavaScriptException(this.Engine, "invalid casting", "expecting comparison function");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "expecting comparison function");
 
             UserDefinedFunction f = (UserDefinedFunction)a;
 
@@ -444,7 +441,7 @@ namespace scripting.Instances
         public int FindLastIndex(object a)
         {
             if (!(a is UserDefinedFunction))
-                throw new JavaScriptException(this.Engine, "invalid casting", "expecting comparison function");
+                throw new JavaScriptException(this.Engine, ErrorType.Error, "expecting comparison function");
 
             UserDefinedFunction f = (UserDefinedFunction)a;
 

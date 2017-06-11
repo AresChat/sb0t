@@ -38,11 +38,8 @@ namespace scripting.Objects
             : base(eng)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "HttpRequestResult"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("HttpRequestResult", PropertyAttributes.Sealed), true);
         }
 
         public String Data { get; set; }

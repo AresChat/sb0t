@@ -25,18 +25,14 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Stats")]
+    [JSObject(Name = "Stats")]
     class JSStats : ObjectInstance
     {
         public JSStats(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
-
-        protected override string InternalClassName
-        {
-            get { return "Stats"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Stats", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "userCount")]

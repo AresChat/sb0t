@@ -31,7 +31,7 @@ namespace scripting.Instances
             : base(prototype)
         {
             this.PopulateFunctions();
-            this.ScriptName = this.Engine.ScriptName;
+            this.ScriptName = this.Engine.UserData as string;
             this.StartTime = 0;
 
             JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == this.ScriptName);
@@ -41,11 +41,8 @@ namespace scripting.Instances
                 this.IDENT = TimerList.NextIdent++;
                 script.timer_idents.Add(this.IDENT);
             }
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Timer"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Timer", PropertyAttributes.Sealed), true);
         }
 
         public String ScriptName { get; set; }

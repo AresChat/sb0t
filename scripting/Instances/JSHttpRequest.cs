@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.Instances
 {
-    [JSEmbed(Name = "HttpRequest")]
+    [JSObject(Name = "HttpRequest")]
     class JSHttpRequest : ClrFunction
     {
         public JSHttpRequest(ScriptEngine engine)

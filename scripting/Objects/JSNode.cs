@@ -35,13 +35,10 @@ namespace scripting.Objects
         {
             this.Item = node;
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Node"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Node", PropertyAttributes.Sealed), true);
         }
-
+        
         internal JSNode(ScriptEngine eng)
             : base(eng)
         {

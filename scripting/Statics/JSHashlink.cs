@@ -27,18 +27,15 @@ using iconnect;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Hashlink")]
+    [JSObject(Name = "Hashlink")]
     class JSHashlink : ObjectInstance
     {
         public JSHashlink(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Hashlink"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Hashlink", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "encode", IsWritable = false, IsEnumerable = true)]

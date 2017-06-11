@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.ObjectPrototypes
 {
-    [JSEmbed(Name = "Leaf")]
+    [JSObject(Name = "Leaf")]
     class JSLeaf : ClrFunction
     {
         public JSLeaf(ScriptEngine eng)

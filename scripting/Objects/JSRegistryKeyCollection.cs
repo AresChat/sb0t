@@ -37,17 +37,14 @@ namespace scripting.Objects
 
             foreach (String str in keys)
                 this.SetPropertyValue((uint)this.count++, str, throwOnError: true);
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("RegistryKeyCollection", PropertyAttributes.Sealed), true);
         }
 
         internal JSRegistryKeyCollection(ScriptEngine eng)
             : base(eng)
         {
             this.PopulateFunctions();
-        }
-
-        protected override string InternalClassName
-        {
-            get { return "RegistryKeyCollection"; }
         }
 
         [JSProperty(Name = "length")]

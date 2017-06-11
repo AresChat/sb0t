@@ -39,11 +39,8 @@ namespace scripting.Objects
             : base(prototype.Engine, ((ClrFunction)prototype.Engine.Global["AvatarImage"]).InstancePrototype)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "AvatarImage"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("AvatarImage", PropertyAttributes.Sealed), true);
         }
 
         public byte[] Data { get; set; }
@@ -108,7 +105,7 @@ namespace scripting.Objects
                 if (filename.Length > 1)
                     if (bad_chars.Count<String>(x => filename.Contains(x)) == 0)
                     {
-                        String path = Path.Combine(Server.DataPath, this.Engine.ScriptName, "data");
+                        String path = Path.Combine(Server.DataPath, this.Engine.UserData as string, "data");
 
                         try
                         {

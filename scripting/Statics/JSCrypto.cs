@@ -26,18 +26,15 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Crypto")]
+    [JSObject(Name = "Crypto")]
     class JSCrypto : ObjectInstance
     {
         public JSCrypto(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Crypto"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Crypto", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "md5hash", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]

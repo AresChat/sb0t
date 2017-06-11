@@ -37,11 +37,8 @@ namespace scripting.Objects
             this.PopulateFunctions();
             this.parent = leaf;
             this.ScriptName = script;
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Leaf"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Leaf", PropertyAttributes.Sealed), true);
         }
 
         internal JSLeaf(ScriptEngine eng)

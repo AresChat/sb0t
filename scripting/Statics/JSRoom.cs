@@ -25,18 +25,15 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Room")]
+    [JSObject(Name = "Room")]
     class JSRoom : ObjectInstance
     {
         public JSRoom(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Room"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Room", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "version")]

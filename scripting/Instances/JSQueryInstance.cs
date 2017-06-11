@@ -38,11 +38,6 @@ namespace scripting.Instances
             this.query = String.Empty;
         }
 
-        protected override string InternalClassName
-        {
-            get { return "Query"; }
-        }
-
         public JSQueryInstance(ObjectInstance prototype, String q, params object[] a)
             : base(prototype)
         {
@@ -66,6 +61,8 @@ namespace scripting.Instances
                         this._params.Add(new SQLiteParameter(("@var" + (counter++)), double.Parse(a[i].ToString())));
                 }
             }
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Query", PropertyAttributes.Sealed), true);
         }
     }
 }

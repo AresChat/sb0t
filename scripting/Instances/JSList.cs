@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.Instances
 {
-    [JSEmbed(Name = "List")]
+    [JSObject(Name = "List")]
     class JSList : ClrFunction
     {
         public JSList(ScriptEngine engine)

@@ -37,17 +37,14 @@ namespace scripting.Objects
 
             foreach (String str in items)
                 this.SetPropertyValue((uint)this.count++, str, throwOnError: true);
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("SpellingSuggestionCollection", PropertyAttributes.Sealed), true);
         }
 
         internal JSSpellingSuggestionCollection(ScriptEngine eng)
             : base(eng)
         {
             this.PopulateFunctions();
-        }
-
-        protected override string InternalClassName
-        {
-            get { return "SpellingSuggestionCollection"; }
         }
 
         [JSProperty(Name = "length")]

@@ -41,11 +41,8 @@ namespace scripting.Objects
             : base(eng)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "UserFont"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("UserFont", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "enabled")]

@@ -37,7 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Jurassic">
-      <HintPath>..\References\Jurassic.dll</HintPath>
+      <HintPath>..\jurassic\Jurassic\bin\Release\Jurassic.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

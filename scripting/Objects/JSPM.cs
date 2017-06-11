@@ -35,11 +35,8 @@ namespace scripting.Objects
         {
             this._PM = pm;
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "PM"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("PM", PropertyAttributes.Sealed), true);
         }
 
         internal JSPM(ScriptEngine eng)

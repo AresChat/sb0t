@@ -41,11 +41,8 @@ namespace scripting.Objects
         {
             this.Item = item;
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Channel"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Channel", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "hashlink")]

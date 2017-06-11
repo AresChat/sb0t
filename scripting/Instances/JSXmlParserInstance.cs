@@ -37,11 +37,8 @@ namespace scripting.Instances
         {
             this.DOC = new XmlDocument();
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "XmlParser"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("XmlParser", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "available")]

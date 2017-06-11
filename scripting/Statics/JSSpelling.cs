@@ -25,18 +25,14 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Spelling")]
+    [JSObject(Name = "Spelling")]
     class JSSpelling : ObjectInstance
     {
         public JSSpelling(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
-
-        protected override string InternalClassName
-        {
-            get { return "Spelling"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Spelling", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "check", IsWritable = false, IsEnumerable = true)]
@@ -62,7 +58,7 @@ namespace scripting.Statics
                 results.AddRange(Server.Spelling.Suggest(word));
             }
 
-            return new Objects.JSSpellingSuggestionCollection(eng.Object.InstancePrototype, results.ToArray(), eng.ScriptName);
+            return new Objects.JSSpellingSuggestionCollection(eng.Object.InstancePrototype, results.ToArray(), eng.UserData as string);
         }
 
         [JSFunction(Name = "confirm", IsWritable = false, IsEnumerable = true)]

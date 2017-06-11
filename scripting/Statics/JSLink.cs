@@ -25,18 +25,15 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Link")]
+    [JSObject(Name = "Link")]
     class JSLink : ObjectInstance
     {
         public JSLink(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Link"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Link", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "leaves", Flags = JSFunctionFlags.HasEngineParameter, IsWritable = false, IsEnumerable = true)]
@@ -45,7 +42,7 @@ namespace scripting.Statics
             if (Server.Link.IsLinked)
                 if (f is UserDefinedFunction)
                 {
-                    JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.ScriptName);
+                    JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.UserData as string);
 
                     if (script != null)
                     {
@@ -67,7 +64,7 @@ namespace scripting.Statics
 
             if (Server.Link.IsLinked && !(a is Undefined))
             {
-                JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.ScriptName);
+                JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.UserData as string);
 
                 if (script != null)
                 {

@@ -49,11 +49,8 @@ namespace scripting.Objects
             : base(eng)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "NodeAttributes"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("NodeAttributes", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "length")]

@@ -39,6 +39,8 @@ namespace scripting.Objects
             : base(eng)
         {
             this.PopulateFunctions();
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("ScribbleImage", PropertyAttributes.Sealed), true);
         }
 
         public byte[] Data { get; set; }
@@ -47,12 +49,7 @@ namespace scripting.Objects
         public String Arg { get; set; }
         public int Height { get; set; }
         public String URL { get; set; }
-
-        protected override string InternalClassName
-        {
-            get { return "ScribbleImage"; }
-        }
-
+        
         [JSProperty(Name = "arg")]
         public String GetArgument
         {
@@ -101,7 +98,7 @@ namespace scripting.Objects
                 if (filename.Length > 1)
                     if (bad_chars.Count<String>(x => filename.Contains(x)) == 0)
                     {
-                        String path = Path.Combine(Server.DataPath, this.Engine.ScriptName, "data");
+                        String path = Path.Combine(Server.DataPath, this.Engine.UserData as string, "data");
 
                         try
                         {

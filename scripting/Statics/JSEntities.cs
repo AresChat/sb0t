@@ -26,18 +26,15 @@ using Jurassic.Library;
 
 namespace scripting.Statics
 {
-    [JSEmbed(Name = "Entities")]
+    [JSObject(Name = "Entities")]
     class JSEntities : ObjectInstance
     {
         public JSEntities(ScriptEngine engine)
             : base(engine)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Entities"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Entities", PropertyAttributes.Sealed), true);
         }
 
         [JSFunction(Name = "encode", IsWritable = false, IsEnumerable = true)]

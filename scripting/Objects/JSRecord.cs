@@ -36,11 +36,8 @@ namespace scripting.Objects
             this.PopulateFunctions();
             this.parent = user;
             this.ScriptName = script;
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Record"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Record", PropertyAttributes.Sealed), true);
         }
 
         internal JSRecord(ScriptEngine eng)

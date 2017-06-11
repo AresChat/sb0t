@@ -39,11 +39,8 @@ namespace scripting.Instances
             : base(prototype)
         {
             this.PopulateFunctions();
-        }
 
-        protected override string InternalClassName
-        {
-            get { return "Scribble"; }
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("Scribble", PropertyAttributes.Sealed), true);
         }
 
         [JSProperty(Name = "src")]
@@ -70,7 +67,7 @@ namespace scripting.Instances
                 {
                     Callback = this.Callback,
                     Data = null,
-                    ScriptName = this.Engine.ScriptName,
+                    ScriptName = this.Engine.UserData as string,
                     Arg = arg,
                     URL = this.Source
                 };
@@ -159,7 +156,7 @@ namespace scripting.Instances
                 if (filename.Length > 1)
                     if (bad_chars.Count<String>(x => filename.Contains(x)) == 0)
                     {
-                        String path = Path.Combine(Server.DataPath, this.Engine.ScriptName, "data", filename);
+                        String path = Path.Combine(Server.DataPath, this.Engine.UserData as string, "data", filename);
 
                         try
                         {

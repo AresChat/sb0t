@@ -76,7 +76,7 @@ namespace scripting
         [JSFunction(Name = "scriptName", Flags = JSFunctionFlags.HasEngineParameter)]
         public static String ScriptName(ScriptEngine eng)
         {
-            return eng.ScriptName;
+            return eng.UserData as string;
         }
 
         [JSFunction(Name = "include", Flags = JSFunctionFlags.HasEngineParameter)]
@@ -90,7 +90,7 @@ namespace scripting
                     if (bad_chars.Count<String>(x => filename.Contains(x)) == 0)
                         try
                         {
-                            String path = Path.Combine(Server.DataPath, eng.ScriptName, filename);
+                            String path = Path.Combine(Server.DataPath, eng.UserData as string, filename);
                             eng.ExecuteFile(path);
                         }
                         catch (Jurassic.JavaScriptException e)
@@ -104,7 +104,7 @@ namespace scripting
         [JSFunction(Name = "includeAll", Flags = JSFunctionFlags.HasEngineParameter)]
         public static void IncludeAll(ScriptEngine eng)
         {
-            DirectoryInfo directory = new DirectoryInfo(Path.Combine(Server.DataPath, eng.ScriptName));
+            DirectoryInfo directory = new DirectoryInfo(Path.Combine(Server.DataPath, eng.UserData as string));
             FileInfo[] files = directory.GetFiles("*.js");
             String main = ScriptName(eng);
 
@@ -137,7 +137,7 @@ namespace scripting
             if (a is Null)
                 return null;
 
-            JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.ScriptName);
+            JSScript script = ScriptManager.Scripts.Find(x => x.ScriptName == eng.UserData as string);
 
             if (script == null)
                 return null;

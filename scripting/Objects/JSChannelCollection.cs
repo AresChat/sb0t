@@ -28,16 +28,13 @@ namespace scripting.Objects
     class JSChannelCollection : ObjectInstance
     {
         private int count { get; set; }
-
-        protected override string InternalClassName
-        {
-            get { return "ChannelCollection"; }
-        }
-
+        
         internal JSChannelCollection(ScriptEngine eng)
             : base(eng)
         {
             this.PopulateFunctions();
+
+            DefineProperty(Engine.Symbol.ToStringTag, new PropertyDescriptor("ChannelCollection", PropertyAttributes.Sealed), true);
         }
 
         public JSChannelCollection(ObjectInstance prototype, JSChannel[] items, String scriptName)

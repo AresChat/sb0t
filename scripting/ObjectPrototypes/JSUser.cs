@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.ObjectPrototypes
 {
-    [JSEmbed(Name = "User")]
+    [JSObject(Name = "User")]
     class JSUser : ClrFunction
     {
         public JSUser(ScriptEngine eng)

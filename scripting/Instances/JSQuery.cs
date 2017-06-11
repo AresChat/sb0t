@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.Instances
 {
-    [JSEmbed(Name = "Query")]
+    [JSObject(Name = "Query")]
     class JSQuery : ClrFunction
     {
         public JSQuery(ScriptEngine engine)

@@ -25,7 +25,7 @@ using Jurassic.Library;
 
 namespace scripting.ObjectPrototypes
 {
-    [JSEmbed(Name = "SpellingSuggestionCollection")]
+    [JSObject(Name = "SpellingSuggestionCollection")]
     class JSSpellingSuggestionCollection : ClrFunction
     {
         public JSSpellingSuggestionCollection(ScriptEngine eng)

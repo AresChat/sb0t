@@ -39,7 +39,7 @@ namespace scripting
         {
             this.ScriptName = name;
             this.JS = new ScriptEngine();
-            this.JS.ScriptName = name;
+            this.JS.UserData = name;
 
             Type[] types = Assembly.GetExecutingAssembly().GetTypes();
 
