@@ -196,6 +196,11 @@ namespace gui
 
         private void ServerStartStop(object sender, RoutedEventArgs e)
         {
+            string info;
+            info = Textbox1.Text;
+
+            core.Max.Getmax(info);
+            
             switch ((String)this.button1.Content)
             {
                 case "Start server":
