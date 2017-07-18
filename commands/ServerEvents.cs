@@ -442,8 +442,7 @@ namespace commands
             admin.Print("/info");
             admin.Print("/report <report>");
             admin.Print("/reports");
-            admin.Print("/clearreports");
-
+            
             if (admin.Level > ILevel.Regular || Settings.General)
             {
                 admin.Print("/vroom <number>");
@@ -660,8 +659,10 @@ namespace commands
                 admin.Print("/listquarantined");
             if (admin.Level >= Server.GetLevel("unquarantine"))
                 admin.Print("/unquarantine <id>");
-            if (admin.Level >= ILevel.Moderator)
+            if (admin.Owner)
                 admin.Print("/screen <Name of image>");
+            if (admin.Level >= ILevel.Moderator)
+                admin.Print("/clearreports");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type)
