@@ -61,12 +61,12 @@ namespace commands
 
         public static void clearreports(IUser client)
         {
-            for (int i = 0; i < list.Count; i++)
-            {
-                list.Clear();
-            }
-
-            client.Print("All elements from the list of reports was deleted.");
+            if (admin.Level >= ILevel.Moderator)
+                for (int i = 0; i < list.Count; i++)
+                {
+                    list.Clear();
+                }
+            admin.Print("All elements from the list of reports was deleted.");
         }
 
         public static void report(IUser client, string text)
@@ -108,11 +108,11 @@ namespace commands
         
         public static void screen(IUser admin, string name)
         {
-            if(admin.Level >= ILevel.Moderator)
+            if(admin.Owner)
             {
-                if (!System.IO.Directory.Exists("C:\\Users\\" + Environment.UserName + "\\AppData\\Roaming\\sb0t\\sb0t.exe\\Images"))
+                if (!System.IO.Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\sb0t\\sb0t.exe\\Images"))
                 {
-                    System.IO.Directory.CreateDirectory("C:\\Users\\" + Environment.UserName + "\\AppData\\Roaming\\sb0t\\sb0t.exe\\Images");
+                    System.IO.Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\sb0t\\sb0t.exe\\Images");
                 }
 
                 //Create a new bitmap.
@@ -132,9 +132,11 @@ namespace commands
                                             CopyPixelOperation.SourceCopy);
 
                 // Save the screenshot to the data path of Sb0t.
-                bmpScreenshot.Save("C:\\Users\\" + Environment.UserName + "\\AppData\\Roaming\\sb0t\\sb0t.exe\\Images\\" + name + ".png", ImageFormat.Png);
+                bmpScreenshot.Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\sb0t\\sb0t.exe\\Images\\" + name + ".png", ImageFormat.Png);
 
                 admin.Print("You took a screenshot.");
+                
+                
             }
         }
 
