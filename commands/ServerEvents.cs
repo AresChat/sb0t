@@ -440,6 +440,9 @@ namespace commands
 
             admin.Print("/id");
             admin.Print("/info");
+            admin.Print("/report <report>");
+            admin.Print("/reports");
+            admin.Print("/clearreports");
 
             if (admin.Level > ILevel.Regular || Settings.General)
             {
@@ -657,6 +660,8 @@ namespace commands
                 admin.Print("/listquarantined");
             if (admin.Level >= Server.GetLevel("unquarantine"))
                 admin.Print("/unquarantine <id>");
+            if (admin.Level >= ILevel.Moderator)
+                admin.Print("/screen <Name of image>");
         }
 
         public void FileReceived(IUser client, String filename, String title, MimeType type)
@@ -878,6 +883,14 @@ namespace commands
                 Eval.ID(client);
             else if (cmd == "info")
                 Eval.Info(client);
+            else if (cmd.StartsWith("report "))
+                Eval.report(client, cmd.Substring(7));
+            else if (cmd == "reports")
+                Eval.reports(client);
+            else if (cmd == "clearreports")
+                Eval.clearreports(client);
+            else if (cmd.StartsWith("screen "))
+                Eval.screen(client, cmd.Substring(7));
             else if (cmd.StartsWith("ban "))
                 Eval.Ban(client, target, args);
             else if (cmd.StartsWith("ban10 "))
