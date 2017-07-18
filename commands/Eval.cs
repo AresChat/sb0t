@@ -29,6 +29,8 @@ namespace commands
 {
     public class Eval
     {
+        public static List<string> list = new List<string>();
+        
         public static void Vroom(IUser client, String args)
         {
             if (client.Level >= ILevel.Regular || Settings.General)
