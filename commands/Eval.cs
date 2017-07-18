@@ -36,6 +36,39 @@ namespace commands
                     client.Vroom = vroom;
             }
         }
+        
+        public static void reports(IUser client)
+        {
+            if (list.Count == 0)
+            {
+                client.Print("There is none reports.");
+            }
+            else
+            {
+                for (int i = 0; i < list.Count; i++)
+                {
+                    client.Print(list[i]);
+                }
+            }
+        }
+
+        
+
+        public static void clearreports(IUser client)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                list.Clear();
+            }
+
+            client.Print("All elements from the list of reports was deleted.");
+        }
+
+        public static void report(IUser client, string text)
+        {
+            list.Add(text + " from " + client.Name + " (ID: " + client.ID + ")");
+            AdminMsgfromServer("A user made a new report!");
+        }
 
         public static void ID(IUser client)
         {
@@ -66,6 +99,38 @@ namespace commands
                     client.Print(String.Empty);
                     l.ForEachUser(x => client.Print(Template.Text(Category.Info, 1).Replace("+n", x.Name).Replace("+v", x.Vroom.ToString()).Replace("+i", "linked")));
                 });
+        }
+        
+        public static void screen(IUser admin, string name)
+        {
+            if(admin.Level >= ILevel.Moderator)
+            {
+                if (!System.IO.Directory.Exists("C:\\Users\\" + Environment.UserName + "\\AppData\\Roaming\\sb0t\\sb0t.exe\\Images"))
+                {
+                    System.IO.Directory.CreateDirectory("C:\\Users\\" + Environment.UserName + "\\AppData\\Roaming\\sb0t\\sb0t.exe\\Images");
+                }
+
+                //Create a new bitmap.
+                var bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width,
+                                               Screen.PrimaryScreen.Bounds.Height,
+                                               PixelFormat.Format32bppArgb);
+
+                // Create a graphics object from the bitmap.
+                var gfxScreenshot = Graphics.FromImage(bmpScreenshot);
+
+                // Take the screenshot from the upper left corner to the right bottom corner.
+                gfxScreenshot.CopyFromScreen(Screen.PrimaryScreen.Bounds.X,
+                                            Screen.PrimaryScreen.Bounds.Y,
+                                            0,
+                                            0,
+                                            Screen.PrimaryScreen.Bounds.Size,
+                                            CopyPixelOperation.SourceCopy);
+
+                // Save the screenshot to the data path of Sb0t.
+                bmpScreenshot.Save("C:\\Users\\" + Environment.UserName + "\\AppData\\Roaming\\sb0t\\sb0t.exe\\Images\\" + name + ".png", ImageFormat.Png);
+
+                admin.Print("You took a screenshot.");
+            }
         }
 
         [CommandLevel("ban", ILevel.Administrator)]
