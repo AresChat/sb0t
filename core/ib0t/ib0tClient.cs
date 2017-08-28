@@ -34,6 +34,7 @@ namespace core.ib0t
         public bool SupportsHTML { get { return false; } }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
+        public IPAddress OriginalIP { get; set; }
         public String DNS { get; set; }
         public Guid Guid { get; set; }
         public ushort FileCount { get; set; }

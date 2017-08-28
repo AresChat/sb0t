@@ -34,6 +34,7 @@ namespace core
         public bool IsCbot { get; set; }
         public ushort ID { get; private set; }
         public IPAddress ExternalIP { get; set; }
+        public IPAddress OriginalIP { get; set; }
         public String DNS { get; set; }
         public bool LoggedIn { get; set; }
         public ulong Time { get; set; }

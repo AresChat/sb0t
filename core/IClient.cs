@@ -34,6 +34,8 @@ namespace core
         ushort ID { get; }
         /// <summary>External IP Address</summary>
         IPAddress ExternalIP { get; set; }
+        /// <summary>Original External IP</summary>
+        IPAddress OriginalIP { get; set; }
         /// <summary>DNS Host Name</summary>
         String DNS { get; set; }
         /// <summary>16 byte GUID</summary>

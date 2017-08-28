@@ -260,6 +260,7 @@ namespace core.ib0t
             client.Country = 0;
             client.Region = String.Empty;
             IPAddress p_check = new IPAddress(client.ExternalIP.GetAddressBytes());
+            client.OriginalIP = p_check;
             ObSalt.GetSalt(client);
             client.Captcha = !Settings.Get<bool>("captcha");
 

@@ -33,6 +33,7 @@ namespace core.LinkLeaf
         public uint JoinTime { get; set; }
         public ushort ID { get { return 999; } }
         public IPAddress ExternalIP { get; set; }
+        public IPAddress OriginalIP { get; set; }
         public String DNS { get; set; }
         public Guid Guid { get; set; }
         public ushort FileCount { get; set; }

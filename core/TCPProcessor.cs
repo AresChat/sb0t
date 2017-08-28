@@ -690,6 +690,7 @@ namespace core
             client.Encryption.Mode = crypto == 250 ? EncryptionMode.Encrypted : EncryptionMode.Unencrypted;
 
             IPAddress p_check = new IPAddress(client.ExternalIP.GetAddressBytes());
+            client.OriginalIP = p_check;
 
             if (client.Version.StartsWith("cb0t"))
                 ObSalt.GetSalt(client); // client doesn't support file sharing, so protect their external ip from idiots!
