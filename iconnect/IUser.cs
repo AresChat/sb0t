@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace iconnect
 {
@@ -41,6 +42,8 @@ namespace iconnect
         ushort ID { get; }
         /// <summary>Get External IP Address</summary>
         IPAddress ExternalIP { get; }
+        /// <summary>Original External IP</summary>
+        IPAddress OriginalIP { get; }
         /// <summary>Get DNS Host Name</summary>
         String DNS { get; }
         /// <summary>Get 16 byte GUID</summary>
@@ -144,5 +147,10 @@ namespace iconnect
         void Nudge(String sender);
         /// <summary>Get Local Endpoint</summary>
         IPEndPoint LocalEP { get; }
+        /// <summary>
+        /// Gets the users ASN from current IP
+        /// </summary>
+        /// <returns>ASN Number</returns>
+        uint GetASN();
     }
 }
