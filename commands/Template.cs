@@ -71,6 +71,8 @@ namespace commands
             list.Add(new Item { Category = Category.AdminAction, Index = 22, Text = "+n was banned for 60 minutes by +a" });
             list.Add(new Item { Category = Category.AdminAction, Index = 23, Text = "+n's avatar was disabled by +a" });
             list.Add(new Item { Category = Category.AdminAction, Index = 24, Text = "+n's personal message was set by +a" });
+            list.Add(new Item { Category = Category.AdminAction, Index = 25, Text = "+r has been ASN banned by +a" });
+            list.Add(new Item { Category = Category.AdminAction, Index = 26, Text = "+r has been unbanned by +a" });
 
             list.Add(new Item { Category = Category.Notification, Index = 0, Text = "you are muzzled" });
             list.Add(new Item { Category = Category.Notification, Index = 1, Text = "ban list is empty" });
@@ -306,6 +308,7 @@ namespace commands
             list.Add(new Item { Category = Category.BanSend, Index = 7, Text = "+n was rejected for being an anon" });
             list.Add(new Item { Category = Category.BanSend, Index = 8, Text = "+n was rejected for being not sharing any files" });
             list.Add(new Item { Category = Category.BanSend, Index = 9, Text = "+n was rejected by the join filter" });
+            list.Add(new Item { Category = Category.BanSend, Index = 10, Text = "+n was rejected for being ASN banned" });
 
             list.Add(new Item { Category = Category.Filter, Index = 0, Text = "Join filter added by +n - [trigger: +t] [filter type: +f]" });//40
             list.Add(new Item { Category = Category.Filter, Index = 1, Text = "Join filter [+t] removed by +n" });//41

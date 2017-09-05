@@ -467,6 +467,76 @@ namespace commands
                 RangeBans.List(client);
         }
 
+        [CommandLevel("asnban", ILevel.Administrator)]
+        public static void AsnBan(IUser client, IUser target, string args)
+        {
+            if(client.Level >= Server.GetLevel("asnban"))
+            {
+                uint asn = 0;
+
+                if (target == null)
+                {
+
+                    //Check if ASN is valid, starts with AS then rest is a postive number
+                    if (!args.StartsWith("AS"))
+                        return;
+
+                    string str = args.Substring(2);
+                    
+
+                    if (!uint.TryParse(str, out asn))
+                        return;
+                }
+                else
+                {
+                    asn = target.GetASN();
+                }
+
+                AsnBans.Add(asn);
+                Server.Print(Template.Text(Category.AdminAction, 25).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : client.Name).Replace("+r", $"AS{asn}"), true);
+            }
+        }
+
+        [CommandLevel("asnunban", ILevel.Administrator)]
+        public static void AsnUnban(IUser client, string args)
+        {
+            if (client.Level >= Server.GetLevel("asnunban"))
+            {
+                uint asn = 0;
+                int index = -1;
+
+                if (args.StartsWith("AS"))
+                {
+                    string str = args.Substring(2);
+
+
+                    if (!uint.TryParse(str, out asn))
+                        return;
+
+                    AsnBans.RemoveAsn(asn);
+                }
+                else
+                {
+                    if (!int.TryParse(args, out index))
+                        return;
+
+                    if (index < 0)
+                        return;
+
+                    asn = AsnBans.RemoveIndex(index);
+                }
+
+                Server.Print(Template.Text(Category.AdminAction, 26).Replace("+a", Settings.Stealth ? Server.Chatroom.Name : client.Name).Replace("+r", $"AS{asn}"), true);
+            }
+        }
+
+        [CommandLevel("listasnbans", ILevel.Administrator)]
+        public static void ListAsnBans(IUser client)
+        {
+            if (client.Level >= Server.GetLevel("listasnbans"))
+                AsnBans.List(client);
+        }
+
         [CommandLevel("cbans", ILevel.Host)]
         public static void Cbans(IUser client)
         {

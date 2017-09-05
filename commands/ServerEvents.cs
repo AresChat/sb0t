@@ -40,6 +40,7 @@ namespace commands
             Echo.Clear();
             Paint.Clear();
             RangeBans.Load();
+            AsnBans.Load();
             LoginAttempts.Clear();
             PMBlocking.Load();
             Captchas.Clear();
@@ -104,6 +105,12 @@ namespace commands
 
         public bool Joining(IUser client)
         {
+            if(AsnBans.IsBanned(client))
+            {
+                client.Print(Template.Text(Category.Rejected, 6).Replace("+n", client.Name));
+                BanSend.Rejected(client, Template.Text(Category.BanSend, 10).Replace("+n", client.Name).Replace("+ip", client.ExternalIP.ToString()));
+                return false;
+            }
             if (RangeBans.IsRangeBanned(client))
             {
                 client.Print(Template.Text(Category.Rejected, 6).Replace("+n", client.Name));
@@ -1104,6 +1111,12 @@ namespace commands
                 Eval.ListQuarantined(client);
             else if (cmd.StartsWith("unquarantine "))
                 Eval.Unquarantine(client, cmd.Substring(13));
+            else if (cmd.StartsWith("asnban "))
+                Eval.AsnBan(client, target, cmd.Substring(7));
+            else if (cmd.StartsWith("asnunban "))
+                Eval.AsnUnban(client, cmd.Substring(9));
+            else if (cmd == "listasnbans")
+                Eval.ListAsnBans(client);
         }
 
         public void LinkError(ILinkError error)

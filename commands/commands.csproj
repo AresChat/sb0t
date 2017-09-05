@@ -84,6 +84,7 @@
     <Compile Include="Paint.cs" />
     <Compile Include="PMBlocking.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AsnBans.cs" />
     <Compile Include="RangeBans.cs" />
     <Compile Include="RoomInfo.cs" />
     <Compile Include="Server.cs" />

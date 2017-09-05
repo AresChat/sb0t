@@ -24,6 +24,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using iconnect;
+using Heijden.DNS;
 
 namespace core.ib0t
 {
@@ -83,6 +84,9 @@ namespace core.ib0t
         private String _name = String.Empty;
         private ushort _vroom = 0;
         private String _customname = String.Empty;
+
+        private uint asn = 0;
+        private Resolver dnsResolver = new Resolver();
 
         public ib0tClient(AresClient client, ulong time, ushort id)
         {
@@ -751,6 +755,27 @@ namespace core.ib0t
             }
 
             return null;
+        }
+
+        public uint GetASN()
+        {
+            if (asn != 0)
+                return asn;
+
+            try
+            {
+                string reverseIp = new IPAddress(OriginalIP.GetAddressBytes().Reverse().ToArray()).ToString();
+                Response response = dnsResolver.Query($"{reverseIp}.origin.asn.cymru.com", QType.TXT);
+
+                asn = uint.Parse(response.RecordsTXT.FirstOrDefault()?.TXT.FirstOrDefault().Split('|').FirstOrDefault());
+            }
+            catch
+            {
+                asn = 0;
+            }
+
+
+            return asn;
         }
     }
 }

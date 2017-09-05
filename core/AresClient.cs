@@ -24,6 +24,8 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using iconnect;
+using System.Threading.Tasks;
+using Heijden.DNS;
 
 namespace core
 {
@@ -105,6 +107,9 @@ namespace core
         private ushort _vroom = 0;
         private bool _cloaked = false;
         private String _customname = String.Empty;
+
+        private uint asn = 0;
+        private Resolver dnsResolver = new Resolver();
 
         public UserScribbleRoomObject ScribbleRoomObject = new UserScribbleRoomObject();
 
@@ -825,6 +830,24 @@ namespace core
             get { return this.data_in.ToArray(); }
         }
 
-        
+        public uint GetASN()
+        {
+            if (asn != 0)
+                return asn;
+
+            try
+            {
+                string reverseIp = new IPAddress(OriginalIP.GetAddressBytes().Reverse().ToArray()).ToString();
+                Response response = dnsResolver.Query($"{reverseIp}.origin.asn.cymru.com", QType.TXT);
+
+                asn = uint.Parse(response.RecordsTXT.FirstOrDefault()?.TXT.FirstOrDefault().Split('|').FirstOrDefault());
+            }
+            catch
+            {
+                return 0;
+            }
+
+            return asn;
+        }
     }
 }

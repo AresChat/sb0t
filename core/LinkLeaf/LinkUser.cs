@@ -259,6 +259,12 @@ namespace core.LinkLeaf
                         this, "url", address, text));
         }
 
+        // Not implementing as linking will be removed soon.
+        public uint GetASN()
+        {
+            return 0;
+        }
+
         public LinkUser(uint ident)
         {
             this._avatar = new byte[] { };

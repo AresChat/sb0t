@@ -504,5 +504,11 @@ namespace scripting.Objects
                 scr.SendScribble(a.ToString(), this.parent);
             }
         }
+
+        [JSFunction(Name = "getASN", IsWritable = false, IsEnumerable = true)]
+        public uint GetASN()
+        {
+            return parent.GetASN();
+        }
     }
 }
