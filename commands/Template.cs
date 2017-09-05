@@ -276,6 +276,7 @@ namespace commands
             list.Add(new Item { Category = Category.Whois, Index = 7, Text = "ID: +n" });
             list.Add(new Item { Category = Category.Whois, Index = 8, Text = "Linked: +n" });
             list.Add(new Item { Category = Category.Whois, Index = 9, Text = "Registered: +n" });
+            list.Add(new Item { Category = Category.Whois, Index = 10, Text = "ASN: +n" });
 
             list.Add(new Item { Category = Category.Stats, Index = 0, Text = "Stats for +n" });
             list.Add(new Item { Category = Category.Stats, Index = 1, Text = "Language: +n" });

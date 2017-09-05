@@ -977,6 +977,7 @@ namespace commands
                 {
                     admin.Print(Template.Text(Category.Whois, 0).Replace("+n", target.Name));
                     admin.Print(Template.Text(Category.Whois, 1).Replace("+n", target.OrgName));
+                    admin.Print(Template.Text(Category.Whois, 10).Replace("+n", $"AS{target.GetASN()}"));
                     admin.Print(Template.Text(Category.Whois, 2).Replace("+n", target.ExternalIP.ToString()));
                     admin.Print(Template.Text(Category.Whois, 3).Replace("+n", target.LocalIP.ToString()));
                     admin.Print(Template.Text(Category.Whois, 4).Replace("+n", target.DataPort.ToString()));
