@@ -122,6 +122,14 @@ namespace scripting
                             if (script != null)
                                 obj.Callback.Call(obj, obj.Data != null);
                         }
+                        else if (item is Objects.JSProxyCheckResult)
+                        {
+                            Objects.JSProxyCheckResult obj = item as Objects.JSProxyCheckResult;
+                            JSScript script = Scripts.Find(x => x.ScriptName == item.ScriptName);
+
+                            if (script != null)
+                                obj.Callback.Call(obj, obj.User, obj);
+                        }
                     }
                     catch { }
                 }
