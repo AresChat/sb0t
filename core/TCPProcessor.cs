@@ -730,7 +730,7 @@ namespace core
                     x.OrgName == client.OrgName) && x.ID != client.ID && x.LoggedIn);
 
             if (hijack != null)
-                if (hijack.ExternalIP.Equals(client.ExternalIP))
+                if (hijack.OriginalIP.Equals(client.OriginalIP))  // Possible issue with using masked ip lets use orginal instead
                 {
                     if (!hijack.WebClient)
                         ((AresClient)hijack).Disconnect(true);

@@ -131,7 +131,8 @@ namespace core
             if (!Settings.Get<bool>("local_host"))
                 return false;
 
-            byte[] buf = client.ExternalIP.GetAddressBytes();
+            byte[] buf = client.OriginalIP.GetAddressBytes(); // Masked or not masked does not matter as long as first 2 octets are not masked.
+                                                              // Changed to use original IP though to prevent any possible issues in future.
 
             switch (buf[0])
             {
@@ -141,8 +142,11 @@ namespace core
                 case 127:
                     return true;
 
-                case 10:
-                    return buf[1] == 0 || buf[1] == 1;
+                case 10:  // This should be a /8 subnet not a /16
+                    return true;  
+
+                case 172: // Not as common of a private network range but is defined in the RFC as on.
+                    return (buf[1] >= 16 && buf[1] <= 31);
             }
 
             buf = Settings.Get<byte[]>("ip");
