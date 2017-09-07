@@ -120,6 +120,7 @@ namespace commands
                                 LogSend.Log(LOGFILE, $"{client.Name} muzzled for typing {item.Trigger}");
 
                                 client.Muzzled = true;
+                                Muzzles.AddMuzzle(client); // Adding this fixes bug where they can rejoin to remove muzzle
                                 return String.Empty;
                             }
                             break;
