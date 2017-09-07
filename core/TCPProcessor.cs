@@ -707,8 +707,10 @@ namespace core
                 client.SendPacket(TCPOutbound.CryptoKey(client));
             }
 
-            if ((UserPool.AUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count +
-                 UserPool.WUsers.FindAll(x => x.ExternalIP.Equals(client.ExternalIP)).Count) > 5)
+            // Use Original IP here
+            // Fixes issue #30 https://github.com/AresChat/sb0t/issues/30
+            if ((UserPool.AUsers.FindAll(x => x.OriginalIP.Equals(client.OriginalIP)).Count +
+                 UserPool.WUsers.FindAll(x => x.OriginalIP.Equals(client.OriginalIP)).Count) > 5)
             {
                 Events.Rejected(client, RejectedMsg.TooManyClients);
                 throw new Exception("too many clients from this ip");
