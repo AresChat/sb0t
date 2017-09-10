@@ -1200,7 +1200,7 @@ namespace commands
         public static void Whisper(IUser client, IUser target, String text)
         {
             if (client.Level > ILevel.Regular || Settings.General)
-                if (target != null && !target.IgnoreList.Contains(client.Name))
+                if (target != null && !target.IgnoreList.Contains(client.Name) && target.Vroom == client.Vroom)
                 {
                     client.Print(Template.Text(Category.Messaging, 2).Replace("+n", target.Name).Replace("+t", text));
                     target.Print(Template.Text(Category.Messaging, 3).Replace("+n", client.Name).Replace("+t", text));
