@@ -502,6 +502,12 @@ namespace commands
                 admin.Print("/rangeunban <ip range>");
             if (admin.Level >= Server.GetLevel("listrangebans"))
                 admin.Print("/listrangebans");
+            if (admin.Level >= Server.GetLevel("rangeban"))
+                admin.Print("/asnban <asn>");
+            if (admin.Level >= Server.GetLevel("rangeunban"))
+                admin.Print("/asnunban <asn | asnban id>");
+            if (admin.Level >= Server.GetLevel("listrangebans"))
+                admin.Print("/listasnbans");
             if (admin.Level >= Server.GetLevel("cbans"))
                 admin.Print("/cbans");
             if (admin.Level >= Server.GetLevel("adminmsg"))
