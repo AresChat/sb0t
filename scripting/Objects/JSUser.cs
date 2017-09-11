@@ -183,6 +183,12 @@ namespace scripting.Objects
             set { }
         }
 
+        // Adding unexposed original ip property
+        public string OriginalIP
+        {
+            get { return this.parent.OriginalIP.ToString(); }
+        }
+
         [JSProperty(Name = "dns")]
         public String DNS
         {

@@ -95,7 +95,7 @@ namespace scripting
             events.AppendLine("function onRegistering(userobj) { return true; }");
             events.AppendLine("function onRegistered(userobj) { }");
             events.AppendLine("function onUnregistered(userobj) { }");
-            events.AppendLine("function onProxyDetected(userobj, reply) { return true; }");
+            events.AppendLine("function onProxyDetected(userobj, reply) { return false; }"); // false by default instead of true (the built in proxy check kinda...is bad)
             events.AppendLine("function onLogout(userobj) { }");
             events.AppendLine("function onIdled(userobj) { }");
             events.AppendLine("function onUnidled(userobj, seconds) { }");

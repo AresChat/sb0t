@@ -996,21 +996,26 @@ namespace scripting
 
                 foreach (JSScript s in scripts)
                 {
-                    Objects.JSUser u = s.GetUser(client);
+                    // What to say here....
+                    // Trying to find a user in the local_users collection 
+                    // without it being added from when AFTER onJoinCheck fires
+                    // right before the onJoin event fires.
+                    // when this event fires before onJoinCheck...
+                    // would not work...ever
+                    // Fixed
+                    try
+                    {
+                        Objects.JSUser u = new Objects.JSUser(s.JS.Object.InstancePrototype, client, s.ScriptName);
+                        bool result = s.JS.CallGlobalFunction<bool>("onProxyDetected", u);
 
-                    if (u != null)
-                        try
-                        {
-                            bool result = s.JS.CallGlobalFunction<bool>("onProxyDetected", u);
-
-                            if (!result)
-                                return false;
-                        }
-                        catch (Jurassic.JavaScriptException e)
-                        {
-                            ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
-                        }
-                        catch { }
+                        if (!result)
+                            return false;
+                    }
+                    catch (Jurassic.JavaScriptException e)
+                    {
+                        ErrorDispatcher.SendError(s.ScriptName, e.Message, e.LineNumber);
+                    }
+                    catch { }
                 }
             }
 

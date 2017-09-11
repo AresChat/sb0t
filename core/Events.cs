@@ -964,7 +964,8 @@ namespace core
             if (DefaultCommands)
                 result = cmds.ProxyDetected(client != null ? client.IUser : null);
 
-            js.ProxyDetected(client != null ? client.IUser : null);
+            // Let us actually store the result
+            result = js.ProxyDetected(client != null ? client.IUser : null);
 
             if (result)
                 ExtensionManager.Plugins.ForEach(x =>
