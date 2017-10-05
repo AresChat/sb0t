@@ -121,6 +121,7 @@ namespace core
             this.Sock.Blocking = false;
             this.Time = time;
             this.SocketAddr = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
+            this.OriginalIP = SocketAddr;
             this.ExternalIP = ((IPEndPoint)this.Sock.RemoteEndPoint).Address;
             this.LocalEP = (IPEndPoint)this.Sock.LocalEndPoint;
             this.Cookie = AccountManager.NextCookie;

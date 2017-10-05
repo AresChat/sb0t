@@ -48,6 +48,8 @@ namespace core
         private Thread thread;
         private bool terminate = false;
 
+        private Dictionary<string, (ulong time, ulong count)> _connectFlood;
+
         public bool Running { get; private set; }
 
         public iconnect.ICommandDefault[] DefaultCommandLevels
@@ -70,6 +72,7 @@ namespace core
             Settings.Reset();
             Time.Reset();
             this.tcp = new TcpListenerEx(new IPEndPoint(IPAddress.Any, Settings.Port));
+            _connectFlood = new Dictionary<string, (ulong time, ulong count)>();
 
             try
             {
@@ -163,6 +166,7 @@ namespace core
             ulong channel_push_timer = (Time.Now - 1200000);
             ulong reset_floods_timer = Time.Now;
             ulong room_search_timer = (Time.Now - 1800000);
+            ulong connect_flood_expire = Time.Now + 300000;
             bool can_web_chat = Settings.Get<bool>("enabled", "web");
             core.LinkHub.LinkMode link_mode = (core.LinkHub.LinkMode) Settings.Get<int>("link_mode");
             Linker = new LinkLeaf.LinkClient();
@@ -201,6 +205,12 @@ namespace core
                     reset_floods_timer = time;
                     FloodControl.Reset();
                     Proxies.Updater(Helpers.UnixTime);
+
+                    foreach(var item in _connectFlood.Where(kvp => kvp.Value.time < (time + connect_flood_expire)).ToList())
+                    {
+                        _connectFlood.Remove(item.Key);
+                    }
+
                 }
 
                 this.udp.ServiceUdp(time);
@@ -236,20 +246,33 @@ namespace core
 
         private void CheckTCPListener(ulong time)
         {
-            if (this.tcp.Active)
+            if (!this.tcp.Active)
+                return;
+
+            for (int i = 0; i < 5; i++)
             {
-                for(int i = 0; i < 5; i++)
+                if (!this.tcp.Pending())
+                    return;
+
+                Socket sock = this.tcp.AcceptSocket();
+
+                string ipAddress = ((IPEndPoint)sock.RemoteEndPoint).Address.ToString();
+                if (_connectFlood.ContainsKey(ipAddress))
                 {
-                    if(!this.tcp.Pending())
+                    if (_connectFlood[ipAddress].count >= 3)
                     {
-                        break;
+                        var item = _connectFlood[ipAddress];
+                        item.time = time;
+                        _connectFlood[ipAddress] = item;
+
+
+                        sock.Dispose();
+                        return;
                     }
-
-                    Socket sock = this.tcp.AcceptSocket();
-
-                    if (!this.udp.IsTcpChecker(sock))
-                        UserPool.CreateAresClient(sock, time);
                 }
+
+                if (!this.udp.IsTcpChecker(sock))
+                    UserPool.CreateAresClient(sock, time);
             }
         }
 
@@ -392,6 +415,18 @@ namespace core
 
                     if (client.SocketConnected)
                         client.EnforceRules(time);
+
+                    if (client.SocketConnected)
+                        continue;
+
+                    string ipAddress = client.SocketAddr.ToString();
+                    if (_connectFlood.ContainsKey(ipAddress))
+                    {
+                        var item = _connectFlood[ipAddress];
+                        _connectFlood[ipAddress] = (time, item.count + 1);
+                    }
+                    else
+                        _connectFlood[ipAddress] = (time, 1);
                 }
 
             UserPool.AUsers.ForEachWhere(x => x.Disconnect(), x => !x.SocketConnected);
