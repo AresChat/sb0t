@@ -34,5 +34,7 @@ namespace iconnect
         void Remove(String text);
         /// <summary>Prevent PM from being sent</summary>
         bool Cancel { get; set; }
+        /// <summary>True if pm is custom data scribble</summary>
+        bool IsScribble { get; set; }
     }
 }

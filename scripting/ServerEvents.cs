@@ -68,7 +68,7 @@ namespace scripting
             }
         }
 
-        public bool CanScribble(IUser client)
+        public bool CanScribble(IUser client, bool isPM = false)
         {
             if (this.CanScript)
             {
@@ -78,8 +78,9 @@ namespace scripting
                 {
                     try
                     {
+                        // Adding the isPM shouldnt break any existing scripts due to how javascript works
                         Objects.JSUser u = new Objects.JSUser(s.JS.Object.InstancePrototype, client, s.ScriptName);
-                        bool result = s.JS.CallGlobalFunction<bool>("onScribbleCheck", u);
+                        bool result = s.JS.CallGlobalFunction<bool>("onScribbleCheck", u, isPM);
 
                         if (!result)
                             return false;

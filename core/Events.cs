@@ -109,14 +109,17 @@ namespace core
             });
         }
 
-        public static bool CanScribble(IClient client)
+        public static bool CanScribble(IClient client, bool isPM = false)
         {
-            if(client.Muzzled)
-            {
-                client.Print("You are muzzled.");
+            // Refactored because a null check after already accessing the possible null variable doesnt make sense
+            if (client == null)
                 return false;
-            }
-            return js.CanScribble(client != null ? client.IUser : null);
+
+            if (!client.Muzzled)
+                return js.CanScribble(client.IUser, isPM);
+
+            client.Print("You are muzzled.");
+            return false;
         }
 
         public static bool Joining(IClient client)
@@ -394,13 +397,12 @@ namespace core
 
         public static void PrivateSending(IClient client, IClient target, PMEventArgs e)
         {
-            PrivateMsg pm = new PrivateMsg(e.Text);
+            PrivateMsg pm = new PrivateMsg(e.Text) { IsScribble = e.IsScribble };
 
             if (DefaultCommands)
                 cmds.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
-            if (!String.IsNullOrEmpty(pm.Text))
-                js.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
+            js.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
             if (!String.IsNullOrEmpty(pm.Text))
                 ExtensionManager.Plugins.ForEach(x =>

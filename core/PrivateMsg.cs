@@ -50,5 +50,6 @@ namespace core
         }
 
         public bool Cancel { get; set; }
+        public bool IsScribble { get; set; } = false;
     }
 }

@@ -45,6 +45,12 @@ namespace scripting.Objects
             this.PopulateFunctions();
         }
 
+        [JSProperty(Name = "isScribble", IsEnumerable = true)]
+        public bool IsScribble
+        {
+            get => _PM.IsScribble;
+            set => _PM.IsScribble = value;
+        }
         [JSFunction(Name = "contains", IsWritable = false, IsEnumerable = true)]
         public bool Contains(object a)
         {

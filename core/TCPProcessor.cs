@@ -272,7 +272,7 @@ namespace core
                             return;
                         }
 
-                        PMEventArgs args = new PMEventArgs { Cancel = false, Text = "          " };
+                        PMEventArgs args = new PMEventArgs {Cancel = false, Text = "          "};
                         Events.PrivateSending(client, target, args);
 
                         if (!args.Cancel && client.SocketConnected)
@@ -282,16 +282,31 @@ namespace core
                         }
                     }
                 }
-                else client.SendPacket(TCPOutbound.OfflineUser(client, name));
+                else
+                    client.SendPacket(TCPOutbound.OfflineUser(client, name));
+            }
+            else if (ident == "cb0t_scribble_once" && target != null)
+            {
+                if (!Events.CanPrivateMessage(client, target) || !Events.CanScribble(client, true))
+                    return;
+
+                PMEventArgs args = new PMEventArgs { Cancel = false, Text = "", IsScribble = true };
+                Events.PrivateSending(client, target, args);
+
+                if (args.Cancel || !client.SocketConnected)
+                    return;
+
+                if (target.IgnoreList.Contains(client.Name))
+                    return;
+
+                target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
+                Events.PrivateSent(client, target, args.Text);
             }
             else
             {
-                if (target != null)
+                
+                if(target != null)
                 {
-                    if(ident == "cb0t_scribble_once" && !Events.CanPrivateMessage(client, target))
-                    {
-                        return;
-                    }
                     if (!target.IgnoreList.Contains(client.Name))
                         target.SendPacket(TCPOutbound.CustomData(target, client.Name, ident, data));
                 }
@@ -301,7 +316,9 @@ namespace core
 
                     if (linked != null)
                         ServerCore.Linker.SendPacket(LinkLeaf.LeafOutbound.LeafCustomDataTo(ServerCore.Linker,
-                            linked.IUser.Link.Ident, client.Name, linked.Name, ident, data));
+                                                                                            linked.IUser.Link.Ident,
+                                                                                            client.Name, linked.Name,
+                                                                                            ident, data));
                 }
             }
         }

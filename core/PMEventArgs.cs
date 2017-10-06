@@ -27,5 +27,7 @@ namespace core
     {
         public String Text { get; set; }
         public bool Cancel { get; set; }
+
+        public bool IsScribble { get; set; } = false;
     }
 }
