@@ -65,6 +65,8 @@ namespace scripting.Instances
             {
                 var client = new HttpClient();
 
+                client.DefaultRequestHeaders.Add("User-Agent", $"sb0t v{Server.Chatroom.Version}");
+
                 var pairs = new Dictionary<string, string>
                 {
                     { "tag",  $"({Server.Chatroom.Name}) - ({user.Name}) - ({user.Guid}):"}
