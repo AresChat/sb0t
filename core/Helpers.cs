@@ -177,13 +177,17 @@ namespace core
             if (client.OrgName == Settings.Get<String>("bot"))
                 client.OrgName = String.Empty;
 
-            client.OrgName = client.OrgName.Trim();
+            
 
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("_"), " ", RegexOptions.IgnoreCase);
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("\""), String.Empty, RegexOptions.IgnoreCase);
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("/"), String.Empty, RegexOptions.IgnoreCase);
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("\\"), String.Empty, RegexOptions.IgnoreCase);
             client.OrgName = Regex.Replace(client.OrgName, Regex.Escape("www."), String.Empty, RegexOptions.IgnoreCase);
+
+            client.OrgName = client.OrgName.Trim(); // Moving this to AFTER the replacing 
+                                                    // ensures that a name ending with _ 
+                                                    // will have the trailing space removed.
 
             while (Encoding.UTF8.GetByteCount(client.OrgName) > 20)
                 client.OrgName = client.OrgName.Substring(0, client.OrgName.Length - 1);
