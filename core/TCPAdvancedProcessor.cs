@@ -212,7 +212,7 @@ namespace core
 
         private static void VCFirst(AresClient client, TCPPacketReader packet)
         {
-            if (Settings.Get<bool>("voice"))
+            if (Settings.Get<bool>("voice")  && !client.Muzzled)
             {
                 byte[] data = packet;
 
@@ -223,7 +223,7 @@ namespace core
 
         private static void VCFirstTo(AresClient client, TCPPacketReader packet)
         {
-            if (Settings.Get<bool>("voice"))
+            if (Settings.Get<bool>("voice") && !client.Muzzled)
             {
                 String name = packet.ReadString(client);
                 AresClient target = UserPool.AUsers.Find(x => x.Name == name);
@@ -241,7 +241,7 @@ namespace core
 
         private static void VCChunk(AresClient client, TCPPacketReader packet)
         {
-            if (Settings.Get<bool>("voice"))
+            if (Settings.Get<bool>("voice") && !client.Muzzled)
             {
                 byte[] data = packet;
 
@@ -252,7 +252,7 @@ namespace core
 
         private static void VCChunkTo(AresClient client, TCPPacketReader packet)
         {
-            if (Settings.Get<bool>("voice"))
+            if (Settings.Get<bool>("voice") && !client.Muzzled)
             {
                 String name = packet.ReadString(client);
                 AresClient target = UserPool.AUsers.Find(x => x.Name == name);
