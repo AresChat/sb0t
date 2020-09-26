@@ -44,6 +44,7 @@ namespace commands
                     using (Stream stream = response.GetResponseStream())
                     {
                         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(UrbanDictionaryResult));
+
                         UrbanDictionaryResult result = (UrbanDictionaryResult)json.ReadObject(stream);
                         result.org_text = text;
                         RESULTS.Enqueue(result);
@@ -51,14 +52,14 @@ namespace commands
                 }
                 catch
                 {
-                    RESULTS.Enqueue(new UrbanDictionaryResult { result_type = String.Empty, org_text = text });
+                    RESULTS.Enqueue(new UrbanDictionaryResult { org_text = text });
                 }
             })).Start();
         }
 
         public static void Show(UrbanDictionaryResult urban)
         {
-            if (urban.result_type != "exact" || urban.list.Count == 0)
+            if (urban.list.Count == 0)
                 Server.Print(Template.Text(Category.UrbanDictionary, 0).Replace("+n", urban.org_text));
             else
             {
@@ -89,8 +90,6 @@ namespace commands
     {
         [IgnoreDataMember]
         public String org_text { get; set; }
-        [DataMember]
-        public String result_type { get; set; }
         [DataMember]
         public List<UrbanDictionaryListItem> list { get; set; }
     }
