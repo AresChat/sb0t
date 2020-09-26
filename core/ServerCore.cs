@@ -487,7 +487,8 @@ namespace core
 
                             version = version.ToLower().Replace("v", "").Trim();                        
 
-                            if (version.ToLower().Equals(Settings.VERSION_NUMBER.ToLower()))
+
+                            if (new Version(version).CompareTo(new Version(Settings.VERSION_NUMBER)) >= 0)
                             {
                                 return;
                             }
