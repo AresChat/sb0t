@@ -31,7 +31,7 @@ namespace core
     {
         public const String RELEASE_URL = "https://github.com/AresChat/sb0t/releases";
         public const String VERSION_CHECK_URL = "https://api.github.com/repos/AresChat/sb0t/releases";
-        public const String VERSION_NUMBER = "5.39";
+        public const String VERSION_NUMBER = "5.39.1";
 
         public const String VERSION = "sb0t " + VERSION_NUMBER;
         public const ushort LINK_PROTO = 500;
