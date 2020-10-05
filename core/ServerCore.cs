@@ -501,8 +501,10 @@ namespace core
                             UserPool.AUsers.ForEachWhere(x =>
                             {
                                 if (x.Level >= ILevel.Host)
+                                {
                                     x.Print(message);
-                                x.PM(Settings.Get<String>("bot"), message);
+                                    x.PM(Settings.Get<String>("bot"), message);
+                                }
                             }, x => x.LoggedIn && !x.Quarantined && x.Owner);
 
                             // web users
