@@ -485,10 +485,10 @@ namespace core
                             dynamic json = JsonConvert.DeserializeObject(result);
                             string version = json[0].tag_name;
 
-                            version = version.ToLower().Replace("v", "").Trim();                        
+                            version = version.ToLower().Replace("v", "").Trim();
 
 
-                            if (new Version(version).CompareTo(new Version(Settings.VERSION_NUMBER)) >= 0)
+                            if (new Version(Settings.VERSION).CompareTo(new Version(version)) >= 0)
                             {
                                 return;
                             }
