@@ -90,7 +90,6 @@
     <Compile Include="Extensions\ExScripting.cs" />
     <Compile Include="Extensions\ExSpelling.cs" />
     <Compile Include="Extensions\ExStats.cs" />
-    <Compile Include="Extensions\ExtensionManager.cs" />
     <Compile Include="FilterImporter.cs" />
     <Compile Include="FloodControl.cs" />
     <Compile Include="FloodRecord.cs" />

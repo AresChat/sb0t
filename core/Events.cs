@@ -75,12 +75,6 @@ namespace core
                 cmds.ServerStarted();
 
             js.ServerStarted();
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.ServerStarted(); }
-                catch { }
-            });
         }
 
         public static void CycleTick()
@@ -89,24 +83,12 @@ namespace core
                 cmds.CycleTick();
 
             js.CycleTick();
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.CycleTick(); }
-                catch { }
-            });
         }
 
         public static void UnhandledProtocol(IClient client, bool custom, TCPMsg msg, TCPPacketReader packet, ulong tick)
         {
             if (DefaultCommands)
                 cmds.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray());
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.UnhandledProtocol(client != null ? client.IUser : null, custom, (byte)msg, packet.ToArray()); }
-                catch { }
-            });
         }
 
         public static bool CanScribble(IClient client, bool isPM = false)
@@ -132,19 +114,6 @@ namespace core
             if (result)
                 result = js.Joining(client != null ? client.IUser : null);
 
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.Joining(client != null ? client.IUser : null);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -160,12 +129,6 @@ namespace core
 
             js.Joined(client != null ? client.IUser : null);
 
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Joined(client != null ? client.IUser : null); }
-                catch { }
-            });
-
             ChatLog.WriteLine("join: " + client.Name + " has joined");
         }
 
@@ -178,12 +141,6 @@ namespace core
 
             js.Rejected(client != null ? client.IUser : null, msg);
 
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Rejected(client != null ? client.IUser : null, msg); }
-                catch { }
-            });
-
             ChatLog.WriteLine("rejected: " + client.Name + " was rejected");
         }
 
@@ -193,12 +150,6 @@ namespace core
                 cmds.Parting(client != null ? client.IUser : null);
 
             js.Parting(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Parting(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void Parted(IClient client)
@@ -209,12 +160,6 @@ namespace core
                 cmds.Parted(client != null ? client.IUser : null);
 
             js.Parted(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Parted(client != null ? client.IUser : null); }
-                catch { }
-            });
 
             ChatLog.WriteLine("part: " + client.Name + " has parted");
         }
@@ -229,19 +174,6 @@ namespace core
             if (result)
                 result = js.AvatarReceived(client != null ? client.IUser : null);
 
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.AvatarReceived(client != null ? client.IUser : null);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -255,19 +187,6 @@ namespace core
             if (result)
                 result = js.PersonalMessageReceived(client != null ? client.IUser : null, text);
 
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.PersonalMessageReceived(client != null ? client.IUser : null, text);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -277,12 +196,6 @@ namespace core
                 cmds.TextReceived(client != null ? client.IUser : null, text);
 
             js.TextReceived(client != null ? client.IUser : null, text);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.TextReceived(client != null ? client.IUser : null, text); }
-                catch { }
-            });
         }
 
         public static String TextSending(IClient client, String text)
@@ -293,19 +206,6 @@ namespace core
 
             if (!String.IsNullOrEmpty(result) && DefaultCommands)
                 result = cmds.TextSending(client != null ? client.IUser : null, result);
-
-            if (!String.IsNullOrEmpty(result))
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.TextSending(client != null ? client.IUser : null, result);
-
-                        if (String.IsNullOrEmpty(result))
-                            return;
-                    }
-                    catch { }
-                });
 
             return result;
         }
@@ -319,12 +219,6 @@ namespace core
 
             js.TextSent(client != null ? client.IUser : null, text);
 
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.TextSent(client != null ? client.IUser : null, text); }
-                catch { }
-            });
-
             ChatLog.WriteLine("text: " + client.Name + "> " + text);
         }
 
@@ -334,12 +228,6 @@ namespace core
                 cmds.EmoteReceived(client != null ? client.IUser : null, text);
 
             js.EmoteReceived(client != null ? client.IUser : null, text);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.EmoteReceived(client != null ? client.IUser : null, text); }
-                catch { }
-            });
         }
 
         public static String EmoteSending(IClient client, String text)
@@ -352,19 +240,6 @@ namespace core
             if (!String.IsNullOrEmpty(result))
                 result = js.EmoteSending(client != null ? client.IUser : null, result);
 
-            if (!String.IsNullOrEmpty(result))
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.EmoteSending(client != null ? client.IUser : null, result);
-
-                        if (String.IsNullOrEmpty(result))
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -376,12 +251,6 @@ namespace core
                 cmds.EmoteSent(client != null ? client.IUser : null, text);
 
             js.EmoteSent(client != null ? client.IUser : null, text);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.EmoteSent(client != null ? client.IUser : null, text); }
-                catch { }
-            });
 
             ChatLog.WriteLine("emote: * " + client.Name + " " + text);
         }
@@ -404,19 +273,6 @@ namespace core
 
             js.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
 
-            if (!String.IsNullOrEmpty(pm.Text))
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        x.Plugin.PrivateSending(client != null ? client.IUser : null, target != null ? target.IUser : null, pm);
-
-                        if (String.IsNullOrEmpty(pm.Text) || pm.Cancel)
-                            return;
-                    }
-                    catch { }
-                });
-
             String result = pm.Text;
 
             if (String.IsNullOrEmpty(result))
@@ -437,12 +293,6 @@ namespace core
                 cmds.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
             js.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.PrivateSent(client != null ? client.IUser : null, target != null ? target.IUser : null); }
-                catch { }
-            });
         }
 
         public static void BotPrivateSent(IClient client, String text)
@@ -453,12 +303,6 @@ namespace core
                 cmds.BotPrivateSent(client != null ? client.IUser : null, text);
 
             js.BotPrivateSent(client != null ? client.IUser : null, text);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.BotPrivateSent(client != null ? client.IUser : null, text); }
-                catch { }
-            });
         }
 
         public static void Command(IClient client, String command, IClient target, String args)
@@ -554,12 +398,6 @@ namespace core
                 cmds.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
 
             js.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Command(client != null ? client.IUser : null, command, target != null ? target.IUser : null, args); }
-                catch { }
-            });
         }
 
         private static bool Nick(IClient client, String name)
@@ -571,19 +409,6 @@ namespace core
 
             if (result)
                 result = js.Nick(client != null ? client.IUser : null, name);
-
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.Nick(client != null ? client.IUser : null, name);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
 
             return result;
         }
@@ -613,12 +438,6 @@ namespace core
                 cmds.Help(client != null ? client.IUser : null);
 
             js.Help(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Help(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void FileReceived(IClient client, SharedFile file)
@@ -627,12 +446,6 @@ namespace core
                 cmds.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
 
             js.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.FileReceived(client != null ? client.IUser : null, file.FileName, file.Title, file.Mime); }
-                catch { }
-            });
         }
 
         public static bool Ignoring(IClient client, IClient target)
@@ -645,19 +458,6 @@ namespace core
             if (result)
                 result = js.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
 
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.Ignoring(client != null ? client.IUser : null, target != null ? target.IUser : null);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -667,12 +467,6 @@ namespace core
                 cmds.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
 
             js.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.IgnoredStateChanged(client != null ? client.IUser : null, target != null ? target.IUser : null, ignored); }
-                catch { }
-            });
         }
 
         public static void InvalidLoginAttempt(IClient client)
@@ -683,12 +477,6 @@ namespace core
                 cmds.InvalidLoginAttempt(client != null ? client.IUser : null);
 
             js.InvalidLoginAttempt(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.InvalidLoginAttempt(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void LoginGranted(IClient client)
@@ -697,12 +485,6 @@ namespace core
                 cmds.LoginGranted(client != null ? client.IUser : null);
 
             js.LoginGranted(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.LoginGranted(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void AdminLevelChanged(IClient client)
@@ -712,12 +494,6 @@ namespace core
 
             js.AdminLevelChanged(client != null ? client.IUser : null);
 
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.AdminLevelChanged(client != null ? client.IUser : null); }
-                catch { }
-            });
-
             ChatLog.WriteLine("level: " + client.Name + " level changed to " + client.Level);
         }
 
@@ -725,16 +501,6 @@ namespace core
         {
             if (DefaultCommands)
                 cmds.InvalidRegistration(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try
-                {
-                    if (client != null)
-                        x.Plugin.InvalidRegistration(client.IUser);
-                }
-                catch { }
-            });
         }
 
         public static bool Registering(IClient client)
@@ -747,19 +513,6 @@ namespace core
             if (result)
                 result = js.Registering(client != null ? client.IUser : null);
 
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.Registering(client != null ? client.IUser : null);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -769,12 +522,6 @@ namespace core
                 cmds.Registered(client != null ? client.IUser : null);
 
             js.Registered(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Registered(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void Unregistered(IClient client)
@@ -783,12 +530,6 @@ namespace core
                 cmds.Unregistered(client != null ? client.IUser : null);
 
             js.Unregistered(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Unregistered(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void CaptchaSending(IClient client)
@@ -797,12 +538,6 @@ namespace core
                 cmds.CaptchaSending(client != null ? client.IUser : null);
 
             js.CaptchaSending(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.CaptchaSending(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void CaptchaReply(IClient client, String reply)
@@ -811,12 +546,6 @@ namespace core
                 cmds.CaptchaReply(client != null ? client.IUser : null, reply);
 
             js.CaptchaReply(client != null ? client.IUser : null, reply);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.CaptchaReply(client != null ? client.IUser : null, reply); }
-                catch { }
-            });
         }
 
         public static bool VroomChanging(IClient client, ushort vroom)
@@ -829,19 +558,6 @@ namespace core
             if (result)
                 result = js.VroomChanging(client != null ? client.IUser : null, vroom);
 
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.VroomChanging(client != null ? client.IUser : null, vroom);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -851,12 +567,6 @@ namespace core
                 cmds.VroomChanged(client != null ? client.IUser : null);
 
             js.VroomChanged(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.VroomChanged(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static bool Flooding(IClient client, byte msg)
@@ -868,19 +578,6 @@ namespace core
 
             if (result)
                 result = js.Flooding(client != null ? client.IUser : null, msg);
-
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.Flooding(client != null ? client.IUser : null, msg);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
 
             return result;
         }
@@ -894,12 +591,6 @@ namespace core
 
             js.Flooded(client != null ? client.IUser : null);
 
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Flooded(client != null ? client.IUser : null); }
-                catch { }
-            });
-
             ChatLog.WriteLine("flood: " + client.Name + " flooded out");
         }
 
@@ -909,12 +600,6 @@ namespace core
                 cmds.Logout(client != null ? client.IUser : null);
 
             js.Logout(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Logout(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void Idled(IClient client)
@@ -923,12 +608,6 @@ namespace core
                 cmds.Idled(client != null ? client.IUser : null);
 
             js.Idled(client != null ? client.IUser : null);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Idled(client != null ? client.IUser : null); }
-                catch { }
-            });
         }
 
         public static void Unidled(IClient client, uint seconds_away)
@@ -937,12 +616,6 @@ namespace core
                 cmds.Unidled(client != null ? client.IUser : null, seconds_away);
 
             js.Unidled(client != null ? client.IUser : null, seconds_away);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Unidled(client != null ? client.IUser : null, seconds_away); }
-                catch { }
-            });
         }
 
         public static void BansAutoCleared()
@@ -951,12 +624,6 @@ namespace core
                 cmds.BansAutoCleared();
 
             js.BansAutoCleared();
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.BansAutoCleared(); }
-                catch { }
-            });
         }
 
         public static bool ProxyDetected(IClient client)
@@ -969,19 +636,6 @@ namespace core
             // Let us actually store the result
             result = js.ProxyDetected(client != null ? client.IUser : null);
 
-            if (result)
-                ExtensionManager.Plugins.ForEach(x =>
-                {
-                    try
-                    {
-                        result = x.Plugin.ProxyDetected(client != null ? client.IUser : null);
-
-                        if (!result)
-                            return;
-                    }
-                    catch { }
-                });
-
             return result;
         }
 
@@ -991,12 +645,6 @@ namespace core
                 cmds.LinkError((ILinkError)e);
 
             js.LinkError((ILinkError)e);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.LinkError((ILinkError)e); }
-                catch { }
-            });
         }
 
         public static void Linked()
@@ -1005,12 +653,6 @@ namespace core
                 cmds.Linked();
 
             js.Linked();
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Linked(); }
-                catch { }
-            });
         }
 
         public static void Unlinked()
@@ -1019,12 +661,6 @@ namespace core
                 cmds.Unlinked();
 
             js.Unlinked();
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.Unlinked(); }
-                catch { }
-            });
         }
 
         public static void LeafJoined(LinkLeaf.Leaf leaf)
@@ -1033,12 +669,6 @@ namespace core
                 cmds.LeafJoined(leaf);
 
             js.LeafJoined(leaf);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.LeafJoined(leaf); }
-                catch { }
-            });
         }
 
         public static void LeafParted(LinkLeaf.Leaf leaf)
@@ -1047,12 +677,6 @@ namespace core
                 cmds.LeafParted(leaf);
 
             js.LeafParted(leaf);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.LeafParted(leaf); }
-                catch { }
-            });
         }
 
         public static void LinkedAdminDisabled(LinkLeaf.Leaf leaf, IClient client)
@@ -1061,12 +685,6 @@ namespace core
                 cmds.LinkedAdminDisabled(leaf, client.IUser);
 
             js.LinkedAdminDisabled(leaf, client.IUser);
-
-            ExtensionManager.Plugins.ForEach(x =>
-            {
-                try { x.Plugin.LinkedAdminDisabled(leaf, client != null ? client.IUser : null); }
-                catch { }
-            });
         }
     }
 }

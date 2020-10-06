@@ -169,12 +169,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Plugin-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\plugin.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\test2.ico" />
   </ItemGroup>
   <ItemGroup>

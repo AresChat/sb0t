@@ -316,8 +316,6 @@ namespace gui
             w.label24.Content = spanish["label24"];
             w.checkBox20.Content = spanish["checkBox20"];
             w.checkBox21.Content = spanish["checkBox21"];
-            w.label22.Content = spanish["label22"];
-            w.label23.Content = spanish["label23"];
             w.label20.Content = spanish["label20"];
             w.label21.Content = spanish["label21"];
             w.button5.Content = spanish["button5"];
@@ -327,7 +325,6 @@ namespace gui
             w.tab3.Text = spanish["tab3"];
             w.tab4.Text = spanish["tab4"];
             w.tab5.Text = spanish["tab5"];
-            w.tab6.Text = spanish["tab6"];
             w.label9.Content = spanish["label9"];
             w.checkBox7.Content = spanish["checkBox7"];
             w.checkBox18.Content = spanish["checkBox18"];
@@ -362,7 +359,6 @@ namespace gui
             w.linking.Width = 85;
             w.advanced.Width = 83;
             w.avatars.Width = 78;
-            w.plugins.Width = 92;
         }
 
         public static void SetEnglish(MainWindow w)
@@ -414,8 +410,6 @@ namespace gui
             w.label24.Content = english["label24"];
             w.checkBox20.Content = english["checkBox20"];
             w.checkBox21.Content = english["checkBox21"];
-            w.label22.Content = english["label22"];
-            w.label23.Content = english["label23"];
             w.label20.Content = english["label20"];
             w.label21.Content = english["label21"];
             w.button5.Content = english["button5"];
@@ -425,7 +419,6 @@ namespace gui
             w.tab3.Text = english["tab3"];
             w.tab4.Text = english["tab4"];
             w.tab5.Text = english["tab5"];
-            w.tab6.Text = english["tab6"];
             w.label9.Content = english["label9"];
             w.checkBox7.Content = english["checkBox7"];
             w.checkBox18.Content = english["checkBox18"];
@@ -460,7 +453,6 @@ namespace gui
             w.linking.Width = 78;
             w.advanced.Width = 92;
             w.avatars.Width = 79;
-            w.plugins.Width = 96;
         }
     }
 }

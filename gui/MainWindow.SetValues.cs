@@ -201,12 +201,9 @@ namespace gui
             catch { }
             // fonts enabled
             this.checkBox25.IsChecked = Settings.Get<bool>("fonts_enabled");
-            //extensions
-            this.RefreshExtensions(null, null);
-            core.Extensions.ExtensionManager.Setup();
 
-            foreach (String ext in ExtAutorun.Items)
-                this.LoadExtension(ext);
+            //core.Extensions.ExtensionManager.Setup();
+
             //link identifier
             byte[] link_guid = Settings.Get<byte[]>("guid");
 
@@ -334,74 +331,6 @@ namespace gui
                     "sb0t", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             else
                 this.listBox3.Items.Add(item);
-        }
-
-        private void LoadExtension(String name)
-        {
-            this.UnloadExtension(name);
-            core.Extensions.ExtensionFrontEnd fe = core.Extensions.ExtensionManager.LoadPlugin(name);
-
-            if (fe != null)
-            {
-                StackPanel stack = new StackPanel();
-                stack.Orientation = Orientation.Horizontal;
-                Image img = new Image();
-
-                if (fe.Icon != null)
-                    img.Source = fe.Icon;
-                else
-                    img.Source = new BitmapImage(new Uri("pack://application:,,/Images/plugin.png"));
-
-                img.Height = 16;
-                img.Width = 16;
-                img.Margin = new Thickness(10, 0, 0, 0);
-                TextBlock tb = new TextBlock();
-                tb.Text = name;
-                tb.Margin = new Thickness(2, 0, 0, 0);
-                tb.VerticalAlignment = VerticalAlignment.Center;
-                stack.Children.Add(img);
-                stack.Children.Add(tb);
-                stack.Tag = name;
-                this.listBox2.Items.Add(stack);
-
-                if (fe.GUI != null)
-                {
-                    fe.GUI.Tag = name;
-                    gui_host.Children.Add(fe.GUI);
-                    fe.GUI.Height = 343;
-                    fe.GUI.Width = 416;
-                    fe.GUI.Margin = new Thickness(166, 0, 0, 0);
-                }
-
-                this.listBox2.SelectedIndex = this.listBox2.Items.Count - 1;
-                ExtAutorun.AddItem(name);
-            }
-            else MessageBox.Show(GUILabels.IsSpanish ? GUILabels.spanish["mboxe"] : GUILabels.english["mboxe"],
-                "sb0t", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-
-        private void UnloadExtension(String name)
-        {
-            for (int i = 0; i < this.gui_host.Children.Count; i++)
-                if (this.gui_host.Children[i] != null)
-                    if (this.gui_host.Children[i] is UserControl)
-                        if (((UserControl)this.gui_host.Children[i]).Tag != null)
-                            if (((UserControl)this.gui_host.Children[i]).Tag is String)
-                                if (((UserControl)this.gui_host.Children[i]).Tag.ToString() == name)
-                                {
-                                    this.gui_host.Children.RemoveAt(i);
-                                    break;
-                                }
-
-            for (int i=0;i<this.listBox2.Items.Count;i++)
-                if (((StackPanel)this.listBox2.Items[i]).Tag.ToString() == name)
-                {
-                    this.listBox2.Items.RemoveAt(i);
-                    break;
-                }
-
-            core.Extensions.ExtensionManager.UnloadPlugin(name);
-            ExtAutorun.RemoveItem(name);
         }
 
         private RenderTargetBitmap FileToSizedImageSource(String file, int width, int height)

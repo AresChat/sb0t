@@ -265,41 +265,6 @@
                     </Border>
                 </Grid>
             </TabItem>
-            <TabItem Name="plugins" Width="96">
-                <TabItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Height="24">
-                            <Image.Source>
-                                <BitmapImage UriSource="Images/Plugin-icon.png" />
-                            </Image.Source>
-                        </Image>
-                        <TextBlock Text="Extensions" Margin="2,0,0,0" VerticalAlignment="Center" Name="tab6" />
-                    </StackPanel>
-                </TabItem.Header>
-                <Grid>
-                    <Border BorderBrush="Black" BorderThickness="1" Margin="0,0,0,0">
-                        <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0" Name="gui_host">
-                            <Canvas.Background>
-                                <LinearGradientBrush StartPoint=".5,0" EndPoint=".5,1">
-                                    <GradientStop Color="White" Offset="0"/>
-                                    <GradientStop Color="LightSteelBlue" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Canvas.Background>
-                            <Rectangle Canvas.Left="164" Canvas.Top="5" Height="333" Name="rectangle9" Stroke="Silver" Width="1" />
-                            <ListBox Canvas.Left="22" Canvas.Top="201" Height="117" Name="listBox1" Width="120" MouseDoubleClick="PluginInstallDoubleClicked" />
-                            <Label Canvas.Left="17" Canvas.Top="177" Content="Available:" Height="28" Name="label22" />
-                            <Label Canvas.Left="90" Canvas.Top="316" Content="Refresh..." Height="28" Name="label23" Foreground="Blue" Cursor="Hand" MouseLeftButtonUp="RefreshExtensions" />
-                            <ListBox Canvas.Left="0" Canvas.Top="6" Height="165" Name="listBox2" Width="164" Padding="10,10,10,10" BorderBrush="{x:Null}" SelectionChanged="ExtensionGUISelectionChanged" Background="{x:Null}">
-                                <ListBox.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Uninstall" Click="UninstallExtension" />
-                                    </ContextMenu>
-                                </ListBox.ContextMenu>
-                            </ListBox>
-                        </Canvas>
-                    </Border>
-                </Grid>
-            </TabItem>
         </TabControl>
     </Grid>
 </Window>
