@@ -155,7 +155,15 @@ namespace core.Udp
         {
             Nodes = new List<UdpNode>();
 
-            using (FileStream fs = new FileStream("servers.dat", FileMode.Open, FileAccess.Read))
+            Nodes.Add(toUdpNode("3.9.177.74", 54321)); // AresChat
+            Nodes.Add(toUdpNode("72.88.244.38", 50000)); // Vicky's Hangout
+            Nodes.Add(toUdpNode("81.103.82.252", 37579)); // BATTS STEAKHOUSE
+            Nodes.Add(toUdpNode("87.211.177.199", 5287)); // MIXI - ROOM
+            Nodes.Add(toUdpNode("176.27.99.220", 46500)); // Ross / Milli's Bar and Cafe
+
+
+            // TODO(stuart) find a better way of accomplishing this, so we don't end up with a list of empty nodes...
+            /*using (FileStream fs = new FileStream("servers.dat", FileMode.Open, FileAccess.Read))
             {
                 byte[] buffer = new byte[6];
 
@@ -166,9 +174,17 @@ namespace core.Udp
                     node.Port = BitConverter.ToUInt16(buffer.ToArray(), 4);
                     Nodes.Add(node);
                 }
-            }
+            }*/
 
             ServerCore.Log("default node list loaded");
+        }
+
+        public static UdpNode toUdpNode(String ip, ushort port)
+        {
+            UdpNode udpNode = new UdpNode();
+            udpNode.IP = IPAddress.Parse(ip);
+            udpNode.Port = port;
+            return udpNode;
         }
 
         public static UdpNode[] GetServers(int max_servers, ulong time)
