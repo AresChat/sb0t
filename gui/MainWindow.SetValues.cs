@@ -144,11 +144,10 @@ namespace gui
             this.checkBox16.IsChecked = Settings.Get<bool>("reject_unknown");
             //ib0t push
             String ib = Settings.Get<String>("url", "web");
-
-            if (String.IsNullOrEmpty(ib))
+            if (String.IsNullOrEmpty(ib) || ib.ToLower().Contains("marsproject.net"))
             {
-                ib = "http://chatrooms.marsproject.net/ibot.aspx";
-                Settings.Set("url", "http://chatrooms.marsproject.net/ibot.aspx", "web");
+                ib = "https://ares.chat/api/ib0t";
+                Settings.Set("url", "https://ares.chat/api/ib0t", "web");
             }
 
             this.textBox5.Text = ib;
